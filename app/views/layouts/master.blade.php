@@ -22,7 +22,7 @@
 						<span class="icon-bar"></span>
 						<span class="icon-bar"></span>
 					</button>
-					<a class="navbar-brand" href="#">Etincelle Coworking</a>
+					<a class="navbar-brand" href="{{ URL::route('dashboard') }}">Etincelle Coworking</a>
 				</div>
 				<div id="navbar" class="collapse navbar-collapse">
 					@if (Auth::user())
@@ -32,6 +32,7 @@
 							<a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">Utilisateurs <span class="caret"></span></a>
 							<ul class="dropdown-menu" role="menu">
 								<li><a href="{{ URL::route('user_list') }}">Liste</a></li>
+								<li><a href="{{ URL::route('user_add') }}">Ajouter un utilisateur</a></li>
 							</ul>
 						</li>
 					</ul>

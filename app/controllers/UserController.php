@@ -111,6 +111,36 @@ class UserController extends BaseController
 	}
 
 	/**
+	 * Add User
+	 */
+	public function add()
+	{
+		$this->layout->content = View::make('user.add');
+	}
+
+	/**
+	 * Add User check
+	 */
+	public function add_check()
+	{
+		$validator = Validator::make(Input::all(), User::$rulesAdd);
+		if (!$validator->fails()) {
+			$user = new User;
+			$user->email = Input::get('email');
+			$user->fullname = Input::get('fullname');
+			$user->password = Hash::make(Input::get('password'));
+
+			if ($user->save()) {
+				return Redirect::route('user_list')->with('mSuccess', 'Cet utilisateur a bien été ajouté');
+			} else {
+				return Redirect::route('user_list')->with('mError', 'Impossible d\'ajouter cet utilisateur');
+			}
+		} else {
+			return Redirect::route('user_add')->with('mError', 'Il y a des erreurs')->withErrors($validator->messages())->withInput();
+		}
+	}
+
+	/**
 	 * User Profile
 	 */
 	public function profile()
