@@ -20,4 +20,6 @@ Route::get('/logout', array('as' => 'user_logout', 'uses' => 'UserController@log
 Route::group(['before' => 'auth'], function() {
 	Route::get('/profile', array('as' => 'user_profile', 'uses' => 'UserController@profile'));
 	Route::get('/users/list', array('as' => 'user_list', 'uses' => 'UserController@liste'));
+	Route::get('/user/modify/{id}', array('as' => 'user_modify', 'uses' => 'UserController@modify'))->where(array('id' => '[0-9]+'));
+	Route::post('/user/modify/{id}', array('as' => 'user_modify_check', 'uses' => 'UserController@modify_check'))->where(array('id' => '[0-9]+'));
 });

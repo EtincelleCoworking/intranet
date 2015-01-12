@@ -66,6 +66,51 @@ class UserController extends BaseController
 	}
 
 	/**
+	 * Modify user
+	 */
+	public function modify($id)
+	{
+		$user = User::find($id);
+		if (!$user) {
+			return Redirect::route('user_list')->with('mError', 'Cet utilisateur est introuvable !');
+		}
+
+		$this->layout->content = View::make('user.modify', array('user' => $user));
+	}
+
+	/**
+	 * Modify user (form)
+	 */
+	public function modify_check($id)
+	{
+		$user = User::find($id);
+		if (!$user) {
+			return Redirect::route('user_list')->with('mError', 'Cet utilisateur est introuvable !');
+		}
+
+		$validator = Validator::make(Input::all(), User::$rules);
+		if (!$validator->fails()) {
+			// Vérifier que l'adresse email soit unique (peut-être à améliorer... directement dans l'entity ?)
+			$check = User::where('email', '=', $user->email)->where('id', '!=', $user->id)->first();
+			if (!$check) {
+				$user->email = Input::get('email');
+				$user->fullname = Input::get('fullname');
+				if (Input::get('password')) {
+					$user->password = Hash::make(Input::get('password'));
+				}
+
+				if ($user->save()) {
+					return Redirect::route('user_modify', $user->id)->with('mSuccess', 'Cet utilisateur a bien été modifié');
+				} else {
+					return Redirect::route('user_modify', $user->id)->with('mError', 'Impossible de modifier cet utilisateur');
+				}
+			}
+		} else {
+			return Redirect::route('user_modify', $user->id)->with('mError', 'Il y a des erreurs')->withErrors($validator->messages())->withInput();
+		}
+	}
+
+	/**
 	 * User Profile
 	 */
 	public function profile()

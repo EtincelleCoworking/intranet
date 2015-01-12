@@ -24,7 +24,9 @@
 				<td>{{ $user->fullname }}</td>
 				<td>{{ $user->email }}</td>
 				<td>{{ $user->updated_at }}</td>
-				<td></td>
+				<td>
+					<a href="{{ URL::route('user_modify', $user->id) }}">Modifier</a>
+				</td>
 			</tr>
 		@endforeach
 		</tbody>
