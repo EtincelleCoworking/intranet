@@ -59,4 +59,14 @@ class User extends Eloquent implements UserInterface, RemindableInterface {
 		return $this->hasMany('Invoice');
 	}
 
+	/**
+	 * Get list of users
+	 */
+	public function scopeSelect($query, $title = "Select")
+	{
+		$selectVals[''] = $title;
+		$selectVals += $this->lists('fullname', 'id');
+		return $selectVals;
+	}
+
 }
