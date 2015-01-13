@@ -147,4 +147,13 @@ class UserController extends BaseController
 	{
 		# code...
 	}
+
+	/**
+	 * Get organisations list of an user (JSON)
+	 */
+	public function json_organisations($id)
+	{
+		$user = User::find($id);
+		return Response::json($user->organisations->lists('name', 'id'));
+	}
 }

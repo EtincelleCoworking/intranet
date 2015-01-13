@@ -14,6 +14,7 @@
 				<th>Date de création</th>
 				<th>Client</th>
 				<th>Dernière modification</th>
+				<th>Montant</th>
 				<th>Actions</th>
 			</tr>
 		</thead>
@@ -21,13 +22,14 @@
 		@foreach ($invoices as $invoice)
 			<tr>
 				<td>{{ $invoice->id }}</td>
-				<td>{{ $invoice->created_at }}</td>
+				<td>{{ $invoice->created_at->format('d/m/Y') }}</td>
 				<td>
-					<a href="{{ URL::route('user_modify', $invoice->user->id) }}">{{ $invoice->user->fullname }}</a>
+					<a href="{{ URL::route('user_modify', $invoice->user->id) }}">{{ $invoice->user->fullname }}</a> (<a href="{{ URL::route('organisation_modify', $invoice->organisation->id) }}">{{ $invoice->organisation->name }}</a>)
 				</td>
-				<td>{{ $invoice->updated_at }}</td>
+				<td>{{ $invoice->updated_at->format('d/m/Y') }}</td>
+				<td>{{ Invoice::TotalInvoice($invoice->items) }}€</td>
 				<td>
-					<a href="{{ URL::route('invoice_modify', $invoice->id) }}">Modifier</a> {{ Invoice::TotalInvoice($invoice->items) }}
+					<a href="{{ URL::route('invoice_modify', $invoice->id) }}">Modifier</a>
 				</td>
 			</tr>
 		@endforeach

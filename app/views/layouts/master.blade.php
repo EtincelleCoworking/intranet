@@ -33,6 +33,9 @@
 							<ul class="dropdown-menu" role="menu">
 								<li><a href="{{ URL::route('user_list') }}">Liste</a></li>
 								<li><a href="{{ URL::route('user_add') }}">Ajouter un utilisateur</a></li>
+								<li class="divider"></li>
+								<li><a href="{{ URL::route('organisation_list') }}">Organismes</a></li>
+								<li><a href="{{ URL::route('organisation_add') }}">Ajouter un organisme</a></li>
 							</ul>
 						</li>
 						<li class="dropdown">
@@ -78,5 +81,7 @@
 
 		<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script>
 		<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.1/js/bootstrap.min.js"></script>
+		{{ HTML::script('js/rails.js') }}
+		@yield('javascript')
 	</body>
 </html>

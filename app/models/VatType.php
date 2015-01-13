@@ -15,7 +15,7 @@ class VatType extends Eloquent
 	/**
 	 * Relation BelongsTo (Vat_Types belongs to Invoices_Items)
 	 */
-	public function invoice_item()
+	public function item()
 	{
 		return $this->belongsTo('InvoiceItem');
 	}

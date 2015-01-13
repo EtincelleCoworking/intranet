@@ -14,6 +14,24 @@
 		<p>{{ Form::submit('Modifier') }}</p>
 	{{ Form::close() }}
 
+	<h2>Liste des organismes</h2>
+	<table class="table table-striped table-hover">
+		<thead>
+			<tr>
+				<th>#</th>
+				<th>Nom</th>
+			</tr>
+		</thead>
+		<tbody>
+			@foreach ($user->organisations as $orga)
+			<tr>
+				<td>{{ $orga->id }}</td>
+				<td><a href="{{ URL::route('organisation_modify', $orga->id) }}">{{ $orga->name }}</a></td>
+			</tr>
+			@endforeach
+		</tbody>
+	</table>
+
 	<h2>Liste des factures</h2>
 	<table class="table table-striped table-hover">
 		<thead>

@@ -68,6 +68,7 @@ class InvoiceController extends BaseController
 		if (!$validator->fails()) {
 			$invoice = new Invoice;
 			$invoice->user_id = Input::get('user_id');
+			$invoice->organisation_id = Input::get('organisation_id');
 
 			if ($invoice->save()) {
 				return Redirect::route('invoice_modify', $invoice->id)->with('mSuccess', 'La facture a bien été ajoutée');

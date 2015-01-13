@@ -21,7 +21,7 @@ class User extends Eloquent implements UserInterface, RemindableInterface {
 	 *
 	 * @var array
 	 */
-	protected $hidden = array('password', 'remember_token');
+	protected $hidden = array('password', 'remember_token', 'email', 'pivot');
 
 	/**
 	 * The fillable fields
@@ -60,12 +60,35 @@ class User extends Eloquent implements UserInterface, RemindableInterface {
 	}
 
 	/**
+	 * Relation Belongs To Many (User has many Organisations)
+	 */
+	public function organisations()
+	{
+		return $this->belongsToMany('Organisation', 'organisation_user', 'user_id', 'organisation_id');
+	}
+
+	/**
 	 * Get list of users
 	 */
 	public function scopeSelect($query, $title = "Select")
 	{
 		$selectVals[''] = $title;
 		$selectVals += $this->lists('fullname', 'id');
+		return $selectVals;
+	}
+
+	/**
+	 * Get list of users not in an organisation selected
+	 */
+	public function scopeSelectNotInOrganisation($query, $organisation, $title = "Select") 
+	{
+		$ids = OrganisationUser::where('organisation_id', $organisation)->lists('user_id');
+		$selectVals[''] = $title;
+		if ($ids) {
+			$selectVals += $this->whereNotIn('id', $ids)->lists('fullname', 'id');
+		} else {
+			$selectVals += $this->lists('fullname', 'id');
+		}
 		return $selectVals;
 	}
 

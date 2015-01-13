@@ -6,7 +6,7 @@
 
 @section('content')
 	<h1>Modifier une facture</h1>
-
+	<p>Organisme : {{ $invoice->organisation->name }}</p>
 	<h2>Lignes de la facture</h2>
 	<table class="table table-striped table-hover">
 		<thead>
@@ -17,12 +17,11 @@
 			</tr>
 		</thead>
 		<tbody>
-		
-			@foreach ($invoice->invoices_items as $item)
+			@foreach ($invoice->items as $item)
 			<tr>
 				<td>{{ $item->text }}</td>
 				<td>{{ $item->amount }}</td>
-				<td>{{ $item->vat_types->value }}</td>
+				<td>{{ $item->vat->value }}</td>
 			</tr>
 			@endforeach
 		</tbody>

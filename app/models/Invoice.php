@@ -21,6 +21,14 @@ class Invoice extends Eloquent
 	}
 
 	/**
+	 * Relation BelongsTo (Invoices belongs to Organisation)
+	 */
+	public function organisation()
+	{
+		return $this->belongsTo('Organisation');
+	}
+
+	/**
 	 * Relation One To Many (Invoice has many Invoices_Items)
 	 */
 	public function items()
@@ -41,9 +49,17 @@ class Invoice extends Eloquent
 	}
 
 	/**
+	 * Rules
+	 */
+	public static $rules = array(
+		'user_id' => 'required|min:1'
+	);
+
+	/**
 	 * Rules Add
 	 */
 	public static $rulesAdd = array(
-		'user_id' => 'required|min:1'
+		'user_id' => 'required|min:1',
+		'organisation_id' => 'required|min:1',
 	);
 }
