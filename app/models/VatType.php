@@ -4,7 +4,7 @@
 */
 class VatType extends Eloquent
 {
-	
+
 	/**
 	 * The database table used by the model.
 	 *
@@ -26,4 +26,13 @@ class VatType extends Eloquent
 	public static $rulesAdd = array(
 		'user_id' => 'required|min:1'
 	);
+
+    /**
+     * Get list of vat
+     */
+    public function scopeSelectAll($query)
+    {
+        $selectVals = $this->lists('value', 'id');
+        return $selectVals;
+    }
 }

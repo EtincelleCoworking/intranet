@@ -43,8 +43,8 @@
 		<tbody>
 			@foreach ($user->invoices as $invoice)
 			<tr>
-				<td>{{ $invoice->id }}</td>
-				<td><a href="{{ URL::route('invoice_modify', $invoice->id) }}">{{ $invoice->created_at }}</a></td>
+				<td><a href="{{ URL::route('invoice_modify', $invoice->id) }}">{{ $invoice->ident }}</a></td>
+				<td>{{ $invoice->created_at }}</td>
 			</tr>
 			@endforeach
 		</tbody>

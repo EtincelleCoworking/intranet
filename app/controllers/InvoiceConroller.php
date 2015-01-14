@@ -15,7 +15,7 @@ class InvoiceController extends BaseController
 	 */
 	public function liste()
 	{
-		$invoices = Invoice::paginate(15);
+		$invoices = Invoice::orderBy('created_at', 'DESC')->paginate(15);
 
 		$this->layout->content = View::make('invoice.liste', array('invoices' => $invoices));
 	}
@@ -45,7 +45,7 @@ class InvoiceController extends BaseController
 
 		$validator = Validator::make(Input::all(), Invoice::$rules);
 		if (!$validator->fails()) {
-			
+
 		} else {
 			return Redirect::route('invoice_modify', $invoice->id)->with('mError', 'Il y a des erreurs')->withErrors($validator->messages())->withInput();
 		}
@@ -56,7 +56,8 @@ class InvoiceController extends BaseController
 	 */
 	public function add()
 	{
-		$this->layout->content = View::make('invoice.add');
+		$last_organisation_id = Input::old('organisation_id');
+		$this->layout->content = View::make('invoice.add', array('last_organisation_id' => $last_organisation_id));
 	}
 
 	/**
@@ -66,9 +67,14 @@ class InvoiceController extends BaseController
 	{
 		$validator = Validator::make(Input::all(), Invoice::$rulesAdd);
 		if (!$validator->fails()) {
+			$days = Input::get('year').Input::get('month');
+
 			$invoice = new Invoice;
 			$invoice->user_id = Input::get('user_id');
 			$invoice->organisation_id = Input::get('organisation_id');
+			$invoice->type = Input::get('type');
+			$invoice->days = $days;
+			$invoice->number = Invoice::next_invoice_number(Input::get('type'), $days);
 
 			if ($invoice->save()) {
 				return Redirect::route('invoice_modify', $invoice->id)->with('mSuccess', 'La facture a bien été ajoutée');
@@ -76,7 +82,15 @@ class InvoiceController extends BaseController
 				return Redirect::route('invoice_add')->with('mError', 'Impossible de créer cette facture')->withInput();
 			}
 		} else {
-			return Redirect::route('invoice_add')->with('mError', 'Il y a des erreurs')->withErrors($validator->messages())->withInput();
+			return Redirect::route('invoice_add')->with('mError', 'Il y a des erreurs')->withInput()->withErrors($validator->messages());
 		}
+	}
+
+	/**
+	 * Validate a quotation
+	 */
+	public function validate($id)
+	{
+
 	}
 }

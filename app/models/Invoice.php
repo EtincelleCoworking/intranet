@@ -36,6 +36,17 @@ class Invoice extends Eloquent
 		return $this->hasMany('InvoiceItem');
 	}
 
+	/**
+	 * Identifier invoice
+	 */
+	public function getIdentAttribute()
+	{
+		return $this->type.$this->days.'-'.str_pad($this->number, 4, 0, STR_PAD_LEFT);
+	}
+
+	/**
+	 * Total amount
+	 */
 	public function scopeTotalInvoice($query, $items) {
 		$total = 0;
 		
@@ -46,6 +57,19 @@ class Invoice extends Eloquent
 		}
 		
 		return sprintf('%0.2f', $total);
+	}
+
+	/**
+	 * Get next invoice number
+	 */
+	static public function next_invoice_number($type, $days)
+	{
+		$last = Invoice::where('type', $type)->where('days', $days)->orderBy('number', 'DESC')->first();
+		if ($last) {
+			return ($last->number + 1);
+		} else {
+			return 1;
+		}
 	}
 
 	/**
