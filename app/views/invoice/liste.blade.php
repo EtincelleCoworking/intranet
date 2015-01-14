@@ -6,7 +6,7 @@
 
 @section('content')
 	<h1>Liste des factures</h1>
-	
+
 	<table class="table table-striped table-hover">
 		<thead>
 			<tr>
@@ -30,6 +30,7 @@
 				<td>{{ Invoice::TotalInvoice($invoice->items) }}€</td>
 				<td>
 					<a href="{{ URL::route('invoice_modify', $invoice->id) }}">Modifier</a>
+                    <a href="{{ URL::route('invoice_print_pdf', $invoice->id) }}">PDF</a>
 				</td>
 			</tr>
 		@endforeach

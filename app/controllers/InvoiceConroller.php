@@ -93,4 +93,21 @@ class InvoiceController extends BaseController
 	{
 
 	}
+
+    /**
+     * Print invoice to PDF
+     */
+    public function print_pdf($id)
+    {
+        $invoice = Invoice::find($id);
+        if (!$invoice) {
+            return Redirect::route('invoice_list')->with('mError', 'Cette facture est introuvable !');
+        }
+
+        // Reste la structure à définir
+        $html = '<html><body>'
+            . '<p>Facture '.$invoice->ident.'</p>'
+            . '</body></html>';
+        return PDF::load($html, 'A4', 'portrait')->download($invoice->ident);
+    }
 }
