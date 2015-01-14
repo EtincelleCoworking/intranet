@@ -91,7 +91,19 @@ class InvoiceController extends BaseController
 	 */
 	public function validate($id)
 	{
+        $invoice = Invoice::find($id);
+        if (!$invoice) {
+            return Redirect::route('invoice_list')->with('mError', 'Cette facture est introuvable !');
+        }
 
+        $invoice->type = 'F';
+        $invoice->number = Invoice::next_invoice_number('F', $invoice->days);
+
+        if ($invoice->save()) {
+            return Redirect::route('invoice_modify', $invoice->id)->with('mSuccess', 'La facture a bien été générée');
+        } else {
+            return Redirect::route('invoice_modify', $invoice->id)->with('mError', 'Impossible de générer la facture');
+        }
 	}
 
     /**

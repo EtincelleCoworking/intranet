@@ -26,7 +26,7 @@
 				<td>
 					<a href="{{ URL::route('user_modify', $invoice->user->id) }}">{{ $invoice->user->fullname }}</a> (<a href="{{ URL::route('organisation_modify', $invoice->organisation->id) }}">{{ $invoice->organisation->name }}</a>)
 				</td>
-				<td>{{ $invoice->updated_at->format('d/m/Y') }}</td>
+				<td>{{ $invoice->updated_at->format('d/m/Y H:i') }}</td>
 				<td>{{ Invoice::TotalInvoice($invoice->items) }}€</td>
 				<td>
 					<a href="{{ URL::route('invoice_modify', $invoice->id) }}">Modifier</a>

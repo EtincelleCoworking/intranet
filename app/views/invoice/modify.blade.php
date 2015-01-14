@@ -1,11 +1,25 @@
 @extends('layouts.master')
 
 @section('meta_title')
-	Modification de la facture #{{ $invoice->id }}
+	Modification
+    @if ($invoice->type == 'F')
+        de la facture
+    @elseif ($invoice->type == 'D')
+        du devis
+    @endif
+    {{ $invoice->ident }}
 @stop
 
 @section('content')
-	<h1>Modifier une facture</h1>
+	<h1>
+        Modifier
+        @if ($invoice->type == 'F')
+            la facture
+        @elseif ($invoice->type == 'D')
+            le devis
+        @endif
+        {{ $invoice->ident }}
+    </h1>
 	<p>Organisme : {{ $invoice->organisation->name }}</p>
     <p>Client : {{ $invoice->user->fullname }}</p>
 
