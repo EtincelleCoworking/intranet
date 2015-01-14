@@ -94,7 +94,8 @@ class UserController extends BaseController
 			$check = User::where('email', '=', $user->email)->where('id', '!=', $user->id)->first();
 			if (!$check) {
 				$user->email = Input::get('email');
-				$user->fullname = Input::get('fullname');
+                $user->firstname = Input::get('firstname');
+				$user->lastname = Input::get('lastname');
 				if (Input::get('password')) {
 					$user->password = Hash::make(Input::get('password'));
 				}
@@ -127,7 +128,8 @@ class UserController extends BaseController
 		if (!$validator->fails()) {
 			$user = new User;
 			$user->email = Input::get('email');
-			$user->fullname = Input::get('fullname');
+            $user->firstname = Input::get('firstname');
+			$user->lastname = Input::get('lastname');
 			$user->password = Hash::make(Input::get('password'));
 
 			if ($user->save()) {

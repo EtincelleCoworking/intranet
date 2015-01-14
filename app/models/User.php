@@ -26,7 +26,7 @@ class User extends Eloquent implements UserInterface, RemindableInterface {
 	/**
 	 * The fillable fields
 	 */
-	protected $fillable = array('fullname', 'email');
+	protected $fillable = array('firstname', 'lastname', 'email');
 
 	/**
 	 * The guarded fields
@@ -38,7 +38,8 @@ class User extends Eloquent implements UserInterface, RemindableInterface {
 	 */
 	public static $rules = array(
 		'email' => 'required|email',
-		'fullname' => 'required',
+        'firstname' => 'required',
+		'lastname' => 'required',
 		'password' => 'min:5'
 	);
 
@@ -47,7 +48,8 @@ class User extends Eloquent implements UserInterface, RemindableInterface {
 	 */
 	public static $rulesAdd = array(
 		'email' => 'required|email|unique:users',
-		'fullname' => 'required',
+        'firstname' => 'required',
+		'lastname' => 'required',
 		'password' => 'required|min:5'
 	);
 
@@ -67,6 +69,14 @@ class User extends Eloquent implements UserInterface, RemindableInterface {
 		return $this->belongsToMany('Organisation', 'organisation_user', 'user_id', 'organisation_id');
 	}
 
+    /**
+     * Fullname user
+     */
+    public function getFullnameAttribute()
+    {
+        return $this->firstname.' '.$this->lastname;
+    }
+
 	/**
 	 * Get list of users
 	 */
@@ -80,14 +90,14 @@ class User extends Eloquent implements UserInterface, RemindableInterface {
 	/**
 	 * Get list of users not in an organisation selected
 	 */
-	public function scopeSelectNotInOrganisation($query, $organisation, $title = "Select") 
+	public function scopeSelectNotInOrganisation($query, $organisation, $title = "Select")
 	{
 		$ids = OrganisationUser::where('organisation_id', $organisation)->lists('user_id');
 		$selectVals[''] = $title;
 		if ($ids) {
-			$selectVals += $this->whereNotIn('id', $ids)->lists('fullname', 'id');
+			$selectVals += $this->whereNotIn('id', $ids)->lists('lastname', 'id');
 		} else {
-			$selectVals += $this->lists('fullname', 'id');
+			$selectVals += $this->lists('lastname', 'id');
 		}
 		return $selectVals;
 	}

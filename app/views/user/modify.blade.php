@@ -9,7 +9,8 @@
 
 	{{ Form::model($user, array('route' => array('user_modify', $user->id))) }}
 		<p>{{ Form::email('email') }}</p>
-		<p>{{ Form::text('fullname') }}</p>
+        <p>{{ Form::text('firstname') }}</p>
+		<p>{{ Form::text('lastname') }}</p>
 		<p>{{ Form::password('password', null) }}</p>
 		<p>{{ Form::submit('Modifier') }}</p>
 	{{ Form::close() }}
