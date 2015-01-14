@@ -21,10 +21,11 @@ class InvoiceItemController extends BaseController
 	{
 		$invoice = Invoice::find($id);
         /**
-         * Partie à revoir (optimisation)
+         * Partie à revoir ? (optimisation)
          */
         foreach ($invoice->items as $item) {
             InvoiceItem::where('id', $item->id)->update(array(
+                'ressource_id' => Input::get('ressource_id.'.$item->id),
                 'text' => Input::get('text.'.$item->id),
                 'amount' => Input::get('amount.'.$item->id),
                 'vat_types_id' => Input::get('vat_types_id.'.$item->id),
@@ -33,6 +34,7 @@ class InvoiceItemController extends BaseController
             $d = array(
                 new InvoiceItem(array(
                         'id' => $item->id,
+                        'ressource_id' => Input::get('ressource_id.'.$item->id),
                         'text' => Input::get('text.'.$item->id),
                         'amount' => Input::get('amount.'.$item->id),
                         'vat_types_id' => Input::get('vat_types_id.'.$item->id),
@@ -46,6 +48,7 @@ class InvoiceItemController extends BaseController
         if (Input::get('text.0')) {
             $this->add_check(array(
                 'invoice_id' => $id,
+                'ressource_id' => Input::get('ressource_id.0'),
                 'text' => Input::get('text.0'),
                 'amount' => Input::get('amount.0'),
                 'vat_types_id' => Input::get('vat_types_id.0')

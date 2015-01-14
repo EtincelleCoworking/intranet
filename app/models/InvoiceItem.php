@@ -4,13 +4,18 @@
 */
 class InvoiceItem extends Eloquent
 {
-	
+
 	/**
 	 * The database table used by the model.
 	 *
 	 * @var string
 	 */
 	protected $table = 'invoices_items';
+
+    /**
+     * The Fillable fields
+     */
+    protected $fillable = array('id', 'ressource_id', 'text', 'amount', 'vat_types_id');
 
 	/**
 	 * Relation BelongsTo (Invoices_Items belongs to Invoice)

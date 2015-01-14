@@ -38,11 +38,18 @@
 								<li><a href="{{ URL::route('organisation_add') }}">Ajouter un organisme</a></li>
 							</ul>
 						</li>
+                        <li class="dropdown">
+                            <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">Factures <span class="caret"></span></a>
+                            <ul class="dropdown-menu" role="menu">
+                                <li><a href="{{ URL::route('invoice_list') }}">Liste</a></li>
+                                <li><a href="{{ URL::route('invoice_add') }}">Ajouter une facture</a></li>
+                            </ul>
+                        </li>
 						<li class="dropdown">
-							<a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">Factures <span class="caret"></span></a>
+							<a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">Ressources <span class="caret"></span></a>
 							<ul class="dropdown-menu" role="menu">
-								<li><a href="{{ URL::route('invoice_list') }}">Liste</a></li>
-								<li><a href="{{ URL::route('invoice_add') }}">Ajouter une facture</a></li>
+								<li><a href="{{ URL::route('ressource_list') }}">Liste</a></li>
+								<li><a href="{{ URL::route('ressource_add') }}">Ajouter une ressource</a></li>
 							</ul>
 						</li>
 					</ul>
