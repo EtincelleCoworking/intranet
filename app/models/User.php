@@ -78,7 +78,7 @@ class User extends Eloquent implements UserInterface, RemindableInterface {
 	public function scopeSelect($query, $title = "Select")
 	{
 		$selectVals[''] = $title;
-		$selectVals += $this->lists('fullname', 'id');
+		$selectVals += $this->get()->lists('fullname', 'id');
 		return $selectVals;
 	}
 
