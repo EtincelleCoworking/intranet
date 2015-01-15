@@ -95,9 +95,9 @@ class User extends Eloquent implements UserInterface, RemindableInterface {
 		$ids = OrganisationUser::where('organisation_id', $organisation)->lists('user_id');
 		$selectVals[''] = $title;
 		if ($ids) {
-			$selectVals += $this->whereNotIn('id', $ids)->lists('lastname', 'id');
+			$selectVals += $this->whereNotIn('id', $ids)->get()->lists('fullname', 'id');
 		} else {
-			$selectVals += $this->lists('lastname', 'id');
+			$selectVals += $this->get()->lists('fullname', 'id');
 		}
 		return $selectVals;
 	}
