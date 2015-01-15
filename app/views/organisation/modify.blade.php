@@ -8,7 +8,18 @@
 	<h1>Modifier un organisme</h1>
 
 	{{ Form::model($organisation, array('route' => array('organisation_modify', $organisation->id))) }}
-		<p>{{ Form::text('name') }}</p>
+		{{ Form::label('name', 'Nom') }}
+        <p>{{ Form::text('name') }}</p>
+        {{ Form::label('address', 'Adresse') }}
+        <p>{{ Form::textarea('address') }}</p>
+        {{ Form::label('zipcode', 'Code postal') }}
+        <p>{{ Form::text('zipcode') }}</p>
+        {{ Form::label('city', 'Ville') }}
+        <p>{{ Form::text('city') }}</p>
+        {{ Form::label('country', 'Pays') }}
+        <p>{{ Form::text('country') }}</p>
+        {{ Form::label('tva_number', 'TVA') }}
+        <p>{{ Form::text('tva_number') }}</p>
 		<p>{{ Form::submit('Modifier') }}</p>
 	{{ Form::close() }}
 
@@ -16,7 +27,7 @@
 	@if ($errors->has())
     <div class="alert alert-danger">
         @foreach ($errors->all() as $error)
-            {{ $error }}<br>        
+            {{ $error }}<br>
         @endforeach
     </div>
     @endif

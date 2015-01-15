@@ -44,7 +44,13 @@ class OrganisationController extends BaseController
 
 		$validator = Validator::make(Input::all(), Organisation::$rules);
 		if (!$validator->fails()) {
-			$organisation->name = Input::get('name');
+            $organisation->name = Input::get('name');
+            $organisation->address = Input::get('address');
+            $organisation->zipcode = Input::get('zipcode');
+            $organisation->city = Input::get('city');
+            $organisation->country = Input::get('country');
+			$organisation->tva_number = Input::get('tva_number');
+
 			if ($organisation->save()) {
 				return Redirect::route('organisation_modify', $organisation->id)->with('mSuccess', 'Cet organisme a bien été modifié');
 			} else {
@@ -70,8 +76,7 @@ class OrganisationController extends BaseController
 	{
 		$validator = Validator::make(Input::all(), Organisation::$rulesAdd);
 		if (!$validator->fails()) {
-			$organisation = new Organisation;
-			$organisation->name = Input::get('name');
+			$organisation = new Organisation(Input::all());
 
 			if ($organisation->save()) {
 				return Redirect::route('organisation_modify', $organisation->id)->with('mSuccess', 'L\'organisme a bien été ajouté');
@@ -84,7 +89,7 @@ class OrganisationController extends BaseController
 	}
 
 	/**
-	 * Add user 
+	 * Add user
 	 */
 	public function add_user($id)
 	{

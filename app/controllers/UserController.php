@@ -99,6 +99,11 @@ class UserController extends BaseController
 				if (Input::get('password')) {
 					$user->password = Hash::make(Input::get('password'));
 				}
+                $user->bio_short = Input::get('bio_short');
+                $user->bio_long = Input::get('bio_long');
+                $user->is_member = Input::get('is_member');
+                $user->twitter = Input::get('twitter');
+                $user->website = Input::get('website');
 
 				if ($user->save()) {
 					return Redirect::route('user_modify', $user->id)->with('mSuccess', 'Cet utilisateur a bien été modifié');
@@ -126,11 +131,8 @@ class UserController extends BaseController
 	{
 		$validator = Validator::make(Input::all(), User::$rulesAdd);
 		if (!$validator->fails()) {
-			$user = new User;
-			$user->email = Input::get('email');
-            $user->firstname = Input::get('firstname');
-			$user->lastname = Input::get('lastname');
-			$user->password = Hash::make(Input::get('password'));
+            Input::merge(array('password' => Hash::make(Input::get('password'))));
+			$user = new User(Input::all());
 
 			if ($user->save()) {
 				return Redirect::route('user_list')->with('mSuccess', 'Cet utilisateur a bien été ajouté');

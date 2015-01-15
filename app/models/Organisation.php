@@ -4,13 +4,18 @@
 */
 class Organisation extends Eloquent
 {
-	
+
 	/**
 	 * The database table used by the model.
 	 *
 	 * @var string
 	 */
 	protected $table = 'organisations';
+
+    /**
+     * The guarded fields
+     */
+    protected $guarded = array('id');
 
 	/**
 	 * Relation Belongs To Many (Organisation has many Users)
