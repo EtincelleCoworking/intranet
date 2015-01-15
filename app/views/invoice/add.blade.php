@@ -13,9 +13,11 @@
 		<p>
 			{{ Form::select('type', array('F' => 'Facture', 'D' => 'Devis')) }}
 		</p>
+        {{ Form::label('', 'Date de facturation') }}
 		<p>
 			{{ form_years('year', ((Input::old('year')) ? Input::old('year') : date('Y'))) }}
-			{{ form_months('month', ((Input::old('month')) ? Input::old('month') : date('m'))) }}
+            {{ form_months('month', ((Input::old('month')) ? Input::old('month') : date('m'))) }}
+			{{ form_days('day', ((Input::old('day')) ? Input::old('day') : date('d'))) }}
 		</p>
 		<p>{{ Form::submit('Ajouter') }}</p>
 	{{ Form::close() }}

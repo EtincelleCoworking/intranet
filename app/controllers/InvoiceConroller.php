@@ -74,6 +74,7 @@ class InvoiceController extends BaseController
 			$invoice->organisation_id = Input::get('organisation_id');
 			$invoice->type = Input::get('type');
 			$invoice->days = $days;
+            $invoice->date_invoice = Input::get('year').'-'.Input::get('month').'-'.Input::get('day');
 			$invoice->number = Invoice::next_invoice_number(Input::get('type'), $days);
 
 			if ($invoice->save()) {
