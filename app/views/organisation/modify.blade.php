@@ -16,8 +16,8 @@
         <p>{{ Form::text('zipcode') }}</p>
         {{ Form::label('city', 'Ville') }}
         <p>{{ Form::text('city') }}</p>
-        {{ Form::label('country', 'Pays') }}
-        <p>{{ Form::text('country') }}</p>
+        {{ Form::label('country_id', 'Pays') }}
+        <p>{{ Form::select('country_id', Country::Select()) }}</p>
         {{ Form::label('tva_number', 'TVA') }}
         <p>{{ Form::text('tva_number') }}</p>
 		<p>{{ Form::submit('Modifier') }}</p>

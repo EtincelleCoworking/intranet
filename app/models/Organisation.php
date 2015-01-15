@@ -25,6 +25,14 @@ class Organisation extends Eloquent
 		return $this->belongsToMany('User', 'organisation_user', 'organisation_id', 'user_id');
 	}
 
+    /**
+     * Relation BelongsTo (Organisation belongs to country)
+     */
+    public function country()
+    {
+        return $this->belongsTo('Country');
+    }
+
 	/**
 	 * Rules
 	 */

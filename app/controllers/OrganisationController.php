@@ -48,7 +48,7 @@ class OrganisationController extends BaseController
             $organisation->address = Input::get('address');
             $organisation->zipcode = Input::get('zipcode');
             $organisation->city = Input::get('city');
-            $organisation->country = Input::get('country');
+            $organisation->country_id = Input::get('country_id');
 			$organisation->tva_number = Input::get('tva_number');
 
 			if ($organisation->save()) {

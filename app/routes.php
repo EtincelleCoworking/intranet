@@ -48,6 +48,12 @@ Route::group(['before' => 'auth'], function() {
 	Route::post('/organisation/modify/{id}', array('as' => 'organisation_modify_check', 'uses' => 'OrganisationController@modify_check'))->where(array('id' => '[0-9]+'));
 	Route::post('/organisation/{id}/add/user', array('as' => 'organisation_add_user', 'uses' => 'OrganisationController@add_user'))->where(array('id' => '[0-9]+'));
 	Route::delete('/organisation/{organisation}/delete/user/{id}', array('as' => 'organisation_delete_user', 'uses' => 'OrganisationController@delete_user'))->where(array('organisation' => '[0-9]+', 'id' => '[0-9]+'));
+
+    Route::get('/countries', array('as' => 'country_list', 'uses' => 'CountryController@liste'));
+    Route::get('/country/add', array('as' => 'country_add', 'uses' => 'CountryController@add'));
+    Route::post('/country/add', array('as' => 'country_add_check', 'uses' => 'CountryController@add_check'));
+    Route::get('/country/modify/{id}', array('as' => 'country_modify', 'uses' => 'CountryController@modify'))->where(array('id' => '[0-9]+'));
+    Route::post('/country/modify/{id}', array('as' => 'country_modify_check', 'uses' => 'CountryController@modify_check'))->where(array('id' => '[0-9]+'));
 });
 
 // JSON
