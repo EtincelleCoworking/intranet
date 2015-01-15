@@ -21,7 +21,6 @@ class CreateInvoicesItemsTable extends Migration {
 			$table->integer('invoice_id')->unsigned();
 			$table->foreign('invoice_id')->references('id')->on('invoices');
 			$table->integer('vat_types_id')->unsigned();
-			$table->foreign('vat_types_id')->references('id')->on('vat_types');
 
 			$table->timestamps();
 		});
