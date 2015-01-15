@@ -4,7 +4,7 @@
 */
 class Invoice extends Eloquent
 {
-	
+
 	/**
 	 * The database table used by the model.
 	 *
@@ -49,13 +49,13 @@ class Invoice extends Eloquent
 	 */
 	public function scopeTotalInvoice($query, $items) {
 		$total = 0;
-		
+
 		if ($items) {
 			foreach ($items as $key => $value) {
 				$total += $value->amount;
 			}
 		}
-		
+
 		return sprintf('%0.2f', $total);
 	}
 
@@ -76,7 +76,7 @@ class Invoice extends Eloquent
 	 * Rules
 	 */
 	public static $rules = array(
-		'user_id' => 'required|min:1'
+		'date_invoice' => 'required|min:1'
 	);
 
 	/**

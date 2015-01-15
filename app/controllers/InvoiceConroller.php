@@ -30,7 +30,9 @@ class InvoiceController extends BaseController
 			return Redirect::route('invoice_list')->with('mError', 'Cette facture est introuvable !');
 		}
 
-		$this->layout->content = View::make('invoice.modify', array('invoice' => $invoice));
+        $date_explode = explode('-', $invoice->date_invoice);
+
+		$this->layout->content = View::make('invoice.modify', array('invoice' => $invoice, 'date_explode' => $date_explode));
 	}
 
 	/**
@@ -43,9 +45,16 @@ class InvoiceController extends BaseController
 			return Redirect::route('invoice_list')->with('mError', 'Cette facture est introuvable !');
 		}
 
+        Input::merge(array('date_invoice' => Input::get('year').'-'.Input::get('month').'-'.Input::get('day')));
 		$validator = Validator::make(Input::all(), Invoice::$rules);
 		if (!$validator->fails()) {
+            $invoice->date_invoice = Input::get('year').'-'.Input::get('month').'-'.Input::get('day');
 
+            if ($invoice->save()) {
+                return Redirect::route('invoice_modify', $invoice->id)->with('mSuccess', 'La facture a bien été modifiée');
+            } else {
+                return Redirect::route('invoice_modify', $invoice->id)->with('mError', 'Il y a des erreurs')->withErrors($validator->messages())->withInput();
+            }
 		} else {
 			return Redirect::route('invoice_modify', $invoice->id)->with('mError', 'Il y a des erreurs')->withErrors($validator->messages())->withInput();
 		}
@@ -143,7 +152,7 @@ class InvoiceController extends BaseController
                                     '.$invoice->organisation->name.'<br />
                                     '.$invoice->organisation->address.'<br />
                                     '.$invoice->organisation->zipcode.' '.$invoice->organisation->city.'<br />
-                                    '.$invoice->organisation->country.'
+                                    '.$invoice->organisation->country->name.'
                                 </div>
                             </td>
                         </tr>

@@ -23,6 +23,17 @@
 	<p>Organisme : {{ $invoice->organisation->name }}</p>
     <p>Client : {{ $invoice->user->fullname }}</p>
 
+    {{ Form::model($invoice, array('route' => array('invoice_modify', $invoice->id))) }}
+        {{ Form::hidden('date_invoice', $invoice->date_invoice) }}
+        {{ Form::label('', 'Date de facturation') }}
+        <p>
+            {{ form_years('year', $date_explode[0]) }}
+            {{ form_months('month', $date_explode[1]) }}
+            {{ form_days('day', $date_explode[2]) }}
+        </p>
+        <p>{{ Form::submit('Modifier') }}</p>
+    {{ Form::close() }}
+
 	<h2>Lignes de la facture</h2>
  	{{ Form::model($invoice->items, array('route' => array('invoice_item_modify', $invoice->id), 'autocomplete' => 'off')) }}
     <table class="table table-striped table-hover">
