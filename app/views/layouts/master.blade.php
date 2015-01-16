@@ -80,6 +80,7 @@
             </div> <!-- /.container -->
         </header>
 
+        @if (Auth::user())
         <div class="mainnav">
             <div class="container">
                 <a class="mainnav-toggle" data-toggle="collapse" data-target=".mainnav-collapse">
@@ -215,6 +216,8 @@
                 </nav>
             </div>
         </div>
+        @endif
+
         <div class="content">
     		<div class="container">
     			@if (Session::has('mSuccess'))

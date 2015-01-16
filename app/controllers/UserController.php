@@ -49,7 +49,7 @@ class UserController extends BaseController
 	public function dashboard()
 	{
 		if (!Auth::user()) {
-			return Redirect::route('user_login')->with('mInfo', 'Merci de bien vouloir vous connecter');
+			return Redirect::route('user_login');
 		}
 
 		$this->layout->content = View::make('user.dashboard');
