@@ -9,7 +9,7 @@
 
 	{{ Form::open(array('route' => 'country_add')) }}
         {{ Form::label('name', 'Nom') }}
-        <p>{{ Form::text('name') }}</p>
-		<p>{{ Form::submit('Ajouter') }}</p>
+        <p>{{ Form::text('name', null, array('class' => 'form-control')) }}</p>
+		<p>{{ Form::submit('Ajouter', array('class' => 'btn btn-success')) }}</p>
 	{{ Form::close() }}
 @stop

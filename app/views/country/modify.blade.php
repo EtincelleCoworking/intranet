@@ -9,7 +9,7 @@
 
 	{{ Form::model($country, array('route' => array('country_modify', $country->id))) }}
 		{{ Form::label('name', 'Nom') }}
-        <p>{{ Form::text('name') }}</p>
-		<p>{{ Form::submit('Modifier') }}</p>
+        <p>{{ Form::text('name', null, array('class' => 'form-control')) }}</p>
+        <p>{{ Form::submit('Modifier', array('class' => 'btn btn-success')) }}</p>
 	{{ Form::close() }}
 @stop

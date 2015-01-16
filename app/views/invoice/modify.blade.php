@@ -27,17 +27,25 @@
         {{ Form::hidden('date_invoice', $invoice->date_invoice) }}
         {{ Form::label('', 'Date de facturation') }}
         <p>
-            {{ form_years('year', $date_explode[0]) }}
-            {{ form_months('month', $date_explode[1]) }}
-            {{ form_days('day', $date_explode[2]) }}
+        <div class="row">
+            <div class="col-md-4">
+                <div class="col-md-4">{{ form_years('year', $date_explode[0]) }}</div>
+                <div class="col-md-4">{{ form_months('month', $date_explode[1]) }}</div>
+                <div class="col-md-4">{{ form_days('day', $date_explode[2]) }}</div>
+            </div>
+        </div>
         </p>
         {{ Form::label('', 'Date d\'expiration') }}
         <p>
-            {{ form_years('dead_year', $dead_explode[0]) }}
-            {{ form_months('dead_month', $dead_explode[1]) }}
-            {{ form_days('dead_day', $dead_explode[2]) }}
+            <div class="row">
+                <div class="col-md-4">
+                    <div class="col-md-4">{{ form_years('dead_year', $dead_explode[0]) }}</div>
+                    <div class="col-md-4">{{ form_months('dead_month', $dead_explode[1]) }}</div>
+                    <div class="col-md-4">{{ form_days('dead_day', $dead_explode[2]) }}</div>
+                </div>
+            </div>
         </p>
-        <p>{{ Form::submit('Modifier') }}</p>
+        <p>{{ Form::submit('Modifier', array('class' => 'btn btn-success')) }}</p>
     {{ Form::close() }}
 
 	<h2>Lignes de la facture</h2>
@@ -55,24 +63,24 @@
         <tbody>
             @foreach ($invoice->items as $item)
             <tr>
-                <td>{{ Form::select('ressource_id['.$item->id.']', Ressource::SelectAll(), $item->ressource_id) }}</td>
-                <td>{{ Form::textarea('text['.$item->id.']', $item->text, array('rows' => 4)) }}</td>
-                <td>{{ Form::text('amount['.$item->id.']', $item->amount) }}</td>
-                <td>{{ Form::select('vat_types_id['.$item->id.']', VatType::SelectAll(), $item->vat->id) }}</td>
+                <td>{{ Form::select('ressource_id['.$item->id.']', Ressource::SelectAll(), $item->ressource_id, array('class' => 'form-control')) }}</td>
+                <td>{{ Form::textarea('text['.$item->id.']', $item->text, array('rows' => 4, 'class' => 'form-control')) }}</td>
+                <td>{{ Form::text('amount['.$item->id.']', $item->amount, array('class' => 'form-control')) }}</td>
+                <td>{{ Form::select('vat_types_id['.$item->id.']', VatType::SelectAll(), $item->vat->id, array('class' => 'form-control')) }}</td>
                 <td><a href="{{ URL::route('invoice_item_delete', array($invoice->id, $item->id)) }}" data-method="delete" data-confirm="Etes-vous certain de vouloir retirer cette ligne ?" rel="nofollow">Retirer</a</td>
             </tr>
             @endforeach
         </tbody>
         <tfoot>
             <tr>
-                <td>{{ Form::select('ressource_id[0]', Ressource::SelectAll()) }}</td>
-                <td>{{ Form::textarea('text[0]', null, array('rows' => 4, 'placeholder' => 'Nouvelle ligne')) }}</td>
-                <td>{{ Form::text('amount[0]') }}</td>
-                <td>{{ Form::select('vat_types_id[0]', VatType::SelectAll()) }}</td>
+                <td>{{ Form::select('ressource_id[0]', Ressource::SelectAll(), null, array('class' => 'form-control')) }}</td>
+                <td>{{ Form::textarea('text[0]', null, array('rows' => 4, 'placeholder' => 'Nouvelle ligne', 'class' => 'form-control')) }}</td>
+                <td>{{ Form::text('amount[0]', null, array('class' => 'form-control')) }}</td>
+                <td>{{ Form::select('vat_types_id[0]', VatType::SelectAll(), null, array('class' => 'form-control')) }}</td>
             </tr>
         </tfoot>
     </table>
-	{{ Form::submit('Modifier') }}
+	{{ Form::submit('Modifier', array('class' => 'btn btn-info')) }}
 	{{ Form::close() }}
 
     @if ($invoice->type == 'D')

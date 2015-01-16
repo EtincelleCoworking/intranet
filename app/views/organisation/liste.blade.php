@@ -1,12 +1,12 @@
 @extends('layouts.master')
 
 @section('meta_title')
-	Liste des organismes
+	Liste des organisations
 @stop
 
 @section('content')
-	<h1>Liste des organismes</h1>
-	
+	<h1>Liste des organisations</h1>
+
 	<table class="table table-striped table-hover">
 		<thead>
 			<tr>

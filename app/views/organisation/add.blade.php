@@ -1,25 +1,25 @@
 @extends('layouts.master')
 
 @section('meta_title')
-	Ajout d'un organisme
+	Ajout d'une organisation
 @stop
 
 @section('content')
-	<h1>Nouvel organisme</h1>
+	<h1>Nouvelle organisation</h1>
 
 	{{ Form::open(array('route' => 'organisation_add')) }}
         {{ Form::label('name', 'Nom') }}
-        <p>{{ Form::text('name') }}</p>
+        <p>{{ Form::text('name', null, array('class' => 'form-control')) }}</p>
         {{ Form::label('address', 'Adresse') }}
-        <p>{{ Form::textarea('address') }}</p>
+        <p>{{ Form::textarea('address', null, array('class' => 'form-control')) }}</p>
         {{ Form::label('zipcode', 'Code postal') }}
-        <p>{{ Form::text('zipcode') }}</p>
+        <p>{{ Form::text('zipcode', null, array('class' => 'form-control')) }}</p>
         {{ Form::label('city', 'Ville') }}
-        <p>{{ Form::text('city') }}</p>
+        <p>{{ Form::text('city', null, array('class' => 'form-control')) }}</p>
         {{ Form::label('country_id', 'Pays') }}
-        <p>{{ Form::select('country_id', Country::Select()) }}</p>
+        <p>{{ Form::select('country_id', Country::Select(), null, array('class' => 'form-control')) }}</p>
         {{ Form::label('tva_number', 'TVA') }}
-		<p>{{ Form::text('tva_number') }}</p>
-		<p>{{ Form::submit('Ajouter') }}</p>
+		<p>{{ Form::text('tva_number', null, array('class' => 'form-control')) }}</p>
+		<p>{{ Form::submit('Ajouter', array('class' => 'btn btn-success')) }}</p>
 	{{ Form::close() }}
 @stop

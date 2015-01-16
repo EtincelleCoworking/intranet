@@ -1,26 +1,26 @@
 @extends('layouts.master')
 
 @section('meta_title')
-	Modification de l'organisme #{{ $organisation->id }}
+	Modification de l'organisation #{{ $organisation->id }}
 @stop
 
 @section('content')
-	<h1>Modifier un organisme</h1>
+	<h1>Modifier une organisation</h1>
 
 	{{ Form::model($organisation, array('route' => array('organisation_modify', $organisation->id))) }}
 		{{ Form::label('name', 'Nom') }}
-        <p>{{ Form::text('name') }}</p>
+        <p>{{ Form::text('name', null, array('class' => 'form-control')) }}</p>
         {{ Form::label('address', 'Adresse') }}
-        <p>{{ Form::textarea('address') }}</p>
+        <p>{{ Form::textarea('address', null, array('class' => 'form-control')) }}</p>
         {{ Form::label('zipcode', 'Code postal') }}
-        <p>{{ Form::text('zipcode') }}</p>
+        <p>{{ Form::text('zipcode', null, array('class' => 'form-control')) }}</p>
         {{ Form::label('city', 'Ville') }}
-        <p>{{ Form::text('city') }}</p>
+        <p>{{ Form::text('city', null, array('class' => 'form-control')) }}</p>
         {{ Form::label('country_id', 'Pays') }}
-        <p>{{ Form::select('country_id', Country::Select()) }}</p>
+        <p>{{ Form::select('country_id', Country::Select(), null, array('class' => 'form-control')) }}</p>
         {{ Form::label('tva_number', 'TVA') }}
-        <p>{{ Form::text('tva_number') }}</p>
-		<p>{{ Form::submit('Modifier') }}</p>
+        <p>{{ Form::text('tva_number', null, array('class' => 'form-control')) }}</p>
+		<p>{{ Form::submit('Modifier', array('class' => 'btn btn-success')) }}</p>
 	{{ Form::close() }}
 
 	<h2>Liste des membres</h2>
@@ -52,8 +52,8 @@
 		<tfoot>
 			<tr>
 				<td></td>
-				<td>{{ Form::select('user_id', User::SelectNotInOrganisation($organisation->id, 'Sélectionnez un utilisateur')) }}</td>
-				<td>{{ Form::submit('Ajouter') }}</td>
+				<td>{{ Form::select('user_id', User::SelectNotInOrganisation($organisation->id, 'Sélectionnez un utilisateur'), null, array('class' => 'form-control')) }}</td>
+				<td>{{ Form::submit('Ajouter', array('class' => 'btn btn-info')) }}</td>
 			</tr>
 		</tfoot>
 	</table>
