@@ -46,4 +46,19 @@ class Organisation extends Eloquent
 	public static $rulesAdd = array(
 		'name' => 'required|min:1|unique:organisations'
 	);
+
+    /**
+     * Get list of organisations where user is not in
+     */
+    public function scopeSelectNotInOrganisation($query, $user, $title = "Select")
+    {
+        $ids = OrganisationUser::where('user_id', $user)->lists('organisation_id');
+        $selectVals[''] = $title;
+        if ($ids) {
+            $selectVals += $this->whereNotIn('id', $ids)->lists('name', 'id');
+        } else {
+            $selectVals += $this->lists('name', 'id');
+        }
+        return $selectVals;
+    }
 }

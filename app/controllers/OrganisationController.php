@@ -117,6 +117,30 @@ class OrganisationController extends BaseController
 		}
 	}
 
+    /**
+     * User add
+     */
+    public function user_add($id)
+    {
+        if (Input::get('organisation_id')) {
+            if (!is_array(OrganisationUser::where('user_id', $id)->where('organisation_id', Input::get('organisation_id'))->get())) {
+                $add = new OrganisationUser;
+                $add->user_id = $id;
+                $add->organisation_id = Input::get('organisation_id');
+
+                if ($add->save()) {
+                    return Redirect::route('user_modify', $id)->with('mSuccess', 'Cet utilisateur a bien été ajouté dans l\'organisme');
+                } else {
+                    return Redirect::route('user_modify', $id)->with('mError', 'Il y a des erreurs')->withErrors('Impossible d\'ajouter cet utilisateur dans l\'organisme')->withInput();
+                }
+            } else {
+                return Redirect::route('user_modify', $id)->with('mError', 'Il y a des erreurs')->withErrors('Cet utilisateur est déjà présent dans l\'organisme')->withInput();
+            }
+        } else {
+            return Redirect::route('user_modify', $id)->with('mError', 'Il y a des erreurs')->withErrors('Merci de renseigner un utilisateur')->withInput();
+        }
+    }
+
 	/**
 	 * Delete user
 	 */

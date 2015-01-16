@@ -147,7 +147,7 @@ class UserController extends BaseController
 	/**
 	 * User Profile
 	 */
-	public function profile()
+	public function profile($id)
 	{
 		# code...
 	}
