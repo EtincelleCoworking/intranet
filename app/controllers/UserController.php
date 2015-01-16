@@ -149,7 +149,12 @@ class UserController extends BaseController
 	 */
 	public function profile($id)
 	{
-		# code...
+		$user = User::find($id);
+        if (!$user) {
+            return Redirect::route('user_list')->with('mError', 'Cet utilisateur est introuvable !');
+        }
+
+        $this->layout->content = View::make('user.profile', array('user' => $user));
 	}
 
 	/**
