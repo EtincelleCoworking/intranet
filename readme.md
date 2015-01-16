@@ -4,7 +4,7 @@
 ----
 ##### 1) Clone the Repository
 
-    git clone http://github.com/brunogaspar/laravel4-starter-kit your-folder
+    git clone https://github.com/EtincelleCoworking/intranet.git your-folder
 
 ##### 2) Install the Dependencies via Composer
 
