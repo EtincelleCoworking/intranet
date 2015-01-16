@@ -31,8 +31,9 @@ class InvoiceController extends BaseController
 		}
 
         $date_explode = explode('-', $invoice->date_invoice);
+        $dead_explode = explode('-', $invoice->deadline);
 
-		$this->layout->content = View::make('invoice.modify', array('invoice' => $invoice, 'date_explode' => $date_explode));
+		$this->layout->content = View::make('invoice.modify', array('invoice' => $invoice, 'date_explode' => $date_explode, 'dead_explode' => $dead_explode));
 	}
 
 	/**
@@ -49,6 +50,7 @@ class InvoiceController extends BaseController
 		$validator = Validator::make(Input::all(), Invoice::$rules);
 		if (!$validator->fails()) {
             $invoice->date_invoice = Input::get('year').'-'.Input::get('month').'-'.Input::get('day');
+            $invoice->deadline = Input::get('dead_year').'-'.Input::get('dead_month').'-'.Input::get('dead_day');
 
             if ($invoice->save()) {
                 return Redirect::route('invoice_modify', $invoice->id)->with('mSuccess', 'La facture a bien été modifiée');
@@ -85,6 +87,10 @@ class InvoiceController extends BaseController
 			$invoice->days = $days;
             $invoice->date_invoice = Input::get('year').'-'.Input::get('month').'-'.Input::get('day');
 			$invoice->number = Invoice::next_invoice_number(Input::get('type'), $days);
+
+            $date = new DateTime($invoice->date_invoice);
+            $date->modify('+30 days');
+            $invoice->deadline = $date->format('Y-m-d');
 
 			if ($invoice->save()) {
 				return Redirect::route('invoice_modify', $invoice->id)->with('mSuccess', 'La facture a bien été ajoutée');
@@ -146,7 +152,7 @@ class InvoiceController extends BaseController
                                 '.$_ENV['organisation_status'].' au capital de '.$_ENV['organisation_capital'].'
                             </td>
                             <td stle="width:50%;" valign="top">
-                                <div style="border-radius: 6px; -moz-border-radius: 6px; background-color: #757978; vertical-align: middle; text-align: center; width: 205px; height: 20px; padding-top:4px; margin-left:130px;">Facture en € n° '.$invoice->ident.'</div>
+                                <div style="border-radius: 6px; -moz-border-radius: 6px; background-color: #757978; vertical-align: middle; text-align: center; width: 205px; height: 20px; padding-top:4px; margin-left:130px;">'.(($invoice->type == 'F') ? 'Facture' : 'Devis').' en € n° '.$invoice->ident.'</div>
                                 <div style="margin-top:5px; margin-left:130px;">Le '.date('d/m/Y', strtotime($invoice->date_invoice)).'</div>
                                 <div style="margin-left:130px; margin-top:10px;">
                                     '.$invoice->organisation->name.'<br />
@@ -254,6 +260,12 @@ class InvoiceController extends BaseController
                                         </tbody>
                                     </table>
                                 </div>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td colspan="2" align="center">
+                                '.(($invoice->type == 'F') ? 'Cette facture est payable avant le ' : 'Ce devis est valide jusqu\'au ').'
+                                '.date('d/m/Y', strtotime($invoice->deadline)).'
                             </td>
                         </tr>
                     </tbody>

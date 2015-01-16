@@ -31,6 +31,12 @@
             {{ form_months('month', $date_explode[1]) }}
             {{ form_days('day', $date_explode[2]) }}
         </p>
+        {{ Form::label('', 'Date d\'expiration') }}
+        <p>
+            {{ form_years('dead_year', $dead_explode[0]) }}
+            {{ form_months('dead_month', $dead_explode[1]) }}
+            {{ form_days('dead_day', $dead_explode[2]) }}
+        </p>
         <p>{{ Form::submit('Modifier') }}</p>
     {{ Form::close() }}
 
