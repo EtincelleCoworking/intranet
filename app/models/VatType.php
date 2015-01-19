@@ -20,11 +20,18 @@ class VatType extends Eloquent
 		return $this->belongsTo('InvoiceItem');
 	}
 
+    /**
+     * Rules
+     */
+    public static $rules = array(
+        'value' => 'required|min:1'
+    );
+
 	/**
 	 * Rules Add
 	 */
 	public static $rulesAdd = array(
-		'user_id' => 'required|min:1'
+		'value' => 'required|min:1'
 	);
 
     /**

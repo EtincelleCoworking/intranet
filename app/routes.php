@@ -59,6 +59,12 @@ Route::group(['before' => 'superadmin'], function() {
     Route::post('/country/add', array('as' => 'country_add_check', 'uses' => 'CountryController@add_check'));
     Route::get('/country/modify/{id}', array('as' => 'country_modify', 'uses' => 'CountryController@modify'))->where(array('id' => '[0-9]+'));
     Route::post('/country/modify/{id}', array('as' => 'country_modify_check', 'uses' => 'CountryController@modify_check'))->where(array('id' => '[0-9]+'));
+
+    Route::get('/vats', array('as' => 'vat_list', 'uses' => 'VatTypeController@liste'));
+    Route::get('/vat/add', array('as' => 'vat_add', 'uses' => 'VatTypeController@add'));
+    Route::post('/vat/add', array('as' => 'vat_add_check', 'uses' => 'VatTypeController@add_check'));
+    Route::get('/vat/modify/{id}', array('as' => 'vat_modify', 'uses' => 'VatTypeController@modify'))->where(array('id' => '[0-9]+'));
+    Route::post('/vat/modify/{id}', array('as' => 'vat_modify_check', 'uses' => 'VatTypeController@modify_check'))->where(array('id' => '[0-9]+'));
 });
 
 // JSON

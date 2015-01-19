@@ -127,6 +127,27 @@
                                 </li>
                             </ul>
                         </li>
+                       <li class="dropdown-submenu">
+                            <a tabindex="-1" href="{{ URL::route('vat_list') }}">
+                                <i class="fa fa-gavel"></i>
+                                &nbsp;&nbsp;TVA
+                            </a>
+
+                            <ul class="dropdown-menu">
+                                <li>
+                                    <a href="{{ URL::route('vat_list') }}">
+                                        <i class="fa fa-list"></i>
+                                        &nbsp;&nbsp;Liste
+                                    </a>
+                                </li>
+                                <li>
+                                    <a href="{{ URL::route('vat_add') }}">
+                                        <i class="fa fa-plus"></i>
+                                        &nbsp;&nbsp;Ajouter une TVA
+                                    </a>
+                                </li>
+                            </ul>
+                        </li>
                     </ul>
                 </li>
             </ul>
