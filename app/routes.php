@@ -10,7 +10,6 @@
 | and give it the Closure to execute when that URI is requested.
 |
 */
-
 Route::get('/', array('as' => 'dashboard', 'uses' => 'UserController@dashboard'));
 
 Route::get('/login', array('as' => 'user_login', 'uses' => 'UserController@login'));
@@ -18,8 +17,12 @@ Route::post('/login_check', array('before' => 'csrf', 'as' => 'user_login_check'
 Route::get('/logout', array('as' => 'user_logout', 'uses' => 'UserController@logout'));
 Route::controller('password', 'RemindersController');
 
-Route::group(['before' => 'auth'], function() {
-	Route::get('/profile/{id}', array('as' => 'user_profile', 'uses' => 'UserController@profile'))->where(array('id' => '[0-9]+'));
+Route::group(['before' => 'member'], function() {
+    Route::get('/profile/{id}', array('as' => 'user_profile', 'uses' => 'UserController@profile'))->where(array('id' => '[0-9]+'));
+    Route::get('/users/directory', array('as' => 'user_directory', 'uses' => 'UserController@directory'));
+});
+
+Route::group(['before' => 'superadmin'], function() {
 	Route::get('/users', array('as' => 'user_list', 'uses' => 'UserController@liste'));
 	Route::get('/user/add', array('as' => 'user_add', 'uses' => 'UserController@add'));
 	Route::post('/user/add', array('as' => 'user_add_check', 'uses' => 'UserController@add_check'));

@@ -97,4 +97,24 @@ class User extends Eloquent implements UserInterface, RemindableInterface {
 		return $selectVals;
 	}
 
+    /**
+     * Get list of roles
+     */
+    public function scopeSelectRoles()
+    {
+        $selectVals = array(
+            'member' => 'Membre',
+            'superadmin' => 'SuperAdmin'
+        );
+        return $selectVals;
+    }
+
+    static public function getRoles($name) {
+        $roles = array(
+            'member' => array('member'),
+            'superadmin' => array('member', 'superadmin')
+        );
+
+        return in_array($name, $roles[Auth::user()->role]);
+    }
 }

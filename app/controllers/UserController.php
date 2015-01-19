@@ -104,6 +104,7 @@ class UserController extends BaseController
                 $user->is_member = Input::get('is_member');
                 $user->twitter = Input::get('twitter');
                 $user->website = Input::get('website');
+                $user->role = Input::get('role');
 
 				if ($user->save()) {
 					return Redirect::route('user_modify', $user->id)->with('mSuccess', 'Cet utilisateur a bien été modifié');
@@ -131,7 +132,7 @@ class UserController extends BaseController
 	{
 		$validator = Validator::make(Input::all(), User::$rulesAdd);
 		if (!$validator->fails()) {
-            Input::merge(array('password' => Hash::make(Input::get('password'))));
+            Input::merge(array('password' => Hash::make(Input::get('password')), 'role' => 'member'));
 			$user = new User(Input::all());
 
 			if ($user->save()) {
@@ -156,6 +157,16 @@ class UserController extends BaseController
 
         $this->layout->content = View::make('user.profile', array('user' => $user));
 	}
+
+    /**
+     * List of users
+     */
+    public function directory()
+    {
+        $users = User::paginate(15);
+
+        $this->layout->content = View::make('user.directory', array('users' => $users));
+    }
 
 	/**
 	 * Get organisations list of an user (JSON)

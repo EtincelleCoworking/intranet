@@ -30,6 +30,8 @@
                 <p>{{ Form::text('lastname', null, array('class' => 'form-control')) }}</p>
                 {{ Form::label('password', 'Mot de passe') }}
                 <p>{{ Form::password('password', array('class' => 'form-control')) }}</p>
+                {{ Form::label('role', 'Rôle (droits)') }}
+                <p>{{ Form::select('role', User::SelectRoles(), null, array('class' => 'form-control')) }}</p>
                 <div class="checkbox">
                     {{ Form::label('is_member', 'Il est membre') }}
                     {{ Form::checkbox('is_member', true) }}

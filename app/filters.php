@@ -48,6 +48,36 @@ Route::filter('auth', function()
 	}
 });
 
+Route::filter('member', function()
+{
+    if (Auth::guest())
+    {
+        return Redirect::guest('login');
+    }
+    else
+    {
+        if (!User::getRoles('member'))
+        {
+            return Redirect::guest('login');
+        }
+    }
+});
+
+Route::filter('superadmin', function()
+{
+    if (Auth::guest())
+    {
+        return Redirect::guest('login');
+    }
+    else
+    {
+        if (!User::getRoles('superadmin'))
+        {
+            return Redirect::guest('login');
+        }
+    }
+});
+
 
 Route::filter('auth.basic', function()
 {
