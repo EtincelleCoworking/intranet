@@ -18,5 +18,13 @@ return array(
     'organisation_siret'    =>  'xxxxxx',
     'organisation_tva'      =>  'xxxxxx',
     'organisation_status'   =>  'Status',
-    'organisation_capital'  =>  'xxxx€'
+    'organisation_capital'  =>  'xxxx€',
+
+    'mail_driver'       =>  'smtp',
+    'mail_host'         =>  'smtp.mydomain.fr',
+    'mail_address'      =>  'contact@mydomain.fr',
+    'mail_name'         =>  'MyDomain',
+    'mail_username'     =>  null,
+    'mail_password'     =>  null,
+    'mail_encryption'   =>  null,
 );

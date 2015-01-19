@@ -31,7 +31,7 @@
                 </div>
 
                 <div class="pull-right">
-                    <small><a href="#">Mot de passe oublié?</a></small>
+                    <small><a href="{{ action('RemindersController@getRemind') }}">Mot de passe oublié?</a></small>
                 </div>
             </div> <!-- /.form-group -->
 

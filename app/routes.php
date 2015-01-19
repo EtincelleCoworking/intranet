@@ -16,6 +16,7 @@ Route::get('/', array('as' => 'dashboard', 'uses' => 'UserController@dashboard')
 Route::get('/login', array('as' => 'user_login', 'uses' => 'UserController@login'));
 Route::post('/login_check', array('before' => 'csrf', 'as' => 'user_login_check', 'uses' => 'UserController@login_check'));
 Route::get('/logout', array('as' => 'user_logout', 'uses' => 'UserController@logout'));
+Route::controller('password', 'RemindersController');
 
 Route::group(['before' => 'auth'], function() {
 	Route::get('/profile/{id}', array('as' => 'user_profile', 'uses' => 'UserController@profile'))->where(array('id' => '[0-9]+'));
