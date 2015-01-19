@@ -27,6 +27,12 @@
 
                     <ul class="dropdown-menu" role="menu">
                         <li>
+                            <a href="{{ URL::route('user_directory') }}">
+                                <i class="fa fa-list"></i>
+                                &nbsp;&nbsp;Annuaire
+                            </a>
+                        </li>
+                        <li>
                             <a href="{{ URL::route('user_list') }}">
                                 <i class="fa fa-list"></i>
                                 &nbsp;&nbsp;Liste
