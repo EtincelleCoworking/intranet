@@ -15,7 +15,6 @@ class AddRessourceIdToInvoicesItems extends Migration {
 		Schema::table('invoices_items', function(Blueprint $table)
 		{
 			$table->integer('ressource_id')->unsigned()->nullable();
-            $table->foreign('ressource_id')->references('id')->on('ressources');
 		});
 	}
 

@@ -7,7 +7,7 @@
 	"require": {
 		"laravel/framework": "4.2.*",
 		"barryvdh/laravel-debugbar": "~1.8",
-		"thujohn/pdf": "~1.0"
+		"barryvdh/laravel-snappy": "0.1.x"
 	},
 	"autoload": {
 		"classmap": [

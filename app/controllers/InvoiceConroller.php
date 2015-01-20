@@ -132,13 +132,16 @@ class InvoiceController extends BaseController
             return Redirect::route('invoice_list')->with('mError', 'Cette facture est introuvable !');
         }
 
+        $snappy = App::make('snappy.pdf');
+
         $html='
         <html>
             <head>
                 <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/></head>
+                <title>'.$invoice->ident.'</title>
             </head>
             <body>
-                <table style="font-size:14px; width:100%">
+                <table style="font-size:12px; width:100%">
                     <tbody>
                         <tr>
                             <td style="width:50%">
@@ -152,8 +155,8 @@ class InvoiceController extends BaseController
                                 '.$_ENV['organisation_status'].' au capital de '.$_ENV['organisation_capital'].'
                             </td>
                             <td stle="width:50%;" valign="top">
-                                <div style="border-radius: 6px; -moz-border-radius: 6px; background-color: #757978; vertical-align: middle; text-align: center; width: 205px; height: 20px; padding-top:4px; margin-left:130px;">'.(($invoice->type == 'F') ? 'Facture' : 'Devis').' en € n° '.$invoice->ident.'</div>
-                                <div style="margin-top:5px; margin-left:130px;">Le '.date('d/m/Y', strtotime($invoice->date_invoice)).'</div>
+                                <div style="border:1px solid #666; border-radius: 6px; -moz-border-radius: 6px; background-color: #ccc; vertical-align: middle; text-align: center; width: 205px; height: 20px; padding-top:4px; margin-left:130px;">'.(($invoice->type == 'F') ? 'Facture' : 'Devis').' en € n° '.$invoice->ident.'</div>
+                                <div style="margin-top:5px; margin-left:130px; font-size:10px; text-align: right;">Le '.date('d/m/Y', strtotime($invoice->date_invoice)).'</div>
                                 <div style="margin-left:130px; margin-top:10px;">
                                     '.$invoice->organisation->name.'<br />
                                     '.$invoice->organisation->address.'<br />
@@ -165,12 +168,12 @@ class InvoiceController extends BaseController
                         <tr>
                             <td colspan="2">
                                 <div style="margin-top:20px">
-                                    <table cellpading="0" cellspacing="0" style="width:100%;" border="1">
+                                    <table cellpading="0" cellspacing="0" style="font-size:11px; width:100%; border:1px solid #666;">
                                         <thead>
                                             <tr>
-                                                <th style="width:500px">DESIGNATION</th>
-                                                <th>MONTANT HT</th>
-                                                <th>TVA</th>
+                                                <th style="width:500px;">DESIGNATION</th>
+                                                <th style="border-left:1px solid #666">MONTANT HT</th>
+                                                <th style="border-left:1px solid #666">TVA</th>
                                             </tr>
                                         </thead>
                                         <tbody>';
@@ -195,9 +198,9 @@ class InvoiceController extends BaseController
 
                                             $html .= '
                                             <tr valign="top">
-                                                <td>'.nl2br($item->text).'</td>
-                                                <td>'.sprintf('%0.2f', $item->amount).'€</td>
-                                                <td>'.$item->vat->id.'</td>
+                                                <td style="border-top:1px solid #666; padding:5px">'.nl2br($item->text).'</td>
+                                                <td style="border-top:1px solid #666; border-left:1px solid #666; text-align:right; padding:5px">'.sprintf('%0.2f', $item->amount).'€</td>
+                                                <td style="border-top:1px solid #666; border-left:1px solid #666; text-align:right; padding:5px">'.$item->vat->id.'</td>
                                             </tr>
                                             ';
                                         }
@@ -211,16 +214,16 @@ class InvoiceController extends BaseController
                             <td colspan="2">
                                 <div style="margin-top:10px;">
                                     <div>&nbsp;</div>
-                                    <table style="width:100%">
+                                    <table style="font-size:12px; width:100%">
                                         <tbody>
                                             <tr>
-                                                <td width="75%" valign="top">
-                                                    <table cellpading="0" cellspacing="0" style="width:98%;" border="1">
+                                                <td width="70%" valign="top">
+                                                    <table cellpading="0" cellspacing="0" style="font-size:11px; width:98%; border-radius: 6px; -moz-border-radius: 6px; border: 1px solid #666; padding:5px;">
                                                         <thead>
-                                                            <tr>
-                                                                <th colspan="2">BASES HT</th>
-                                                                <th>MT TVA</th>
-                                                                <th>% TVA</th>
+                                                            <tr style="text-align:left;">
+                                                                <th colspan="2" style="border-bottom:1px solid #666">BASES HT</th>
+                                                                <th style="border-bottom:1px solid #666">MT TVA</th>
+                                                                <th style="border-bottom:1px solid #666">% TVA</th>
                                                             </tr>
                                                         </thead>
                                                         <tbody>';
@@ -239,19 +242,19 @@ class InvoiceController extends BaseController
                                                     </table>
                                                 </td>
                                                 <td valign="top" style="text-align:left;">
-                                                    <table cellpading="0" cellspacing="0" style="width:100%;;" border="1">
+                                                    <table cellpading="0" cellspacing="0" style="font-size:11px; width:100%; border-radius: 6px; -moz-border-radius: 6px; border: 1px solid #666; padding:5px;">
                                                         <tbody>
                                                             <tr>
-                                                                <th style="text-align:left;">Total HT</th>
-                                                                <td>'.sprintf('%0.2f', $vat_total['ht']).'€</td>
+                                                                <th style="width: 60%; text-align:left; border-right:1px solid #666;">Total HT</th>
+                                                                <td style="padding-left:5px; text-align:right; border-bottom:1px dashed #666">'.sprintf('%0.2f', $vat_total['ht']).'€</td>
                                                             </tr>
                                                             <tr>
-                                                                <th style="text-align:left;">Montant TVA</th>
-                                                                <td>'.sprintf('%0.2f', $vat_total['vat']).'€</td>
+                                                                <th style="text-align:left; border-right:1px solid #666;">Montant TVA</th>
+                                                                <td style="padding-left:5px; text-align:right; border-bottom:1px dashed #666">'.sprintf('%0.2f', $vat_total['vat']).'€</td>
                                                             </tr>
                                                             <tr>
-                                                                <th style="text-align:left;">Total TTC</th>
-                                                                <td>'.sprintf('%0.2f', ($vat_total['ht'] + $vat_total['vat'])).'€</td>
+                                                                <th style="text-align:left; border-right:1px solid #666;">Total TTC</th>
+                                                                <td style="padding-left:5px; text-align:right;">'.sprintf('%0.2f', ($vat_total['ht'] + $vat_total['vat'])).'€</td>
                                                             </tr>
                                                         </tbody>
                                                     </table>
@@ -272,7 +275,9 @@ class InvoiceController extends BaseController
                 </table>
             </body>
         </html>';
-        //return PDF::load($html, 'A4', 'portrait')->download($invoice->ident);
-        return PDF::load($html, 'A4', 'portrait')->show();
+
+        $pdf = App::make('snappy.pdf.wrapper');
+        $pdf->loadHTML($html);
+        return $pdf->stream($invoice->ident.'.pdf');
     }
 }
