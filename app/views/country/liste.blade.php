@@ -12,7 +12,6 @@
 			<tr>
 				<th>#</th>
 				<th>Nom</th>
-				<th>Dernière modification</th>
 			</tr>
 		</thead>
 		<tbody>
@@ -22,7 +21,6 @@
 				<td>
 					<a href="{{ URL::route('country_modify', $country->id) }}">{{ $country->name }}</a>
 				</td>
-				<td>{{ $country->updated_at }}</td>
 			</tr>
 		@endforeach
 		</tbody>
