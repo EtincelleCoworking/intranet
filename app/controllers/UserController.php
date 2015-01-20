@@ -106,6 +106,15 @@ class UserController extends BaseController
                 $user->website = Input::get('website');
                 $user->role = Input::get('role');
 
+                $user->competence1_title = Input::get('competence1_title');
+                $user->competence1_value = Input::get('competence1_value');
+                $user->competence2_title = Input::get('competence2_title');
+                $user->competence2_value = Input::get('competence2_value');
+                $user->competence3_title = Input::get('competence3_title');
+                $user->competence3_value = Input::get('competence3_value');
+                $user->competence4_title = Input::get('competence4_title');
+                $user->competence4_value = Input::get('competence4_value');
+
 				if ($user->save()) {
 					return Redirect::route('user_modify', $user->id)->with('mSuccess', 'Cet utilisateur a bien été modifié');
 				} else {
@@ -189,6 +198,15 @@ class UserController extends BaseController
                 $user->bio_long = Input::get('bio_long');
                 $user->twitter = Input::get('twitter');
                 $user->website = Input::get('website');
+
+                $user->competence1_title = Input::get('competence1_title');
+                $user->competence1_value = Input::get('competence1_value');
+                $user->competence2_title = Input::get('competence2_title');
+                $user->competence2_value = Input::get('competence2_value');
+                $user->competence3_title = Input::get('competence3_title');
+                $user->competence3_value = Input::get('competence3_value');
+                $user->competence4_title = Input::get('competence4_title');
+                $user->competence4_value = Input::get('competence4_value');
 
                 if (Input::file('avatar')) {
                     $avatar = $user->id.'.'.Input::file('avatar')->guessClientExtension();

@@ -18,6 +18,9 @@
             <li role="presentation">
                 <a href="#socials" aria-controls="socials" role="tab" data-toggle="tab">Réseaux sociaux</a>
             </li>
+            <li role="presentation">
+                <a href="#competence" aria-controls="competence" role="tab" data-toggle="tab">Compétences</a>
+            </li>
         </ul>
 
         <div class="tab-content">
@@ -48,6 +51,60 @@
                 <p>{{ Form::text('twitter', null, array('class' => 'form-control')) }}</p>
                 {{ Form::label('website', 'Site internet') }}
                 <p>{{ Form::text('website', null, array('class' => 'form-control')) }}</p>
+            </div>
+            <div role="tabpanel" class="tab-pane" id="competence">
+                <div class="row">
+                    <div class="col-md-6">
+                        <div class="row">
+                            <div class="col-md-9">
+                                {{ Form::label('competence1_title', 'Compétence 1') }}
+                                <p>{{ Form::text('competence1_title', null, array('class' => 'form-control')) }}</p>
+                            </div>
+                            <div class="col-md-3">
+                                {{ Form::label('competence1_value', 'Valeur') }}
+                                <p>{{ Form::number('competence1_value', null, array('class' => 'form-control', 'min' => 0, 'max' => 100)) }}</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="row">
+                            <div class="col-md-9">
+                                {{ Form::label('competence2_title', 'Compétence 2') }}
+                                <p>{{ Form::text('competence2_title', null, array('class' => 'form-control')) }}</p>
+                            </div>
+                            <div class="col-md-3">
+                                {{ Form::label('competence2_value', 'Valeur') }}
+                                <p>{{ Form::number('competence2_value', null, array('class' => 'form-control', 'min' => 0, 'max' => 100)) }}</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-6">
+                        <div class="row">
+                            <div class="col-md-9">
+                                {{ Form::label('competence3_title', 'Compétence 3') }}
+                                <p>{{ Form::text('competence3_title', null, array('class' => 'form-control')) }}</p>
+                            </div>
+                            <div class="col-md-3">
+                                {{ Form::label('competence3_value', 'Valeur') }}
+                                <p>{{ Form::number('competence3_value', null, array('class' => 'form-control', 'min' => 0, 'max' => 100)) }}</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="row">
+                            <div class="col-md-9">
+                                {{ Form::label('competence4_title', 'Compétence 4') }}
+                                <p>{{ Form::text('competence4_title', null, array('class' => 'form-control')) }}</p>
+                            </div>
+                            <div class="col-md-3">
+                                {{ Form::label('competence4_value', 'Valeur') }}
+                                <p>{{ Form::number('competence4_value', null, array('class' => 'form-control', 'min' => 0, 'max' => 100)) }}</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
             </div>
         </div>
 
