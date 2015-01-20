@@ -159,6 +159,59 @@ class UserController extends BaseController
 	}
 
     /**
+     * Edit profile
+     */
+    public function edit()
+    {
+        $profile = User::find(Auth::user()->id);
+
+        $this->layout->content = View::make('user.edit', array('user' => $profile));
+    }
+
+    /**
+     * Edit user (form)
+     */
+    public function edit_check()
+    {
+        $user = User::find(Auth::user()->id);
+        $validator = Validator::make(Input::all(), User::$rules);
+        if (!$validator->fails()) {
+            // Vérifier que l'adresse email soit unique (peut-être à améliorer... directement dans l'entity ?)
+            $check = User::where('email', '=', $user->email)->where('id', '!=', $user->id)->first();
+            if (!$check) {
+                $user->email = Input::get('email');
+                $user->firstname = Input::get('firstname');
+                $user->lastname = Input::get('lastname');
+                if (Input::get('password')) {
+                    $user->password = Hash::make(Input::get('password'));
+                }
+                $user->bio_short = Input::get('bio_short');
+                $user->bio_long = Input::get('bio_long');
+                $user->twitter = Input::get('twitter');
+                $user->website = Input::get('website');
+
+                if (Input::file('avatar')) {
+                    $avatar = $user->id.'.'.Input::file('avatar')->guessClientExtension();
+                    if ($user->avatar) {
+                        unlink(public_path().'/uploads/avatars/'.$user->avatar);
+                    }
+                    if (Input::file('avatar')->move('uploads/avatars', $avatar)) {
+                        $user->avatar = $avatar;
+                    }
+                }
+
+                if ($user->save()) {
+                    return Redirect::route('user_profile', $user->id)->with('mSuccess', 'Votre profil a bien été modifié');
+                } else {
+                    return Redirect::route('user_edit')->with('mError', 'Impossible de modifier votre profil');
+                }
+            }
+        } else {
+            return Redirect::route('user_edit')->with('mError', 'Il y a des erreurs')->withErrors($validator->messages())->withInput();
+        }
+    }
+
+    /**
      * List of users
      */
     public function directory()

@@ -20,6 +20,8 @@ Route::controller('password', 'RemindersController');
 Route::group(['before' => 'member'], function() {
     Route::get('/profile/{id}', array('as' => 'user_profile', 'uses' => 'UserController@profile'))->where(array('id' => '[0-9]+'));
     Route::get('/users/directory', array('as' => 'user_directory', 'uses' => 'UserController@directory'));
+    Route::get('/profile/edit', array('as' => 'user_edit', 'uses' => 'UserController@edit'));
+    Route::post('/profile/edit', array('as' => 'user_edit', 'uses' => 'UserController@edit_check'));
 });
 
 Route::group(['before' => 'superadmin'], function() {

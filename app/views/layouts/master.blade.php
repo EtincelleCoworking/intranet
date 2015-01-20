@@ -54,7 +54,11 @@
                     <ul class="nav navbar-nav navbar-right">
                         <li class="dropdown navbar-profile">
                             <a class="dropdown-toggle" data-toggle="dropdown" href="javascript:;">
-                                {{ HTML::image('img/avatars/avatar-1-xs.jpg', Auth::user()->fullname, array('class' => 'navbar-profile-avatar')) }}
+                                @if (Auth::user()->avatar)
+                                    {{ HTML::image('uploads/avatars/'.Auth::user()->avatar, '', array('class' => 'navbar-profile-avatar')) }}
+                                @else
+                                    {{ HTML::image('img/avatars/avatar-1-xs.jpg', '', array('class' => 'navbar-profile-avatar')) }}
+                                @endif
                                 <span class="navbar-profile-label">{{ Auth::user()->fullname }} &nbsp;</span>
                                 <i class="fa fa-caret-down"></i>
                             </a>
