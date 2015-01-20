@@ -42,5 +42,6 @@
             </div> <!-- /.form-group -->
 
             {{ Form::close() }}
-    </div> <!-- /.account-body -->
+        </div> <!-- /.account-body -->
+    </div>
 @stop
