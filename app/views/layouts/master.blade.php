@@ -119,11 +119,13 @@
         </div>
     </div>
 
+    <!--
     <footer class="footer">
         <div class="container">
             <p class="pull-left">Etincelle Coworking</p>
         </div>
     </footer>
+    -->
 
     {{ HTML::script('js/libs/jquery-1.10.2.min.js') }}
     {{ HTML::script('js/libs/bootstrap.min.js') }}
