@@ -22,6 +22,11 @@
     <!-- Bootstrap CSS -->
     {{ HTML::style('css/bootstrap.min.css') }}
 
+    <!-- Jquery UI CSS -->
+    {{ HTML::style('css/jquery-ui.min.css') }}
+    {{ HTML::style('css/jquery-ui.structure.min.css') }}
+    {{ HTML::style('css/jquery-ui.theme.min.css') }}
+
     <!-- App CSS -->
     {{ HTML::style('css/mvpready-admin.css') }}
     {{ HTML::style('css/mvpready-flat.css') }}
@@ -128,6 +133,7 @@
     -->
 
     {{ HTML::script('js/libs/jquery-1.10.2.min.js') }}
+    {{ HTML::script('js/jquery-ui.min.js') }}
     {{ HTML::script('js/libs/bootstrap.min.js') }}
 
     <!--[if lt IE 9]>
