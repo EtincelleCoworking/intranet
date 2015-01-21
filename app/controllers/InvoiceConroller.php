@@ -255,8 +255,8 @@ class InvoiceController extends BaseController
                                                             $html .= '
                                                                 <tr>
                                                                     <td style="text-align:right">'.sprintf('%0.2f', $vat['taux']).'%</td>
-                                                                    <td style="text-align:right">'.sprintf('%0.2f', $vat['montant']).'€</td>
                                                                     <td style="text-align:right">'.sprintf('%0.2f', $vat['base']).'€</td>
+                                                                    <td style="text-align:right">'.sprintf('%0.2f', $vat['montant']).'€</td>
                                                                 </tr>
                                                             ';
                                                         }
