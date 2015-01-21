@@ -44,6 +44,22 @@ class Invoice extends Eloquent
 		return $this->type.$this->days.'-'.str_pad($this->number, 4, 0, STR_PAD_LEFT);
 	}
 
+    /**
+     * Days before deadline
+     */
+    public function getDaysDeadlineAttribute()
+    {
+        if ($this->deadline >= date('Y-m-d')) {
+            $date1 = new DateTime($this->deadline);
+            $date2 = new DateTime();
+            $diff = $date2->diff($date1);
+
+            return $diff->d;
+        } else {
+            return -1;
+        }
+    }
+
 	/**
 	 * Total amount
 	 */
