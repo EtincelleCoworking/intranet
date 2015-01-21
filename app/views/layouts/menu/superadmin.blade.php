@@ -6,10 +6,12 @@
         </a>
 
         <nav class="collapse mainnav-collapse" role="navigation">
+            <!--
             <form class="mainnav-form pull-right" role="search">
                 <input type="text" class="form-control input-md mainnav-search-query" placeholder="Search">
                 <button class="btn btn-sm mainnav-form-btn"><i class="fa fa-search"></i></button>
             </form>
+            -->
 
             <ul class="mainnav-menu">
                 <li class="{{ ((Request::is('/')) ? 'active' : '') }}">
