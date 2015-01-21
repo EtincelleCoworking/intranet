@@ -32,8 +32,13 @@ class InvoiceController extends BaseController
 
         $date_explode = explode('-', $invoice->date_invoice);
         $dead_explode = explode('-', $invoice->deadline);
+        if ($invoice->date_payment) {
+            $payment_explode = explode('-', $invoice->date_payment);
+        } else {
+            $payment_explode = array(date('Y'), date('m'), date('d'));
+        }
 
-		$this->layout->content = View::make('invoice.modify', array('invoice' => $invoice, 'date_explode' => $date_explode, 'dead_explode' => $dead_explode));
+		$this->layout->content = View::make('invoice.modify', array('invoice' => $invoice, 'date_explode' => $date_explode, 'dead_explode' => $dead_explode, 'payment_explode' => $payment_explode));
 	}
 
 	/**
@@ -51,6 +56,11 @@ class InvoiceController extends BaseController
 		if (!$validator->fails()) {
             $invoice->date_invoice = Input::get('year').'-'.Input::get('month').'-'.Input::get('day');
             $invoice->deadline = Input::get('dead_year').'-'.Input::get('dead_month').'-'.Input::get('dead_day');
+            if (Input::get('is_paid')) {
+                $invoice->date_payment = Input::get('payment_year').'-'.Input::get('payment_month').'-'.Input::get('payment_day');
+            } else {
+                $invoice->date_payment = null;
+            }
 
             if ($invoice->save()) {
                 return Redirect::route('invoice_modify', $invoice->id)->with('mSuccess', 'La facture a bien été modifiée');
@@ -172,8 +182,8 @@ class InvoiceController extends BaseController
                                         <thead>
                                             <tr>
                                                 <th style="width:500px;">DESIGNATION</th>
-                                                <th style="border-left:1px solid #666">MONTANT HT</th>
                                                 <th style="border-left:1px solid #666">TVA</th>
+                                                <th style="border-left:1px solid #666">MONTANT HT</th>
                                             </tr>
                                         </thead>
                                         <tbody>';
@@ -199,8 +209,8 @@ class InvoiceController extends BaseController
                                             $html .= '
                                             <tr valign="top">
                                                 <td style="border-top:1px solid #666; padding:5px">'.nl2br($item->text).'</td>
+                                                <td style="border-top:1px solid #666; border-left:1px solid #666; text-align:right; padding:5px">'.$item->vat->value.'%</td>
                                                 <td style="border-top:1px solid #666; border-left:1px solid #666; text-align:right; padding:5px">'.sprintf('%0.2f', $item->amount).'€</td>
-                                                <td style="border-top:1px solid #666; border-left:1px solid #666; text-align:right; padding:5px">'.$item->vat->id.'</td>
                                             </tr>
                                             ';
                                         }
@@ -212,34 +222,37 @@ class InvoiceController extends BaseController
                         </tr>
                         <tr>
                             <td colspan="2">
-                                <div style="margin-top:10px;">
+                                <div>
                                     <div>&nbsp;</div>
                                     <table style="font-size:12px; width:100%">
                                         <tbody>
                                             <tr>
-                                                <td width="70%" valign="top">
-                                                    <table cellpading="0" cellspacing="0" style="font-size:11px; width:98%; border-radius: 6px; -moz-border-radius: 6px; border: 1px solid #666; padding:5px;">
+                                                <td width="70%" valign="top">';
+                                                    if (count($vats) > 1) {
+        $html .= '
+                                                    <table cellpading="0" cellspacing="0" style="font-size:11px; width:60%; border-radius: 6px; -moz-border-radius: 6px; border: 1px solid #666; padding:5px;">
                                                         <thead>
-                                                            <tr style="text-align:left;">
-                                                                <th colspan="2" style="border-bottom:1px solid #666">BASES HT</th>
-                                                                <th style="border-bottom:1px solid #666">MT TVA</th>
+                                                            <tr>
                                                                 <th style="border-bottom:1px solid #666">% TVA</th>
+                                                                <th style="border-bottom:1px solid #666">Base HT</th>
+                                                                <th style="border-bottom:1px solid #666">TVA</th>
                                                             </tr>
                                                         </thead>
                                                         <tbody>';
-                                                        foreach ($vats as $k => $vat) {
+                                                        foreach ($vats as $vat) {
                                                             $html .= '
                                                                 <tr>
-                                                                    <td>'.$k.'</td>
-                                                                    <td>'.sprintf('%0.2f', $vat['base']).'€</td>
-                                                                    <td>'.sprintf('%0.2f', $vat['montant']).'€</td>
-                                                                    <td>'.sprintf('%0.2f', $vat['taux']).'%</td>
+                                                                    <td style="text-align:right">'.sprintf('%0.2f', $vat['taux']).'%</td>
+                                                                    <td style="text-align:right">'.sprintf('%0.2f', $vat['montant']).'€</td>
+                                                                    <td style="text-align:right">'.sprintf('%0.2f', $vat['base']).'€</td>
                                                                 </tr>
                                                             ';
                                                         }
         $html .= '
                                                         </tbody>
-                                                    </table>
+                                                    </table>';
+                                                    }
+        $html .= '
                                                 </td>
                                                 <td valign="top" style="text-align:left;">
                                                     <table cellpading="0" cellspacing="0" style="font-size:11px; width:100%; border-radius: 6px; -moz-border-radius: 6px; border: 1px solid #666; padding:5px;">
@@ -267,12 +280,64 @@ class InvoiceController extends BaseController
                         </tr>
                         <tr>
                             <td colspan="2" align="center">
-                                '.(($invoice->type == 'F') ? 'Cette facture est payable avant le ' : 'Ce devis est valide jusqu\'au ').'
-                                '.date('d/m/Y', strtotime($invoice->deadline)).'
+                                '.(($invoice->type == 'F') ? (($invoice->date_payment) ? 'Facture payée le '.date('d/m/Y', strtotime($invoice->date_payment)) : 'Cette facture est payable avant le '.date('d/m/Y', strtotime($invoice->deadline))) : 'Ce devis est valide jusqu\'au '.date('d/m/Y', strtotime($invoice->deadline))).'
                             </td>
                         </tr>
                     </tbody>
                 </table>
+                <div style="position:absolute; bottom:0; width:100%;">
+                    <table cellpading="0" cellspacing="0" style="width:100%">
+                        <tr>
+                            <td style="width:45%" valign="top">
+                                <table cellpading="0" cellspacing="0" style="width:98%; font-size:11px; border-radius: 6px; -moz-border-radius: 6px; border: 1px solid #666; padding:5px;">
+                                    <thead>
+                                        <tr>
+                                            <th colspan="4" style="text-transform:uppercase">Relevé d\'Identité Bancaire</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr style="font-size:10px;">
+                                            <th style="text-align:left">Banque</th>
+                                            <th style="text-align:left">Guichet</th>
+                                            <th style="text-align:left">N° de compte</th>
+                                            <th style="text-align:left">Clé</th>
+                                        </tr>
+                                        <tr style="font-size:10px;">
+                                            <td>10057</td>
+                                            <td>19053</td>
+                                            <td>00020074201</td>
+                                            <td>51</td>
+                                        </tr>
+                                        <tr style="font-size:10px;">
+                                            <th colspan="3" style="text-align:left">IBAN</th>
+                                            <th style="text-align:left">BIC</th>
+                                        </tr>
+                                        <tr style="font-size:10px;">
+                                            <td colspan="3">FR76 1005 7190 5300 0200 7420 151</td>
+                                            <td>CMCIFRPP</td>
+                                        </tr>
+                                        <tr style="font-size:10px;">
+                                            <th colspan="4">Domiciliation</th>
+                                        </tr>
+                                        <tr style="font-size:10px;">
+                                            <td colspan="4">CIC MONTAUBAN</td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </td>
+                            <td style="width:55%; font-size:8px;">
+                                <div style="width:95%">
+                                    <div style="font-weight:bold">En conformité de l’article L 441-6 du Code de commerce :</div>
+                                    <ul>
+                                        <li>Pas d’escompte pour paiement anticipé.</li>
+                                        <li>Tout règlement effectué après expiration de ce délai donnera lieu, à titre de pénalité de retard, à l\'application d’un intérêt égal à celui appliqué par la Banque Centrale Européenne à son opération de refinancement la plus récente, majoré de 10 points de pourcentage, ainsi qu\'à une indemnité forfaitaire pour frais de recouvrement d\'un montant de 40 Euros.</li>
+                                        <li>Les pénalités de retard sont exigibles sans qu’un rappel soit nécessaire.</li>
+                                    </ul>
+                                </div>
+                            </td>
+                        </tr>
+                    </table>
+                </div>
             </body>
         </html>';
 

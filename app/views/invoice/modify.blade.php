@@ -20,34 +20,50 @@
         @endif
         {{ $invoice->ident }}
     </h1>
-	<p>Organisme : {{ $invoice->organisation->name }}</p>
-    <p>Client : {{ $invoice->user->fullname }}</p>
 
     {{ Form::model($invoice, array('route' => array('invoice_modify', $invoice->id))) }}
         {{ Form::hidden('date_invoice', $invoice->date_invoice) }}
-        {{ Form::label('', 'Date de facturation') }}
-        <p>
         <div class="row">
-            <div class="col-md-4">
-                <div class="col-md-4">{{ form_years('year', $date_explode[0]) }}</div>
-                <div class="col-md-4">{{ form_months('month', $date_explode[1]) }}</div>
-                <div class="col-md-4">{{ form_days('day', $date_explode[2]) }}</div>
+            <div class="col-md-6">
+                <p>Organisme : {{ $invoice->organisation->name }}</p>
+                <p>Client : {{ $invoice->user->fullname }}</p>
             </div>
-        </div>
-        </p>
-        {{ Form::label('', 'Date d\'expiration') }}
-        <p>
-            <div class="row">
-                <div class="col-md-4">
+            <div class="col-md-6">
+                {{ Form::label('', 'Date de création') }}
+                <div class="row">
+                    <div class="col-md-4">{{ form_years('year', $date_explode[0]) }}</div>
+                    <div class="col-md-4">{{ form_months('month', $date_explode[1]) }}</div>
+                    <div class="col-md-4">{{ form_days('day', $date_explode[2]) }}</div>
+                </div>
+
+                {{ Form::label('', 'Date d\'expiration') }}
+                <div class="row">
                     <div class="col-md-4">{{ form_years('dead_year', $dead_explode[0]) }}</div>
                     <div class="col-md-4">{{ form_months('dead_month', $dead_explode[1]) }}</div>
                     <div class="col-md-4">{{ form_days('dead_day', $dead_explode[2]) }}</div>
                 </div>
+                <br>
+                <p>
+                    {{ Form::label('is_paid', 'Cochez pour entrer la date de paiement') }} {{ Form::checkbox('is_paid', true, (($invoice->date_payment) ? true : false), array('id' => 'isPaidCheck')) }}
+                </p>
+
+                <div class="row" id="showPaymentDate">
+                    <div class="col-md-12">{{ Form::label('', 'Date de paiement') }}</div>
+                    <div class="col-md-4">{{ form_years('payment_year', $payment_explode[0]) }}</div>
+                    <div class="col-md-4">{{ form_months('payment_month', $payment_explode[1]) }}</div>
+                    <div class="col-md-4">{{ form_days('payment_day', $payment_explode[2]) }}</div>
+                </div>
             </div>
-        </p>
-        <p>{{ Form::submit('Modifier', array('class' => 'btn btn-success')) }}</p>
+        </div>
+        <br>
+        <div class="row">
+            <div class="col-md-12" align="center">
+                {{ Form::submit('Modifier', array('class' => 'btn btn-success')) }}
+            </div>
+        </div>
     {{ Form::close() }}
 
+    <hr>
 	<h2>Lignes de la facture</h2>
  	{{ Form::model($invoice->items, array('route' => array('invoice_item_modify', $invoice->id), 'autocomplete' => 'off')) }}
     <table class="table table-striped table-hover">
@@ -86,4 +102,23 @@
     @if ($invoice->type == 'D')
     <a href="{{ URL::route('invoice_validate', $invoice->id) }}" data-method="get" data-confirm="Etes-vous certain de vouloir passer ce devis en facture ?" rel="nofollow">Valider</a>
     @endif
+@stop
+
+@section('javascript')
+<script type="text/javascript">
+    $().ready(function() {
+        function activPaid(e) {
+            if (e.is(':checked')) {
+                $('#showPaymentDate').show('slow');
+            } else {
+                $('#showPaymentDate').hide('slow');
+            }
+        }
+
+        activPaid($('#isPaidCheck'));
+        $('#isPaidCheck').on('change', function() {
+            activPaid($(this));
+        });
+    });
+</script>
 @stop
