@@ -52,7 +52,30 @@ class UserController extends BaseController
 			return Redirect::route('user_login');
 		}
 
-		$this->layout->content = View::make('user.dashboard');
+        $totalMonth = DB::table('invoices_items')->join('invoices', function($join)
+        {
+            $join->on('invoices_items.invoice_id', '=', 'invoices.id')
+                 ->where('invoices.type', '=', 'F')
+                 ->where('invoices.days', '=', date('Ym'));
+        })->select(DB::raw('SUM(amount) as total'))->groupBy('invoices.days')->first();
+
+        /* En travaux pour les stats annu.
+        $annualTotal = DB::table('invoices_items')->join('invoices', function($join)
+        {
+            $join->on('invoices_items.invoice_id', '=', 'invoices.id')
+                 ->where('invoices.type', '=', 'F')->where(DB::raw("LEFT(invoices.days, 4)"), '=', date('Y'));
+        })->select(DB::raw('SUM(amount) as total'), DB::raw('RIGHT(days, 2) as month'))->groupBy('invoices.days')->get();
+
+        $valsAnnual = '';
+        foreach ($annualTotal as $k => $annual) {
+            if ($k > 0) {
+                $valsAnnual .= ', ';
+            }
+            $valsAnnual .= $annual->total;
+        }
+        */
+
+		$this->layout->content = View::make('user.dashboard', array('totalMonth' => $totalMonth));
 	}
 
 	/**

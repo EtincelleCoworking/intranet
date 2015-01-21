@@ -60,6 +60,22 @@ class Invoice extends Eloquent
         }
     }
 
+    /**
+     * Total
+     */
+    public function getTotalAttribute()
+    {
+        $total = 0;
+
+        if ($this->items) {
+            foreach ($this->items as $key => $value) {
+                $total += $value->amount;
+            }
+        }
+
+        return sprintf('%0.2f', $total);
+    }
+
 	/**
 	 * Total amount
 	 */
