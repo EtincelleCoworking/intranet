@@ -51,13 +51,12 @@ class InvoiceController extends BaseController
 			return Redirect::route('invoice_list')->with('mError', 'Cette facture est introuvable !');
 		}
 
-        Input::merge(array('date_invoice' => Input::get('year').'-'.Input::get('month').'-'.Input::get('day')));
 		$validator = Validator::make(Input::all(), Invoice::$rules);
 		if (!$validator->fails()) {
-            $invoice->date_invoice = Input::get('year').'-'.Input::get('month').'-'.Input::get('day');
-            $invoice->deadline = Input::get('dead_year').'-'.Input::get('dead_month').'-'.Input::get('dead_day');
+            $invoice->date_invoice = Input::get('date_invoice');
+            $invoice->deadline = Input::get('deadline');
             if (Input::get('is_paid')) {
-                $invoice->date_payment = Input::get('payment_year').'-'.Input::get('payment_month').'-'.Input::get('payment_day');
+                $invoice->date_payment = Input::get('date_payment');
             } else {
                 $invoice->date_payment = null;
             }
@@ -88,14 +87,15 @@ class InvoiceController extends BaseController
 	{
 		$validator = Validator::make(Input::all(), Invoice::$rulesAdd);
 		if (!$validator->fails()) {
-			$days = Input::get('year').Input::get('month');
+            $date_explode = explode('-', Input::get('date_invoice'));
+			$days = $date_explode[0].$date_explode[1];
 
 			$invoice = new Invoice;
 			$invoice->user_id = Input::get('user_id');
 			$invoice->organisation_id = Input::get('organisation_id');
 			$invoice->type = Input::get('type');
 			$invoice->days = $days;
-            $invoice->date_invoice = Input::get('year').'-'.Input::get('month').'-'.Input::get('day');
+            $invoice->date_invoice = Input::get('date_invoice');
 			$invoice->number = Invoice::next_invoice_number(Input::get('type'), $days);
 
             $date = new DateTime($invoice->date_invoice);

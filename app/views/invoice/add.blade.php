@@ -16,23 +16,15 @@
 		<p>
 			{{ Form::select('type', array('F' => 'Facture', 'D' => 'Devis'), null, array('class' => 'form-control')) }}
 		</p>
-        {{ Form::label('', 'Date de facturation') }}
-		<p>
-            <div class="row">
-                <div class="col-md-4">
-                    <div class="col-md-4">{{ form_years('year', ((Input::old('year')) ? Input::old('year') : date('Y'))) }}</div>
-                    <div class="col-md-4">{{ form_months('month', ((Input::old('month')) ? Input::old('month') : date('m'))) }}</div>
-                    <div class="col-md-4">{{ form_days('day', ((Input::old('day')) ? Input::old('day') : date('d'))) }}</div>
-                </div>
-    		</div>
-        </p>
+        {{ Form::label('date_invoice', 'Date de facturation') }}
+		<p>{{ Form::text('date_invoice', null, array('class' => 'form-control datePicker')) }}</p>
 		<p>{{ Form::submit('Ajouter', array('class' => 'btn btn-success')) }}</p>
 	{{ Form::close() }}
 @stop
 
 @section('javascript')
 <script type="text/javascript">
-$(document).ready(function(){
+$().ready(function(){
 	var oldOrganisation = $('#oldOrganisation').val();
 	function getListOrganisations(id) {
 		var url = "{{ URL::route('user_json_organisations') }}";
@@ -58,6 +50,8 @@ $(document).ready(function(){
 	});
 
 	getListOrganisations($('#selectUserId').val());
+
+    $('.datePicker').datepicker({dateFormat: "yy-mm-dd"});
 });
 </script>
 @stop

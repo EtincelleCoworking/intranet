@@ -22,36 +22,25 @@
     </h1>
 
     {{ Form::model($invoice, array('route' => array('invoice_modify', $invoice->id))) }}
-        {{ Form::hidden('date_invoice', $invoice->date_invoice) }}
         <div class="row">
             <div class="col-md-6">
                 <p>Organisme : {{ $invoice->organisation->name }}</p>
                 <p>Client : {{ $invoice->user->fullname }}</p>
             </div>
             <div class="col-md-6">
-                {{ Form::label('', 'Date de création') }}
-                <div class="row">
-                    <div class="col-md-4">{{ form_years('year', $date_explode[0]) }}</div>
-                    <div class="col-md-4">{{ form_months('month', $date_explode[1]) }}</div>
-                    <div class="col-md-4">{{ form_days('day', $date_explode[2]) }}</div>
-                </div>
+                {{ Form::label('date_invoice', 'Date de création') }}
+                <p>{{ Form::text('date_invoice', null, array('class' => 'form-control datePicker')) }}</p>
 
-                {{ Form::label('', 'Date d\'expiration') }}
-                <div class="row">
-                    <div class="col-md-4">{{ form_years('dead_year', $dead_explode[0]) }}</div>
-                    <div class="col-md-4">{{ form_months('dead_month', $dead_explode[1]) }}</div>
-                    <div class="col-md-4">{{ form_days('dead_day', $dead_explode[2]) }}</div>
-                </div>
+                {{ Form::label('deadline', 'Date d\'expiration') }}
+                <p>{{ Form::text('deadline', null, array('class' => 'form-control datePicker')) }}</p>
                 <br>
                 <p>
                     {{ Form::label('is_paid', 'Cochez pour entrer la date de paiement') }} {{ Form::checkbox('is_paid', true, (($invoice->date_payment) ? true : false), array('id' => 'isPaidCheck')) }}
                 </p>
 
-                <div class="row" id="showPaymentDate">
-                    <div class="col-md-12">{{ Form::label('', 'Date de paiement') }}</div>
-                    <div class="col-md-4">{{ form_years('payment_year', $payment_explode[0]) }}</div>
-                    <div class="col-md-4">{{ form_months('payment_month', $payment_explode[1]) }}</div>
-                    <div class="col-md-4">{{ form_days('payment_day', $payment_explode[2]) }}</div>
+                <div id="showPaymentDate">
+                    {{ Form::label('date_payment', 'Date de paiement') }}
+                    <p>{{ Form::text('date_payment', null, array('class' => 'form-control datePicker')) }}</p>
                 </div>
             </div>
         </div>
@@ -127,6 +116,8 @@
         $('#isPaidCheck').on('change', function() {
             activPaid($(this));
         });
+
+        $('.datePicker').datepicker({dateFormat: "yy-mm-dd"});
     });
 </script>
 @stop
