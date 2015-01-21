@@ -10,7 +10,7 @@
 		<input type="hidden" name="last_orga" id="oldOrganisation" value="{{ $last_organisation_id }}">
         {{ Form::label('user_id', 'Client') }}
 		<p>{{ Form::select('user_id', User::Select('Sélectionnez un client'), null, array('id' => 'selectUserId', 'class' => 'form-control')) }}</p>
-        {{ Form::label('organisation_id', 'Ogrnisation') }}
+        {{ Form::label('organisation_id', 'Organisation') }}
 		<p>{{ Form::select('organisation_id', array(), null, array('id' => 'selectOrganisationId', 'class' => 'form-control')) }}</p>
         {{ Form::label('type', 'Type de la pièce') }}
 		<p>
