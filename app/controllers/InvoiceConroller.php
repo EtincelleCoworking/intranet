@@ -113,10 +113,10 @@ class InvoiceController extends BaseController
 	}
 
 	/**
-	 * Validate a quotation
-	 */
-	public function validate($id)
-	{
+     * Validate a quotation
+     */
+    public function validate($id)
+    {
         $invoice = Invoice::find($id);
         if (!$invoice) {
             return Redirect::route('invoice_list')->with('mError', 'Cette facture est introuvable !');
@@ -129,6 +129,18 @@ class InvoiceController extends BaseController
             return Redirect::route('invoice_modify', $invoice->id)->with('mSuccess', 'La facture a bien été générée');
         } else {
             return Redirect::route('invoice_modify', $invoice->id)->with('mError', 'Impossible de générer la facture');
+        }
+    }
+
+    /**
+	 * Delete a quotation
+	 */
+	public function delete($id)
+	{
+        if (Invoice::destroy($id)) {
+            return Redirect::route('invoice_list')->with('mSuccess', 'Le devis a bien été supprimé');
+        } else {
+            return Redirect::route('invoice_modify', $id)->with('mError', 'Impossible de supprimer ce devis');
         }
 	}
 
