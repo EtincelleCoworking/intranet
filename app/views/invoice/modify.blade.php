@@ -35,7 +35,7 @@
                 <p>{{ Form::text('deadline', null, array('class' => 'form-control datePicker')) }}</p>
                 <br>
                 <p>
-                    {{ Form::label('is_paid', 'Cochez pour entrer la date de paiement') }} {{ Form::checkbox('is_paid', true, (($invoice->date_payment) ? true : false), array('id' => 'isPaidCheck')) }}
+                    {{ Form::label('isPaidCheck', 'Cochez pour entrer la date de paiement') }} {{ Form::checkbox('is_paid', true, (($invoice->date_payment) ? true : false), array('id' => 'isPaidCheck')) }}
                 </p>
 
                 <div id="showPaymentDate">
