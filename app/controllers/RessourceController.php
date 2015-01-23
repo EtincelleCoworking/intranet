@@ -14,9 +14,11 @@ class RessourceController extends BaseController
      */
     public function liste()
     {
-        $ressources = Ressource::paginate(15);
+        $ressources = Ressource::orderBy('order_index', 'ASC')->paginate(15);
+        $getLast = Ressource::orderBy('order_index', 'DESC')->first();
+        $last = $getLast->order_index;
 
-        $this->layout->content = View::make('ressource.liste', array('ressources' => $ressources));
+        $this->layout->content = View::make('ressource.liste', array('ressources' => $ressources, 'last' => $last));
     }
 
     /**
@@ -24,7 +26,10 @@ class RessourceController extends BaseController
      */
     public function add()
     {
-        $this->layout->content = View::make('ressource.add');
+        $ressource = Ressource::orderBy('order_index', 'DESC')->first();
+        $last = $ressource->order_index + 1;
+
+        $this->layout->content = View::make('ressource.add', array('last' => $last));
     }
 
     /**
@@ -36,6 +41,7 @@ class RessourceController extends BaseController
         if (!$validator->fails()) {
             $ressource = new Ressource;
             $ressource->name = Input::get('name');
+            $ressource->order_index = Input::get('order_index');
 
             if ($ressource->save()) {
                 return Redirect::route('ressource_modify', $ressource->id)->with('mSuccess', 'La ressource a bien été ajoutée');
@@ -73,6 +79,7 @@ class RessourceController extends BaseController
         $validator = Validator::make(Input::all(), Ressource::$rules);
         if (!$validator->fails()) {
             $ressource->name = Input::get('name');
+            $ressource->order_index = Input::get('order_index');
             if ($ressource->save()) {
                 return Redirect::route('ressource_modify', $ressource->id)->with('mSuccess', 'Cette ressource a bien été modifiée');
             } else {
@@ -80,6 +87,42 @@ class RessourceController extends BaseController
             }
         } else {
             return Redirect::route('ressource_modify', $ressource->id)->with('mError', 'Il y a des erreurs')->withErrors($validator->messages())->withInput();
+        }
+    }
+
+    /**
+     * Order UP
+     */
+    public function order_up($ressource)
+    {
+        $ressource = Ressource::find($ressource);
+
+        $ressource->order_index -= 1;
+
+        if ($ressource->order_index > 0) {
+            if ($ressource->save()) {
+                return Redirect::route('ressource_list');
+            } else {
+                return Redirect::route('ressource_list')->with('mError', 'Impossible de monter cette ressource');
+            }
+        } else {
+            return Redirect::route('ressource_list')->with('mError', 'Impossible de monter cette ressource');
+        }
+    }
+
+    /**
+     * Order DOWN
+     */
+    public function order_down($ressource)
+    {
+        $ressource = Ressource::find($ressource);
+
+        $ressource->order_index += 1;
+
+        if ($ressource->save()) {
+            return Redirect::route('ressource_list');
+        } else {
+            return Redirect::route('ressource_list')->with('mError', 'Impossible de descendre cette ressource');
         }
     }
 }

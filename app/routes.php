@@ -47,6 +47,8 @@ Route::group(['before' => 'superadmin'], function() {
 	Route::post('/ressource/add', array('as' => 'ressource_add_check', 'uses' => 'RessourceController@add_check'));
 	Route::get('/ressource/modify/{id}', array('as' => 'ressource_modify', 'uses' => 'RessourceController@modify'));
 	Route::post('/ressource/modify/{id}', array('as' => 'ressource_modify_check', 'uses' => 'RessourceController@modify_check'));
+    Route::get('/ressource/up/{id}', array('as' => 'ressource_order_up', 'uses' => 'RessourceController@order_up'));
+    Route::get('/ressource/down/{id}', array('as' => 'ressource_order_down', 'uses' => 'RessourceController@order_down'));
 
 	Route::get('/organisations', array('as' => 'organisation_list', 'uses' => 'OrganisationController@liste'));
 	Route::get('/organisation/add', array('as' => 'organisation_add', 'uses' => 'OrganisationController@add'));

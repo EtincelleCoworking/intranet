@@ -12,15 +12,25 @@
             <tr>
                 <th>#</th>
                 <th>Nom</th>
+                <th>Ordre</th>
                 <th>Dernière modification</th>
             </tr>
         </thead>
         <tbody>
-        @foreach ($ressources as $ressource)
+        @foreach ($ressources as $n => $ressource)
             <tr>
                 <td>{{ $ressource->id }}</td>
                 <td>
                     <a href="{{ URL::route('ressource_modify', $ressource->id) }}">{{ $ressource->name }}</a>
+                </td>
+                <td>
+                    @if ($ressource->order_index > 1)
+                    <a href="{{ URL::route('ressource_order_up', $ressource->id) }}"><i class="fa fa-caret-square-o-up"></i></a>
+                    @endif
+                    {{ $ressource->order_index }}
+                    @if ($ressource->order_index < $last)
+                    <a href="{{ URL::route('ressource_order_down', $ressource->id) }}"><i class="fa fa-caret-square-o-down"></i></a>
+                    @endif
                 </td>
                 <td>{{ $ressource->updated_at }}</td>
             </tr>
