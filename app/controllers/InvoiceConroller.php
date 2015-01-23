@@ -137,8 +137,12 @@ class InvoiceController extends BaseController
 	 */
 	public function delete($id)
 	{
-        if (Invoice::destroy($id)) {
-            return Redirect::route('invoice_list')->with('mSuccess', 'Le devis a bien été supprimé');
+        if (InvoiceItem::where('invoice_id', '=', $id)->delete()) {
+            if (Invoice::destroy($id)) {
+                return Redirect::route('invoice_list')->with('mSuccess', 'Le devis a bien été supprimé');
+            } else {
+                return Redirect::route('invoice_modify', $id)->with('mError', 'Impossible de supprimer ce devis');
+            }
         } else {
             return Redirect::route('invoice_modify', $id)->with('mError', 'Impossible de supprimer ce devis');
         }
