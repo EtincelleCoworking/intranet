@@ -17,7 +17,7 @@
 			{{ Form::select('type', array('F' => 'Facture', 'D' => 'Devis'), null, array('class' => 'form-control')) }}
 		</p>
         {{ Form::label('date_invoice', 'Date de facturation') }}
-		<p>{{ Form::text('date_invoice', null, array('class' => 'form-control datePicker')) }}</p>
+		<p>{{ Form::text('date_invoice', date('Y-m-d'), array('class' => 'form-control datePicker')) }}</p>
 		<p>{{ Form::submit('Ajouter', array('class' => 'btn btn-success')) }}</p>
 	{{ Form::close() }}
 @stop

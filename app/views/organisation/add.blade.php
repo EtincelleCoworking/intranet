@@ -17,7 +17,7 @@
         {{ Form::label('city', 'Ville') }}
         <p>{{ Form::text('city', null, array('class' => 'form-control')) }}</p>
         {{ Form::label('country_id', 'Pays') }}
-        <p>{{ Form::select('country_id', Country::Select(), null, array('class' => 'form-control')) }}</p>
+        <p>{{ Form::select('country_id', Country::Select(), 73, array('class' => 'form-control')) }}</p>
         {{ Form::label('tva_number', 'TVA') }}
 		<p>{{ Form::text('tva_number', null, array('class' => 'form-control')) }}</p>
 		<p>{{ Form::submit('Ajouter', array('class' => 'btn btn-success')) }}</p>
