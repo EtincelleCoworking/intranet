@@ -37,35 +37,22 @@
                         <li>
                             <a href="{{ URL::route('user_list') }}">
                                 <i class="fa fa-list"></i>
-                                &nbsp;&nbsp;Liste
+                                &nbsp;&nbsp;Utilisateurs
                             </a>
                         </li>
-                        <li>
-                            <a href="{{ URL::route('user_add') }}">
-                                <i class="fa fa-plus"></i>
-                                &nbsp;&nbsp;Ajouter un utilisateur
-                            </a>
-                        </li>
-                        <li class="divider"></li>
                         <li>
                             <a href="{{ URL::route('organisation_list') }}">
                                 <i class="fa fa-list"></i>
-                                &nbsp;&nbsp;Liste
-                            </a>
-                        </li>
-                        <li>
-                            <a href="{{ URL::route('organisation_add') }}">
-                                <i class="fa fa-plus"></i>
-                                &nbsp;&nbsp;Ajouter une organisation
+                                &nbsp;&nbsp;Organisations
                             </a>
                         </li>
                     </ul>
                 </li>
 
-                <li class="dropdown {{ ((Request::is('invoice*')) ? 'active' : '') }}">
+                <li class="dropdown {{ ((Request::is('invoice*') or Request::is('quote*')) ? 'active' : '') }}">
                     <a href="#" class="dropdown-toggle" data-toggle="dropdown" data-hover="dropdown">
                         <i class="fa fa-money"></i>
-                        Factures
+                        Devis &amp; Factures
                         <i class="mainnav-caret"></i>
                     </a>
 
@@ -73,19 +60,20 @@
                         <li>
                             <a href="{{ URL::route('invoice_list') }}">
                                 <i class="fa fa-list"></i>
-                                &nbsp;&nbsp;Liste
+                                &nbsp;&nbsp;Factures
                             </a>
                         </li>
                         <li>
-                            <a href="{{ URL::route('invoice_add') }}">
-                                <i class="fa fa-plus"></i>
-                                &nbsp;&nbsp;Ajouter une facture
+                            <a href="{{ URL::route('quote_list') }}">
+                                <i class="fa fa-list"></i>
+                                &nbsp;&nbsp;Devis
                             </a>
                         </li>
+
                     </ul>
                 </li>
 
-                <li class="dropdown {{ ((Request::is('ressource*') || Request::is('country*')) ? 'active' : '') }}">
+                <li class="dropdown {{ ((Request::is('ressource*') || Request::is('country*') || Request::is('vat*')) ? 'active' : '') }}">
                     <a href="#" class="dropdown-toggle" data-toggle="dropdown" data-hover="dropdown">
                         <i class="fa fa-cogs"></i>
                         Configuration
@@ -93,68 +81,26 @@
                     </a>
 
                     <ul class="dropdown-menu" role="menu">
-                        <li class="dropdown-submenu">
+                        <li>
                             <a tabindex="-1" href="{{ URL::route('ressource_list') }}">
                                 <i class="fa fa-barcode"></i>
                                 &nbsp;&nbsp;Ressources
                             </a>
 
-                            <ul class="dropdown-menu">
-                                <li>
-                                    <a href="{{ URL::route('ressource_list') }}">
-                                        <i class="fa fa-list"></i>
-                                        &nbsp;&nbsp;Liste
-                                    </a>
-                                </li>
-                                <li>
-                                    <a href="{{ URL::route('ressource_add') }}">
-                                        <i class="fa fa-plus"></i>
-                                        &nbsp;&nbsp;Ajouter une ressource
-                                    </a>
-                                </li>
-                            </ul>
                         </li>
-                       <li class="dropdown-submenu">
+                       <li>
                             <a tabindex="-1" href="{{ URL::route('country_list') }}">
                                 <i class="fa fa-flag"></i>
                                 &nbsp;&nbsp;Pays
                             </a>
 
-                            <ul class="dropdown-menu">
-                                <li>
-                                    <a href="{{ URL::route('country_list') }}">
-                                        <i class="fa fa-list"></i>
-                                        &nbsp;&nbsp;Liste
-                                    </a>
-                                </li>
-                                <li>
-                                    <a href="{{ URL::route('country_add') }}">
-                                        <i class="fa fa-plus"></i>
-                                        &nbsp;&nbsp;Ajouter un pays
-                                    </a>
-                                </li>
-                            </ul>
                         </li>
-                       <li class="dropdown-submenu">
+                       <li >
                             <a tabindex="-1" href="{{ URL::route('vat_list') }}">
                                 <i class="fa fa-gavel"></i>
                                 &nbsp;&nbsp;TVA
                             </a>
 
-                            <ul class="dropdown-menu">
-                                <li>
-                                    <a href="{{ URL::route('vat_list') }}">
-                                        <i class="fa fa-list"></i>
-                                        &nbsp;&nbsp;Liste
-                                    </a>
-                                </li>
-                                <li>
-                                    <a href="{{ URL::route('vat_add') }}">
-                                        <i class="fa fa-plus"></i>
-                                        &nbsp;&nbsp;Ajouter une TVA
-                                    </a>
-                                </li>
-                            </ul>
                         </li>
                     </ul>
                 </li>

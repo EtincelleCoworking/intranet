@@ -5,7 +5,8 @@
 @stop
 
 @section('content')
-	<h1>Liste des utilisateurs</h1>
+    <a href="{{ URL::route('user_add') }}" class="btn btn-primary pull-right">Ajouter un utilisateur</a>
+    <h1>Liste des utilisateurs</h1>
 	
 	<table class="table table-striped table-hover">
 		<thead>

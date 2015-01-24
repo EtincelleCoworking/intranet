@@ -5,7 +5,9 @@
 @stop
 
 @section('content')
-	<h1>Liste des organisations</h1>
+    <a href="{{ URL::route('organisation_add') }}" class="btn btn-primary pull-right">Ajouter une organisation</a>
+
+    <h1>Liste des organisations</h1>
 
 	<table class="table table-striped table-hover">
 		<thead>

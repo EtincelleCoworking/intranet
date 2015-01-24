@@ -1,11 +1,12 @@
 @extends('layouts.master')
 
 @section('meta_title')
-    Liste des TVA
+    Liste des taux de TVA
 @stop
 
 @section('content')
-    <h1>Liste des TVA</h1>
+    <a href="{{ URL::route('vat_add') }}" class="btn btn-primary pull-right">Ajouter un taux de TVA</a>
+    <h1>Liste des taux de TVA</h1>
 
     <table class="table table-striped table-hover">
         <thead>

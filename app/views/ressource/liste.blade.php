@@ -5,6 +5,7 @@
 @stop
 
 @section('content')
+    <a href="{{ URL::route('ressource_add') }}" class="btn btn-primary pull-right">Ajouter une ressource</a>
     <h1>Liste des ressources</h1>
 
     <table class="table table-striped table-hover">

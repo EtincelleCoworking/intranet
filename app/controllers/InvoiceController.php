@@ -10,15 +10,19 @@ class InvoiceController extends BaseController
 	 */
 	protected $layout = "layouts.master";
 
-	/**
-	 * List invoices
-	 */
-	public function liste()
-	{
-		$invoices = Invoice::orderBy('created_at', 'DESC')->paginate(15);
+    public function invoiceList()
+    {
+        $invoices = Invoice::InvoiceOnly()->orderBy('created_at', 'DESC')->paginate(15);
 
-		$this->layout->content = View::make('invoice.liste', array('invoices' => $invoices));
-	}
+        $this->layout->content = View::make('invoice.liste', array('invoices' => $invoices));
+    }
+
+    public function quoteList()
+    {
+        $invoices = Invoice::QuoteOnly()->orderBy('created_at', 'DESC')->paginate(15);
+
+        $this->layout->content = View::make('invoice.quote_list', array('invoices' => $invoices));
+    }
 
 	/**
 	 * Modify invoice

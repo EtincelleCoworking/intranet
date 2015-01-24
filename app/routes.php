@@ -31,7 +31,8 @@ Route::group(['before' => 'superadmin'], function() {
 	Route::get('/user/modify/{id}', array('as' => 'user_modify', 'uses' => 'UserController@modify'))->where(array('id' => '[0-9]+'));
 	Route::post('/user/modify/{id}', array('as' => 'user_modify_check', 'uses' => 'UserController@modify_check'))->where(array('id' => '[0-9]+'));
 
-	Route::get('/invoices', array('as' => 'invoice_list', 'uses' => 'InvoiceController@liste'));
+	Route::get('/invoices', array('as' => 'invoice_list', 'uses' => 'InvoiceController@invoiceList'));
+	Route::get('/quotes', array('as' => 'quote_list', 'uses' => 'InvoiceController@quoteList'));
 	Route::get('/invoice/add', array('as' => 'invoice_add', 'uses' => 'InvoiceController@add'));
 	Route::post('/invoice/add', array('as' => 'invoice_add_check', 'uses' => 'InvoiceController@add_check'));
 	Route::get('/invoice/modify/{id}', array('as' => 'invoice_modify', 'uses' => 'InvoiceController@modify'))->where(array('id' => '[0-9]+'));

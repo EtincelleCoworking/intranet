@@ -5,7 +5,8 @@
 @stop
 
 @section('content')
-	<h1>Liste des pays</h1>
+    <a href="{{ URL::route('country_add') }}" class="btn btn-primary pull-right">Ajouter un pays</a>
+    <h1>Liste des pays</h1>
 
 	<table class="table table-striped table-hover">
 		<thead>

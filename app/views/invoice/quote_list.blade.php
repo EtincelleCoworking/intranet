@@ -1,16 +1,15 @@
 @extends('layouts.master')
 
 @section('meta_title')
-	Liste des factures
+	Devis
 @stop
 
 @section('content')
+    <a href="{{ URL::route('invoice_add') }}" class="btn btn-primary pull-right">Ajouter un devis</a>
+    <h1>Devis</h1>
 
-    <a href="{{ URL::route('invoice_add') }}" class="btn btn-primary pull-right">Ajouter une facture</a>
-
-	<h1>Liste des factures</h1>
     @if(count($invoices)==0)
-        <p>Aucun devis.</p>
+    <p>Aucun devis.</p>
     @else
 	<table class="table table-striped table-hover">
 		<thead>
@@ -19,7 +18,6 @@
 				<th>Créée le</th>
 				<th>Client</th>
 				<th>Echéance</th>
-                <th>Paiement</th>
 				<th>Montant</th>
 				<th>Actions</th>
 			</tr>
@@ -49,7 +47,6 @@
                         {{ date('d/m/Y', strtotime($invoice->deadline)) }}
                     @endif
                 </td>
-				<td>{{ (($invoice->date_payment) ? date('d/m/Y', strtotime($invoice->date_payment)) : '') }}</td>
 				<td style="text-align:right">{{ Invoice::TotalInvoice($invoice->items) }}€</td>
 				<td>
 					<a href="{{ URL::route('invoice_modify', $invoice->id) }}" class="btn btn-sm btn-default">Modifier</a>

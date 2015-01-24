@@ -44,8 +44,8 @@
                     <i class="fa fa-cog"></i>
                 </button>
 
-                <a href="{{ URL::route('dashboard') }}" class="navbar-brand navbar-brand-img">
-                    {{ HTML::image('img/logo.jpg', $_ENV['organisation_name']) }}
+                <a href="{{ URL::route('dashboard') }}" class="navbar-brand">
+                    Etincelle Coworking
                 </a>
               </div> <!-- /.navbar-header -->
 

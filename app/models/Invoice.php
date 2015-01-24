@@ -12,7 +12,16 @@ class Invoice extends Eloquent
 	 */
 	protected $table = 'invoices';
 
-	/**
+    public function scopeInvoiceOnly($query)
+    {
+        return $query->where('type', '=', 'F');
+    }
+    public function scopeQuoteOnly($query)
+    {
+        return $query->where('type', '=', 'D');
+    }
+
+    /**
 	 * Relation BelongsTo (Invoices belongs to User)
 	 */
 	public function user()
