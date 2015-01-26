@@ -63,7 +63,7 @@ class Invoice extends Eloquent
             $date2 = new DateTime();
             $diff = $date2->diff($date1);
 
-            return $diff->d;
+            return $diff->days;
         } else {
             return -1;
         }
