@@ -29,10 +29,10 @@
             </div>
             <div class="col-md-6">
                 {{ Form::label('date_invoice', 'Date de création') }}
-                <p>{{ Form::text('date_invoice', null, array('class' => 'form-control datePicker')) }}</p>
+                <p>{{ Form::text('date_invoice', date('d/m/Y', strtotime($invoice->date_invoice)), array('class' => 'form-control datePicker')) }}</p>
 
                 {{ Form::label('deadline', 'Date d\'expiration') }}
-                <p>{{ Form::text('deadline', null, array('class' => 'form-control datePicker')) }}</p>
+                <p>{{ Form::text('deadline', date('d/m/Y', strtotime($invoice->deadline)), array('class' => 'form-control datePicker')) }}</p>
                 <br>
                 <p>
                     {{ Form::label('isPaidCheck', 'Cochez pour entrer la date de paiement') }} {{ Form::checkbox('is_paid', true, (($invoice->date_payment) ? true : false), array('id' => 'isPaidCheck')) }}
@@ -40,7 +40,7 @@
 
                 <div id="showPaymentDate">
                     {{ Form::label('date_payment', 'Date de paiement') }}
-                    <p>{{ Form::text('date_payment', null, array('class' => 'form-control datePicker')) }}</p>
+                    <p>{{ Form::text('date_payment', (($invoice->date_payment) ? date('d/m/Y', strtotime($invoice->date_payment)) : null), array('class' => 'form-control datePicker')) }}</p>
                 </div>
             </div>
         </div>
@@ -117,7 +117,7 @@
             activPaid($(this));
         });
 
-        $('.datePicker').datepicker({dateFormat: "yy-mm-dd"});
+        $('.datePicker').datepicker();
     });
 </script>
 @stop

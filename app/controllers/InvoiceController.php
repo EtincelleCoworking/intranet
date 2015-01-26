@@ -57,10 +57,13 @@ class InvoiceController extends BaseController
 
 		$validator = Validator::make(Input::all(), Invoice::$rules);
 		if (!$validator->fails()) {
-            $invoice->date_invoice = Input::get('date_invoice');
-            $invoice->deadline = Input::get('deadline');
+            $date_invoice_explode = explode('/', Input::get('date_invoice'));
+            $invoice->date_invoice = $date_invoice_explode[2].'-'.$date_invoice_explode[1].'-'.$date_invoice_explode[0];
+            $date_deadline_explode = explode('/', Input::get('deadline'));
+            $invoice->deadline = $date_deadline_explode[2].'-'.$date_deadline_explode[1].'-'.$date_deadline_explode[0];
             if (Input::get('is_paid')) {
-                $invoice->date_payment = Input::get('date_payment');
+                $date_payment_explode = explode('/', Input::get('date_payment'));
+                $invoice->date_payment = $date_payment_explode[2].'-'.$date_payment_explode[1].'-'.$date_payment_explode[0];
             } else {
                 $invoice->date_payment = null;
             }
@@ -91,15 +94,15 @@ class InvoiceController extends BaseController
 	{
 		$validator = Validator::make(Input::all(), Invoice::$rulesAdd);
 		if (!$validator->fails()) {
-            $date_explode = explode('-', Input::get('date_invoice'));
-			$days = $date_explode[0].$date_explode[1];
+            $date_explode = explode('/', Input::get('date_invoice'));
+			$days = $date_explode[2].$date_explode[1];
 
 			$invoice = new Invoice;
 			$invoice->user_id = Input::get('user_id');
 			$invoice->organisation_id = Input::get('organisation_id');
 			$invoice->type = Input::get('type');
 			$invoice->days = $days;
-            $invoice->date_invoice = Input::get('date_invoice');
+            $invoice->date_invoice = $date_explode[2].'-'.$date_explode[1].'-'.$date_explode[0];
 			$invoice->number = Invoice::next_invoice_number(Input::get('type'), $days);
 
             $date = new DateTime($invoice->date_invoice);

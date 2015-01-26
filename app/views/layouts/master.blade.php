@@ -24,8 +24,8 @@
 
     <!-- Jquery UI CSS -->
     {{ HTML::style('css/jquery-ui.min.css') }}
-    {{ HTML::style('css/jquery-ui.structure.min.css') }}
-    {{ HTML::style('css/jquery-ui.theme.min.css') }}
+    {{ HTML::style('css/jquery-ui.structure.css') }}
+    {{ HTML::style('css/jquery-ui.theme.css') }}
 
     <!-- App CSS -->
     {{ HTML::style('css/mvpready-admin.css') }}
@@ -134,6 +134,7 @@
 
     {{ HTML::script('js/libs/jquery-1.10.2.min.js') }}
     {{ HTML::script('js/jquery-ui.min.js') }}
+    {{ HTML::script('js/datepicker-fr.js') }}
     {{ HTML::script('js/libs/bootstrap.min.js') }}
 
     <!--[if lt IE 9]>
@@ -149,6 +150,9 @@
     {{ HTML::script('js/mvpready-admin.js') }}
 
 	{{ HTML::script('js/rails.js') }}
+    <script type="text/javascript">
+    $.datepicker.setDefaults( $.datepicker.regional[ "fr" ] );
+    </script>
 	@yield('javascript')
 </body>
 </html>
