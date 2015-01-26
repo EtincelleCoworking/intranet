@@ -5,7 +5,7 @@
 @stop
 
 @section('content')
-    <a href="{{ URL::route('invoice_add') }}" class="btn btn-primary pull-right">Ajouter un devis</a>
+    <a href="{{ URL::route('invoice_add', 'D') }}" class="btn btn-primary pull-right">Ajouter un devis</a>
     <h1>Devis</h1>
 
     @if(count($invoices)==0)

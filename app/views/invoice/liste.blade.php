@@ -6,7 +6,7 @@
 
 @section('content')
 
-    <a href="{{ URL::route('invoice_add') }}" class="btn btn-primary pull-right">Ajouter une facture</a>
+    <a href="{{ URL::route('invoice_add', 'F') }}" class="btn btn-primary pull-right">Ajouter une facture</a>
 
 	<h1>Liste des factures</h1>
     @if(count($invoices)==0)

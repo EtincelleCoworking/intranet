@@ -1,21 +1,29 @@
 @extends('layouts.master')
 
 @section('meta_title')
-	Ajout d'une facture
+	Ajout
+    @if ($type == 'F')
+    d'une facture
+    @elseif ($type == 'D')
+    d'un devis
+    @endif
 @stop
 
 @section('content')
-	<h1>Nouvelle facture</h1>
-	{{ Form::open(array('route' => 'invoice_add')) }}
+	<h1>
+        @if ($type == 'F')
+        Nouvelle facture
+        @elseif ($type == 'D')
+        Nouveau devis
+        @endif
+    </h1>
+	{{ Form::open(array('route' => array('invoice_add', $type))) }}
+        {{ Form::hidden('type', $type) }}
 		<input type="hidden" name="last_orga" id="oldOrganisation" value="{{ $last_organisation_id }}">
         {{ Form::label('user_id', 'Client') }}
 		<p>{{ Form::select('user_id', User::Select('Sélectionnez un client'), null, array('id' => 'selectUserId', 'class' => 'form-control')) }}</p>
         {{ Form::label('organisation_id', 'Organisation') }}
 		<p>{{ Form::select('organisation_id', array(), null, array('id' => 'selectOrganisationId', 'class' => 'form-control')) }}</p>
-        {{ Form::label('type', 'Type de la pièce') }}
-		<p>
-			{{ Form::select('type', array('F' => 'Facture', 'D' => 'Devis'), null, array('class' => 'form-control')) }}
-		</p>
         {{ Form::label('date_invoice', 'Date de facturation') }}
 		<p>{{ Form::text('date_invoice', date('d/m/Y'), array('class' => 'form-control datePicker')) }}</p>
 		<p>{{ Form::submit('Ajouter', array('class' => 'btn btn-success')) }}</p>
