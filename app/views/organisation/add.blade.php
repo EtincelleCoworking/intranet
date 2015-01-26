@@ -11,7 +11,7 @@
         {{ Form::label('name', 'Nom') }}
         <p>{{ Form::text('name', null, array('class' => 'form-control')) }}</p>
         {{ Form::label('address', 'Adresse') }}
-        <p>{{ Form::textarea('address', null, array('class' => 'form-control')) }}</p>
+        <p>{{ Form::textarea('address', null, array('class' => 'form-control', 'rows' => 3)) }}</p>
         {{ Form::label('zipcode', 'Code postal') }}
         <p>{{ Form::text('zipcode', null, array('class' => 'form-control')) }}</p>
         {{ Form::label('city', 'Ville') }}
