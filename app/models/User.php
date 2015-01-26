@@ -73,13 +73,26 @@ class User extends Eloquent implements UserInterface, RemindableInterface {
         return $this->firstname.' '.$this->lastname;
     }
 
+    /**
+     * Fullname user with Organisations
+     */
+    public function getFullnameOrgaAttribute()
+    {
+        $organisation = '';
+        foreach($this->organisations as $key => $orga) {
+            if ($key > 0) { $organisation .= ', '; }
+            $organisation .= $orga->name;
+        }
+        return $this->firstname.' '.$this->lastname.' ('.$organisation.')';
+    }
+
 	/**
 	 * Get list of users
 	 */
 	public function scopeSelect($query, $title = "Select")
 	{
 		$selectVals[''] = $title;
-		$selectVals += $this->get()->lists('fullname', 'id');
+		$selectVals += $this->orderBy('lastname', 'ASC')->orderBy('firstname', 'ASC')->get()->lists('fullnameOrga', 'id');
 		return $selectVals;
 	}
 
