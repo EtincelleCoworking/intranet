@@ -12,7 +12,7 @@
                         <tbody>
                             <tr>
                                 <td class="kv-key"><i class="fa fa-dollar kv-icon kv-icon-primary"></i> CA du mois</td>
-                                <td class="kv-value">{{ $totalMonth->total }}€</td>
+                                <td class="kv-value">{{ (($totalMonth) ? $totalMonth->total : 0) }}€</td>
                             </tr>
                         </tbody>
                     </table>
