@@ -73,7 +73,7 @@
                     </ul>
                 </li>
 
-                <li class="dropdown {{ ((Request::is('ressource*') || Request::is('country*') || Request::is('vat*')) ? 'active' : '') }}">
+                <li class="dropdown {{ ((Request::is('ressource*') || Request::is('country*') || Request::is('vat*') || Request::is('tag*') || Request::is('charge*')) ? 'active' : '') }}">
                     <a href="#" class="dropdown-toggle" data-toggle="dropdown" data-hover="dropdown">
                         <i class="fa fa-cogs"></i>
                         Configuration
@@ -95,12 +95,23 @@
                             </a>
 
                         </li>
-                       <li >
+                       <li>
                             <a tabindex="-1" href="{{ URL::route('vat_list') }}">
                                 <i class="fa fa-gavel"></i>
                                 &nbsp;&nbsp;TVA
                             </a>
-
+                        </li>
+                        <li>
+                            <a tabindex="-1" href="{{ URL::route('tag_list') }}">
+                                <i class="fa fa-tags"></i>
+                                &nbsp;&nbsp;Tags
+                            </a>
+                        </li>
+                        <li>
+                            <a tabindex="-1" href="{{ URL::route('charge_list') }}">
+                                <i class="fa fa-file"></i>
+                                &nbsp;&nbsp;Charges
+                            </a>
                         </li>
                     </ul>
                 </li>
