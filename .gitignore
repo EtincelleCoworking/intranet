@@ -2,6 +2,7 @@
 /vendor
 /app/storage/logs/*
 /public/uploads/avatars/*
+/public/uploads/charges/*
 composer.phar
 composer.lock
 .env.*.php

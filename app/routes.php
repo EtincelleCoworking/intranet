@@ -71,7 +71,23 @@ Route::group(['before' => 'superadmin'], function() {
     Route::post('/vat/add', array('as' => 'vat_add_check', 'uses' => 'VatTypeController@add_check'));
     Route::get('/vat/modify/{id}', array('as' => 'vat_modify', 'uses' => 'VatTypeController@modify'))->where(array('id' => '[0-9]+'));
     Route::post('/vat/modify/{id}', array('as' => 'vat_modify_check', 'uses' => 'VatTypeController@modify_check'))->where(array('id' => '[0-9]+'));
+
+    Route::get('/tags', array('as' => 'tag_list', 'uses' => 'TagController@liste'));
+    Route::get('/tag/add', array('as' => 'tag_add', 'uses' => 'TagController@add'));
+    Route::post('/tag/add', array('as' => 'tag_add_check', 'uses' => 'TagController@add_check'));
+    Route::get('/tag/modify/{id}', array('as' => 'tag_modify', 'uses' => 'TagController@modify'))->where(array('id' => '[0-9]+'));
+    Route::post('/tag/modify/{id}', array('as' => 'tag_modify_check', 'uses' => 'TagController@modify_check'))->where(array('id' => '[0-9]+'));
+
+    Route::get('/charges', array('as' => 'charge_list', 'uses' => 'ChargeController@liste'));
+    Route::get('/charge/add', array('as' => 'charge_add', 'uses' => 'ChargeController@add'));
+    Route::post('/charge/add', array('as' => 'charge_add_check', 'uses' => 'ChargeController@add_check'));
+    Route::get('/charge/modify/{id}', array('as' => 'charge_modify', 'uses' => 'ChargeController@modify'))->where(array('id' => '[0-9]+'));
+    Route::post('/charge/modify/{id}', array('as' => 'charge_modify_check', 'uses' => 'ChargeController@modify_check'))->where(array('id' => '[0-9]+'));
+    Route::delete('/charge/delete/{id}', array('as' => 'charge_delete', 'uses' => 'ChargeController@delete'))->where(array('id' => '[0-9]+'));
+    Route::post('/charge/{id}/item/modify', array('as' => 'charge_item_modify', 'uses' => 'ChargeItemController@modify'))->where(array('id' => '[0-9]+'));
+    Route::delete('/charge/{charge}/item/{id}/delete', array('as' => 'charge_item_delete', 'uses' => 'ChargeItemController@delete'))->where(array('charge' => '[0-9]+', 'id' => '[0-9]+'));
 });
 
 // JSON
 Route::get('/user/organisations/{id}', array('as' => 'user_json_organisations', 'uses' => 'UserController@json_organisations'))->where(array('id' => '[0-9]+'));
+Route::get('/tags/list', array('as' => 'tag_json_list', 'uses' => 'TagController@json_list'));
