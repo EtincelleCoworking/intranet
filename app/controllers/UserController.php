@@ -59,6 +59,27 @@ class UserController extends BaseController
                  ->where('invoices.days', '=', date('Ym'));
         })->select(DB::raw('SUM(amount) as total'))->groupBy('invoices.days')->first();
 
+        $chargesMonth = DB::table('charges_items')->join('charges', function($join)
+        {
+            $join->on('charges_items.charge_id', '=', 'charges.id')
+                ->where(DB::raw('MONTH(charges.date_charge)'), '=', date('n'))
+                ->where(DB::raw('MONTH(charges.deadline)'), '=', date('n'));
+        })->join('vat_types', function($join)
+        {
+            $join->on('charges_items.vat_types_id', '=', 'vat_types.id');
+        })->select(DB::raw('SUM(amount) as total, SUM(((amount * vat_types.value) / 100)) as mtva'))->first();
+
+        $chargesMonthToPay = DB::table('charges_items')->join('charges', function($join)
+        {
+            $join->on('charges_items.charge_id', '=', 'charges.id')
+                ->where(DB::raw('MONTH(charges.date_charge)'), '=', date('n'))
+                ->where(DB::raw('MONTH(charges.deadline)'), '=', date('n'))
+                ->whereNull('charges.date_payment');
+        })->join('vat_types', function($join)
+        {
+            $join->on('charges_items.vat_types_id', '=', 'vat_types.id');
+        })->select(DB::raw('SUM(amount) as total, SUM(((amount * vat_types.value) / 100)) as mtva'))->first();
+
         /* En travaux pour les stats annu.
         $annualTotal = DB::table('invoices_items')->join('invoices', function($join)
         {
@@ -75,7 +96,7 @@ class UserController extends BaseController
         }
         */
 
-		$this->layout->content = View::make('user.dashboard', array('totalMonth' => $totalMonth));
+		$this->layout->content = View::make('user.dashboard', array('totalMonth' => $totalMonth, 'chargesMonth' => $chargesMonth, 'chargesMonthToPay' => $chargesMonthToPay));
 	}
 
 	/**

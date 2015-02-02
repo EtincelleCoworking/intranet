@@ -108,7 +108,7 @@
                             </a>
                         </li>
                         <li>
-                            <a tabindex="-1" href="{{ URL::route('charge_list') }}">
+                            <a tabindex="-1" href="{{ URL::route('charge_list', 'all') }}">
                                 <i class="fa fa-file"></i>
                                 &nbsp;&nbsp;Charges
                             </a>

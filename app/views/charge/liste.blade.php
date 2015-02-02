@@ -6,62 +6,81 @@
 
 @section('content')
 
-    <a href="{{ URL::route('charge_add') }}" class="btn btn-primary pull-right">Ajouter une charge</a>
+    <div class="pull-right">
+        <a href="{{ URL::route('charge_list', 'all') }}" class="btn btn-info">Toutes</a>
+        <a href="{{ URL::route('charge_list', 'deadline_close') }}" class="btn btn-info">Proches</a>
+        <a href="{{ URL::route('charge_list', 'deadline_exceeded') }}" class="btn btn-info">Dépassées</a>
+        <a href="{{ URL::route('charge_add') }}" class="btn btn-primary">Ajouter une charge</a>
+    </div>
 
     <h1>Liste des charges</h1>
     @if(count($charges)==0)
         <p>Aucune charge.</p>
     @else
-        @foreach ($charges as $charge)
-            <div class="panel panel-warning">
-                <div class="panel-body">
-                    <table class="table">
-                        <tbody>
-                            <tr class="warning">
-                                <td class="col-md-2">{{ date('d/m/Y', strtotime($charge->date_charge)) }}</td>
-                                <td class="col-md-5">
-                                    @foreach ($charge->tags as $k => $tag)
-                                        @if ($k > 0)
-                                            ,
-                                        @endif
-                                        {{ $tag->name }}
-                                    @endforeach
-                                </td>
-                                <td class="col-md-1">{{ $charge->total }}€</td>
-                                <td class="col-md-2">{{ (($charge->date_payment) ? 'Payée le '.date('d/m/Y', strtotime($charge->date_payment)) : '') }}</td>
-                                <td class="col-md-2">
-                                    <a href="{{ URL::route('charge_modify', $charge->id) }}" class="btn btn-xs btn-success">Modifier</a>
-                                    @if ($charge->document)
-                                        <a href="uploads/charges/{{ $charge->document }}" class="btn btn-xs btn-info" target="_blank"><i class="fa fa-download"></i></a>
-                                    @endif
-                                    <a href="{{ URL::route('charge_delete', array($charge->id)) }}" data-method="delete" data-confirm="Etes-vous certain de vouloir retirer cette charge ?" rel="nofollow" class="btn btn-xs btn-danger">Retirer</a<
-                                </td>
-                            </tr>
-                        </tbody>
-                    </table>
-                    <table class="table table-striped table-hover">
-                        <thead>
-                            <tr>
-                                <th>Description</th>
-                                <th>Montant</th>
-                                <th>TVA</th>
-                                <th>Actions</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            @foreach ($charge->items as $item)
-                            <tr>
-                                <td>{{ $item->description }}</td>
-                                <td style="text-align:right">{{ $item->amount }}€</td>
-                                <td>{{ $item->vat->value }}%</td>
-                                <td><a href="{{ URL::route('charge_item_delete', array($charge->id, $item->id)) }}" data-method="delete" data-confirm="Etes-vous certain de vouloir retirer cette ligne ?" rel="nofollow" class="btn btn-xs btn-danger">Retirer</a></td>
-                            </tr>
-                            @endforeach
-                        </tbody>
-                    </table>
-                </div>
-            </div>
-        @endforeach
+        <table class="table">
+            <thead>
+                <tr>
+                    <th>Date</th>
+                    <th>Echéance</th>
+                    <th>Tags</th>
+                    <th>Lignes</th>
+                    <th>Total HT</th>
+                    <th>Total TVA</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+            @foreach ($charges as $charge)
+                <tr>
+                    <td>{{ date('d/m/Y', strtotime($charge->date_charge)) }}</td>
+                    <td>
+                        @if ($charge->deadline)
+                            @if ($charge->daysDeadline > 7 || $charge->date_payment)
+                            <span class="badge badge-success">
+                                @if ($charge->date_payment)
+                                    <i class="fa fa-check"></i>
+                                @else
+                                    <i class="fa fa-close"></i>
+                                @endif
+                            @elseif ($charge->daysDeadline <= 7 && $charge->daysDeadline >= 0)
+                            <span class="badge badge-warning">
+                                <i class="fa fa-close"></i>
+                            @else
+                            <span class="badge badge-danger">
+                                <i class="fa fa-close"></i>
+                            @endif
+                            {{ date('d/m/Y', strtotime($charge->deadline)) }}
+                            </span>
+                        @endif
+                    </td>
+                    <td>
+                        @foreach ($charge->tags as $k => $tag)
+                            @if ($k > 0)
+                                ,
+                            @endif
+                            {{ $tag->name }}
+                        @endforeach
+                    </td>
+                    <td>
+                        @foreach ($charge->items as $item)
+                            <div>{{ $item->description }}</div>
+                        @endforeach
+                    </td>
+                    <td>{{ $charge->total }}€</td>
+                    <td>{{ $charge->total_vat }}€</td>
+                    <td>
+                        @if ($charge->document)
+                            <a href="uploads/charges/{{ $charge->document }}" class="btn btn-xs btn-info" target="_blank"><i class="fa fa-download"></i></a>
+                        @endif
+                        <div class="pull-right">
+                        <a href="{{ URL::route('charge_modify', $charge->id) }}" class="btn btn-xs btn-success">Modifier</a>
+                        <a href="{{ URL::route('charge_delete', array($charge->id)) }}" data-method="delete" data-confirm="Etes-vous certain de vouloir retirer cette charge ?" rel="nofollow" class="btn btn-xs btn-danger">Retirer</a>
+                        </div>
+                    </td>
+                </tr>
+            @endforeach
+            </tbody>
+        </table>
             {{ $charges->links() }}
     @endif
 @stop

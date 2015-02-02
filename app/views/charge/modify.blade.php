@@ -13,6 +13,10 @@
                 {{ Form::hidden('oldsTags', $tags, array('class' => 'oldsTags'))}}
                 {{ Form::label('date_charge', 'Date de la charge') }}
                 <p>{{ Form::text('date_charge', date('d/m/Y', strtotime($charge->date_charge)), array('class' => 'form-control datePicker')) }}</p>
+                {{ Form::label('date_payment', 'Date du paiement') }}
+                <p>{{ Form::text('date_payment', (($charge->date_payment)?date('d/m/Y', strtotime($charge->date_payment)):null), array('class' => 'form-control datePicker')) }}</p>
+                {{ Form::label('deadline', 'Date d\'échéance') }}
+                <p>{{ Form::text('deadline', (($charge->deadline)?date('d/m/Y', strtotime($charge->deadline)):null), array('class' => 'form-control datePicker')) }}</p>
                 {{ Form::label('', 'Tags') }}
                 <p>
                     @if ($charge->tags)
