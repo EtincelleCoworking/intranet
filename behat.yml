@@ -1,0 +1,7 @@
+default:
+    paths:
+        features: app/tests/acceptance/features
+        bootstrap: app/tests/acceptance/contexts
+
+    context:
+        class: FeatureContext

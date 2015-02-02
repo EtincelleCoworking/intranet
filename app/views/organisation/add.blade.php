@@ -5,6 +5,14 @@
 @stop
 
 @section('content')
+    @if ($errors->has())
+    <div class="alert alert-danger">
+        @foreach ($errors->all() as $error)
+            {{ $error }}<br>
+        @endforeach
+    </div>
+    @endif
+
 	<h1>Nouvelle organisation</h1>
 
 	{{ Form::open(array('route' => 'organisation_add')) }}

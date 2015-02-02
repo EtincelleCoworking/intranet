@@ -39,7 +39,7 @@ class VatType extends Eloquent
      */
     public function scopeSelectAll($query)
     {
-        $selectVals = $this->lists('value', 'id');
+        $selectVals = $this->orderBy('value', 'DESC')->lists('value', 'id');
         return $selectVals;
     }
 }

@@ -67,6 +67,7 @@ class InvoiceController extends BaseController
             } else {
                 $invoice->date_payment = null;
             }
+            $invoice->address = Input::get('address');
 
             if ($invoice->save()) {
                 return Redirect::route('invoice_modify', $invoice->id)->with('mSuccess', 'La facture a bien été modifiée');
@@ -104,9 +105,10 @@ class InvoiceController extends BaseController
 			$invoice->days = $days;
             $invoice->date_invoice = $date_explode[2].'-'.$date_explode[1].'-'.$date_explode[0];
 			$invoice->number = Invoice::next_invoice_number(Input::get('type'), $days);
+            $invoice->address = Input::get('address');
 
             $date = new DateTime($invoice->date_invoice);
-            $date->modify('+30 days');
+            $date->modify('+1 month');
             $invoice->deadline = $date->format('Y-m-d');
 
 			if ($invoice->save()) {
@@ -191,10 +193,7 @@ class InvoiceController extends BaseController
                                 <div style="border:1px solid #666; border-radius: 6px; -moz-border-radius: 6px; background-color: #ccc; vertical-align: middle; text-align: center; width: 205px; height: 20px; padding-top:4px; margin-left:130px;">'.(($invoice->type == 'F') ? 'Facture' : 'Devis').' en € n° '.$invoice->ident.'</div>
                                 <div style="margin-top:5px; margin-left:130px; font-size:10px; text-align: right;">Le '.date('d/m/Y', strtotime($invoice->date_invoice)).'</div>
                                 <div style="margin-left:130px; margin-top:10px;">
-                                    '.$invoice->organisation->name.'<br />
-                                    '.$invoice->organisation->address.'<br />
-                                    '.$invoice->organisation->zipcode.' '.$invoice->organisation->city.'<br />
-                                    '.$invoice->organisation->country->name.'
+                                    '.nl2br($invoice->address).'
                                 </div>
                             </td>
                         </tr>

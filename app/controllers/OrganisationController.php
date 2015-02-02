@@ -152,4 +152,13 @@ class OrganisationController extends BaseController
 			return Redirect::route('organisation_modify', $organisation)->with('mError', 'Impossible de retirer cet utilisateur');
 		}
 	}
+
+    /**
+     * Get infos from an organisation (JSON)
+     */
+    public function json_infos($id)
+    {
+        $organisation = Organisation::where('id', $id)->get()->lists('fulladdress', 'id');
+        return Response::json($organisation);
+    }
 }

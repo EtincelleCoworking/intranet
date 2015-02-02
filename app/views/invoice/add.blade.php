@@ -10,6 +10,14 @@
 @stop
 
 @section('content')
+    @if ($errors->has())
+    <div class="alert alert-danger">
+        @foreach ($errors->all() as $error)
+            {{ $error }}<br>
+        @endforeach
+    </div>
+    @endif
+
 	<h1>
         @if ($type == 'F')
         Nouvelle facture
@@ -24,6 +32,8 @@
 		<p>{{ Form::select('user_id', User::Select('Sélectionnez un client'), null, array('id' => 'selectUserId', 'class' => 'form-control')) }}</p>
         {{ Form::label('organisation_id', 'Organisation') }}
 		<p>{{ Form::select('organisation_id', array(), null, array('id' => 'selectOrganisationId', 'class' => 'form-control')) }}</p>
+        {{ Form::label('address', 'Adresse de facturation') }}
+        <p>{{ Form::textarea('address', null, array('id' => 'addressInvoice', 'class' => 'form-control', 'rows' => '5')) }}</p>
         {{ Form::label('date_invoice', 'Date de facturation') }}
 		<p>{{ Form::text('date_invoice', date('d/m/Y'), array('class' => 'form-control datePicker')) }}</p>
 		<p>{{ Form::submit('Ajouter', array('class' => 'btn btn-success')) }}</p>
@@ -50,12 +60,27 @@ $().ready(function(){
 			});
 
 			$('#selectOrganisationId').html(items);
+            getDataOrganisation($('#selectOrganisationId').val());
 		});
 	}
+
+    function getDataOrganisation(id) {
+        var url = "{{ URL::route('organisation_json_infos') }}";
+        var urlFinale = url.replace("%7Bid%7D", id);
+
+        $.getJSON(urlFinale, function(data) {
+            $.each( data, function(key, val) {
+                $('#addressInvoice').html(val);
+            });
+        });
+    }
 
 	$('#selectUserId').on('change', function(e) {
 		getListOrganisations($(this).val());
 	});
+    $('#selectOrganisationId').on('change', function(e) {
+        getDataOrganisation($(this).val());
+    });
 
 	getListOrganisations($('#selectUserId').val());
 

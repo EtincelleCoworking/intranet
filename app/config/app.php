@@ -123,6 +123,7 @@ return array(
 		'Illuminate\Workbench\WorkbenchServiceProvider',
 		'Barryvdh\Debugbar\ServiceProvider',
         'Barryvdh\Snappy\ServiceProvider',
+        'GuilhermeGuitte\BehatLaravel\BehatLaravelServiceProvider',
 	),
 
 	/*

@@ -123,8 +123,13 @@ class Invoice extends Eloquent
 	/**
 	 * Rules Add
 	 */
+    /*
 	public static $rulesAdd = array(
 		'user_id' => 'required|min:1',
 		'organisation_id' => 'required|min:1',
 	);
+    */
+   public static $rulesAdd = array(
+        'address' => 'required|min:1'
+    );
 }
