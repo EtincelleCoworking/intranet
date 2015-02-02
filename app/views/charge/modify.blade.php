@@ -24,7 +24,7 @@
                         @endforeach
                     @endif
                 </p>
-                {{ Form::label('tags', 'Ajouter des tags') }}
+                {{ Form::label('tags', 'Ajouter des tags (séparés par ", ")') }}
                 <p>{{ Form::text('tags', '', array('class' => 'form-control autoGetTags')) }}</p>
                 {{ Form::label('document', 'Facture jointe') }}
                 <p>{{ Form::file('document', null, array('class' => 'form-control')) }}</p>

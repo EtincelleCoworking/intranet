@@ -33,6 +33,14 @@ class Organisation extends Eloquent
         return $this->belongsTo('Country');
     }
 
+    /**
+     * Full address
+     */
+    public function getFulladdressAttribute()
+    {
+        return $this->name."\r\n".$this->address."\r\n".$this->zipcode.' '.$this->city."\r\n".$this->country->name;
+    }
+
 	/**
 	 * Rules
 	 */

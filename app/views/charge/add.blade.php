@@ -5,11 +5,19 @@
 @stop
 
 @section('content')
+    @if ($errors->has())
+    <div class="alert alert-danger">
+        @foreach ($errors->all() as $error)
+            {{ $error }}<br>
+        @endforeach
+    </div>
+    @endif
+
     <h1>Nouvelle charge</h1>
     {{ Form::open(array('route' => array('charge_add'), 'files' => true)) }}
         {{ Form::label('date_charge', 'Date de la charge') }}
         <p>{{ Form::text('date_charge', date('d/m/Y'), array('class' => 'form-control datePicker')) }}</p>
-        {{ Form::label('tags', 'Tags') }}
+        {{ Form::label('tags', 'Tags (séparés par ", ")') }}
         <p>{{ Form::text('tags', null, array('class' => 'form-control autoGetTags')) }}</p>
         {{ Form::label('document', 'Facture jointe') }}
         <p>{{ Form::file('document', null, array('class' => 'form-control')) }}</p>

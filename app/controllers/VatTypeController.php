@@ -14,7 +14,7 @@ class VatTypeController extends BaseController
      */
     public function liste()
     {
-        $vats = VatType::paginate(15);
+        $vats = VatType::orderBy('value', 'DEC')->paginate(15);
 
         $this->layout->content = View::make('vat.liste', array('vats' => $vats));
     }

@@ -58,6 +58,18 @@ class ChargeController extends BaseController
                                 if ($chargeTag->save()) {
                                     $tags_keys[$tag] = $tag;
                                 }
+                            } else if (trim($tag) != '') {
+                                $new_tag = new Tag;
+                                $new_tag->name = $tag;
+                                if ($new_tag->save()) {
+                                    $chargeTag = new ChargeTag;
+                                    $chargeTag->charge_id = $charge->id;
+                                    $chargeTag->tag_id = $new_tag->id;
+
+                                    if ($chargeTag->save()) {
+                                        $tags_keys[$tag] = $tag;
+                                    }
+                                }
                             }
                         }
                     }
@@ -135,6 +147,18 @@ class ChargeController extends BaseController
                                     }
                                 } else {
                                     $tags_keys[$tag] = $tag;
+                                }
+                            } else if (trim($tag) != '') {
+                                $new_tag = new Tag;
+                                $new_tag->name = $tag;
+                                if ($new_tag->save()) {
+                                    $chargeTag = new ChargeTag;
+                                    $chargeTag->charge_id = $charge->id;
+                                    $chargeTag->tag_id = $new_tag->id;
+
+                                    if ($chargeTag->save()) {
+                                        $tags_keys[$tag] = $tag;
+                                    }
                                 }
                             }
                         }

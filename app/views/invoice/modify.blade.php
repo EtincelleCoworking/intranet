@@ -24,8 +24,12 @@
     {{ Form::model($invoice, array('route' => array('invoice_modify', $invoice->id))) }}
         <div class="row">
             <div class="col-md-6">
-                <p>Organisme : {{ $invoice->organisation->name }}</p>
-                <p>Client : {{ $invoice->user->fullname }}</p>
+                @if ($invoice->organisation)
+                    <p>Organisme : {{ $invoice->organisation->name }}</p>
+                    <p>Client : {{ $invoice->user->fullname }}</p>
+                @endif
+                {{ Form::label('address', 'Adresse de facturation') }}
+                <p>{{ Form::textarea('address', $invoice->address, array('class' => 'form-control', 'rows' => '5')) }}</p>
             </div>
             <div class="col-md-6">
                 {{ Form::label('date_invoice', 'Date de création') }}

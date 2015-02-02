@@ -28,8 +28,12 @@
 				<td>{{ $invoice->ident }}</td>
 				<td>{{ $invoice->created_at->format('d/m/Y') }}</td>
 				<td>
-                    <a href="{{ URL::route('organisation_modify', $invoice->organisation->id) }}">{{ $invoice->organisation->name }}</a>
-                    (<a href="{{ URL::route('user_modify', $invoice->user->id) }}">{{ $invoice->user->fullname }}</a>)
+                    @if ($invoice->organisation)
+                        <a href="{{ URL::route('organisation_modify', $invoice->organisation->id) }}">{{ $invoice->organisation->name }}</a>
+                        (<a href="{{ URL::route('user_modify', $invoice->user->id) }}">{{ $invoice->user->fullname }}</a>)
+                    @else
+                        -- Libre --
+                    @endif
 				</td>
                 <td>
                     @if (!$invoice->date_payment)
