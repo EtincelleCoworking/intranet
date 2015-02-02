@@ -8,9 +8,25 @@ class ChargeController extends BaseController
     /**
      * List of charge
      */
-    public function liste()
+    public function liste($filtre)
     {
-        $charges = Charge::paginate(6);
+        $setDate = new DateTime();
+        $date_now = $setDate->format('Y-m-d');
+        $setDate->modify('+7 days');
+        $date_deadline = $setDate->format('Y-m-d');
+        switch ($filtre) {
+            case 'all':
+                $charges = Charge::orderBy('date_charge', 'DESC')->paginate(15);
+                break;
+
+            case 'deadline_close':
+                $charges = Charge::whereBetween('deadline', array($date_now, $date_deadline))->whereNotNull('deadline')->whereNull('date_payment')->orderBy('date_charge', 'DESC')->paginate(15);
+                break;
+
+            case 'deadline_exceeded':
+                $charges = Charge::where('deadline', '<', $date_now)->whereNotNull('deadline')->whereNull('date_payment')->orderBy('date_charge', 'DESC')->paginate(15);
+                break;
+        }
 
         return View::make('charge.liste', array('charges' => $charges));
     }
@@ -31,9 +47,12 @@ class ChargeController extends BaseController
         $validator = Validator::make(Input::all(), Charge::$rulesAdd);
         if (!$validator->fails()) {
             $date_explode = explode('/', Input::get('date_charge'));
+            $date_payment_explode = explode('/', Input::get('date_payment'));
 
             $charge = new Charge;
             $charge->date_charge = $date_explode[2].'-'.$date_explode[1].'-'.$date_explode[0];
+            if (Input::get('date_payment')) { $charge->date_payment = $date_payment_explode[2].'-'.$date_payment_explode[1].'-'.$date_payment_explode[0]; }
+            if (Input::get('deadline')) { $charge->deadline = $deadline_explode[2].'-'.$deadline_explode[1].'-'.$deadline_explode[0]; }
 
             if (Input::file('document')) {
                 $document = time(true).'.'.Input::file('document')->guessClientExtension();
@@ -90,7 +109,7 @@ class ChargeController extends BaseController
     {
         $charge = Charge::find($id);
         if (!$charge) {
-            return Redirect::route('charge_list')->with('mError', 'Cette charge est introuvable !');
+            return Redirect::route('charge_list', 'all')->with('mError', 'Cette charge est introuvable !');
         }
 
         $tags = '';
@@ -109,14 +128,18 @@ class ChargeController extends BaseController
     {
         $charge = Charge::find($id);
         if (!$charge) {
-            return Redirect::route('charge_list')->with('mError', 'Cette charge est introuvable !');
+            return Redirect::route('charge_list', 'all')->with('mError', 'Cette charge est introuvable !');
         }
 
         $validator = Validator::make(Input::all(), Charge::$rules);
         if (!$validator->fails()) {
             $date_explode = explode('/', Input::get('date_charge'));
+            $date_payment_explode = explode('/', Input::get('date_payment'));
+            $deadline_explode = explode('/', Input::get('deadline'));
 
             $charge->date_charge = $date_explode[2].'-'.$date_explode[1].'-'.$date_explode[0];
+            if (Input::get('date_payment')) { $charge->date_payment = $date_payment_explode[2].'-'.$date_payment_explode[1].'-'.$date_payment_explode[0]; }
+            if (Input::get('deadline')) { $charge->deadline = $deadline_explode[2].'-'.$deadline_explode[1].'-'.$deadline_explode[0]; }
 
             if (Input::file('document')) {
                 $document = time(true).'.'.Input::file('document')->guessClientExtension();
@@ -180,7 +203,7 @@ class ChargeController extends BaseController
     {
         $charge = Charge::find($id);
         if (!$charge) {
-            return Redirect::route('charge_list')->with('mError', 'Cette charge est introuvable !');
+            return Redirect::route('charge_list', 'all')->with('mError', 'Cette charge est introuvable !');
         }
 
         ChargeTag::where('charge_id', '=', $id)->delete();
@@ -189,7 +212,7 @@ class ChargeController extends BaseController
             if ($charge->document) {
                 unlink(public_path().'/uploads/charges/'.$charge->document);
             }
-            return Redirect::route('charge_list')->with('mSuccess', 'La charge a bien été supprimée');
+            return Redirect::route('charge_list', 'all')->with('mSuccess', 'La charge a bien été supprimée');
         } else {
             return Redirect::route('charge_modify', $id)->with('mError', 'Impossible de supprimer cette charge');
         }

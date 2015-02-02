@@ -28,6 +28,25 @@ class Charge extends Eloquent
     }
 
     /**
+     * Days before deadline
+     */
+    public function getDaysDeadlineAttribute()
+    {
+        $date1 = new DateTime($this->deadline);
+        $date2 = new DateTime();
+        $diff = $date2->diff($date1);
+
+        if ($this->deadline >= date('Y-m-d')) {
+            return $diff->days;
+        } else {
+            if ($this->deadline) { $prefix = '-'; }
+            else { $prefix = ''; }
+
+            return $prefix.$diff->days;
+        }
+    }
+
+    /**
      * Total
      */
     public function getTotalAttribute()
@@ -37,6 +56,22 @@ class Charge extends Eloquent
         if ($this->items) {
             foreach ($this->items as $key => $value) {
                 $total += $value->amount;
+            }
+        }
+
+        return sprintf('%0.2f', $total);
+    }
+
+    /**
+     * Total TVA
+     */
+    public function getTotalVatAttribute()
+    {
+        $total = 0;
+
+        if ($this->items) {
+            foreach ($this->items as $key => $value) {
+                $total += round((($value->amount * $value->vat->value) / 100), 2);
             }
         }
 

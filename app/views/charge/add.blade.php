@@ -17,6 +17,10 @@
     {{ Form::open(array('route' => array('charge_add'), 'files' => true)) }}
         {{ Form::label('date_charge', 'Date de la charge') }}
         <p>{{ Form::text('date_charge', date('d/m/Y'), array('class' => 'form-control datePicker')) }}</p>
+        {{ Form::label('date_payment', 'Date du paiement') }}
+        <p>{{ Form::text('date_payment', null, array('class' => 'form-control datePicker')) }}</p>
+        {{ Form::label('deadline', 'Date d\'échéance') }}
+        <p>{{ Form::text('deadline', null, array('class' => 'form-control datePicker')) }}</p>
         {{ Form::label('tags', 'Tags (séparés par ", ")') }}
         <p>{{ Form::text('tags', null, array('class' => 'form-control autoGetTags')) }}</p>
         {{ Form::label('document', 'Facture jointe') }}
