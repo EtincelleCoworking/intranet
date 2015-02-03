@@ -325,24 +325,24 @@ class InvoiceController extends BaseController
                                             <th style="text-align:left">Clé</th>
                                         </tr>
                                         <tr style="font-size:10px;">
-                                            <td>10057</td>
-                                            <td>19053</td>
-                                            <td>00020074201</td>
-                                            <td>51</td>
+                                            <td>'.$_ENV['rib_bank'].'</td>
+                                            <td>'.$_ENV['rib_desk'].'</td>
+                                            <td>'.$_ENV['rib_account'].'</td>
+                                            <td>'.$_ENV['rib_key'].'</td>
                                         </tr>
                                         <tr style="font-size:10px;">
                                             <th colspan="3" style="text-align:left">IBAN</th>
                                             <th style="text-align:left">BIC</th>
                                         </tr>
                                         <tr style="font-size:10px;">
-                                            <td colspan="3">FR76 1005 7190 5300 0200 7420 151</td>
-                                            <td>CMCIFRPP</td>
+                                            <td colspan="3">'.$_ENV['rib_iban'].'</td>
+                                            <td>'.$_ENV['rib_bic'].'</td>
                                         </tr>
                                         <tr style="font-size:10px;">
                                             <th colspan="4">Domiciliation</th>
                                         </tr>
                                         <tr style="font-size:10px;">
-                                            <td colspan="4">CIC MONTAUBAN</td>
+                                            <td colspan="4">'.$_ENV['rib_domiciliation'].'</td>
                                         </tr>
                                     </tbody>
                                 </table>
