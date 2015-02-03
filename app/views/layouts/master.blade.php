@@ -27,6 +27,9 @@
     {{ HTML::style('css/jquery-ui.structure.css') }}
     {{ HTML::style('css/jquery-ui.theme.css') }}
 
+    <!-- Select 2 JS -->
+    {{ HTML::style('css/select2.min.css') }}
+
     <!-- App CSS -->
     {{ HTML::style('css/mvpready-admin.css') }}
     {{ HTML::style('css/mvpready-flat.css') }}
@@ -148,6 +151,8 @@
 
     {{ HTML::script('js/mvpready-core.js') }}
     {{ HTML::script('js/mvpready-admin.js') }}
+
+    {{ HTML::script('js/select2/select2.min.js') }}
 
 	{{ HTML::script('js/rails.js') }}
     <script type="text/javascript">

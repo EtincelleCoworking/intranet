@@ -96,6 +96,13 @@ class TagController extends BaseController
             $list = array();
         }
 
-        return Response::json($list);
+        $ajaxArray = array();
+        foreach ($list as $key => $value) {
+            $ajaxArray[] = array(
+                "name" => $value
+            );
+        }
+
+        return Response::json($ajaxArray);
     }
 }
