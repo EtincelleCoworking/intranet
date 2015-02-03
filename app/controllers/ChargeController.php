@@ -94,6 +94,19 @@ class ChargeController extends BaseController
                         }
                     }
                 }
+
+                foreach (Input::get('description') as $key => $it) {
+                    if ($it) {
+                        $item = new ChargeItem;
+                        $item->description = $it;
+                        $item->amount = Input::get('amount.'.$key);
+                        $item->vat_types_id = Input::get('vat_types_id.'.$key);
+
+                        $item->charge()->associate($charge);
+                        $item->save();
+                    }
+                }
+
                 return Redirect::route('charge_modify', $charge->id)->with('mSuccess', 'La charge a bien été ajoutée');
             } else {
                 return Redirect::route('charge_add')->with('mError', 'Impossible de créer cette charge')->withInput();
@@ -187,6 +200,24 @@ class ChargeController extends BaseController
                             }
                         }
                     }
+                }
+
+                foreach ($charge->items as $item) {
+                    ChargeItem::where('id', $item->id)->update(array(
+                        'description' => Input::get('description.'.$item->id),
+                        'amount' => Input::get('amount.'.$item->id),
+                        'vat_types_id' => Input::get('vat_types_id.'.$item->id),
+                    ));
+                }
+
+                if (Input::get('description.0')) {
+                    $item = new ChargeItem;
+                    $item->insert(array(
+                        'charge_id' => $id,
+                        'description' => Input::get('description.0'),
+                        'amount' => Input::get('amount.0'),
+                        'vat_types_id' => Input::get('vat_types_id.0')
+                    ));
                 }
                 return Redirect::route('charge_modify', $charge->id)->with('mSuccess', 'Cette charge a bien été modifiée');
             } else {

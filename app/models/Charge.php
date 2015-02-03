@@ -91,6 +91,7 @@ class Charge extends Eloquent
      */
     public static $rulesAdd = array(
         'date_charge' => 'required',
+        'deadline' => 'required',
         'document'    =>  'mimes:pdf,gif,jpg,png'
     );
 }
