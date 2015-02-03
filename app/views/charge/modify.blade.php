@@ -7,9 +7,9 @@
 @section('content')
     <h1>Modifier une charge</h1>
 
+    {{ Form::model($charge, array('route' => array('charge_modify', $charge->id), 'files' => true)) }}
     <div class="row">
         <div class="col-md-3">
-            {{ Form::model($charge, array('route' => array('charge_modify', $charge->id), 'files' => true)) }}
                 {{ Form::hidden('oldsTags', $tags, array('class' => 'oldsTags'))}}
                 {{ Form::label('date_charge', 'Date de la charge') }}
                 <p>{{ Form::text('date_charge', date('d/m/Y', strtotime($charge->date_charge)), array('class' => 'form-control datePicker')) }}</p>
@@ -34,11 +34,9 @@
                 <p>{{ Form::file('document', null, array('class' => 'form-control')) }}</p>
 
                 <p>{{ Form::submit('Modifier', array('class' => 'btn btn-success')) }}</p>
-            {{ Form::close() }}
         </div>
 
         <div class="col-md-9">
-            {{ Form::model($charge->items, array('route' => array('charge_item_modify', $charge->id))) }}
             <table class="table table-striped table-hover">
                 <thead>
                     <tr>
@@ -67,10 +65,9 @@
                     </tr>
                 </tfoot>
             </table>
-            {{ Form::submit('Modifier les lignes', array('class' => 'btn btn-info')) }}
-            {{ Form::close() }}
         </div>
     </div>
+    {{ Form::close() }}
 @stop
 
 @section('javascript')
