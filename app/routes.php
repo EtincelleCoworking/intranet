@@ -85,6 +85,7 @@ Route::group(['before' => 'superadmin'], function() {
     Route::post('/charge/modify/{id}', array('as' => 'charge_modify_check', 'uses' => 'ChargeController@modify_check'))->where(array('id' => '[0-9]+'));
     Route::delete('/charge/delete/{id}', array('as' => 'charge_delete', 'uses' => 'ChargeController@delete'))->where(array('id' => '[0-9]+'));
     Route::delete('/charge/{charge}/item/{id}/delete', array('as' => 'charge_item_delete', 'uses' => 'ChargeItemController@delete'))->where(array('charge' => '[0-9]+', 'id' => '[0-9]+'));
+    Route::delete('/charge/{charge}/payment/{id}/delete', array('as' => 'charge_payment_delete', 'uses' => 'ChargePaymentController@delete'))->where(array('charge' => '[0-9]+', 'id' => '[0-9]+'));
 });
 
 // JSON

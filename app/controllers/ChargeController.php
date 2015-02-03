@@ -219,6 +219,18 @@ class ChargeController extends BaseController
                         'vat_types_id' => Input::get('vat_types_id.0')
                     ));
                 }
+
+                if (Input::get('payment_description.0')) {
+                    $date_payment_explode = explode('/', Input::get('payment_date.0'));
+                    $payment = new ChargePayment;
+                    $payment->insert(array(
+                        'charge_id' => $id,
+                        'description' => Input::get('payment_description.0'),
+                        'amount' => Input::get('payment_amount.0'),
+                        'mode' => Input::get('payment_mode.0'),
+                        'date_payment' => $date_payment_explode[2].'-'.$date_payment_explode[1].'-'.$date_payment_explode[0]
+                    ));
+                }
                 return Redirect::route('charge_modify', $charge->id)->with('mSuccess', 'Cette charge a bien été modifiée');
             } else {
                 return Redirect::route('charge_modify', $charge->id)->with('mError', 'Impossible de modifier cette charge')->withInput();
