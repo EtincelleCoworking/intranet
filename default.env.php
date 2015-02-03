@@ -27,4 +27,12 @@ return array(
     'mail_username'     =>  null,
     'mail_password'     =>  null,
     'mail_encryption'   =>  null,
+
+    'rib_bank'          =>  '',
+    'rib_desk'          =>  '',
+    'rib_account'       =>  '',
+    'rib_key'           =>  '',
+    'rib_iban'          =>  '',
+    'rib_bic'           =>  '',
+    'rib_domiciliation' =>  '',
 );
