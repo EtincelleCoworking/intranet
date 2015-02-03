@@ -48,6 +48,7 @@ class ChargeController extends BaseController
         if (!$validator->fails()) {
             $date_explode = explode('/', Input::get('date_charge'));
             $date_payment_explode = explode('/', Input::get('date_payment'));
+            $deadline_explode = explode('/', Input::get('deadline'));
 
             $charge = new Charge;
             $charge->date_charge = $date_explode[2].'-'.$date_explode[1].'-'.$date_explode[0];
@@ -63,7 +64,7 @@ class ChargeController extends BaseController
 
             if ($charge->save()) {
                 if (Input::get('tags')) {
-                    $tags = explode(', ', Input::get('tags'));
+                    $tags = Input::get('tags');
 
                     $tags_keys = array();
                     foreach ($tags as $tag) {
@@ -153,7 +154,7 @@ class ChargeController extends BaseController
 
             if ($charge->save()) {
                 if (Input::get('tags')) {
-                    $tags = explode(', ', Input::get('tags'));
+                    $tags = Input::get('tags');
 
                     $tags_keys = array();
                     foreach ($tags as $tag) {

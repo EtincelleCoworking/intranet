@@ -29,7 +29,7 @@
                     @endif
                 </p>
                 {{ Form::label('tags', 'Ajouter des tags (séparés par ", ")') }}
-                <p>{{ Form::text('tags', '', array('class' => 'form-control autoGetTags')) }}</p>
+                <p>{{ Form::select('tags[]', array('test' => 'Test 1', '2' => 'Test 2'), null, array('class' => 'form-control tagsGet', 'multiple' => 'multiple', 'data-tags' => true)) }}</p>
                 {{ Form::label('document', 'Facture jointe') }}
                 <p>{{ Form::file('document', null, array('class' => 'form-control')) }}</p>
 
@@ -87,43 +87,30 @@ $().ready(function(){
 
     $('.datePicker').datepicker();
 
-    $( ".autoGetTags" )
-      .bind( "keydown", function( event ) {
-        if ( event.keyCode === $.ui.keyCode.TAB &&
-            $( this ).autocomplete( "instance" ).menu.active ) {
-          event.preventDefault();
-        }
-      })
-      .autocomplete({
-        source: function( request, response ) {
-          $.getJSON( urlJsonGetTags, {
-            olds: $('.oldsTags').val(),
-            term: extractLast( request.term )
-          }, response );
+    $(".tagsGet").select2({
+        ajax: {
+        url: urlJsonGetTags,
+        dataType: 'json',
+        delay: 250,
+        data: function (params) {
+          return {
+            term: params.term
+          };
         },
-        search: function() {
-          // custom minLength
-          var term = extractLast( this.value );
-          if ( term.length < 2 ) {
-            return false;
-          }
+        processResults: function (data, page) {
+          return {
+            results: $.map(data, function (item) {
+                    return {
+                        text: item.name,
+                        id: item.name
+                    }
+                })
+          };
         },
-        focus: function() {
-          // prevent value inserted on focus
-          return false;
-        },
-        select: function( event, ui ) {
-          var terms = split( this.value );
-          // remove the current input
-          terms.pop();
-          // add the selected item
-          terms.push( ui.item.value );
-          // add placeholder to get the comma-and-space at the end
-          terms.push( "" );
-          this.value = terms.join( ", " );
-          return false;
-        }
-      });
+        cache: true
+      },
+      minimumInputLength: 2
+    });
 });
 </script>
 @stop
