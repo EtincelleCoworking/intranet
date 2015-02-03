@@ -52,7 +52,7 @@
                         <td>{{ Form::text('description['.$item->id.']', $item->description, array('class' => 'form-control')) }}</td>
                         <td>{{ Form::text('amount['.$item->id.']', $item->amount, array('class' => 'form-control')) }}</td>
                         <td>{{ Form::select('vat_types_id['.$item->id.']', VatType::SelectAll(), $item->vat->id, array('class' => 'form-control')) }}</td>
-                        <td><a href="{{ URL::route('charge_item_delete', array($charge->id, $item->id)) }}" data-method="delete" data-confirm="Etes-vous certain de vouloir retirer cette ligne ?" rel="nofollow" class="btn btn-sm btn-danger">Retirer</a</td>
+                        <td><a href="{{ URL::route('charge_item_delete', array($charge->id, $item->id)) }}" data-method="delete" data-confirm="Etes-vous certain de vouloir retirer cette ligne ?" rel="nofollow" class="btn btn-sm btn-danger">Retirer</a></td>
                     </tr>
                     @endforeach
                 </tbody>
@@ -62,6 +62,40 @@
                         <td>{{ Form::text('amount[0]', null, array('class' => 'form-control')) }}</td>
                         <td>{{ Form::select('vat_types_id[0]', VatType::SelectAll(), null, array('class' => 'form-control')) }}</td>
                         <td>&nbsp;</td>
+                    </tr>
+                </tfoot>
+            </table>
+
+            <br />
+            <table class="table table-striped">
+                <caption>Liste des paiements</caption>
+                <thead>
+                    <tr>
+                        <th>Date</th>
+                        <th>Mode</th>
+                        <th>Détails</th>
+                        <th>Montant</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach ($charge->payments as $payment)
+                    <tr>
+                        <td>{{ $payment->date_payment }}</td>
+                        <td>{{ $payment->mode }}</td>
+                        <td>{{ $payment->description }}</td>
+                        <td>{{ $payment->amount }}€</td>
+                        <td><a href="{{ URL::route('charge_payment_delete', array($charge->id,$payment->id)) }}" data-method="delete" data-confirm="Etes-vous certain de vouloir retirer ce paiement ?" rel="nofollow" class="btn btn-xs btn-danger">Retirer</a</td>
+                    </tr>
+                    @endforeach
+                </tbody>
+                <tfoot>
+                    <tr>
+                        <td>{{ Form::text('payment_date[0]', null, array('class' => 'form-control datePicker', 'placeholder' => 'Nouveau paiement')) }}</td>
+                        <td>{{ Form::text('payment_mode[0]', null, array('class' => 'form-control')) }}</td>
+                        <td>{{ Form::text('payment_description[0]', null, array('class' => 'form-control')) }}</td>
+                        <td>{{ Form::text('payment_amount[0]', null, array('class' => 'form-control')) }}</td>
+                        <td></td>
                     </tr>
                 </tfoot>
             </table>

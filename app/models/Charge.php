@@ -28,6 +28,14 @@ class Charge extends Eloquent
     }
 
     /**
+     * Charge has many payments
+     */
+    public function payments()
+    {
+        return $this->hasMany('ChargePayment');
+    }
+
+    /**
      * Days before deadline
      */
     public function getDaysDeadlineAttribute()
