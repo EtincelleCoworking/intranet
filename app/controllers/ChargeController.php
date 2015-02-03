@@ -54,6 +54,7 @@ class ChargeController extends BaseController
             $charge->date_charge = $date_explode[2].'-'.$date_explode[1].'-'.$date_explode[0];
             if (Input::get('date_payment')) { $charge->date_payment = $date_payment_explode[2].'-'.$date_payment_explode[1].'-'.$date_payment_explode[0]; }
             if (Input::get('deadline')) { $charge->deadline = $deadline_explode[2].'-'.$deadline_explode[1].'-'.$deadline_explode[0]; }
+            if (Input::get('organisation_id')) { $charge->organisation_id = Input::get('organisation_id'); }
 
             if (Input::file('document')) {
                 $document = time(true).'.'.Input::file('document')->guessClientExtension();
@@ -154,6 +155,7 @@ class ChargeController extends BaseController
             $charge->date_charge = $date_explode[2].'-'.$date_explode[1].'-'.$date_explode[0];
             if (Input::get('date_payment')) { $charge->date_payment = $date_payment_explode[2].'-'.$date_payment_explode[1].'-'.$date_payment_explode[0]; }
             if (Input::get('deadline')) { $charge->deadline = $deadline_explode[2].'-'.$deadline_explode[1].'-'.$deadline_explode[0]; }
+            if (Input::get('organisation_id')) { $charge->organisation_id = Input::get('organisation_id'); }
 
             if (Input::file('document')) {
                 $document = time(true).'.'.Input::file('document')->guessClientExtension();

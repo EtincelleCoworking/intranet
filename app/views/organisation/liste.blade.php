@@ -14,6 +14,8 @@
 			<tr>
 				<th>#</th>
 				<th>Nom</th>
+                <th>Code achat</th>
+                <th>Code vente</th>
 				<th>Dernière modification</th>
 			</tr>
 		</thead>
@@ -24,6 +26,8 @@
 				<td>
 					<a href="{{ URL::route('organisation_modify', $orga->id) }}">{{ $orga->name }}</a>
 				</td>
+                <td>{{ $orga->code_purchase }}</td>
+                <td>{{ $orga->code_sale }}</td>
 				<td>{{ $orga->updated_at }}</td>
 			</tr>
 		@endforeach

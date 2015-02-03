@@ -36,6 +36,14 @@ class Charge extends Eloquent
     }
 
     /**
+     * Charge belongs to Organisation
+     */
+    public function organisation()
+    {
+        return $this->belongsTo('Organisation');
+    }
+
+    /**
      * Days before deadline
      */
     public function getDaysDeadlineAttribute()

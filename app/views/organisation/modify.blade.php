@@ -20,6 +20,16 @@
         <p>{{ Form::select('country_id', Country::Select(), null, array('class' => 'form-control')) }}</p>
         {{ Form::label('tva_number', 'TVA') }}
         <p>{{ Form::text('tva_number', null, array('class' => 'form-control')) }}</p>
+        <div class="row">
+            <div class="col-md-6">
+                {{ Form::label('code_purchase', 'Code achat') }}
+                <p>{{ Form::text('code_purchase', null, array('class' => 'form-control')) }}</p>
+            </div>
+            <div class="col-md-6">
+                {{ Form::label('code_sale', 'Code vente') }}
+                <p>{{ Form::text('code_sale', null, array('class' => 'form-control')) }}</p>
+            </div>
+        </div>
 		<p>{{ Form::submit('Modifier', array('class' => 'btn btn-success')) }}</p>
 	{{ Form::close() }}
 
