@@ -12,7 +12,7 @@ class ChargeController extends BaseController
     {
         $setDate = new DateTime();
         $date_now = $setDate->format('Y-m-d');
-        $setDate->modify('+7 days');
+        $setDate->modify('+8 days');
         $date_deadline = $setDate->format('Y-m-d');
         switch ($filtre) {
             case 'all':
