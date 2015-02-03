@@ -25,7 +25,9 @@
             {{ Form::label('deadline', 'Date d\'échéance') }}
             <p>{{ Form::text('deadline', null, array('class' => 'form-control datePicker')) }}</p>
             {{ Form::label('tags', 'Tags (séparés par ", ")') }}
-            <p>{{ Form::select('tags[]', array('test' => 'Test 1', '2' => 'Test 2'), null, array('class' => 'form-control tagsGet', 'multiple' => 'multiple', 'data-tags' => true)) }}</p>
+            <p>{{ Form::select('tags[]', array(), null, array('class' => 'form-control tagsGet', 'multiple' => 'multiple', 'data-tags' => true)) }}</p>
+            {{ Form::label('organisation_id', 'Organisation') }}
+            <p>{{ Form::select('organisation_id', array(), null, array('class' => 'form-control organisationGet')) }}</p>
             {{ Form::label('document', 'Facture jointe') }}
             <p>{{ Form::file('document', null, array('class' => 'form-control')) }}</p>
         </div>
@@ -71,6 +73,7 @@ $().ready(function(){
     }
 
     var urlJsonGetTags = "{{ URL::route('tag_json_list') }}";
+    var urlJsonGetOrganisations = "{{ URL::route('organisation_json_list') }}";
 
     $('.datePicker').datepicker();
 
@@ -90,6 +93,33 @@ $().ready(function(){
                     return {
                         text: item.name,
                         id: item.name
+                    }
+                })
+          };
+        },
+        cache: true
+      },
+      minimumInputLength: 2
+    });
+
+    $(".organisationGet").select2({
+        placeholder: "Cherchez une organisation",
+        allowClear: true,
+        ajax: {
+        url: urlJsonGetOrganisations,
+        dataType: 'json',
+        delay: 250,
+        data: function (params) {
+          return {
+            term: params.term
+          };
+        },
+        processResults: function (data, page) {
+          return {
+            results: $.map(data, function (item) {
+                    return {
+                        text: item.name,
+                        id: item.id
                     }
                 })
           };

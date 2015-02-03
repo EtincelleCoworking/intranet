@@ -34,6 +34,14 @@ class Organisation extends Eloquent
     }
 
     /**
+     * Organisation has many charges
+     */
+    public function charges()
+    {
+        return $this->hasMany('Charge');
+    }
+
+    /**
      * Full address
      */
     public function getFulladdressAttribute()

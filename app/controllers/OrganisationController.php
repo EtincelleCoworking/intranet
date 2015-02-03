@@ -49,7 +49,9 @@ class OrganisationController extends BaseController
             $organisation->zipcode = Input::get('zipcode');
             $organisation->city = Input::get('city');
             $organisation->country_id = Input::get('country_id');
-			$organisation->tva_number = Input::get('tva_number');
+            $organisation->tva_number = Input::get('tva_number');
+            $organisation->code_purchase = Input::get('code_purchase');
+			$organisation->code_sale = Input::get('code_sale');
 
 			if ($organisation->save()) {
 				return Redirect::route('organisation_modify', $organisation->id)->with('mSuccess', 'Cet organisme a bien été modifié');
@@ -160,5 +162,27 @@ class OrganisationController extends BaseController
     {
         $organisation = Organisation::where('id', $id)->get()->lists('fulladdress', 'id');
         return Response::json($organisation);
+    }
+
+    /**
+     * Json list
+     */
+    public function json_list()
+    {
+        if (strlen(Input::get('term')) >= 2) {
+            $list = Organisation::where('name', 'LIKE', '%'.Input::get('term').'%')->lists('name', 'id');
+        } else {
+            $list = array();
+        }
+
+        $ajaxArray = array();
+        foreach ($list as $key => $value) {
+            $ajaxArray[] = array(
+                "id" => $key,
+                "name" => $value
+            );
+        }
+
+        return Response::json($ajaxArray);
     }
 }

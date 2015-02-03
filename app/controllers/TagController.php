@@ -91,7 +91,6 @@ class TagController extends BaseController
             } else {
                 $list = Tag::where('name', 'LIKE', '%'.Input::get('term').'%')->lists('name', 'id');
             }
-            //$list = Tag::where('name', 'LIKE', '%'.Input::get('term').'%')->lists('name', 'id');
         } else {
             $list = array();
         }

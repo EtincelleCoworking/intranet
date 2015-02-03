@@ -5,27 +5,27 @@
 
     <div class="row">
         <div class="col-md-4">
-            <div class="portlet">
-                <h4 class="portlet-title"><u>Stats du mois</u></h4>
-                <div class="portlet-body">
-                    <table class="table keyvalue-table">
-                        <tbody>
-                            <tr>
-                                <td class="kv-key"><i class="fa fa-dollar kv-icon kv-icon-primary"></i> CA du mois</td>
-                                <td class="kv-value">{{ (($totalMonth) ? $totalMonth->total : 0) }}€</td>
-                            </tr>
-                            <tr>
-                                <td class="kv-key"><i class="fa fa-dollar kv-icon kv-icon-primary"></i> Charges du mois</td>
-                                <td class="kv-value">
-                                    {{ (($chargesMonth) ? $chargesMonth->total : 0) }}€
-                                    @if ($chargesMonthToPay)
-                                    <br />
-                                    dont reste dû : {{ $chargesMonthToPay->total }}€
-                                    @endif
-                                </td>
-                            </tr>
-                        </tbody>
-                    </table>
+            <div class="panel panel-success">
+                <div class="panel-heading">
+                    <h3 class="panel-title"><i class="fa fa-money fa-2x"></i> <span class="pull-right">CA du mois</span></h3>
+                </div>
+                <div class="panel-body">
+                    <h3 align="center">{{ (($totalMonth) ? $totalMonth->total : 0) }}€</h3>
+                </div>
+            </div>
+
+            <div class="panel panel-danger">
+                <div class="panel-heading">
+                    <h3 class="panel-title"><i class="fa fa-file fa-2x"></i> <span class="pull-right">Charges du mois</span></h3>
+                </div>
+                <div class="panel-body">
+                    <h3 align="center">
+                        {{ (($chargesMonth) ? $chargesMonth->total : 0) }}€
+                        @if ($chargesMonthToPay)
+                        <br />
+                        dont reste dû : {{ $chargesMonthToPay->total }}€
+                        @endif
+                    </h3>
                 </div>
             </div>
         </div>
