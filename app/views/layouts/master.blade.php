@@ -30,6 +30,9 @@
     <!-- Select 2 JS -->
     {{ HTML::style('css/select2.min.css') }}
 
+    <!-- Time Picker JS -->
+    {{ HTML::style('css/jquery.timepicker.css') }}
+
     <!-- App CSS -->
     {{ HTML::style('css/mvpready-admin.css') }}
     {{ HTML::style('css/mvpready-flat.css') }}
@@ -153,6 +156,8 @@
     {{ HTML::script('js/mvpready-admin.js') }}
 
     {{ HTML::script('js/select2/select2.min.js') }}
+
+    {{ HTML::script('js/jquery.timepicker.min.js') }}
 
 	{{ HTML::script('js/rails.js') }}
     <script type="text/javascript">

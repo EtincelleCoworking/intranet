@@ -54,6 +54,12 @@
                     </ul>
                 </li>
 
+                <li class="{{ ((Request::is('pasttime*')) ? 'active' : '') }}">
+                    <a href="{{ URL::route('pasttime_list') }}">
+                        <i class="fa fa-clock-o"></i>
+                        Mon temps passé
+                    </a>
+                </li>
             </ul>
         </nav>
     </div>

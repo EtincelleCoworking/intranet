@@ -20,6 +20,14 @@ class Ressource extends Eloquent
     }
 
     /**
+     * Relation One To Many (Ressource has many Past Times)
+     */
+    public function pasttimes()
+    {
+        return $this->hasMany('PastTime');
+    }
+
+    /**
      * Rules
      */
     public static $rules = array(

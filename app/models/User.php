@@ -66,6 +66,14 @@ class User extends Eloquent implements UserInterface, RemindableInterface {
 	}
 
     /**
+     * Relation One To Many (User has many Past Times)
+     */
+    public function pasttimes()
+    {
+        return $this->hasMany('PastTime');
+    }
+
+    /**
      * Fullname user
      */
     public function getFullnameAttribute()
