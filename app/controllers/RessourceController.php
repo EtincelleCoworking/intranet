@@ -16,7 +16,11 @@ class RessourceController extends BaseController
     {
         $ressources = Ressource::orderBy('order_index', 'ASC')->paginate(15);
         $getLast = Ressource::orderBy('order_index', 'DESC')->first();
-        $last = $getLast->order_index;
+        if ($getLast) {
+            $last = $getLast->order_index;
+        } else {
+            $last = 0;
+        }
 
         $this->layout->content = View::make('ressource.liste', array('ressources' => $ressources, 'last' => $last));
     }
@@ -27,7 +31,11 @@ class RessourceController extends BaseController
     public function add()
     {
         $ressource = Ressource::orderBy('order_index', 'DESC')->first();
-        $last = $ressource->order_index + 1;
+        if ($ressource) {
+            $last = $ressource->order_index + 1;
+        } else {
+            $last = 1;
+        }
 
         $this->layout->content = View::make('ressource.add', array('last' => $last));
     }

@@ -22,6 +22,13 @@ Route::group(['before' => 'member'], function() {
     Route::get('/users/directory', array('as' => 'user_directory', 'uses' => 'UserController@directory'));
     Route::get('/profile/edit', array('as' => 'user_edit', 'uses' => 'UserController@edit'));
     Route::post('/profile/edit', array('as' => 'user_edit', 'uses' => 'UserController@edit_check'));
+    
+    Route::get('/pasttimes', array('as' => 'pasttime_list', 'uses' => 'PastTimeController@liste'));
+    Route::get('/pasttimes/{month}', array('as' => 'pasttime_list_month', 'uses' => 'PastTimeController@liste'))->where(array('month' => '[0-9]{2}'));
+    Route::get('/pasttime/add', array('as' => 'pasttime_add', 'uses' => 'PastTimeController@add'));
+    Route::post('/pasttime/add', array('as' => 'pasttime_add_check', 'uses' => 'PastTimeController@add_check'));
+    Route::get('/pasttime/modify/{id}', array('as' => 'pasttime_modify', 'uses' => 'PastTimeController@modify'))->where(array('id' => '[0-9]+'));
+    Route::post('/pasttime/modify/{id}', array('as' => 'pasttime_modify_check', 'uses' => 'PastTimeController@modify_check'))->where(array('id' => '[0-9]+'));
 });
 
 Route::group(['before' => 'superadmin'], function() {
@@ -86,6 +93,8 @@ Route::group(['before' => 'superadmin'], function() {
     Route::delete('/charge/delete/{id}', array('as' => 'charge_delete', 'uses' => 'ChargeController@delete'))->where(array('id' => '[0-9]+'));
     Route::delete('/charge/{charge}/item/{id}/delete', array('as' => 'charge_item_delete', 'uses' => 'ChargeItemController@delete'))->where(array('charge' => '[0-9]+', 'id' => '[0-9]+'));
     Route::delete('/charge/{charge}/payment/{id}/delete', array('as' => 'charge_payment_delete', 'uses' => 'ChargePaymentController@delete'))->where(array('charge' => '[0-9]+', 'id' => '[0-9]+'));
+
+    Route::delete('/pasttime/delete/{id}', array('as' => 'pasttime_delete', 'uses' => 'PastTimeController@delete'))->where(array('id' => '[0-9]+'));
 });
 
 // JSON

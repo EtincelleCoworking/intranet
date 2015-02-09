@@ -36,14 +36,20 @@
                         </li>
                         <li>
                             <a href="{{ URL::route('user_list') }}">
-                                <i class="fa fa-list"></i>
+                                <i class="fa fa-users"></i>
                                 &nbsp;&nbsp;Utilisateurs
                             </a>
                         </li>
                         <li>
                             <a href="{{ URL::route('organisation_list') }}">
-                                <i class="fa fa-list"></i>
+                                <i class="fa fa-building"></i>
                                 &nbsp;&nbsp;Organisations
+                            </a>
+                        </li>
+                        <li>
+                            <a href="{{ URL::route('pasttime_list') }}">
+                                <i class="fa fa-clock-o"></i>
+                                &nbsp;&nbsp;Temps passés
                             </a>
                         </li>
                     </ul>
