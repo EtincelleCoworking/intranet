@@ -38,7 +38,7 @@ class PastTimeController extends BaseController
             $time->ressource_id = Input::get('ressource_id');
 
             if ($time->save()) {
-                return Redirect::route('pasttime_modify', $time->id)->with('mSuccess', 'Le temps passé a bien été ajouté');
+                return Redirect::route('pasttime_list', $time->id)->with('mSuccess', 'Le temps passé a bien été ajouté');
             } else {
                 return Redirect::route('pasttime_add')->with('mError', 'Impossible de créer ce temps passé')->withInput();
             }
@@ -86,7 +86,7 @@ class PastTimeController extends BaseController
             $time->ressource_id = Input::get('ressource_id');
 
             if ($time->save()) {
-                return Redirect::route('pasttime_modify', $time->id)->with('mSuccess', 'Le temps passé a bien été modifié');
+                return Redirect::route('pasttime_list', $time->id)->with('mSuccess', 'Le temps passé a bien été modifié');
             } else {
                 return Redirect::route('pasttime_modify', $time->id)->with('mError', 'Impossible de modifier ce temps passé')->withInput();
             }

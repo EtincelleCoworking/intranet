@@ -34,7 +34,7 @@
                 <p>{{ Form::select('ressource_id', Ressource::SelectAll('Sélectionnez une ressource'), null, array('class' => 'form-control')) }}</p>
             </div>
             <div class="col-md-2">
-                {{ Form::submit('Aouter', array('class' => 'btn btn-lg btn-success')) }}
+                {{ Form::submit('Ajouter', array('class' => 'btn btn-lg btn-success')) }}
             </div>
         </div>
     {{ Form::close() }}
