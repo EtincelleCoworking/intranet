@@ -37,20 +37,20 @@ class PastTime extends Eloquent
             $date2 = new DateTime($this->time_start);
             $diff = $date2->diff($date1);
 
-            $result = ';';
+            $result = '';
             if($diff->h){
                 if($diff->h > 1){
-                    $result .= sprintf('%d heures ');
+                    $result .= sprintf('%d heures ', $diff->h);
                 }else{
-                    $result .= sprintf('%d heure ');
+                    $result .= sprintf('%d heure ', $diff->h);
 
                 }
             }
             if($diff->i){
                 if($diff->i > 1){
-                    $result .= sprintf('%d minutes');
+                    $result .= sprintf('%d minutes', $diff->i);
                 }else{
-                    $result .= sprintf('%d minute');
+                    $result .= sprintf('%d minute', $diff->i);
 
                 }
             }
