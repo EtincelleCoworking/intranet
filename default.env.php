@@ -27,6 +27,7 @@ return array(
     'mail_username'     =>  null,
     'mail_password'     =>  null,
     'mail_encryption'   =>  null,
+    'mail_port'         =>  587,
 
     'rib_bank'          =>  '',
     'rib_desk'          =>  '',
