@@ -33,6 +33,9 @@
     <!-- Time Picker JS -->
     {{ HTML::style('css/jquery.timepicker.css') }}
 
+    <!-- DateDropper JS -->
+    {{ HTML::style('css/datedropper.css') }}
+
     <!-- App CSS -->
     {{ HTML::style('css/mvpready-admin.css') }}
     {{ HTML::style('css/mvpready-flat.css') }}
@@ -158,6 +161,8 @@
     {{ HTML::script('js/select2/select2.min.js') }}
 
     {{ HTML::script('js/jquery.timepicker.min.js') }}
+
+    {{ HTML::script('js/datedropper.min.js') }}
 
 	{{ HTML::script('js/rails.js') }}
     <script type="text/javascript">
