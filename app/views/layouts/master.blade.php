@@ -166,7 +166,6 @@
 
 	{{ HTML::script('js/rails.js') }}
     <script type="text/javascript">
-    $(document).off('.data-api');
     $('[data-toggle="tooltip"]').tooltip();
     $.datepicker.setDefaults( $.datepicker.regional[ "fr" ] );
     </script>
