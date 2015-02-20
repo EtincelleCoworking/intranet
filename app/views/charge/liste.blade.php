@@ -5,12 +5,16 @@
 @stop
 
 @section('content')
-
     <div class="pull-right">
-        <a href="{{ URL::route('charge_list', 'all') }}" class="btn btn-info">Toutes</a>
-        <a href="{{ URL::route('charge_list', 'deadline_close') }}" class="btn btn-info">Proches</a>
-        <a href="{{ URL::route('charge_list', 'deadline_exceeded') }}" class="btn btn-info">Dépassées</a>
-        <a href="{{ URL::route('charge_add') }}" class="btn btn-primary">Ajouter une charge</a>
+        {{ Form::open(array('route' => array('charge_list', $filtre))) }}
+            <span class="btn btn-info">
+                <div class="col-md-3 input-group-sm">{{ Form::select('type', array('all' => 'Toutes', 'deadline_close' => 'Proches', 'deadline_exceeded' => 'Dépassées'), ((Session::get('filtre_charge.type'))?:'all'), array('class' => 'form-control')) }}</div>
+                <div class="col-md-3 input-group-sm"><input type="text" name="filtre_month" value="{{ ((Session::get('filtre_charge.month'))?:date('m')) }}" class="monthDropper form-control"></div>
+                <div class="col-md-3 input-group-sm"><input type="text" name="filtre_year" value="{{ ((Session::get('filtre_charge.year'))?:date('Y')) }}" class="yearDropper form-control"></div>
+                <div class="col-md-3">{{ Form::submit('Ok', array('class' => 'btn btn-sm btn-default')) }}</div>
+            </span>
+        {{ Form::close() }}
+        <a href="{{ URL::route('charge_add') }}" class="btn btn-lg btn-primary">Ajouter une charge</a>
     </div>
 
     <h1>Liste des charges</h1>
@@ -83,4 +87,14 @@
         </table>
             {{ $charges->links() }}
     @endif
+@stop
+
+@section('javascript')
+<script type="text/javascript">
+$().ready(function(){
+    $('.yearDropper').dateDropper({format: "Y", placeholder: "{{ ((Session::get('filtre_charge.year'))?:date('Y')) }}"});
+    $('.monthDropper').dateDropper({format: "m", placeholder: "{{ ((Session::get('filtre_charge.month'))?:date('m')) }}"});
+    $('.test').dateDropper({format: "m"});
+});
+</script>
 @stop

@@ -37,7 +37,11 @@ class PastTime extends Eloquent
             $date2 = new DateTime($this->time_start);
             $diff = $date2->diff($date1);
 
-            return $diff->h.' heure(s) '.$diff->i.' minute(s)';
+            if ($diff->i) {
+                return $diff->h.' heure(s) '.$diff->i.' minute(s)';
+            } else {
+                return $diff->h.' heure(s)';
+            }
         } else {
             return false;
         }

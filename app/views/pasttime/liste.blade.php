@@ -13,35 +13,44 @@
     @if(count($times)==0)
         <p>Aucune donnée.</p>
     @else
-        <table class="table table-striped">
-            <thead>
-                <tr>
-                    <th>Date</th>
-                    @if (Auth::user()->role == 'superadmin')<th>Utilisateur</th>@endif
-                    <th>Ressource</th>
-                    <th>Arrivé</th>
-                    <th>Départ</th>
-                    <th>Total</th>
-                    <th>Actions</th>
-                </tr>
-            </thead>
-            <tbody>
-                @foreach ($times as $time)
-                <tr>
-                    <td>{{ date('d/m/Y', strtotime($time->date_past)) }}</td>
-                    @if (Auth::user()->role == 'superadmin')<td>{{ $time->user->fullname }}</td>@endif
-                    <td>{{ $time->ressource->name }}</td>
-                    <td>{{ date('H:i', strtotime($time->time_start)) }}</td>
-                    <td>{{ date('H:i', strtotime($time->time_end)) }}</td>
-                    <td>{{ $time->past_time }}</td>
-                    <td>
-                        <a href="{{ URL::route('pasttime_modify', $time->id) }}" class="btn btn-xs btn-success">Modifier</a>
-                        @if (Auth::user()->role == 'superadmin')<a href="{{ URL::route('pasttime_delete', $time->id) }}" class="btn btn-xs btn-danger" data-method="delete" data-confirm="Etes-vous certain de vouloir supprimer cette ligne ?" rel="nofollow">Retirer</a>@endif
-                    </td>
-                </tr>
-                @endforeach
-            </tbody>
-        </table>
-        {{ $times->links() }}
+        <div class="row">
+            <div class="col-md-12">
+                Voir ici pour les stats mensuelles
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-12">
+                <table class="table table-striped">
+                    <thead>
+                        <tr>
+                            <th>Date</th>
+                            @if (Auth::user()->role == 'superadmin')<th>Utilisateur</th>@endif
+                            <th>Ressource</th>
+                            <th>Arrivé</th>
+                            <th>Départ</th>
+                            <th>Total</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach ($times as $time)
+                        <tr>
+                            <td>{{ date('d/m/Y', strtotime($time->date_past)) }}</td>
+                            @if (Auth::user()->role == 'superadmin')<td>{{ $time->user->fullname }}</td>@endif
+                            <td>{{ $time->ressource->name }}</td>
+                            <td>{{ date('H:i', strtotime($time->time_start)) }}</td>
+                            <td>{{ date('H:i', strtotime($time->time_end)) }}</td>
+                            <td>{{ $time->past_time }}</td>
+                            <td>
+                                <a href="{{ URL::route('pasttime_modify', $time->id) }}" class="btn btn-xs btn-success">Modifier</a>
+                                @if (Auth::user()->role == 'superadmin')<a href="{{ URL::route('pasttime_delete', $time->id) }}" class="btn btn-xs btn-danger" data-method="delete" data-confirm="Etes-vous certain de vouloir supprimer cette ligne ?" rel="nofollow">Retirer</a>@endif
+                            </td>
+                        </tr>
+                        @endforeach
+                    </tbody>
+                </table>
+                {{ $times->links() }}
+            </div>
+        </div>
     @endif
 @stop

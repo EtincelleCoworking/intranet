@@ -85,7 +85,7 @@ Route::group(['before' => 'superadmin'], function() {
     Route::get('/tag/modify/{id}', array('as' => 'tag_modify', 'uses' => 'TagController@modify'))->where(array('id' => '[0-9]+'));
     Route::post('/tag/modify/{id}', array('as' => 'tag_modify_check', 'uses' => 'TagController@modify_check'))->where(array('id' => '[0-9]+'));
 
-    Route::get('/charges/{filtre}', array('as' => 'charge_list', 'uses' => 'ChargeController@liste'))->where(array('filtre' => '[a-z-_]+'));
+    Route::any('/charges/{filtre}', array('as' => 'charge_list', 'uses' => 'ChargeController@liste'))->where(array('filtre' => '[a-z-_]+'));
     Route::get('/charge/add', array('as' => 'charge_add', 'uses' => 'ChargeController@add'));
     Route::post('/charge/add', array('as' => 'charge_add_check', 'uses' => 'ChargeController@add_check'));
     Route::get('/charge/modify/{id}', array('as' => 'charge_modify', 'uses' => 'ChargeController@modify'))->where(array('id' => '[0-9]+'));

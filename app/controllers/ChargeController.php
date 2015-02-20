@@ -10,13 +10,32 @@ class ChargeController extends BaseController
      */
     public function liste($filtre)
     {
+        if (Input::has('type')) {
+            Session::put('filtre_charge.type', Input::get('type'));
+            if (Input::has('filtre_month') && Input::has('filtre_year')) {
+                Session::put('filtre_charge.month', Input::get('filtre_month'));
+                Session::put('filtre_charge.year', Input::get('filtre_year'));
+            }
+        }
+
+        if (Session::has('filtre_charge.type')) {
+            $filtre = Session::get('filtre_charge.type');
+        }
+        if (Session::has('filtre_charge.month')) {
+            $date_filtre_start = Session::get('filtre_charge.year').'-'.Session::get('filtre_charge.month').'-01';
+            $date_filtre_end = Session::get('filtre_charge.year').'-'.Session::get('filtre_charge.month').'-'.date('t', Session::get('filtre_charge.month'));
+        } else {
+            $date_filtre_start = date('Y-m').'-01';
+            $date_filtre_end = date('Y-m').'-'.date('t', Session::get('filtre_charge.month'));
+        }
+
         $setDate = new DateTime();
         $date_now = $setDate->format('Y-m-d');
         $setDate->modify('+8 days');
         $date_deadline = $setDate->format('Y-m-d');
         switch ($filtre) {
             case 'all':
-                $charges = Charge::orderBy('date_charge', 'DESC')->paginate(15);
+                $charges = Charge::whereBetween('date_charge', array($date_filtre_start, $date_filtre_end))->orderBy('date_charge', 'DESC')->paginate(15);
                 break;
 
             case 'deadline_close':
@@ -28,7 +47,7 @@ class ChargeController extends BaseController
                 break;
         }
 
-        return View::make('charge.liste', array('charges' => $charges));
+        return View::make('charge.liste', array('charges' => $charges, 'filtre' => $filtre));
     }
 
     /**

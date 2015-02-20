@@ -9,10 +9,26 @@ class PastTimeController extends BaseController
         if (!$month) { $month = str_pad(date('m'), 2, 0, STR_PAD_LEFT); }
         if (Auth::user()->role == 'member') {
             $times = PastTime::where(DB::raw('MONTH(date_past)'), '=', $month)->where('user_id', '=', Auth::user()->id)->orderBy('date_past', 'DESC')->paginate(15);
+
         } else {
             $times = PastTime::where(DB::raw('MONTH(date_past)'), '=', $month)->orderBy('date_past', 'DESC')->paginate(15);
         }
 
+        $times = DB::table('past_times as pt')
+                        ->join('ressources as r', 'r.id', '=', 'pt.ressource_id')
+                        ->where(DB::raw('MONTH(date_past)'), '=', $month)
+                        ->orderBy('date_past', 'DESC')
+                        ->get();
+
+
+        $ressources = DB::table('past_times')
+                        ->select(DB::raw('HOUR(SUM(TIMEDIFF(past_times.time_start,past_times.time_end))) as totalHours, MINUTE(SUM(TIMEDIFF(past_times.time_start,past_times.time_end))) as totalMinutes'), 'ressources.name')
+                        ->join('ressources', 'ressources.id', '=', 'past_times.ressource_id')
+                        ->where(DB::raw('MONTH(past_times.date_past)'), '=', $month)
+                        ->groupBy('ressources.id')
+                        ->orderBy('ressources.name', 'ASC')
+                        ->get();
+        dump($ressources);
         return View::make('pasttime.liste', array('times' => $times));
     }
 
