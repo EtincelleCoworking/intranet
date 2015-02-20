@@ -36,7 +36,7 @@
                     <td>
                         {{ $time->past_time }}
                         @if ($time->comment)
-                            <span data-toggle="tooltip" data-placement="left" title="Tooltip on left"><i class="fa fa-question-circle"></i></span>
+                            <span data-toggle="tooltip" data-placement="left" title="{{ $time->comment }}"><i class="fa fa-question-circle"></i></span>
                         @endif
                     </td>
                     <td>
