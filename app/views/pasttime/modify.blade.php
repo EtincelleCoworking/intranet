@@ -37,6 +37,12 @@
                 {{ Form::submit('Modifier', array('class' => 'btn btn-lg btn-success')) }}
             </div>
         </div>
+        <div class="row">
+            <div class="col-md-12">
+                {{ Form::label('comment', 'Commentaire') }}
+                <p>{{ Form::text('comment', $time->comment, array('class' => 'form-control')) }}</p>
+            </div>
+        </div>
     {{ Form::close() }}
 @stop
 

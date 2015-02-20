@@ -51,6 +51,8 @@
                 <p>{{ Form::text('twitter', null, array('class' => 'form-control')) }}</p>
                 {{ Form::label('website', 'Site internet') }}
                 <p>{{ Form::text('website', null, array('class' => 'form-control')) }}</p>
+                {{ Form::label('phone', 'Téléphone') }}
+                <p>{{ Form::text('phone', null, array('class' => 'form-control')) }}</p>
             </div>
             <div role="tabpanel" class="tab-pane" id="competence">
                 <div class="row">

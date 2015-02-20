@@ -33,7 +33,12 @@
                     <td>{{ $time->ressource->name }}</td>
                     <td>{{ date('H:i', strtotime($time->time_start)) }}</td>
                     <td>{{ date('H:i', strtotime($time->time_end)) }}</td>
-                    <td>{{ $time->past_time }}</td>
+                    <td>
+                        {{ $time->past_time }}
+                        @if ($time->comment)
+                            <span data-toggle="tooltip" data-placement="left" title="Tooltip on left"><i class="fa fa-question-circle"></i></span>
+                        @endif
+                    </td>
                     <td>
                         <a href="{{ URL::route('pasttime_modify', $time->id) }}" class="btn btn-xs btn-success">Modifier</a>
                         @if (Auth::user()->role == 'superadmin')<a href="{{ URL::route('pasttime_delete', $time->id) }}" class="btn btn-xs btn-danger" data-method="delete" data-confirm="Etes-vous certain de vouloir supprimer cette ligne ?" rel="nofollow">Supprimer</a>@endif

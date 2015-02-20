@@ -36,6 +36,7 @@ class PastTimeController extends BaseController
                 $time->user_id = Auth::user()->id;
             }
             $time->ressource_id = Input::get('ressource_id');
+            $time->comment = Input::get('comment');
 
             if ($time->save()) {
                 return Redirect::route('pasttime_list', $time->id)->with('mSuccess', 'Le temps passé a bien été ajouté');
@@ -84,6 +85,7 @@ class PastTimeController extends BaseController
                 $time->user_id = Auth::user()->id;
             }
             $time->ressource_id = Input::get('ressource_id');
+            $time->comment = Input::get('comment');
 
             if ($time->save()) {
                 return Redirect::route('pasttime_list', $time->id)->with('mSuccess', 'Le temps passé a bien été modifié');

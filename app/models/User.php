@@ -94,6 +94,21 @@ class User extends Eloquent implements UserInterface, RemindableInterface {
         return $this->firstname.' '.$this->lastname.' ('.$organisation.')';
     }
 
+    /**
+     * List of skills
+     */
+    public function getSkillsAttribute()
+    {
+        $skills = '';
+        for ($i=1; $i<=4; $i++) {
+        	if ($this->{'competence'.$i.'_title'}) {
+	        	if ($skills != '') { $skills .= ', '; }
+	        	$skills .= $this->{'competence'.$i.'_title'}.' ('.$this->{'competence'.$i.'_value'}.'%)';
+	        }
+        }
+        return $skills;
+    }
+
 	/**
 	 * Get list of users
 	 */

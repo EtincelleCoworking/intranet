@@ -71,7 +71,7 @@
                                 @if (Auth::user()->avatar)
                                     {{ HTML::image('uploads/avatars/'.Auth::user()->avatar, '', array('class' => 'navbar-profile-avatar')) }}
                                 @else
-                                    {{ HTML::image('img/avatars/avatar-1-xs.jpg', '', array('class' => 'navbar-profile-avatar')) }}
+                                    {{ HTML::image('img/avatars/avatar.png', '', array('class' => 'navbar-profile-avatar')) }}
                                 @endif
                                 <span class="navbar-profile-label">{{ Auth::user()->fullname }} &nbsp;</span>
                                 <i class="fa fa-caret-down"></i>
@@ -166,6 +166,8 @@
 
 	{{ HTML::script('js/rails.js') }}
     <script type="text/javascript">
+    $(document).off('.data-api');
+    $('[data-toggle="tooltip"]').tooltip();
     $.datepicker.setDefaults( $.datepicker.regional[ "fr" ] );
     </script>
 	@yield('javascript')
