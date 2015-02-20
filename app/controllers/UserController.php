@@ -160,6 +160,7 @@ class UserController extends BaseController
                 $user->is_member = Input::get('is_member');
                 $user->twitter = Input::get('twitter');
                 $user->website = Input::get('website');
+                $user->phone = Input::get('phone');
                 $user->role = Input::get('role');
 
                 $user->competence1_title = Input::get('competence1_title');
@@ -254,6 +255,7 @@ class UserController extends BaseController
                 $user->bio_long = Input::get('bio_long');
                 $user->twitter = Input::get('twitter');
                 $user->website = Input::get('website');
+                $user->phone = Input::get('phone');
 
                 $user->competence1_title = Input::get('competence1_title');
                 $user->competence1_value = Input::get('competence1_value');

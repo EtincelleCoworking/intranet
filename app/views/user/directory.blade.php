@@ -12,12 +12,20 @@
             <tr>
                 <th>Nom complet</th>
                 <th>Organisations</th>
+                <th>Compétences</th>
             </tr>
         </thead>
         <tbody>
         @foreach ($users as $user)
             <tr>
-                <td><a href="{{ URL::route('user_profile', $user->id) }}">{{ $user->fullname }}</a></td>
+                <td>
+                    @if ($user->avatar)
+                        {{ HTML::image('uploads/avatars/'.$user->avatar, '', array('class' => 'navbar-profile-avatar')) }}
+                    @else
+                        {{ HTML::image('img/avatars/avatar.png', '', array('class' => 'navbar-profile-avatar')) }}
+                    @endif
+                    <a href="{{ URL::route('user_profile', $user->id) }}">{{ $user->fullname }}</a>
+                </td>
                 <td>
                     @foreach ($user->organisations as $k => $organisation)
                         @if ($k > 0)
@@ -26,6 +34,7 @@
                         {{ $organisation->name }}
                     @endforeach
                 </td>
+                <td>{{ $user->skills }}</td>
             </tr>
         @endforeach
         </tbody>

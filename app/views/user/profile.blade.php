@@ -11,7 +11,7 @@
                 @if ($user->avatar)
                     {{ HTML::image('uploads/avatars/'.$user->avatar, '', array('class' => 'profile-avatar-img thumbnail')) }}
                 @else
-                    {{ HTML::image('img/avatars/avatar-2-lg.jpg', '', array('class' => 'profile-avatar-img thumbnail')) }}
+                    {{ HTML::image('img/avatars/avatar.png', '', array('class' => 'profile-avatar-img thumbnail')) }}
                 @endif
             </div> <!-- /.profile-avatar -->
             @if (Auth::user()->id == $user->id)
@@ -28,9 +28,9 @@
             <hr>
 
             <ul class="icons-list">
-                <li><i class="icon-li fa fa-envelope"></i> {{ $user->email }}</li>
+                <li><i class="icon-li fa fa-envelope"></i> {{ HTML::mailto($user->email, 'Envoyer un email') }}</li>
                 <li><i class="icon-li fa fa-globe"></i> {{ link_to($user->website) }}</li>
-                <li><i class="icon-li fa fa-twitter"></i> twitter.com/{{ $user->twitter }}</li>
+                <li><i class="icon-li fa fa-twitter"></i> {{ link_to('http://twitter.com/'.$user->twitter) }}</li>
             </ul>
 
             <br>
