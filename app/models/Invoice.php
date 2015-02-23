@@ -14,11 +14,19 @@ class Invoice extends Eloquent
 
     public function scopeInvoiceOnly($query)
     {
-        return $query->where('type', '=', 'F');
+        return $query->whereType('F')->whereNull('date_canceled');
     }
-    public function scopeQuoteOnly($query)
+    public function scopeQuoteOnly($query, $filtre)
     {
-        return $query->where('type', '=', 'D');
+    	if ($filtre == 'canceled') {
+    		return $query->whereType('D')->whereNotNull('date_canceled');
+    	} else {
+    		return $query->whereType('D')->whereNull('date_canceled');
+    	}
+    }
+    public function scopeQuoteCanceled($query)
+    {
+    	return $query->whereNotNull('date_canceled');
     }
 
     /**
@@ -123,12 +131,6 @@ class Invoice extends Eloquent
 	/**
 	 * Rules Add
 	 */
-    /*
-	public static $rulesAdd = array(
-		'user_id' => 'required|min:1',
-		'organisation_id' => 'required|min:1',
-	);
-    */
    public static $rulesAdd = array(
         'address' => 'required|min:1'
     );

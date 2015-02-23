@@ -23,7 +23,7 @@ Route::group(['before' => 'member'], function() {
     Route::get('/profile/edit', array('as' => 'user_edit', 'uses' => 'UserController@edit'));
     Route::post('/profile/edit', array('as' => 'user_edit', 'uses' => 'UserController@edit_check'));
     
-    Route::get('/pasttimes', array('as' => 'pasttime_list', 'uses' => 'PastTimeController@liste'));
+    Route::any('/pasttimes', array('as' => 'pasttime_list', 'uses' => 'PastTimeController@liste'));
     Route::get('/pasttimes/{month}', array('as' => 'pasttime_list_month', 'uses' => 'PastTimeController@liste'))->where(array('month' => '[0-9]{2}'));
     Route::get('/pasttime/add', array('as' => 'pasttime_add', 'uses' => 'PastTimeController@add'));
     Route::post('/pasttime/add', array('as' => 'pasttime_add_check', 'uses' => 'PastTimeController@add_check'));
@@ -39,12 +39,14 @@ Route::group(['before' => 'superadmin'], function() {
 	Route::post('/user/modify/{id}', array('as' => 'user_modify_check', 'uses' => 'UserController@modify_check'))->where(array('id' => '[0-9]+'));
 
 	Route::get('/invoices', array('as' => 'invoice_list', 'uses' => 'InvoiceController@invoiceList'));
-	Route::get('/quotes', array('as' => 'quote_list', 'uses' => 'InvoiceController@quoteList'));
-	Route::get('/invoice/add/{type}', array('as' => 'invoice_add', 'uses' => 'InvoiceController@add'))->where(array('type' => '[A-Z]{1}'));
+	Route::get('/quotes/{filtre}', array('as' => 'quote_list', 'uses' => 'InvoiceController@quoteList'));
+    Route::get('/invoice/add/{type}', array('as' => 'invoice_add', 'uses' => 'InvoiceController@add'))->where(array('type' => '[A-Z]{1}'));
+	Route::get('/invoice/add/{type}/{organisation}', array('as' => 'invoice_add_organisation', 'uses' => 'InvoiceController@add'))->where(array('type' => '[A-Z]{1}', 'organisation' => '[0-9]+'));
 	Route::post('/invoice/add/{type}', array('as' => 'invoice_add_check', 'uses' => 'InvoiceController@add_check'))->where(array('type' => '[A-Z]{1}'));
 	Route::get('/invoice/modify/{id}', array('as' => 'invoice_modify', 'uses' => 'InvoiceController@modify'))->where(array('id' => '[0-9]+'));
 	Route::post('/invoice/modify/{id}', array('as' => 'invoice_modify_check', 'uses' => 'InvoiceController@modify_check'))->where(array('id' => '[0-9]+'));
     Route::get('/invoice/validate/{id}', array('as' => 'invoice_validate', 'uses' => 'InvoiceController@validate'))->where(array('id' => '[0-9]+'));
+    Route::get('/invoice/canceled/{id}', array('as' => 'invoice_cancel', 'uses' => 'InvoiceController@cancel'))->where(array('id' => '[0-9]+'));
 	Route::get('/invoice/delete/{id}', array('as' => 'invoice_delete', 'uses' => 'InvoiceController@delete'))->where(array('id' => '[0-9]+'));
     Route::get('/invoice/{id}/print/pdf', array('as' => 'invoice_print_pdf', 'uses' => 'InvoiceController@print_pdf'))->where(array('id' => '[0-9]+'));
 	Route::post('/invoice/{id}/item/modify', array('as' => 'invoice_item_modify', 'uses' => 'InvoiceItemController@modify'))->where(array('id' => '[0-9]+'));

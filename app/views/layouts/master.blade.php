@@ -99,7 +99,7 @@
         </header>
 
         @if (Auth::user())
-            @include('layouts.menu.'.Auth::user()->role);
+            @include('layouts.menu.'.Auth::user()->role)
         @endif
 
         <div class="content">
@@ -127,6 +127,14 @@
     					{{ Session::get('mInfo') }}
     				</div>
     			@endif
+
+                @if ($errors->has())
+                <div class="alert alert-danger">
+                    @foreach ($errors->all() as $error)
+                        {{ $error }}<br>
+                    @endforeach
+                </div>
+                @endif
 
     			@yield('content')
     		</div>

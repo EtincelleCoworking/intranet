@@ -95,10 +95,13 @@
     @if ($invoice->type == 'D')
     <hr>
     <div class="row">
-        <div class="col-md-6" align="center">
+        <div class="col-md-4" align="center">
             <a href="{{ URL::route('invoice_validate', $invoice->id) }}" data-method="get" data-confirm="Etes-vous certain de vouloir passer ce devis en facture ?" rel="nofollow" class="btn btn-success">Passer en facture</a>
         </div>
-        <div class="col-md-6" align="center">
+        <div class="col-md-4" align="center">
+            <a href="{{ URL::route('invoice_cancel', $invoice->id) }}" data-method="get" data-confirm="Etes-vous certain de vouloir passer ce devis en refusé ?" rel="nofollow" class="btn btn-warning">Devis refusé</a>
+        </div>
+        <div class="col-md-4" align="center">
             <a href="{{ URL::route('invoice_delete', $invoice->id) }}" data-method="get" data-confirm="Etes-vous certain de vouloir supprimer ce devis ?" rel="nofollow" class="btn btn-danger">Supprimer</a>
         </div>
     </div>

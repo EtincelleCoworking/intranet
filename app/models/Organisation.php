@@ -34,6 +34,14 @@ class Organisation extends Eloquent
     }
 
     /**
+     * Organisation has many invoices
+     */
+    public function invoices()
+    {
+        return $this->hasMany('Invoice');
+    }
+
+    /**
      * Organisation has many charges
      */
     public function charges()

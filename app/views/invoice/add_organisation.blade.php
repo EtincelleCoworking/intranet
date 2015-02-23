@@ -27,11 +27,9 @@
     </h1>
 	{{ Form::open(array('route' => array('invoice_add_check', $type))) }}
         {{ Form::hidden('type', $type) }}
-		<input type="hidden" name="last_orga" id="oldOrganisation" value="{{ $last_organisation_id }}">
+        {{ Form::hidden('organisation_id', $organisation, array('id' => 'orgaID')) }}
         {{ Form::label('user_id', 'Client') }}
-		<p>{{ Form::select('user_id', User::Select('Sélectionnez un client'), null, array('id' => 'selectUserId', 'class' => 'form-control')) }}</p>
-        {{ Form::label('organisation_id', 'Organisation') }}
-		<p>{{ Form::select('organisation_id', array(), null, array('id' => 'selectOrganisationId', 'class' => 'form-control')) }}</p>
+		<p>{{ Form::select('user_id', User::SelectInOrganisation($organisation, 'Sélectionnez un client'), null, array('class' => 'form-control')) }}</p>
         {{ Form::label('address', 'Adresse de facturation') }}
         <p>{{ Form::textarea('address', null, array('id' => 'addressInvoice', 'class' => 'form-control', 'rows' => '5')) }}</p>
         {{ Form::label('date_invoice', 'Date de facturation') }}
@@ -43,28 +41,7 @@
 @section('javascript')
 <script type="text/javascript">
 $().ready(function(){
-	var oldOrganisation = $('#oldOrganisation').val();
-	function getListOrganisations(id) {
-		var url = "{{ URL::route('user_json_organisations') }}";
-		var urlFinale = url.replace("%7Bid%7D", id);
-
-		$('#selectOrganisationId').html('');
-		$.getJSON(urlFinale, function(data) {
-			var items = '';
-			$.each( data, function(key, val) {
-				if (oldOrganisation == key) {
-					items = items + '<option value="' + key + '" selected>' + val + '</option>';
-				} else {
-					items = items + '<option value="' + key + '">' + val + '</option>';
-				}
-			});
-
-			$('#selectOrganisationId').html(items);
-            getDataOrganisation($('#selectOrganisationId').val());
-		});
-	}
-
-    function getDataOrganisation(id) {
+	function getDataOrganisation(id) {
         var url = "{{ URL::route('organisation_json_infos') }}";
         var urlFinale = url.replace("%7Bid%7D", id);
 
@@ -74,16 +51,8 @@ $().ready(function(){
             });
         });
     }
-
-	$('#selectUserId').on('change', function(e) {
-		getListOrganisations($(this).val());
-	});
-    $('#selectOrganisationId').on('change', function(e) {
-        getDataOrganisation($(this).val());
-    });
-
-	getListOrganisations($('#selectUserId').val());
-
+    
+	getDataOrganisation($('#orgaID').val());
     $('.datePicker').datepicker();
 });
 </script>

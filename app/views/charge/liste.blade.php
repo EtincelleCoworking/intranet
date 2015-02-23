@@ -93,9 +93,8 @@
 @section('javascript')
 <script type="text/javascript">
 $().ready(function(){
-    $('.yearDropper').dateDropper({format: "Y", placeholder: "{{ ((Session::get('filtre_charge.year'))?:date('Y')) }}"});
-    $('.monthDropper').dateDropper({format: "m", placeholder: "{{ ((Session::get('filtre_charge.month'))?:date('m')) }}"});
-    $('.test').dateDropper({format: "m"});
+    $('.yearDropper').dateDropper({animate_current: false, format: "Y", placeholder: "{{ ((Session::get('filtre_charge.year'))?:date('Y')) }}"});
+    $('.monthDropper').dateDropper({animate_current: false, format: "m", placeholder: "{{ ((Session::get('filtre_charge.month'))?:date('m')) }}"});
 });
 </script>
 @stop

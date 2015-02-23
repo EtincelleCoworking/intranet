@@ -64,7 +64,7 @@
 		</tbody>
 		<tfoot>
 			<tr>
-				<td colspan="5">{{ $invoices->links() }}</td>
+				<td colspan="7">{{ $invoices->links() }}</td>
 			</tr>
 		</tfoot>
 	</table>

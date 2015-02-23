@@ -40,6 +40,9 @@ class PastTime extends Eloquent
             if ($diff->i) {
                 return $diff->h.' heure(s) '.$diff->i.' minute(s)';
             } else {
+                if ($diff->d) {
+                    $diff->h = ($diff->d * 24);
+                }
                 return $diff->h.' heure(s)';
             }
         } else {
@@ -54,6 +57,7 @@ class PastTime extends Eloquent
         'date_past' => 'required|min:1',
         'time_start' => 'min:5|max:5',
         'time_end' => 'min:5|max:5',
-        'user_id' => 'required|exists:users,id'
+        'user_id' => 'required|exists:users,id',
+        'ressource_id' => 'required|exists:ressources,id'
     );
 }

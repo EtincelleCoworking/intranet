@@ -5,14 +5,6 @@
 @stop
 
 @section('content')
-    @if ($errors->has())
-    <div class="alert alert-danger">
-        @foreach ($errors->all() as $error)
-            {{ $error }}<br>
-        @endforeach
-    </div>
-    @endif
-
 	<h1>Nouvel utilisateur</h1>
 
 	{{ Form::open(array('route' => 'user_add', 'class' => 'form'), array()) }}

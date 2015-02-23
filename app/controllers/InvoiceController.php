@@ -17,11 +17,11 @@ class InvoiceController extends BaseController
         $this->layout->content = View::make('invoice.liste', array('invoices' => $invoices));
     }
 
-    public function quoteList()
+    public function quoteList($filtre)
     {
-        $invoices = Invoice::QuoteOnly()->orderBy('created_at', 'DESC')->paginate(15);
+        $invoices = Invoice::QuoteOnly($filtre)->orderBy('created_at', 'DESC')->paginate(15);
 
-        $this->layout->content = View::make('invoice.quote_list', array('invoices' => $invoices));
+        $this->layout->content = View::make('invoice.quote_list', array('invoices' => $invoices, 'filtre' => $filtre));
     }
 
 	/**
@@ -82,10 +82,14 @@ class InvoiceController extends BaseController
 	/**
 	 * Add invoice
 	 */
-	public function add($type)
+	public function add($type, $organisation=null)
 	{
-		$last_organisation_id = Input::old('organisation_id');
-		$this->layout->content = View::make('invoice.add', array('last_organisation_id' => $last_organisation_id, 'type' => $type));
+        if ($organisation) {
+            $this->layout->content = View::make('invoice.add_organisation', array('organisation' => $organisation, 'type' => $type));
+        } else {
+            $last_organisation_id = Input::old('organisation_id');
+            $this->layout->content = View::make('invoice.add', array('last_organisation_id' => $last_organisation_id, 'type' => $type));
+        }
 	}
 
 	/**
@@ -114,10 +118,10 @@ class InvoiceController extends BaseController
 			if ($invoice->save()) {
 				return Redirect::route('invoice_modify', $invoice->id)->with('mSuccess', 'La facture a bien été ajoutée');
 			} else {
-				return Redirect::route('invoice_add')->with('mError', 'Impossible de créer cette facture')->withInput();
+				return Redirect::route('invoice_add', Input::get('type'))->with('mError', 'Impossible de créer cette facture')->withInput();
 			}
 		} else {
-			return Redirect::route('invoice_add')->with('mError', 'Il y a des erreurs')->withInput()->withErrors($validator->messages());
+			return Redirect::route('invoice_add', Input::get('type'))->with('mError', 'Il y a des erreurs')->withInput()->withErrors($validator->messages());
 		}
 	}
 
@@ -138,6 +142,25 @@ class InvoiceController extends BaseController
             return Redirect::route('invoice_modify', $invoice->id)->with('mSuccess', 'La facture a bien été générée');
         } else {
             return Redirect::route('invoice_modify', $invoice->id)->with('mError', 'Impossible de générer la facture');
+        }
+    }
+
+    /**
+     * Cancel a quotation
+     */
+    public function cancel($id)
+    {
+        $invoice = Invoice::find($id);
+        if (!$invoice) {
+            return Redirect::route('invoice_list')->with('mError', 'Cette facture est introuvable !');
+        }
+
+        $invoice->date_canceled = date('Y-m-d');
+
+        if ($invoice->save()) {
+            return Redirect::route('invoice_modify', $invoice->id)->with('mSuccess', 'Le devis a bien été refusé');
+        } else {
+            return Redirect::route('invoice_modify', $invoice->id)->with('mError', 'Impossible de refuser le devis');
         }
     }
 
