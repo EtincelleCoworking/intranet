@@ -70,7 +70,7 @@
                             </a>
                         </li>
                         <li>
-                            <a href="{{ URL::route('quote_list') }}">
+                            <a href="{{ URL::route('quote_list', 'all') }}">
                                 <i class="fa fa-list"></i>
                                 &nbsp;&nbsp;Devis
                             </a>

@@ -99,7 +99,7 @@
         </header>
 
         @if (Auth::user())
-            @include('layouts.menu.'.Auth::user()->role);
+            @include('layouts.menu.'.Auth::user()->role)
         @endif
 
         <div class="content">
