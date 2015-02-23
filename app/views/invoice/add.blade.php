@@ -25,7 +25,7 @@
         Nouveau devis
         @endif
     </h1>
-	{{ Form::open(array('route' => array('invoice_add', $type))) }}
+	{{ Form::open(array('route' => array('invoice_add_check', $type))) }}
         {{ Form::hidden('type', $type) }}
 		<input type="hidden" name="last_orga" id="oldOrganisation" value="{{ $last_organisation_id }}">
         {{ Form::label('user_id', 'Client') }}

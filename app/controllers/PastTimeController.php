@@ -6,11 +6,23 @@ class PastTimeController extends BaseController
 {
     public function liste($month=null)
     {
-        if (!$month) { $month = str_pad(date('m'), 2, 0, STR_PAD_LEFT); }
-        if (Auth::user()->role == 'member') {
-            $times = PastTime::where(DB::raw('MONTH(date_past)'), '=', $month)->where('user_id', '=', Auth::user()->id)->orderBy('date_past', 'DESC')->paginate(15);
+        if (Input::has('filtre_month') && Input::has('filtre_year')) {
+            Session::put('filtre_pasttime.month', Input::get('filtre_month'));
+            Session::put('filtre_pasttime.year', Input::get('filtre_year'));
+        }
+
+        if (Session::has('filtre_pasttime.month')) {
+            $date_filtre_start = Session::get('filtre_pasttime.year').'-'.Session::get('filtre_pasttime.month').'-01';
+            $date_filtre_end = Session::get('filtre_pasttime.year').'-'.Session::get('filtre_pasttime.month').'-'.date('t', Session::get('filtre_pasttime.month'));
         } else {
-            $times = PastTime::where(DB::raw('MONTH(date_past)'), '=', $month)->orderBy('date_past', 'DESC')->paginate(15);
+            $date_filtre_start = date('Y-m').'-01';
+            $date_filtre_end = date('Y-m').'-'.date('t', Session::get('filtre_pasttime.month'));
+        }
+
+        if (Auth::user()->role == 'member') {
+            $times = PastTime::whereBetween('date_past', array($date_filtre_start, $date_filtre_end))->where('user_id', '=', Auth::user()->id)->orderBy('date_past', 'DESC')->paginate(15);
+        } else {
+            $times = PastTime::whereBetween('date_past', array($date_filtre_start, $date_filtre_end))->orderBy('date_past', 'DESC')->paginate(15);
         }
 
         return View::make('pasttime.liste', array('times' => $times));
@@ -28,8 +40,14 @@ class PastTimeController extends BaseController
             $time = new PastTime;
             $date_past_explode = explode('/', Input::get('date_past'));
             $time->date_past = $date_past_explode[2].'-'.$date_past_explode[1].'-'.$date_past_explode[0];
-            $time->time_start = $time->date_past.' '.Input::get('time_start').':00';
-            if (Input::get('time_end')) { $time->time_end = $time->date_past.' '.Input::get('time_end').':00'; }
+            $dateTime_start = new DateTime($time->date_past);
+            $time->time_start = $dateTime_start->format('Y-m-d').' '.Input::get('time_start').':00';
+            if (Input::get('time_end')) { 
+                if (Input::get('time_end') <= Input::get('time_start')) {
+                    $dateTime_start->modify('+1 day');
+                }
+                $time->time_end = $dateTime_start->format('Y-m-d').' '.Input::get('time_end').':00'; 
+            }
             if (Auth::user()->role == 'superadmin') {
                 $time->user_id = Input::get('user_id');
             } else {

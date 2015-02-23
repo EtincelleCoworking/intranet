@@ -23,7 +23,7 @@ Route::group(['before' => 'member'], function() {
     Route::get('/profile/edit', array('as' => 'user_edit', 'uses' => 'UserController@edit'));
     Route::post('/profile/edit', array('as' => 'user_edit', 'uses' => 'UserController@edit_check'));
     
-    Route::get('/pasttimes', array('as' => 'pasttime_list', 'uses' => 'PastTimeController@liste'));
+    Route::any('/pasttimes', array('as' => 'pasttime_list', 'uses' => 'PastTimeController@liste'));
     Route::get('/pasttimes/{month}', array('as' => 'pasttime_list_month', 'uses' => 'PastTimeController@liste'))->where(array('month' => '[0-9]{2}'));
     Route::get('/pasttime/add', array('as' => 'pasttime_add', 'uses' => 'PastTimeController@add'));
     Route::post('/pasttime/add', array('as' => 'pasttime_add_check', 'uses' => 'PastTimeController@add_check'));

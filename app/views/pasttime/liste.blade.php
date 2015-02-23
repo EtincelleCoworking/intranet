@@ -6,7 +6,14 @@
 
 @section('content')
     <div class="pull-right">
-        <a href="{{ URL::route('pasttime_add') }}" class="btn btn-success">Ajouter</a>
+        {{ Form::open(array('route' => array('pasttime_list'))) }}
+            <span class="btn btn-info">
+                <div class="col-md-2 input-group-sm"><input type="text" name="filtre_month" value="{{ ((Session::get('filtre_pasttime.month'))?:date('m')) }}" class="monthDropper form-control"></div>
+                <div class="col-md-2 input-group-sm"><input type="text" name="filtre_year" value="{{ ((Session::get('filtre_pasttime.year'))?:date('Y')) }}" class="yearDropper form-control"></div>
+                <div class="col-md-2">{{ Form::submit('Filtrer', array('class' => 'btn btn-sm btn-default')) }}</div>
+                <div class="col-md-2"><a href="{{ URL::route('pasttime_add') }}" class="btn btn-sm btn-success">Ajouter</a></div>
+            </span>
+        {{ Form::close() }}
     </div>
 
     <h1>Liste des temps passés</h1>
@@ -49,4 +56,14 @@
         </table>
         {{ $times->links() }}
     @endif
+@stop
+
+
+@section('javascript')
+<script type="text/javascript">
+$().ready(function(){
+    $('.yearDropper').dateDropper({animate_current: false, format: "Y", placeholder: "{{ ((Session::get('filtre_pasttime.year'))?:date('Y')) }}"});
+    $('.monthDropper').dateDropper({animate_current: false, format: "m", placeholder: "{{ ((Session::get('filtre_pasttime.month'))?:date('m')) }}"});
+});
+</script>
 @stop

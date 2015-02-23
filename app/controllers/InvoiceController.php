@@ -114,10 +114,10 @@ class InvoiceController extends BaseController
 			if ($invoice->save()) {
 				return Redirect::route('invoice_modify', $invoice->id)->with('mSuccess', 'La facture a bien été ajoutée');
 			} else {
-				return Redirect::route('invoice_add')->with('mError', 'Impossible de créer cette facture')->withInput();
+				return Redirect::route('invoice_add', Input::get('type'))->with('mError', 'Impossible de créer cette facture')->withInput();
 			}
 		} else {
-			return Redirect::route('invoice_add')->with('mError', 'Il y a des erreurs')->withInput()->withErrors($validator->messages());
+			return Redirect::route('invoice_add', Input::get('type'))->with('mError', 'Il y a des erreurs')->withInput()->withErrors($validator->messages());
 		}
 	}
 

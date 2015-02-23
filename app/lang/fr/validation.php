@@ -85,10 +85,43 @@ return array(
 	*/
 
 	'custom' => array(
-		'attribute-name' => array(
-			'rule-name' => 'custom-message',
+		'user_id' => array(
+			'required' => 'Vous devez sélectionner un utilisateur',
 		),
-	),
+		'ressource_id' => array(
+			'required' => 'Vous devez sélectionner une ressource',
+			'exists' => 'La ressource sélectionnée est invalide',
+		),
+		'date_past' => array(
+			'required' => 'Vous devez indiquer une date',
+		),
+		'deadline' => array(
+			'required' => 'Vous devez indiquer une date d\'échéance',
+		),
+		'name' => array(
+			'required' => 'Vous devez indiquer un nom',
+		),
+		'value' => array(
+			'required' => 'Vous devez indiquer une valeur',
+		),
+		'address' => array(
+			'required' => 'Vous devez indiquer une adresse',
+		),
+		'email' => array(
+			'required' => 'Vous devez indiquer une adresse email',
+			'email'	=> 'Votre adresse email est invalide',
+		),
+		'firstname' => array(
+			'required' => 'Vous devez indiquer un prénom',
+		),
+		'lastname' => array(
+			'required' => 'Vous devez indiquer un nom',
+		),
+		'password' => array(
+			'required' => 'Vous devez indiquer un mot de passe',
+			'min' => 'Votre mot de passe doit contenir au moins :min caractères',
+		),
+ 	),
 
 	/*
 	|--------------------------------------------------------------------------
