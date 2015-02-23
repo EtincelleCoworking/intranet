@@ -82,10 +82,14 @@ class InvoiceController extends BaseController
 	/**
 	 * Add invoice
 	 */
-	public function add($type)
+	public function add($type, $organisation=null)
 	{
-		$last_organisation_id = Input::old('organisation_id');
-		$this->layout->content = View::make('invoice.add', array('last_organisation_id' => $last_organisation_id, 'type' => $type));
+        if ($organisation) {
+            $this->layout->content = View::make('invoice.add_organisation', array('organisation' => $organisation, 'type' => $type));
+        } else {
+            $last_organisation_id = Input::old('organisation_id');
+            $this->layout->content = View::make('invoice.add', array('last_organisation_id' => $last_organisation_id, 'type' => $type));
+        }
 	}
 
 	/**

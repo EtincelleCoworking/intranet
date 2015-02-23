@@ -134,6 +134,19 @@ class User extends Eloquent implements UserInterface, RemindableInterface {
 		return $selectVals;
 	}
 
+	/**
+     * Get list of users in organisations
+     */
+    public function scopeSelectInOrganisation($query, $organisation, $title = "Select")
+    {
+        $ids = OrganisationUser::where('organisation_id', $organisation)->lists('user_id');
+        $selectVals[''] = $title;
+        if ($ids) {
+            $selectVals += $this->whereIn('id', $ids)->get()->lists('fullname', 'id');
+        }
+        return $selectVals;
+    }
+
     /**
      * Get list of roles
      */

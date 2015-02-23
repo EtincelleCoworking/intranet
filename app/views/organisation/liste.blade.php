@@ -17,6 +17,7 @@
                 <th>Code achat</th>
                 <th>Code vente</th>
 				<th>Dernière modification</th>
+				<th>Action</th>
 			</tr>
 		</thead>
 		<tbody>
@@ -29,12 +30,16 @@
                 <td>{{ $orga->code_purchase }}</td>
                 <td>{{ $orga->code_sale }}</td>
 				<td>{{ $orga->updated_at }}</td>
+				<td>
+					<a href="{{ URL::route('invoice_add_organisation', array('D', $orga->id)) }}" class="btn btn-xs btn-success">Devis</a>
+					<a href="{{ URL::route('invoice_add_organisation', array('F', $orga->id)) }}" class="btn btn-xs btn-primary">Facture</a>
+				</td>
 			</tr>
 		@endforeach
 		</tbody>
 		<tfoot>
 			<tr>
-				<td colspan="5">{{ $organisations->links() }}</td>
+				<td colspan="6">{{ $organisations->links() }}</td>
 			</tr>
 		</tfoot>
 	</table>
