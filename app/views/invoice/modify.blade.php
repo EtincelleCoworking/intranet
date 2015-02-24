@@ -11,6 +11,10 @@
 @stop
 
 @section('content')
+    <div class="pull-right">
+        <a href="{{ URL::route('invoice_print_pdf', $invoice->id) }}" class="btn btn-sm btn-primary" target="_blank">PDF</a>
+    </div>
+    
 	<h1>
         Modifier
         @if ($invoice->type == 'F')

@@ -5,11 +5,6 @@
 class ChargeItemController extends BaseController
 {
     /**
-     * Default template
-     */
-    protected $layout = "layouts.master";
-
-    /**
      * Delete item to charge
      */
     public function delete($charge, $id)

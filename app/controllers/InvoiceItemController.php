@@ -20,9 +20,6 @@ class InvoiceItemController extends BaseController
 	public function modify($id)
 	{
 		$invoice = Invoice::find($id);
-        /**
-         * Partie à revoir ? (optimisation)
-         */
         foreach ($invoice->items as $item) {
             InvoiceItem::where('id', $item->id)->update(array(
                 'ressource_id' => Input::get('ressource_id.'.$item->id),
@@ -30,19 +27,7 @@ class InvoiceItemController extends BaseController
                 'amount' => Input::get('amount.'.$item->id),
                 'vat_types_id' => Input::get('vat_types_id.'.$item->id),
             ));
-            /*
-            $d = array(
-                new InvoiceItem(array(
-                        'id' => $item->id,
-                        'ressource_id' => Input::get('ressource_id.'.$item->id),
-                        'text' => Input::get('text.'.$item->id),
-                        'amount' => Input::get('amount.'.$item->id),
-                        'vat_types_id' => Input::get('vat_types_id.'.$item->id),
-                    ))
-            );
-            */
         }
-        //$invoice->items()->saveMany($d);
 
         // Add new line
         if (Input::get('text.0')) {
