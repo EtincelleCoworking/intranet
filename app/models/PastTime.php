@@ -54,14 +54,19 @@ class PastTime extends Eloquent
             $date2 = new DateTime($this->time_start);
             $diff = $date2->diff($date1);
 
-            if ($diff->i) {
-                return $diff->h.' heure(s) '.$diff->i.' minute(s)';
-            } else {
+            $retour = false;
+            if ($diff->h) {
                 if ($diff->d) {
                     $diff->h = ($diff->d * 24);
                 }
-                return $diff->h.' heure(s)';
+                $retour = $diff->h.Lang::choice('messages.times_hours', $diff->h);
             }
+
+            if ($diff->i) {
+                if ($retour) { $retour .= ' '; }
+                $retour .= $diff->i.Lang::choice('messages.times_minutes', $diff->i);
+            }
+            return $retour;
         } else {
             return false;
         }

@@ -58,10 +58,10 @@
                                 <td>{{ $pasttime->name }}</td>
                                 <td>
                                     @if ($pasttime->hours)
-                                        {{ $pasttime->hours }} heures
+                                        {{ $pasttime->hours.Lang::choice('messages.times_hours', $pasttime->hours) }}
                                     @endif
                                     @if ($pasttime->minutes)
-                                        {{ $pasttime->minutes }} minutes
+                                        {{ $pasttime->minutes.Lang::choice('messages.times_minutes', $pasttime->minutes) }}
                                     @endif
                                 </td>
                             </tr>
