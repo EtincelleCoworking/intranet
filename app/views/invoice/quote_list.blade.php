@@ -11,7 +11,9 @@
 		@else
 			<a href="{{ URL::route('quote_list', 'canceled') }}" class="btn btn-info">Devis refusés</a>
 		@endif
+		@if (Auth::user()->role == 'superadmin')
 		<a href="{{ URL::route('invoice_add', 'D') }}" class="btn btn-primary">Ajouter un devis</a>
+		@endif
 	</div>
     
     <h1>Devis</h1>
@@ -37,8 +39,12 @@
 				<td>{{ $invoice->created_at->format('d/m/Y') }}</td>
 				<td>
                     @if ($invoice->organisation)
-                        <a href="{{ URL::route('organisation_modify', $invoice->organisation->id) }}">{{ $invoice->organisation->name }}</a>
-                        (<a href="{{ URL::route('user_modify', $invoice->user->id) }}">{{ $invoice->user->fullname }}</a>)
+                    	@if (Auth::user()->role == 'superadmin')
+                        	<a href="{{ URL::route('organisation_modify', $invoice->organisation->id) }}">{{ $invoice->organisation->name }}</a>
+                        	(<a href="{{ URL::route('user_modify', $invoice->user->id) }}">{{ $invoice->user->fullname }}</a>)
+                        @else
+							{{ $invoice->organisation->name }}
+                        @endif
                     @else
                         -- Libre --
                     @endif
@@ -65,7 +71,13 @@
                 </td>
 				<td style="text-align:right">{{ Invoice::TotalInvoice($invoice->items) }}€</td>
 				<td>
-					<a href="{{ URL::route('invoice_modify', $invoice->id) }}" class="btn btn-sm btn-default">Modifier</a>
+					<a href="{{ URL::route('invoice_modify', $invoice->id) }}" class="btn btn-sm btn-default">
+						@if (Auth::user()->role == 'superadmin')
+							Modifier
+						@else
+							Consulter
+						@endif
+					</a>
                     <a href="{{ URL::route('invoice_print_pdf', $invoice->id) }}" class="btn btn-sm btn-default" target="_blank">PDF</a>
 				</td>
 			</tr>

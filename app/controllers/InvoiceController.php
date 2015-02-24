@@ -12,14 +12,22 @@ class InvoiceController extends BaseController
 
     public function invoiceList()
     {
-        $invoices = Invoice::InvoiceOnly()->orderBy('created_at', 'DESC')->paginate(15);
+        $q = Invoice::InvoiceOnly()->orderBy('created_at', 'DESC');
+        if (Auth::user()->role != 'superadmin') {
+            $q->whereUserId(Auth::user()->id);
+        }
+        $invoices = $q->paginate(15);
 
         $this->layout->content = View::make('invoice.liste', array('invoices' => $invoices));
     }
 
     public function quoteList($filtre)
     {
-        $invoices = Invoice::QuoteOnly($filtre)->orderBy('created_at', 'DESC')->paginate(15);
+        $q = Invoice::QuoteOnly($filtre)->orderBy('created_at', 'DESC');
+        if (Auth::user()->role != 'superadmin') {
+            $q->whereUserId(Auth::user()->id);
+        }
+        $invoices = $q->paginate(15);
 
         $this->layout->content = View::make('invoice.quote_list', array('invoices' => $invoices, 'filtre' => $filtre));
     }
@@ -28,8 +36,15 @@ class InvoiceController extends BaseController
 	 * Modify invoice
 	 */
 	public function modify($id)
-	{
-		$invoice = Invoice::find($id);
+	{  
+        if (Auth::user()->role == 'superadmin') {
+            $invoice = Invoice::find($id); 
+            $template = 'invoice.modify';   
+        } else {
+            $invoice = Invoice::whereUserId(Auth::user()->id)->find($id);
+            $template = 'invoice.show';
+        }
+		
 		if (!$invoice) {
 			return Redirect::route('invoice_list')->with('mError', 'Cette facture est introuvable !');
 		}
@@ -42,7 +57,7 @@ class InvoiceController extends BaseController
             $payment_explode = array(date('Y'), date('m'), date('d'));
         }
 
-		$this->layout->content = View::make('invoice.modify', array('invoice' => $invoice, 'date_explode' => $date_explode, 'dead_explode' => $dead_explode, 'payment_explode' => $payment_explode));
+		$this->layout->content = View::make($template, array('invoice' => $invoice, 'date_explode' => $date_explode, 'dead_explode' => $dead_explode, 'payment_explode' => $payment_explode));
 	}
 
 	/**

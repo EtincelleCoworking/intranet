@@ -46,6 +46,12 @@
 
                     <ul class="dropdown-menu" role="menu">
                         <li>
+                            <a href="{{ URL::route('quote_list') }}">
+                                <i class="fa fa-list"></i>
+                                &nbsp;&nbsp;Liste de mes devis
+                            </a>
+                        </li>
+                        <li>
                             <a href="{{ URL::route('invoice_list') }}">
                                 <i class="fa fa-list"></i>
                                 &nbsp;&nbsp;Liste de mes factures
