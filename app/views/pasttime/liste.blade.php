@@ -29,10 +29,10 @@
                     </div>
                     <div class="panel-body">
                         @if ($r->hours)
-                            {{ $r->hours }} heures
+                            {{ $r->hours.Lang::choice('messages.times_hours', $r->hours) }}
                         @endif
                         @if ($r->minutes)
-                            {{ $r->minutes }} minutes
+                            {{ $r->minutes.Lang::choice('messages.times_minutes', $r->minutes) }}
                         @endif
                     </div>
                 </div>
