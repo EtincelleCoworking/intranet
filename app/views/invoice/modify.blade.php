@@ -106,6 +106,38 @@
         </div>
     </div>
     @endif
+    
+    <br />
+    <div class="panel panel-default">
+        <div class="panel-heading">
+            <h3 class="panel-title">Commentaires</h3>
+        </div>
+        <div class="panel-body">
+            @foreach ($invoice->comments as $comment)
+            <div class="media">
+                <div class="media-body">
+                    <h4 class="media-heading">Par {{ $comment->user->fullname }}</h4>
+                    <p><i>Le {{ date('d/m/Y \à H:i', strtotime($comment->created_at)) }}</i></p>
+                    <p>{{ nl2br($comment->content) }}</p>
+                </div>
+            </div>
+            @endforeach
+        </div>
+    </div>
+    <br />
+    <div class="panel panel-success">
+        <div class="panel-heading">
+            <h3 class="panel-title">Nouveau commentaire</h3>
+        </div>
+        <div class="panel-body">
+            {{ Form::open(array('route' => array('invoice_comment_add', $invoice->id))) }}
+                {{ Form::hidden('invoice_id', $invoice->id) }}
+                {{ Form::hidden('user_id', Auth::user()->id) }}
+                <p>{{ Form::textarea('content', null, array('class' => 'form-control')) }}</p>
+                {{ Form::submit('Ajouter', array('class' => 'btn btn-success')) }}
+            {{ Form::close() }}
+        </div>
+    </div>
 @stop
 
 @section('javascript')

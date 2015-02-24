@@ -54,6 +54,14 @@ class Invoice extends Eloquent
 	}
 
 	/**
+	 * Relation One To Many (Invoice has many Invoices_Items)
+	 */
+	public function comments()
+	{
+		return $this->hasMany('InvoiceComment');
+	}
+
+	/**
 	 * Identifier invoice
 	 */
 	public function getIdentAttribute()
