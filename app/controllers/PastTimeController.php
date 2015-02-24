@@ -20,12 +20,14 @@ class PastTimeController extends BaseController
         }
 
         if (Auth::user()->role == 'member') {
+            $recap = PastTime::Recap(Auth::user()->id, $date_filtre_start, $date_filtre_end);
             $times = PastTime::whereBetween('date_past', array($date_filtre_start, $date_filtre_end))->where('user_id', '=', Auth::user()->id)->orderBy('date_past', 'DESC')->paginate(15);
         } else {
+            $recap = PastTime::Recap(false, $date_filtre_start, $date_filtre_end);
             $times = PastTime::whereBetween('date_past', array($date_filtre_start, $date_filtre_end))->orderBy('date_past', 'DESC')->paginate(15);
         }
 
-        return View::make('pasttime.liste', array('times' => $times));
+        return View::make('pasttime.liste', array('times' => $times, 'recap' => $recap));
     }
 
     public function add()

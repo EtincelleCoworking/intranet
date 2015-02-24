@@ -20,6 +20,25 @@
     @if(count($times)==0)
         <p>Aucune donnée.</p>
     @else
+        <div class="row">
+            @foreach ($recap as $r)
+            <div class="col-md-2">
+                <div class="panel panel-default">
+                    <div class="panel-heading">
+                        <h4 class="panel-title">{{ $r->name }}</h4>
+                    </div>
+                    <div class="panel-body">
+                        @if ($r->hours)
+                            {{ $r->hours }} heures
+                        @endif
+                        @if ($r->minutes)
+                            {{ $r->minutes }} minutes
+                        @endif
+                    </div>
+                </div>
+            </div>
+            @endforeach
+        </div>
         <table class="table table-striped">
             <thead>
                 <tr>
