@@ -5,9 +5,17 @@
 class OrganisationController extends BaseController
 {
 	/**
-	 * Default template
-	 */
-	protected $layout = "layouts.master";
+     * Verify if exist
+     */
+    private function dataExist($id)
+    {
+        $data = Organisation::find($id);
+        if (!$data) {
+            return Redirect::route('organisation_list')->with('mError', 'Ce organisme est introuvable !');
+        } else {
+            return $data;
+        }
+    }
 
 	/**
 	 * List organisations
@@ -16,7 +24,7 @@ class OrganisationController extends BaseController
 	{
 		$organisations = Organisation::paginate(15);
 
-		$this->layout->content = View::make('organisation.liste', array('organisations' => $organisations));
+		return View::make('organisation.liste', array('organisations' => $organisations));
 	}
 
 	/**
@@ -24,12 +32,9 @@ class OrganisationController extends BaseController
 	 */
 	public function modify($id)
 	{
-		$organisation = Organisation::find($id);
-		if (!$organisation) {
-			return Redirect::route('organisation_list')->with('mError', 'Cet organisme est introuvable !');
-		}
+		$organisation = $this->dataExist($id);
 
-		$this->layout->content = View::make('organisation.modify', array('organisation' => $organisation));
+		return View::make('organisation.modify', array('organisation' => $organisation));
 	}
 
 	/**
@@ -37,10 +42,7 @@ class OrganisationController extends BaseController
 	 */
 	public function modify_check($id)
 	{
-		$organisation = Organisation::find($id);
-		if (!$organisation) {
-			return Redirect::route('organisation_list')->with('mError', 'Cet organisme est introuvable !');
-		}
+		$organisation = $this->dataExist($id);
 
 		$validator = Validator::make(Input::all(), Organisation::$rules);
 		if (!$validator->fails()) {
@@ -68,7 +70,7 @@ class OrganisationController extends BaseController
 	 */
 	public function add()
 	{
-		$this->layout->content = View::make('organisation.add');
+		return View::make('organisation.add');
 	}
 
 	/**
@@ -95,10 +97,7 @@ class OrganisationController extends BaseController
 	 */
 	public function add_user($id)
 	{
-		$organisation = Organisation::find($id);
-		if (!$organisation) {
-			return Redirect::route('organisation_list')->with('mError', 'Cet organisme est introuvable !');
-		}
+		$organisation = $this->dataExist($id);
 
 		if (Input::get('user_id')) {
 			if (!is_array(OrganisationUser::where('user_id', Input::get('user_id'))->where('organisation_id', $organisation->id)->get())) {

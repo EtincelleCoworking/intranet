@@ -4,6 +4,18 @@
 */
 class TagController extends BaseController
 {
+    /**
+     * Verify if exist
+     */
+    private function dataExist($id)
+    {
+        $data = Tag::find($id);
+        if (!$data) {
+            return Redirect::route('tag_list')->with('mError', 'Ce tag est introuvable !');
+        } else {
+            return $data;
+        }
+    }
 
     /**
      * List of tags
@@ -48,10 +60,7 @@ class TagController extends BaseController
      */
     public function modify($id)
     {
-        $tag = Tag::find($id);
-        if (!$tag) {
-            return Redirect::route('tag_list')->with('mError', 'Ce tag est introuvable !');
-        }
+        $tag = $this->dataExist($id);
 
         return View::make('tag.modify', array('tag' => $tag));
     }
@@ -61,10 +70,7 @@ class TagController extends BaseController
      */
     public function modify_check($id)
     {
-        $tag = Tag::find($id);
-        if (!$tag) {
-            return Redirect::route('vat_list')->with('mError', 'Ce tag est introuvable !');
-        }
+        $tag = $this->dataExist($id);
 
         $validator = Validator::make(Input::all(), Tag::$rules);
         if (!$validator->fails()) {
@@ -85,12 +91,12 @@ class TagController extends BaseController
     public function json_list()
     {
         if (strlen(Input::get('term')) >= 2) {
+            $q = Tag::where('name', 'LIKE', '%'.Input::get('term').'%');
             if (Input::get('olds')) {
                 $tags = explode(',', Input::get('olds'));
-                $list = Tag::where('name', 'LIKE', '%'.Input::get('term').'%')->whereNotIn('id', $tags)->lists('name', 'id');
-            } else {
-                $list = Tag::where('name', 'LIKE', '%'.Input::get('term').'%')->lists('name', 'id');
+                $q->whereNotIn('id', $tags);
             }
+            $list = $q->lists('name', 'id');
         } else {
             $list = array();
         }

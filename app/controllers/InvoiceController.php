@@ -4,11 +4,23 @@
 */
 class InvoiceController extends BaseController
 {
+    /**
+     * Verify if exist
+     */
+    private function dataExist($id, $tpl)
+    {
+        if (Auth::user()->role == 'superadmin') {
+            $data = Invoice::find($id);
+        } else {
+            $data = Invoice::whereUserId(Auth::user()->id)->find($id);
+        }
 
-	/**
-	 * Default template
-	 */
-	protected $layout = "layouts.master";
+        if (!$data) {
+            return Redirect::route($tpl)->with('mError', 'Cet élément est introuvable !');
+        } else {
+            return $data;
+        }
+    }
 
     public function invoiceList()
     {
@@ -18,7 +30,7 @@ class InvoiceController extends BaseController
         }
         $invoices = $q->paginate(15);
 
-        $this->layout->content = View::make('invoice.liste', array('invoices' => $invoices));
+        return View::make('invoice.liste', array('invoices' => $invoices));
     }
 
     public function quoteList($filtre)
@@ -29,7 +41,7 @@ class InvoiceController extends BaseController
         }
         $invoices = $q->paginate(15);
 
-        $this->layout->content = View::make('invoice.quote_list', array('invoices' => $invoices, 'filtre' => $filtre));
+        return View::make('invoice.quote_list', array('invoices' => $invoices, 'filtre' => $filtre));
     }
 
 	/**
@@ -38,12 +50,12 @@ class InvoiceController extends BaseController
 	public function modify($id)
 	{  
         if (Auth::user()->role == 'superadmin') {
-            $invoice = Invoice::find($id); 
             $template = 'invoice.modify';   
         } else {
-            $invoice = Invoice::whereUserId(Auth::user()->id)->find($id);
             $template = 'invoice.show';
         }
+
+        $invoice = $this->dataExist($id, $template);
 		
 		if (!$invoice) {
 			return Redirect::route('invoice_list')->with('mError', 'Cette facture est introuvable !');
@@ -57,7 +69,7 @@ class InvoiceController extends BaseController
             $payment_explode = array(date('Y'), date('m'), date('d'));
         }
 
-		$this->layout->content = View::make($template, array('invoice' => $invoice, 'date_explode' => $date_explode, 'dead_explode' => $dead_explode, 'payment_explode' => $payment_explode));
+		return View::make($template, array('invoice' => $invoice, 'date_explode' => $date_explode, 'dead_explode' => $dead_explode, 'payment_explode' => $payment_explode));
 	}
 
 	/**
@@ -65,10 +77,7 @@ class InvoiceController extends BaseController
 	 */
 	public function modify_check($id)
 	{
-		$invoice = Invoice::find($id);
-		if (!$invoice) {
-			return Redirect::route('invoice_list')->with('mError', 'Cette facture est introuvable !');
-		}
+		$invoice = $this->dataExist($id, 'invoice_list');
 
 		$validator = Validator::make(Input::all(), Invoice::$rules);
 		if (!$validator->fails()) {
@@ -100,10 +109,10 @@ class InvoiceController extends BaseController
 	public function add($type, $organisation=null)
 	{
         if ($organisation) {
-            $this->layout->content = View::make('invoice.add_organisation', array('organisation' => $organisation, 'type' => $type));
+            return View::make('invoice.add_organisation', array('organisation' => $organisation, 'type' => $type));
         } else {
             $last_organisation_id = Input::old('organisation_id');
-            $this->layout->content = View::make('invoice.add', array('last_organisation_id' => $last_organisation_id, 'type' => $type));
+            return View::make('invoice.add', array('last_organisation_id' => $last_organisation_id, 'type' => $type));
         }
 	}
 
@@ -145,10 +154,7 @@ class InvoiceController extends BaseController
      */
     public function validate($id)
     {
-        $invoice = Invoice::find($id);
-        if (!$invoice) {
-            return Redirect::route('invoice_list')->with('mError', 'Cette facture est introuvable !');
-        }
+        $invoice = $this->dataExist($id, 'invoice_list');
 
         $invoice->type = 'F';
         $invoice->number = Invoice::next_invoice_number('F', $invoice->days);
@@ -165,10 +171,7 @@ class InvoiceController extends BaseController
      */
     public function cancel($id)
     {
-        $invoice = Invoice::find($id);
-        if (!$invoice) {
-            return Redirect::route('invoice_list')->with('mError', 'Cette facture est introuvable !');
-        }
+        $invoice = $this->dataExist($id, 'invoice_list');
 
         $invoice->date_canceled = date('Y-m-d');
 
@@ -200,10 +203,7 @@ class InvoiceController extends BaseController
      */
     public function print_pdf($id)
     {
-        $invoice = Invoice::find($id);
-        if (!$invoice) {
-            return Redirect::route('invoice_list')->with('mError', 'Cette facture est introuvable !');
-        }
+        $invoice = $this->dataExist($id, 'invoice_list');
 
         $snappy = App::make('snappy.pdf');
 

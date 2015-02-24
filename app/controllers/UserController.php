@@ -5,16 +5,11 @@
 class UserController extends BaseController
 {
 	/**
-	 * Default template
-	 */
-	protected $layout = "layouts.master";
-
-	/**
 	 * Login page for users
 	 */
 	public function login()
 	{
-		$this->layout->content = View::make('user.login');
+		return View::make('user.login');
 	}
 
 	/**
@@ -118,7 +113,7 @@ class UserController extends BaseController
         }
         */
 
-		$this->layout->content = View::make('user.dashboard', array('totalMonth' => $totalMonth, 'chargesMonth' => $chargesMonth, 'chargesMonthToPay' => $chargesMonthToPay, 'pasttimes' => $pasttimes));
+		return View::make('user.dashboard', array('totalMonth' => $totalMonth, 'chargesMonth' => $chargesMonth, 'chargesMonthToPay' => $chargesMonthToPay, 'pasttimes' => $pasttimes));
 	}
 
 	/**
@@ -128,7 +123,7 @@ class UserController extends BaseController
 	{
 		$users = User::paginate(15);
 
-		$this->layout->content = View::make('user.liste', array('users' => $users));
+		return View::make('user.liste', array('users' => $users));
 	}
 
 	/**
@@ -141,7 +136,7 @@ class UserController extends BaseController
 			return Redirect::route('user_list')->with('mError', 'Cet utilisateur est introuvable !');
 		}
 
-		$this->layout->content = View::make('user.modify', array('user' => $user));
+		return View::make('user.modify', array('user' => $user));
 	}
 
 	/**
@@ -198,7 +193,7 @@ class UserController extends BaseController
 	 */
 	public function add()
 	{
-		$this->layout->content = View::make('user.add');
+		return View::make('user.add');
 	}
 
 	/**
@@ -231,7 +226,7 @@ class UserController extends BaseController
             return Redirect::route('user_list')->with('mError', 'Cet utilisateur est introuvable !');
         }
 
-        $this->layout->content = View::make('user.profile', array('user' => $user));
+        return View::make('user.profile', array('user' => $user));
 	}
 
     /**
@@ -241,7 +236,7 @@ class UserController extends BaseController
     {
         $profile = User::find(Auth::user()->id);
 
-        $this->layout->content = View::make('user.edit', array('user' => $profile));
+        return View::make('user.edit', array('user' => $profile));
     }
 
     /**
@@ -304,7 +299,7 @@ class UserController extends BaseController
     {
         $users = User::paginate(15);
 
-        $this->layout->content = View::make('user.directory', array('users' => $users));
+        return View::make('user.directory', array('users' => $users));
     }
 
 	/**

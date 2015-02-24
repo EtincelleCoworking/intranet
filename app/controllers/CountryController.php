@@ -5,9 +5,17 @@
 class CountryController extends BaseController
 {
     /**
-     * Default template
+     * Verify if exist
      */
-    protected $layout = "layouts.master";
+    private function dataExist($id)
+    {
+        $data = Country::find($id);
+        if (!$data) {
+            return Redirect::route('country_list')->with('mError', 'Ce pays est introuvable !');
+        } else {
+            return $data;
+        }
+    }
 
     /**
      * List countries
@@ -16,7 +24,7 @@ class CountryController extends BaseController
     {
         $countries = Country::paginate(15);
 
-        $this->layout->content = View::make('country.liste', array('countries' => $countries));
+        return View::make('country.liste', array('countries' => $countries));
     }
 
     /**
@@ -24,12 +32,9 @@ class CountryController extends BaseController
      */
     public function modify($id)
     {
-        $country = Country::find($id);
-        if (!$country) {
-            return Redirect::route('country_list')->with('mError', 'Ce pays est introuvable !');
-        }
+        $country = $this->dataExist($id);
 
-        $this->layout->content = View::make('country.modify', array('country' => $country));
+        return View::make('country.modify', array('country' => $country));
     }
 
     /**
@@ -37,10 +42,7 @@ class CountryController extends BaseController
      */
     public function modify_check($id)
     {
-        $country = Country::find($id);
-        if (!$country) {
-            return Redirect::route('organisation_list')->with('mError', 'Ce pays est introuvable !');
-        }
+        $country = $this->dataExist($id);
 
         $validator = Validator::make(Input::all(), Country::$rules);
         if (!$validator->fails()) {
@@ -61,7 +63,7 @@ class CountryController extends BaseController
      */
     public function add()
     {
-        $this->layout->content = View::make('country.add');
+        return View::make('country.add');
     }
 
     /**

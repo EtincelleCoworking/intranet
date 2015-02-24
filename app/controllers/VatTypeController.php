@@ -5,9 +5,17 @@
 class VatTypeController extends BaseController
 {
     /**
-     * Default template
+     * Verify if exist
      */
-    protected $layout = "layouts.master";
+    private function dataExist($id)
+    {
+        $data = VatType::find($id);
+        if (!$data) {
+            return Redirect::route('vat_list')->with('mError', 'Cette taxe est introuvable !');
+        } else {
+            return $data;
+        }
+    }
 
     /**
      * List of vats
@@ -16,7 +24,7 @@ class VatTypeController extends BaseController
     {
         $vats = VatType::orderBy('value', 'DEC')->paginate(15);
 
-        $this->layout->content = View::make('vat.liste', array('vats' => $vats));
+        return View::make('vat.liste', array('vats' => $vats));
     }
 
     /**
@@ -24,7 +32,7 @@ class VatTypeController extends BaseController
      */
     public function add()
     {
-        $this->layout->content = View::make('vat.add');
+        return View::make('vat.add');
     }
 
     /**
@@ -52,12 +60,9 @@ class VatTypeController extends BaseController
      */
     public function modify($id)
     {
-        $vat = VatType::find($id);
-        if (!$vat) {
-            return Redirect::route('vat_list')->with('mError', 'Cette vat est introuvable !');
-        }
+        $vat = $this->dataExist($id);
 
-        $this->layout->content = View::make('vat.modify', array('vat' => $vat));
+        return View::make('vat.modify', array('vat' => $vat));
     }
 
     /**
@@ -65,10 +70,7 @@ class VatTypeController extends BaseController
      */
     public function modify_check($id)
     {
-        $vat = VatType::find($id);
-        if (!$vat) {
-            return Redirect::route('vat_list')->with('mError', 'Cette vat est introuvable !');
-        }
+        $vat = $this->dataExist($id);
 
         $validator = Validator::make(Input::all(), VatType::$rules);
         if (!$validator->fails()) {

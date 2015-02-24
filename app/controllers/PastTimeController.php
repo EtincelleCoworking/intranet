@@ -4,6 +4,24 @@
 */
 class PastTimeController extends BaseController
 {
+    /**
+     * Verify if exist
+     */
+    private function dataExist($id)
+    {
+        if (Auth::user()->role == 'superadmin') {
+            $data = PastTime::find($id);
+        } else {
+            $data = PastTime::whereUserId(Auth::user()->id)->find($id);
+        }
+
+        if (!$data) {
+            return Redirect::route('pasttime_list')->with('mError', 'Ce temps passé est introuvable !');
+        } else {
+            return $data;
+        }
+    }
+
     public function liste($month=null)
     {
         if (Input::has('filtre_month') && Input::has('filtre_year')) {
@@ -19,13 +37,16 @@ class PastTimeController extends BaseController
             $date_filtre_end = date('Y-m').'-'.date('t', Session::get('filtre_pasttime.month'));
         }
 
+        $recapFilter = false;
+        $q = PastTime::whereBetween('date_past', array($date_filtre_start, $date_filtre_end));
         if (Auth::user()->role == 'member') {
-            $recap = PastTime::Recap(Auth::user()->id, $date_filtre_start, $date_filtre_end);
-            $times = PastTime::whereBetween('date_past', array($date_filtre_start, $date_filtre_end))->where('user_id', '=', Auth::user()->id)->orderBy('date_past', 'DESC')->paginate(15);
+            $recapFilter = Auth::user()->id;
+            $q->whereUserId(Auth::user()->id);
         } else {
-            $recap = PastTime::Recap(false, $date_filtre_start, $date_filtre_end);
-            $times = PastTime::whereBetween('date_past', array($date_filtre_start, $date_filtre_end))->orderBy('date_past', 'DESC')->paginate(15);
+            
         }
+        $recap = PastTime::Recap($recapFilter, $date_filtre_start, $date_filtre_end);
+        $times = $q->orderBy('date_past', 'DESC')->paginate(15);
 
         return View::make('pasttime.liste', array('times' => $times, 'recap' => $recap));
     }
@@ -70,28 +91,14 @@ class PastTimeController extends BaseController
 
     public function modify($id)
     {
-        if (Auth::user()->role == 'superadmin') {
-            $time = PastTime::find($id);
-        } else {
-            $time = PastTime::where('user_id', '=', Auth::user()->id)->find($id);
-        }
-        if (!$time) {
-            return Redirect::route('pasttime_list')->with('mError', 'Ce temps passé est introuvable !');
-        }
+        $time = $this->dataExist($id);
 
         return View::make('pasttime.modify', array('time' => $time));
     }
 
     public function modify_check($id)
     {
-        if (Auth::user()->role == 'superadmin') {
-            $time = PastTime::find($id);
-        } else {
-            $time = PastTime::where('user_id', '=', Auth::user()->id)->find($id);
-        }
-        if (!$time) {
-            return Redirect::route('pasttime_list')->with('mError', 'Ce temps passé est introuvable !');
-        }
+        $time = $this->dataExist($id);
 
         $validator = Validator::make(Input::all(), PastTime::$rules);
         if (!$validator->fails()) {

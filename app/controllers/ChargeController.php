@@ -6,6 +6,19 @@ class ChargeController extends BaseController
 {
 
     /**
+     * Verify if exist
+     */
+    private function dataExist($id)
+    {
+        $data = Charge::find($id);
+        if (!$data) {
+            return Redirect::route('charge_list', 'all')->with('mError', 'Cette charge est introuvable !');
+        } else {
+            return $data;
+        }
+    }
+
+    /**
      * List of charge
      */
     public function liste($filtre)
@@ -32,19 +45,21 @@ class ChargeController extends BaseController
         $date_now = $setDate->format('Y-m-d');
         $setDate->modify('+8 days');
         $date_deadline = $setDate->format('Y-m-d');
+        $q = Charge::orderBy('date_charge', 'DESC');
         switch ($filtre) {
             case 'all':
-                $charges = Charge::whereBetween('date_charge', array($date_filtre_start, $date_filtre_end))->orderBy('date_charge', 'DESC')->paginate(15);
+                $q->whereBetween('date_charge', array($date_filtre_start, $date_filtre_end));
                 break;
 
             case 'deadline_close':
-                $charges = Charge::whereBetween('deadline', array($date_now, $date_deadline))->whereNotNull('deadline')->whereNull('date_payment')->orderBy('date_charge', 'DESC')->paginate(15);
+                $q->whereBetween('deadline', array($date_now, $date_deadline))->whereNotNull('deadline')->whereNull('date_payment');
                 break;
 
             case 'deadline_exceeded':
-                $charges = Charge::where('deadline', '<', $date_now)->whereNotNull('deadline')->whereNull('date_payment')->orderBy('date_charge', 'DESC')->paginate(15);
+                $q->where('deadline', '<', $date_now)->whereNotNull('deadline')->whereNull('date_payment');
                 break;
         }
+        $charges = $q->paginate(15);
 
         return View::make('charge.liste', array('charges' => $charges, 'filtre' => $filtre));
     }
@@ -140,10 +155,7 @@ class ChargeController extends BaseController
      */
     public function modify($id)
     {
-        $charge = Charge::find($id);
-        if (!$charge) {
-            return Redirect::route('charge_list', 'all')->with('mError', 'Cette charge est introuvable !');
-        }
+        $charge = $this->dataExist($id);
 
         $tags = '';
         foreach ($charge->tags as $k => $tag) {
@@ -159,10 +171,7 @@ class ChargeController extends BaseController
      */
     public function modify_check($id)
     {
-        $charge = Charge::find($id);
-        if (!$charge) {
-            return Redirect::route('charge_list', 'all')->with('mError', 'Cette charge est introuvable !');
-        }
+        $charge = $this->dataExist($id);
 
         $validator = Validator::make(Input::all(), Charge::$rules);
         if (!$validator->fails()) {
@@ -265,10 +274,7 @@ class ChargeController extends BaseController
      */
     public function delete($id)
     {
-        $charge = Charge::find($id);
-        if (!$charge) {
-            return Redirect::route('charge_list', 'all')->with('mError', 'Cette charge est introuvable !');
-        }
+        $charge = $this->dataExist($id);
 
         ChargeTag::where('charge_id', '=', $id)->delete();
         ChargeItem::where('charge_id', '=', $id)->delete();

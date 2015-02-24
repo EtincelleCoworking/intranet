@@ -5,9 +5,17 @@
 class RessourceController extends BaseController
 {
     /**
-     * Default template
+     * Verify if exist
      */
-    protected $layout = "layouts.master";
+    private function dataExist($id)
+    {
+        $data = Ressource::find($id);
+        if (!$data) {
+            return Redirect::route('ressource_list')->with('mError', 'Cette ressource est introuvable !');
+        } else {
+            return $data;
+        }
+    }
 
     /**
      * List of ressources
@@ -22,7 +30,7 @@ class RessourceController extends BaseController
             $last = 0;
         }
 
-        $this->layout->content = View::make('ressource.liste', array('ressources' => $ressources, 'last' => $last));
+        return View::make('ressource.liste', array('ressources' => $ressources, 'last' => $last));
     }
 
     /**
@@ -37,7 +45,7 @@ class RessourceController extends BaseController
             $last = 1;
         }
 
-        $this->layout->content = View::make('ressource.add', array('last' => $last));
+        return View::make('ressource.add', array('last' => $last));
     }
 
     /**
@@ -66,12 +74,9 @@ class RessourceController extends BaseController
      */
     public function modify($id)
     {
-        $ressource = Ressource::find($id);
-        if (!$ressource) {
-            return Redirect::route('ressource_list')->with('mError', 'Cette ressource est introuvable !');
-        }
+        $ressource = $this->dataExist($id);
 
-        $this->layout->content = View::make('ressource.modify', array('ressource' => $ressource));
+        return View::make('ressource.modify', array('ressource' => $ressource));
     }
 
     /**
@@ -79,10 +84,7 @@ class RessourceController extends BaseController
      */
     public function modify_check($id)
     {
-        $ressource = Ressource::find($id);
-        if (!$ressource) {
-            return Redirect::route('ressource_list')->with('mError', 'Cette ressource est introuvable !');
-        }
+        $ressource = $this->dataExist($id);
 
         $validator = Validator::make(Input::all(), Ressource::$rules);
         if (!$validator->fails()) {
@@ -103,12 +105,15 @@ class RessourceController extends BaseController
      */
     public function order_up($ressource)
     {
-        $ressource = Ressource::find($ressource);
+        $ressource = $this->dataExist($ressource);
 
         $ressource->order_index -= 1;
+        $precedent = Ressource::whereOrderIndex($ressource->order_index)->first();
 
         if ($ressource->order_index > 0) {
             if ($ressource->save()) {
+                $precedent->order_index += 1;
+                $precedent->save();
                 return Redirect::route('ressource_list');
             } else {
                 return Redirect::route('ressource_list')->with('mError', 'Impossible de monter cette ressource');
@@ -123,11 +128,14 @@ class RessourceController extends BaseController
      */
     public function order_down($ressource)
     {
-        $ressource = Ressource::find($ressource);
+        $ressource = $this->dataExist($ressource);
 
         $ressource->order_index += 1;
+        $next = Ressource::whereOrderIndex($ressource->order_index)->first();
 
         if ($ressource->save()) {
+            $next->order_index -= 1;
+            $next->save();
             return Redirect::route('ressource_list');
         } else {
             return Redirect::route('ressource_list')->with('mError', 'Impossible de descendre cette ressource');
