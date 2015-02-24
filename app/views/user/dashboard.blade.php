@@ -39,5 +39,37 @@
             </div>
             @endif
         </div>
+        <div class="col-md-4">
+            <div class="panel panel-primary">
+                <div class="panel-heading">
+                    <h3 class="panel-title">Récapitulatif des temps passés</h3>
+                </div>
+                <div class="panel-body">
+                    <table class="table table-striped">
+                        <thead>
+                            <tr>
+                                <th>Ressource</th>
+                                <th>Temps passé</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach ($pasttimes as $pasttime)
+                            <tr>
+                                <td>{{ $pasttime->name }}</td>
+                                <td>
+                                    @if ($pasttime->hours)
+                                        {{ $pasttime->hours }} heures
+                                    @endif
+                                    @if ($pasttime->minutes)
+                                        {{ $pasttime->minutes }} minutes
+                                    @endif
+                                </td>
+                            </tr>
+                            @endforeach
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
     </div>
 @stop

@@ -87,9 +87,19 @@ class UserController extends BaseController
 	        {
 	            $join->on('charges_items.vat_types_id', '=', 'vat_types.id');
 	        })->select(DB::raw('SUM(amount) as total, SUM(((amount * vat_types.value) / 100)) as mtva'))->first();
+
+	        // Temps passés
+	        $date_pt_filtre_start = date('Y-m').'-01';
+            $date_pt_filtre_end = date('Y-m').'-'.date('t', Session::get('filtre_pasttime.month'));
+	        $pasttimes = PastTime::Recap(false, $date_pt_filtre_start, $date_pt_filtre_end);
 	    } else {
 	    	$chargesMonth = false;
 	    	$chargesMonthToPay = false;
+
+	    	// Temps passés
+	        $date_pt_filtre_start = date('Y-m').'-01';
+            $date_pt_filtre_end = date('Y-m').'-'.date('t', Session::get('filtre_pasttime.month'));
+	        $pasttimes = PastTime::Recap(Auth::user()->id, $date_pt_filtre_start, $date_pt_filtre_end);
 	    }
 
         /* En travaux pour les stats annu.
@@ -108,7 +118,7 @@ class UserController extends BaseController
         }
         */
 
-		$this->layout->content = View::make('user.dashboard', array('totalMonth' => $totalMonth, 'chargesMonth' => $chargesMonth, 'chargesMonthToPay' => $chargesMonthToPay));
+		$this->layout->content = View::make('user.dashboard', array('totalMonth' => $totalMonth, 'chargesMonth' => $chargesMonth, 'chargesMonthToPay' => $chargesMonthToPay, 'pasttimes' => $pasttimes));
 	}
 
 	/**

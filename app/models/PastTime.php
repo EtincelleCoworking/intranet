@@ -11,6 +11,23 @@ class PastTime extends Eloquent
      */
     protected $table = 'past_times';
 
+    public function scopeRecap($query, $user, $start, $end)
+    {
+        $query->select(
+                        'ressources.name',
+                        DB::raw('HOUR(SEC_TO_TIME(SUM(TIME_TO_SEC(past_times.time_end) - TIME_TO_SEC(past_times.time_start)))) AS hours'),
+                        DB::raw('MINUTE(SEC_TO_TIME(SUM(TIME_TO_SEC(past_times.time_end) - TIME_TO_SEC(past_times.time_start)))) AS minutes')
+                    )
+                    ->join('ressources', 'ressource_id', '=', 'ressources.id')
+                    ->whereBetween('date_past', array($start, $end))
+                    ->groupBy('ressource_id');
+        if ($user) {
+            $query->whereUserId($user);
+        }
+
+        return $query->get();
+    }
+
     /**
      * Past Time belongs to User
      */
