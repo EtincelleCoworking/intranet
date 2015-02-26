@@ -17,6 +17,28 @@ class InvoiceItem extends Eloquent
      */
     protected $fillable = array('id', 'ressource_id', 'text', 'amount', 'vat_types_id');
 
+
+    public function scopeTotalTVA($query)
+    {
+    	return $query
+    			->join('vat_types', function($j)
+    				{
+    					$j->on('vat_types_id', '=', 'vat_types.id')->where('value', '>', 0);
+    				})
+    			->join('invoices', function($j)
+	    			{
+	    				$j->on('invoice_id', '=', 'invoices.id')->where('type', '=', 'F');
+	    			})
+    			->select(
+    				DB::raw('CONCAT(YEAR(invoices.date_invoice), "-", MONTH(invoices.date_invoice)) as days'),
+    				'vat_types.value',
+    				DB::raw('SUM((amount * vat_types.value) / 100) as total')
+    			)
+    			->groupBy('days', 'vat_types.value')
+    			->orderBy('days', 'ASC')
+    			->get();
+    }
+
 	/**
 	 * Relation BelongsTo (Invoices_Items belongs to Invoice)
 	 */
