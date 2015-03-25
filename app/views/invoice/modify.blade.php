@@ -111,7 +111,7 @@
     </div>
     @endif
     
-    <br />
+    <br /><br />
     <div class="panel panel-default">
         <div class="panel-heading">
             <h3 class="panel-title">Commentaires</h3>
