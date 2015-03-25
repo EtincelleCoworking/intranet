@@ -158,6 +158,7 @@ class InvoiceController extends BaseController
 
         $invoice->type = 'F';
         $invoice->number = Invoice::next_invoice_number('F', $invoice->days);
+        $invoice->date_invoice = new DateTime();
 
         if ($invoice->save()) {
             return Redirect::route('invoice_modify', $invoice->id)->with('mSuccess', 'La facture a bien été générée');
