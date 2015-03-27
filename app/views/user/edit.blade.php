@@ -70,7 +70,8 @@
                                 <p>{{ Form::number('valueExist['.$skill->id.']', $skill->value, array('class' => 'form-control', 'min' => 0, 'max' => 100)) }}</p>
                             </div>
                             <div class="col-md-2">
-                                <button class="btn btn-danger btn-xs col-lg-2" value="{{ $skill->id }}" id="delete[{{$skill->id}}]"><i class="fa fa-trash"></i></button>
+                                <label>Supprimer</label>
+                                <button class="btn btn-danger btn-s col-lg-2" value="{{ $skill->id }}" id="delete[{{$skill->id}}]"><i class="fa fa-trash"></i></button>
                             </div>
                         </div>
                     </div>
