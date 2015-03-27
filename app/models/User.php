@@ -167,4 +167,8 @@ class User extends Eloquent implements UserInterface, RemindableInterface {
 
         return in_array($name, $roles[Auth::user()->role]);
     }
+
+    public function addSkill($skill) {
+
+    }
 }

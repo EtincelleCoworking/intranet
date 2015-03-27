@@ -1,13 +1,13 @@
 @extends('layouts.master')
 
 @section('meta_title')
-    Modification de mon profil
+	Modification de {{ $user->fullname }}
 @stop
 
 @section('content')
-    <h1>Modifier mon profil</h1>
+	<h1>Modifier un utilisateur</h1>
 
-    {{ Form::model($user, array('route' => array('user_edit'),'files' => true)) }}
+	{{ Form::model($user, array('route' => array('user_edit', $user->id))) }}
         <ul id="tabUserAdd" class="nav nav-tabs" role="tablist">
             <li role="presentation" class="active">
                 <a href="#connexion" aria-controls="connexion" role="tab" data-toggle="tab">Informations de connexion</a>
@@ -33,6 +33,12 @@
                 <p>{{ Form::text('lastname', null, array('class' => 'form-control')) }}</p>
                 {{ Form::label('password', 'Mot de passe') }}
                 <p>{{ Form::password('password', array('class' => 'form-control')) }}</p>
+                {{ Form::label('role', 'Rôle (droits)') }}
+                <p>{{ Form::select('role', User::SelectRoles(), null, array('class' => 'form-control')) }}</p>
+                <div class="checkbox">
+                    {{ Form::label('is_member', 'Il est membre') }}
+                    {{ Form::checkbox('is_member', true) }}
+                </div>
             </div>
             <div role="tabpanel" class="tab-pane" id="bio">
                 {{ Form::label('bio_short', 'Courte bio') }}
@@ -41,8 +47,6 @@
                 <p>{{Form::textarea('bio_long', null, array('class' => 'form-control')) }}</p>
             </div>
             <div role="tabpanel" class="tab-pane" id="socials">
-                {{ Form::label('avatar', 'Avatar') }}
-                <p>{{ Form::file('avatar', null, array('class' => 'form-control')) }}</p>
                 {{ Form::label('twitter', 'Twitter') }}
                 <p>{{ Form::text('twitter', null, array('class' => 'form-control')) }}</p>
                 {{ Form::label('website', 'Site internet') }}
@@ -51,63 +55,64 @@
                 <p>{{ Form::text('phone', null, array('class' => 'form-control')) }}</p>
             </div>
             <div role="tabpanel" class="tab-pane" id="competence">
-                <div class="row">
-                    <div class="col-md-6">
+                <div class="row" id="skills">
+                @if(count($skills) != 0)
+                @foreach($skills as $skill)
+                    <input type="hidden" name="modif[{{ $skill->id }}]" value="{{ $skill->id }}"/>
+                    <div class="col-md-6" id="skill">
                         <div class="row">
-                            <div class="col-md-9">
-                                {{ Form::label('competence1_title', 'Compétence 1') }}
-                                <p>{{ Form::text('competence1_title', null, array('class' => 'form-control')) }}</p>
+                            <div class="col-md-8">
+                                {{ Form::label('nameExist['.$skill->id.']', 'Compétence') }}
+                                <p>{{ Form::text('nameExist['.$skill->id.']', $skill->name, array('class' => 'form-control')) }}</p>
                             </div>
-                            <div class="col-md-3">
-                                {{ Form::label('competence1_value', 'Valeur') }}
-                                <p>{{ Form::number('competence1_value', null, array('class' => 'form-control', 'min' => 0, 'max' => 100)) }}</p>
+                            <div class="col-md-2">
+                                {{ Form::label('valueExist['.$skill->id.']', 'Valeur') }}
+                                <p>{{ Form::number('valueExist['.$skill->id.']', $skill->value, array('class' => 'form-control', 'min' => 0, 'max' => 100)) }}</p>
+                            </div>
+                            <div class="col-md-2">
+                                <button class="btn btn-danger btn-xs col-lg-2" value="{{ $skill->id }}" id="delete[{{$skill->id}}]"><i class="fa fa-trash"></i></button>
                             </div>
                         </div>
                     </div>
-                    <div class="col-md-6">
+                @endforeach
+                @else
+                    <div class="col-md-6" id="skill">
                         <div class="row">
                             <div class="col-md-9">
-                                {{ Form::label('competence2_title', 'Compétence 2') }}
-                                <p>{{ Form::text('competence2_title', null, array('class' => 'form-control')) }}</p>
+                                <label>Compétence</label>
+                                <p><input class="form-control" type="text" value="" name="name[0]" /></p>
                             </div>
                             <div class="col-md-3">
-                                {{ Form::label('competence2_value', 'Valeur') }}
-                                <p>{{ Form::number('competence2_value', null, array('class' => 'form-control', 'min' => 0, 'max' => 100)) }}</p>
+                                <label>Valeur</label>
+                                <p><input class="form-control" type="number" min="0" max="100" value="" name="value[0]" /></p>
                             </div>
                         </div>
                     </div>
+                @endif
                 </div>
-                <div class="row">
-                    <div class="col-md-6">
-                        <div class="row">
-                            <div class="col-md-9">
-                                {{ Form::label('competence3_title', 'Compétence 3') }}
-                                <p>{{ Form::text('competence3_title', null, array('class' => 'form-control')) }}</p>
-                            </div>
-                            <div class="col-md-3">
-                                {{ Form::label('competence3_value', 'Valeur') }}
-                                <p>{{ Form::number('competence3_value', null, array('class' => 'form-control', 'min' => 0, 'max' => 100)) }}</p>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="col-md-6">
-                        <div class="row">
-                            <div class="col-md-9">
-                                {{ Form::label('competence4_title', 'Compétence 4') }}
-                                <p>{{ Form::text('competence4_title', null, array('class' => 'form-control')) }}</p>
-                            </div>
-                            <div class="col-md-3">
-                                {{ Form::label('competence4_value', 'Valeur') }}
-                                <p>{{ Form::number('competence4_value', null, array('class' => 'form-control', 'min' => 0, 'max' => 100)) }}</p>
-                            </div>
-                        </div>
-                    </div>
+                <div align="left">
+                    <button class="btn btn-info btn-xs col-lg-1" id="add_skill">+</button>
                 </div>
+                <br />
             </div>
         </div>
 
         <div align="center">
-            {{ Form::submit('Modifier mon profil', array('class' => 'btn btn-success')) }}
+            {{ Form::submit('Modifier cet utilisateur', array('class' => 'btn btn-success')) }}
         </div>
-    {{ Form::close() }}
+	{{ Form::close() }}
 @stop
+
+@section('javascript')
+<script type="text/javascript">
+var cpt=0;
+
+$('#add_skill').click(function(e){
+    e.preventDefault();
+    cpt = cpt+1;
+    //row = '<div class="col-md-6"><div class="row"><div class="col-md-9" id="count'+cpt+'">{{ Form::label('nom', 'Compétence') }}<p>{{ Form::text('name[]', null, array('class' => 'form-control')) }}</p></div><div class="col-md-3">{{ Form::label('valeur', 'Valeur') }}<p>{{ Form::number('value[]', null, array('class' => 'form-control', 'min' => 0, 'max' => 100)) }}</p></div></div></div>';
+    row = '<div class="col-md-6"><div class="row"><div class="col-md-9" id="count'+cpt+'"><label>Compétence</label><p><input class="form-control" type="text" value="" name="name['+cpt+']" /></p></div><div class="col-md-3"><label>Compétence</label><p><input class="form-control" type="number" min="0" max="100" value="" name="value['+cpt+']" /></p></div></div></div>';
+    $('#skills').append(row);
+});
+</script>
+@endsection

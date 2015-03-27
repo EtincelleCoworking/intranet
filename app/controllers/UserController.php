@@ -157,7 +157,7 @@ class UserController extends BaseController
 	 */
 	public function modify_check($id)
 	{
-		$user = User::find($id);
+        $user = User::find($id);
 		if (!$user) {
 			return Redirect::route('user_list')->with('mError', 'Cet utilisateur est introuvable !');
 		}
@@ -181,14 +181,11 @@ class UserController extends BaseController
                 $user->phone = Input::get('phone');
                 $user->role = Input::get('role');
 
-                $user->competence1_title = Input::get('competence1_title');
-                $user->competence1_value = Input::get('competence1_value');
-                $user->competence2_title = Input::get('competence2_title');
-                $user->competence2_value = Input::get('competence2_value');
-                $user->competence3_title = Input::get('competence3_title');
-                $user->competence3_value = Input::get('competence3_value');
-                $user->competence4_title = Input::get('competence4_title');
-                $user->competence4_value = Input::get('competence4_value');
+                if(Input::get('name') && Input::get('name') > 1) {
+                    foreach (Input::get('name') as $skillname) {
+                        new Skill(['user_id' => $user->id, 'name' => $skillname, 'value' => Input::get('value')]);
+                    }
+                }
 
 				if ($user->save()) {
 					return Redirect::route('user_modify', $user->id)->with('mSuccess', 'Cet utilisateur a bien été modifié');
@@ -248,8 +245,9 @@ class UserController extends BaseController
     public function edit()
     {
         $profile = User::find(Auth::user()->id);
+        $skills = Skill::findSkillsForUser(Auth::user()->id);
 
-        return View::make('user.edit', array('user' => $profile));
+        return View::make('user.edit', array('user' => $profile, 'skills' => $skills));
     }
 
     /**
@@ -275,14 +273,47 @@ class UserController extends BaseController
                 $user->website = Input::get('website');
                 $user->phone = Input::get('phone');
 
-                $user->competence1_title = Input::get('competence1_title');
-                $user->competence1_value = Input::get('competence1_value');
-                $user->competence2_title = Input::get('competence2_title');
-                $user->competence2_value = Input::get('competence2_value');
-                $user->competence3_title = Input::get('competence3_title');
-                $user->competence3_value = Input::get('competence3_value');
-                $user->competence4_title = Input::get('competence4_title');
-                $user->competence4_value = Input::get('competence4_value');
+                if(count(Input::get('modif')) > 0){
+                    $save = false;
+                    foreach(Input::get('modif') as $key=>$skillId){
+                        $skillExist = Skill::find($skillId);
+                        if($skillExist->name != Input::get('nameExist.'.$skillExist->id)){
+                            $skillExist->name = Input::get('nameExist.'.$skillExist->id);
+                            $save = true;
+                        }
+                        if($skillExist->value != Input::get('valueExist.'.$skillExist->id)){
+                            $skillExist->value = Input::get('valueExist.'.$skillExist->id);
+                            $save = true;
+                        }
+                        if($save){
+                            $skillExist->save();
+                        }
+                    }
+                }
+
+                if(Input::get('name') && count(Input::get('name')) > 1) {
+                    foreach (Input::get('name') as $key => $skillname) {
+                        if($skillname != null) {
+                            $skill = new Skill();
+                            $skill->user_id = $user->id;
+                            $skill->name = $skillname;
+                            if (Input::get('value.'.$key)) {
+                                $skill->value = Input::get('value.'.$key);
+                            }
+                            $skill->save();
+                        }
+                    }
+                } elseif(Input::get('name') && count(Input::get('name')) == 1) {
+                    if(Input::get('name') != '') {
+                        $skill = new Skill();
+                        $skill->user_id = $user->id;
+                        $skill->name = Input::get('name');
+                        if (Input::get('value')) {
+                            $skill->value = Input::get('value');
+                        }
+                        $skill->save();
+                    }
+                }
 
                 if (Input::file('avatar')) {
                     $avatar = $user->id.'.'.Input::file('avatar')->guessClientExtension();
