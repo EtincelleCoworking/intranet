@@ -70,8 +70,8 @@
                                 <p>{{ Form::number('valueExist['.$skill->id.']', $skill->value, array('class' => 'form-control', 'min' => 0, 'max' => 100)) }}</p>
                             </div>
                             <div class="col-md-2">
-                                <label>Supprimer</label>
-                                <button class="btn btn-danger btn-s col-lg-2" value="{{ $skill->id }}" id="delete[{{$skill->id}}]"><i class="fa fa-trash"></i></button>
+																{{ Form::label('deleteExist['.$skill->id.']', 'Supprimer') }}
+																<p>{{ Form::checkbox('deleteExist['.$skill->id.']') }}</p>
                             </div>
                         </div>
                     </div>
@@ -111,7 +111,6 @@ var cpt=0;
 $('#add_skill').click(function(e){
     e.preventDefault();
     cpt = cpt+1;
-    //row = '<div class="col-md-6"><div class="row"><div class="col-md-9" id="count'+cpt+'">{{ Form::label('nom', 'Compétence') }}<p>{{ Form::text('name[]', null, array('class' => 'form-control')) }}</p></div><div class="col-md-3">{{ Form::label('valeur', 'Valeur') }}<p>{{ Form::number('value[]', null, array('class' => 'form-control', 'min' => 0, 'max' => 100)) }}</p></div></div></div>';
     row = '<div class="col-md-6"><div class="row"><div class="col-md-9" id="count'+cpt+'"><label>Compétence</label><p><input class="form-control" type="text" value="" name="name['+cpt+']" /></p></div><div class="col-md-3"><label>Compétence</label><p><input class="form-control" type="number" min="0" max="100" value="" name="value['+cpt+']" /></p></div></div></div>';
     $('#skills').append(row);
 });

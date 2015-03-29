@@ -120,9 +120,9 @@ class UserController extends BaseController
         */
 
 		return View::make('user.dashboard', array(
-													'totalMonth' => $totalMonth, 
-													'chargesMonth' => $chargesMonth, 
-													'chargesMonthToPay' => $chargesMonthToPay, 
+													'totalMonth' => $totalMonth,
+													'chargesMonth' => $chargesMonth,
+													'chargesMonthToPay' => $chargesMonthToPay,
 													'pasttimes' => $pasttimes,
 													'tva_collectee' => $tva_collectee,
 													'tva_deductible' => $tva_deductible
@@ -145,11 +145,12 @@ class UserController extends BaseController
 	public function modify($id)
 	{
 		$user = User::find($id);
+		$skills = Skill::findSkillsForUser($id);
 		if (!$user) {
 			return Redirect::route('user_list')->with('mError', 'Cet utilisateur est introuvable !');
 		}
 
-		return View::make('user.modify', array('user' => $user));
+		return View::make('user.modify', array('user' => $user, 'skills' => $skills));
 	}
 
 	/**
@@ -181,9 +182,49 @@ class UserController extends BaseController
                 $user->phone = Input::get('phone');
                 $user->role = Input::get('role');
 
-                if(Input::get('name') && Input::get('name') > 1) {
-                    foreach (Input::get('name') as $skillname) {
-                        new Skill(['user_id' => $user->id, 'name' => $skillname, 'value' => Input::get('value')]);
+								if(count(Input::get('modif')) > 0){
+                    $save = false;
+                    foreach(Input::get('modif') as $key=>$skillId){
+											$skillExist = Skill::find($skillId);
+											if (Input::get('deleteExist.'.$skillExist->id)) {
+												Skill::destroy($skillExist->id);
+											} else {
+                        if($skillExist->name != Input::get('nameExist.'.$skillExist->id)){
+                            $skillExist->name = Input::get('nameExist.'.$skillExist->id);
+                            $save = true;
+                        }
+                        if($skillExist->value != Input::get('valueExist.'.$skillExist->id)){
+                            $skillExist->value = Input::get('valueExist.'.$skillExist->id);
+                            $save = true;
+                        }
+                        if($save){
+                            $skillExist->save();
+                        }
+											}
+                    }
+                }
+
+                if(Input::get('name') && count(Input::get('name')) > 1) {
+                    foreach (Input::get('name') as $key => $skillname) {
+                        if($skillname != null) {
+                            $skill = new Skill();
+                            $skill->user_id = $user->id;
+                            $skill->name = $skillname;
+                            if (Input::get('value.'.$key)) {
+                                $skill->value = Input::get('value.'.$key);
+                            }
+                            $skill->save();
+                        }
+                    }
+                } elseif(Input::get('name') && count(Input::get('name')) == 1) {
+                    if(Input::get('name') != '') {
+                        $skill = new Skill();
+                        $skill->user_id = $user->id;
+                        $skill->name = Input::get('name');
+                        if (Input::get('value')) {
+                            $skill->value = Input::get('value');
+                        }
+                        $skill->save();
                     }
                 }
 
@@ -276,7 +317,10 @@ class UserController extends BaseController
                 if(count(Input::get('modif')) > 0){
                     $save = false;
                     foreach(Input::get('modif') as $key=>$skillId){
-                        $skillExist = Skill::find($skillId);
+											$skillExist = Skill::find($skillId);
+											if (Input::get('deleteExist.'.$skillExist->id)) {
+												Skill::destroy($skillExist->id);
+											} else {
                         if($skillExist->name != Input::get('nameExist.'.$skillExist->id)){
                             $skillExist->name = Input::get('nameExist.'.$skillExist->id);
                             $save = true;
@@ -288,6 +332,7 @@ class UserController extends BaseController
                         if($save){
                             $skillExist->save();
                         }
+											}
                     }
                 }
 

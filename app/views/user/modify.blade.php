@@ -55,58 +55,46 @@
                 <p>{{ Form::text('phone', null, array('class' => 'form-control')) }}</p>
             </div>
             <div role="tabpanel" class="tab-pane" id="competence">
-                <div class="row">
-                    <div class="col-md-6">
-                        <div class="row">
-                            <div class="col-md-9">
-                                {{ Form::label('competence1_title', 'Compétence 1') }}
-                                <p>{{ Form::text('competence1_title', null, array('class' => 'form-control')) }}</p>
-                            </div>
-                            <div class="col-md-3">
-                                {{ Form::label('competence1_value', 'Valeur') }}
-                                <p>{{ Form::number('competence1_value', null, array('class' => 'form-control', 'min' => 0, 'max' => 100)) }}</p>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="col-md-6">
-                        <div class="row">
-                            <div class="col-md-9">
-                                {{ Form::label('competence2_title', 'Compétence 2') }}
-                                <p>{{ Form::text('competence2_title', null, array('class' => 'form-control')) }}</p>
-                            </div>
-                            <div class="col-md-3">
-                                {{ Form::label('competence2_value', 'Valeur') }}
-                                <p>{{ Form::number('competence2_value', null, array('class' => 'form-control', 'min' => 0, 'max' => 100)) }}</p>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <div class="row">
-                    <div class="col-md-6">
-                        <div class="row">
-                            <div class="col-md-9">
-                                {{ Form::label('competence3_title', 'Compétence 3') }}
-                                <p>{{ Form::text('competence3_title', null, array('class' => 'form-control')) }}</p>
-                            </div>
-                            <div class="col-md-3">
-                                {{ Form::label('competence3_value', 'Valeur') }}
-                                <p>{{ Form::number('competence3_value', null, array('class' => 'form-control', 'min' => 0, 'max' => 100)) }}</p>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="col-md-6">
-                        <div class="row">
-                            <div class="col-md-9">
-                                {{ Form::label('competence4_title', 'Compétence 4') }}
-                                <p>{{ Form::text('competence4_title', null, array('class' => 'form-control')) }}</p>
-                            </div>
-                            <div class="col-md-3">
-                                {{ Form::label('competence4_value', 'Valeur') }}
-                                <p>{{ Form::number('competence4_value', null, array('class' => 'form-control', 'min' => 0, 'max' => 100)) }}</p>
-                            </div>
-                        </div>
-                    </div>
-                </div>
+							<div class="row" id="skills">
+							@if(count($skills) != 0)
+							@foreach($skills as $skill)
+									<input type="hidden" name="modif[{{ $skill->id }}]" value="{{ $skill->id }}"/>
+									<div class="col-md-6" id="skill">
+											<div class="row">
+													<div class="col-md-8">
+															{{ Form::label('nameExist['.$skill->id.']', 'Compétence') }}
+															<p>{{ Form::text('nameExist['.$skill->id.']', $skill->name, array('class' => 'form-control')) }}</p>
+													</div>
+													<div class="col-md-2">
+															{{ Form::label('valueExist['.$skill->id.']', 'Valeur') }}
+															<p>{{ Form::number('valueExist['.$skill->id.']', $skill->value, array('class' => 'form-control', 'min' => 0, 'max' => 100)) }}</p>
+													</div>
+													<div class="col-md-2">
+															{{ Form::label('deleteExist['.$skill->id.']', 'Supprimer') }}
+															<p>{{ Form::checkbox('deleteExist['.$skill->id.']') }}</p>
+													</div>
+											</div>
+									</div>
+							@endforeach
+							@else
+									<div class="col-md-6" id="skill">
+											<div class="row">
+													<div class="col-md-9">
+															<label>Compétence</label>
+															<p><input class="form-control" type="text" value="" name="name[0]" /></p>
+													</div>
+													<div class="col-md-3">
+															<label>Valeur</label>
+															<p><input class="form-control" type="number" min="0" max="100" value="" name="value[0]" /></p>
+													</div>
+											</div>
+									</div>
+							@endif
+							</div>
+							<div align="left">
+									<button class="btn btn-info btn-xs col-lg-1" id="add_skill">+</button>
+							</div>
+							<br />
             </div>
         </div>
 
@@ -168,3 +156,16 @@
 		</tbody>
 	</table>
 @stop
+
+@section('javascript')
+<script type="text/javascript">
+var cpt=0;
+
+$('#add_skill').click(function(e){
+    e.preventDefault();
+    cpt = cpt+1;
+    row = '<div class="col-md-6"><div class="row"><div class="col-md-9" id="count'+cpt+'"><label>Compétence</label><p><input class="form-control" type="text" value="" name="name['+cpt+']" /></p></div><div class="col-md-3"><label>Compétence</label><p><input class="form-control" type="number" min="0" max="100" value="" name="value['+cpt+']" /></p></div></div></div>';
+    $('#skills').append(row);
+});
+</script>
+@endsection
