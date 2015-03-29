@@ -14,7 +14,7 @@
     <div class="pull-right">
         <a href="{{ URL::route('invoice_print_pdf', $invoice->id) }}" class="btn btn-sm btn-primary" target="_blank">PDF</a>
     </div>
-    
+
 	<h1>
         Modifier
         @if ($invoice->type == 'F')
@@ -34,7 +34,10 @@
                 @endif
                 {{ Form::label('address', 'Adresse de facturation') }}
                 <p>{{ Form::textarea('address', $invoice->address, array('class' => 'form-control', 'rows' => '5')) }}</p>
-            </div>
+
+								{{ Form::label('details', 'Détails') }}
+								<p>{{ Form::text('details', $invoice->details, array('class' => 'form-control')) }}</p>
+						</div>
             <div class="col-md-6">
                 {{ Form::label('date_invoice', 'Date de création') }}
                 <p>{{ Form::text('date_invoice', date('d/m/Y', strtotime($invoice->date_invoice)), array('class' => 'form-control datePicker')) }}</p>
@@ -110,8 +113,9 @@
         </div>
     </div>
     @endif
-    
+
     <br /><br />
+		@if (count($invoice->comments) > 0)
     <div class="panel panel-default">
         <div class="panel-heading">
             <h3 class="panel-title">Commentaires</h3>
@@ -129,7 +133,8 @@
         </div>
     </div>
     <br />
-    <div class="panel panel-success">
+		@endif
+    <div class="panel panel-default">
         <div class="panel-heading">
             <h3 class="panel-title">Nouveau commentaire</h3>
         </div>
@@ -138,7 +143,7 @@
                 {{ Form::hidden('invoice_id', $invoice->id) }}
                 {{ Form::hidden('user_id', Auth::user()->id) }}
                 <p>{{ Form::textarea('content', null, array('class' => 'form-control')) }}</p>
-                {{ Form::submit('Ajouter', array('class' => 'btn btn-success')) }}
+                {{ Form::submit('Ajouter', array('class' => 'btn btn-default')) }}
             {{ Form::close() }}
         </div>
     </div>

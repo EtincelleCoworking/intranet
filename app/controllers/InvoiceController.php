@@ -48,15 +48,15 @@ class InvoiceController extends BaseController
 	 * Modify invoice
 	 */
 	public function modify($id)
-	{  
+	{
         if (Auth::user()->role == 'superadmin') {
-            $template = 'invoice.modify';   
+            $template = 'invoice.modify';
         } else {
             $template = 'invoice.show';
         }
 
         $invoice = $this->dataExist($id, $template);
-		
+
 		if (!$invoice) {
 			return Redirect::route('invoice_list')->with('mError', 'Cette facture est introuvable !');
 		}
@@ -92,6 +92,7 @@ class InvoiceController extends BaseController
                 $invoice->date_payment = null;
             }
             $invoice->address = Input::get('address');
+            $invoice->details = Input::get('details');
 
             if ($invoice->save()) {
                 return Redirect::route('invoice_modify', $invoice->id)->with('mSuccess', 'La facture a bien été modifiée');
@@ -236,6 +237,13 @@ class InvoiceController extends BaseController
                                 </div>
                             </td>
                         </tr>
+                        '.(($invoice->details) ? '
+                        <tr>
+                          <td colspan="2">
+                            '.$invoice->details.'
+                          </td>
+                        </tr>
+                        ' : '').'
                         <tr>
                             <td colspan="2">
                                 <div style="margin-top:20px">
