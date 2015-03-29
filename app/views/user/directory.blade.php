@@ -34,7 +34,18 @@
                         {{ $organisation->name }}
                     @endforeach
                 </td>
-                <td>{{ $user->skills }}</td>
+                <td>
+                  @foreach ($user->all_skills['major'] as $key=>$skill)
+                    @if ($key != 0)
+                      ,
+                    @endif
+                    {{ $skill['name'] }} ({{ $skill['value'] }}%)
+                  @endforeach
+                  @if ($user->all_skills['major'])
+                    ,
+                  @endif
+                  {{ $user->all_skills['minor'] }}
+                </td>
             </tr>
         @endforeach
         </tbody>

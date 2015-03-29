@@ -29,8 +29,12 @@
 
             <ul class="icons-list">
                 <li><i class="icon-li fa fa-envelope"></i> {{ HTML::mailto($user->email, 'Envoyer un email') }}</li>
-                <li><i class="icon-li fa fa-globe"></i> {{ link_to($user->website) }}</li>
-                <li><i class="icon-li fa fa-twitter"></i> {{ link_to('http://twitter.com/'.$user->twitter) }}</li>
+                @if ($user->website)
+                  <li><i class="icon-li fa fa-globe"></i> {{ link_to($user->website) }}</li>
+                @endif
+                @if ($user->twitter)
+                  <li><i class="icon-li fa fa-twitter"></i> {{ link_to('http://twitter.com/'.$user->twitter) }}</li>
+                @endif
             </ul>
 
             <br>
@@ -45,22 +49,18 @@
         </div>
     </div>
     <div class="row">
-        <div class="col-md-3" align="center">
-            <h4>{{ $user->competence1_title }}</h4>
-            <canvas id="chart-competence1" width="150px" data-value="{{ $user->competence1_value }}" />
-        </div>
-        <div class="col-md-3" align="center">
-            <h4>{{ $user->competence2_title }}</h4>
-            <canvas id="chart-competence2" width="150px" data-value="{{ $user->competence2_value }}" />
-        </div>
-        <div class="col-md-3" align="center">
-            <h4>{{ $user->competence3_title }}</h4>
-            <canvas id="chart-competence3" width="150px" data-value="{{ $user->competence3_value }}" />
-        </div>
-        <div class="col-md-3" align="center">
-            <h4>{{ $user->competence4_title }}</h4>
-            <canvas id="chart-competence4" width="150px" data-value="{{ $user->competence4_value }}" />
-        </div>
+        @foreach ($user->all_skills['major'] as $key=>$skill)
+          <div class="col-md-3" align="center">
+              <h4>{{ $skill['name'] }}</h4>
+              <canvas class="chart-competence" id="chart-competence{{ $key }}" width="150px" data-value="{{ $skill['value'] }}" />
+          </div>
+        @endforeach
+    </div>
+    <div class="row">
+      <div class="col-md-12">
+        <br />
+        <p>Autres compétences : {{ $user->all_skills['minor'] }}</p>
+      </div>
     </div>
 @stop
 
@@ -82,37 +82,19 @@
         }
     ];
     window.onload = function(){
-        var comp1 = $('#chart-competence1').data('value');
-        var comp1_data = data;
-        comp1_data[0]['value'] = comp1;
-        comp1_data[1]['value'] = 100-comp1;
+        var nbComp = $('.chart-competence').length;
 
-        var ctx1 = document.getElementById("chart-competence1").getContext("2d");
-        window.myCompetence1 = new Chart(ctx1).Doughnut(data);
+        for (var $i = 0; $i < nbComp; $i++) {
+          var comp$i = $('#chart-competence'+$i).data('value');
+          var comp$i_data = data;
+          comp$i_data[0]['value'] = comp$i;
+          comp$i_data[1]['value'] = 100-comp$i;
 
-        var comp2 = $('#chart-competence2').data('value');
-        var comp2_data = data;
-        comp2_data[0]['value'] = comp2;
-        comp2_data[1]['value'] = 100-comp2;
+          var ctx$i = document.getElementById("chart-competence"+$i).getContext("2d");
+          window.myCompetence$i = new Chart(ctx$i).Doughnut(data);
+        }
 
-        var ctx2 = document.getElementById("chart-competence2").getContext("2d");
-        window.myCompetence2 = new Chart(ctx2).Doughnut(data);
 
-        var comp3 = $('#chart-competence3').data('value');
-        var comp3_data = data;
-        comp3_data[0]['value'] = comp3;
-        comp3_data[1]['value'] = 100-comp3;
-
-        var ctx3 = document.getElementById("chart-competence3").getContext("2d");
-        window.myCompetence3 = new Chart(ctx3).Doughnut(data);
-
-        var comp4 = $('#chart-competence4').data('value');
-        var comp4_data = data;
-        comp4_data[0]['value'] = comp4;
-        comp4_data[1]['value'] = 100-comp4;
-
-        var ctx4 = document.getElementById("chart-competence4").getContext("2d");
-        window.myCompetence4 = new Chart(ctx4).Doughnut(data);
     };
     </script>
 @stop

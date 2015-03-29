@@ -65,6 +65,14 @@ class User extends Eloquent implements UserInterface, RemindableInterface {
 		return $this->belongsToMany('Organisation', 'organisation_user', 'user_id', 'organisation_id');
 	}
 
+		/**
+		* Relation One To Many (User has many Skills)
+		*/
+		public function skills()
+		{
+			return $this->hasMany('Skill')->orderBy('value', 'DESC');;
+		}
+
     /**
      * Relation One To Many (User has many Past Times)
      */
@@ -94,18 +102,26 @@ class User extends Eloquent implements UserInterface, RemindableInterface {
         return $this->firstname.' '.$this->lastname.' ('.$organisation.')';
     }
 
-    /**
+		/**
      * List of skills
      */
-    public function getSkillsAttribute()
+    public function getAllSkillsAttribute()
     {
-        $skills = '';
-        for ($i=1; $i<=4; $i++) {
-        	if ($this->{'competence'.$i.'_title'}) {
-	        	if ($skills != '') { $skills .= ', '; }
-	        	$skills .= $this->{'competence'.$i.'_title'}.' ('.$this->{'competence'.$i.'_value'}.'%)';
-	        }
-        }
+        $skills = array(
+					'major' => array(),
+					'minor' => ''
+				);
+				foreach ($this->skills as $skill) {
+					if ($skill->value) {
+						$skills['major'][] = array(
+							'name' 	=> $skill->name,
+							'value' => $skill->value
+						);
+					} else {
+						if ($skills['minor'] != '') { $skills['minor'] .= ', '; }
+						$skills['minor'] .= $skill->name;
+					}
+				}
         return $skills;
     }
 
@@ -166,5 +182,9 @@ class User extends Eloquent implements UserInterface, RemindableInterface {
         );
 
         return in_array($name, $roles[Auth::user()->role]);
+    }
+
+    public function addSkill($skill) {
+
     }
 }
