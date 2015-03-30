@@ -29,7 +29,7 @@
 		@foreach ($invoices as $invoice)
 			<tr>
 				<td>{{ $invoice->ident }}</td>
-				<td>{{ $invoice->date_invoice->format('d/m/Y') }}</td>
+				<td>{{ date('d/m/Y', strtotime($invoice->date_invoice)) }}</td>
 				<td>
                     @if ($invoice->organisation)
                     	@if (Auth::user()->role == 'superadmin')
