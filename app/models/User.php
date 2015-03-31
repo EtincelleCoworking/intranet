@@ -70,7 +70,7 @@ class User extends Eloquent implements UserInterface, RemindableInterface {
 		*/
 		public function skills()
 		{
-			return $this->hasMany('Skill')->orderBy('value', 'DESC');;
+			return $this->hasMany('Skill')->orderBy('value', 'DESC');
 		}
 
     /**

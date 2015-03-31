@@ -69,6 +69,7 @@
     <table class="table table-striped table-hover">
         <thead>
             <tr>
+								<th>Ordre</th>
                 <th>Ressource</th>
                 <th>Description</th>
                 <th>Montant</th>
@@ -79,6 +80,7 @@
         <tbody>
             @foreach ($invoice->items as $item)
             <tr>
+								<td class="col-lg-1">{{ Form::number('order_index['.$item->id.']', $item->order_index, array('class' => 'form-control')) }}</td>
                 <td>{{ Form::select('ressource_id['.$item->id.']', Ressource::SelectAll(), $item->ressource_id, array('class' => 'form-control')) }}</td>
                 <td>{{ Form::textarea('text['.$item->id.']', $item->text, array('rows' => 4, 'class' => 'form-control')) }}</td>
                 <td>{{ Form::text('amount['.$item->id.']', $item->amount, array('class' => 'form-control')) }}</td>
@@ -89,6 +91,7 @@
         </tbody>
         <tfoot>
             <tr>
+								<td>{{ Form::number('order_index[0]', 1, array('class' => 'form-control')) }}</td>
                 <td>{{ Form::select('ressource_id[0]', Ressource::SelectAll(), null, array('class' => 'form-control')) }}</td>
                 <td>{{ Form::textarea('text[0]', null, array('rows' => 4, 'placeholder' => 'Nouvelle ligne', 'class' => 'form-control')) }}</td>
                 <td>{{ Form::text('amount[0]', null, array('class' => 'form-control')) }}</td>
