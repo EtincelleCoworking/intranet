@@ -293,4 +293,40 @@ class ChargeController extends BaseController
             return Redirect::route('charge_modify', $id)->with('mError', 'Impossible de supprimer cette charge');
         }
     }
+
+    /**
+     * Duplicate a charge
+     */
+    public function duplicate($id)
+    {
+      $charge = $this->dataExist($id);
+      
+      $newCharge = new Charge;
+      $newCharge->date_charge = date('Y-m-d');
+      $date = new DateTime($newCharge->date_charge);
+      $date->modify('+1 month');
+      $newCharge->deadline = $date->format('Y-m-d');
+      $newCharge->organisation_id = $charge->organisation_id;
+
+      if ($newCharge->save()) {
+        foreach ($charge->items as $item) {
+          $addItem = new ChargeItem;
+          $addItem->insert(array(
+              'charge_id' => $newCharge->id,
+              'description' => $item->description,
+              'amount' => $item->amount,
+              'vat_types_id' => $item->vat_types_id
+          ));
+        }
+
+        foreach ($charge->tags as $tag) {
+          $chargeTag = new ChargeTag;
+          $chargeTag->charge_id = $newCharge->id;
+          $chargeTag->tag_id = $tag->id;
+          $chargeTag->save();
+        }
+
+        return Redirect::route('charge_modify', $newCharge->id);
+      }
+    }
 }

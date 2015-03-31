@@ -5,6 +5,10 @@
 @stop
 
 @section('content')
+    <div class="pull-right">
+        <a href="{{ URL::route('charge_duplicate', $charge->id) }}" class="btn btn-sm btn-primary" target="_blank">Dupliquer</a>
+    </div>
+
     <h1>Modifier une charge</h1>
 
     {{ Form::model($charge, array('route' => array('charge_modify', $charge->id), 'files' => true)) }}
