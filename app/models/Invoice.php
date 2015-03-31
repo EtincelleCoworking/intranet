@@ -50,7 +50,7 @@ class Invoice extends Eloquent
 	 */
 	public function items()
 	{
-		return $this->hasMany('InvoiceItem');
+		return $this->hasMany('InvoiceItem')->orderBy('order_index', 'ASC');;
 	}
 
 	/**

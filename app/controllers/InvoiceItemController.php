@@ -26,6 +26,7 @@ class InvoiceItemController extends BaseController
                 'text' => Input::get('text.'.$item->id),
                 'amount' => Input::get('amount.'.$item->id),
                 'vat_types_id' => Input::get('vat_types_id.'.$item->id),
+                'order_index' => Input::get('order_index.'.$item->id),
             ));
         }
 
@@ -36,7 +37,8 @@ class InvoiceItemController extends BaseController
                 'ressource_id' => Input::get('ressource_id.0'),
                 'text' => Input::get('text.0'),
                 'amount' => Input::get('amount.0'),
-                'vat_types_id' => Input::get('vat_types_id.0')
+                'vat_types_id' => Input::get('vat_types_id.0'),
+                'order_index' => Input::get('order_index.0'),
             ));
         }
 
