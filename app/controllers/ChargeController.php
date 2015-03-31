@@ -25,20 +25,26 @@ class ChargeController extends BaseController
     {
         if (Input::has('type')) {
             Session::put('filtre_charge.type', Input::get('type'));
-            if (Input::has('filtre_month') && Input::has('filtre_year')) {
-                Session::put('filtre_charge.month', Input::get('filtre_month'));
-                Session::put('filtre_charge.year', Input::get('filtre_year'));
+            if (Input::has('filtre_start')) {
+              $date_start_explode = explode('/', Input::get('filtre_start'));
+              Session::put('filtre_charge.start', $date_start_explode[2].'-'.$date_start_explode[1].'-'.$date_start_explode[0]);
+            }
+            if (Input::has('filtre_end')) {
+              $date_end_explode = explode('/', Input::get('filtre_end'));
+              Session::put('filtre_charge.end', $date_end_explode[2].'-'.$date_end_explode[1].'-'.$date_end_explode[0]);
+            } else {
+              Session::put('filtre_charge.end', date('Y-m-d'));
             }
         }
         if (Session::has('filtre_charge.type')) {
             $filtre = Session::get('filtre_charge.type');
         }
-        if (Session::has('filtre_charge.month')) {
-            $date_filtre_start = Session::get('filtre_charge.year').'-'.Session::get('filtre_charge.month').'-01';
-            $date_filtre_end = Session::get('filtre_charge.year').'-'.Session::get('filtre_charge.month').'-'.date('t', Session::get('filtre_charge.month'));
+        if (Session::has('filtre_charge.start')) {
+            $date_filtre_start = Session::get('filtre_charge.start');
+            $date_filtre_end = Session::get('filtre_charge.end');
         } else {
             $date_filtre_start = date('Y-m').'-01';
-            $date_filtre_end = date('Y-m').'-'.date('t', Session::get('filtre_charge.month'));
+            $date_filtre_end = date('Y-m').'-'.date('t', date('m'));
         }
 
         $setDate = new DateTime();
