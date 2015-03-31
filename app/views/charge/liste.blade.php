@@ -10,8 +10,8 @@
         {{ Form::open(array('route' => array('charge_list', $filtre))) }}
             <span class="btn btn-info">
                 <div class="col-md-3 input-group-sm">{{ Form::select('type', array('all' => 'Toutes', 'deadline_close' => 'Proches', 'deadline_exceeded' => 'Dépassées'), ((Session::get('filtre_charge.type'))?:'all'), array('class' => 'form-control')) }}</div>
-                <div class="col-md-3 input-group-sm"><input type="text" name="filtre_month" value="{{ ((Session::get('filtre_charge.month'))?:date('m')) }}" class="monthDropper form-control"></div>
-                <div class="col-md-3 input-group-sm"><input type="text" name="filtre_year" value="{{ ((Session::get('filtre_charge.year'))?:date('Y')) }}" class="yearDropper form-control"></div>
+                <div class="col-md-3 input-group-sm">{{ Form::text('filtre_start', ((Session::get('filtre_charge.start')) ? date('d/m/Y', strtotime(Session::get('filtre_charge.start'))) : date('d/m/Y')), array('class' => 'form-control datePicker')) }}</div>
+                <div class="col-md-3 input-group-sm">{{ Form::text('filtre_end', ((Session::get('filtre_charge.end')) ? date('d/m/Y', strtotime(Session::get('filtre_charge.end'))) : date('t', date('m')).'/'.date('m/Y')), array('class' => 'form-control datePicker')) }}</div>
                 <div class="col-md-3">{{ Form::submit('Ok', array('class' => 'btn btn-sm btn-default')) }}</div>
             </span>
         {{ Form::close() }}
@@ -93,6 +93,7 @@
 @section('javascript')
 <script type="text/javascript">
 $().ready(function(){
+  $('.datePicker').datepicker();
     $('.yearDropper').dateDropper({animate_current: false, format: "Y", placeholder: "{{ ((Session::get('filtre_charge.year'))?:date('Y')) }}"});
     $('.monthDropper').dateDropper({animate_current: false, format: "m", placeholder: "{{ ((Session::get('filtre_charge.month'))?:date('m')) }}"});
 });
