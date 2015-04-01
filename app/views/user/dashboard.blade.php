@@ -8,10 +8,10 @@
             <div class="panel panel-success">
                 <div class="panel-heading">
                     <h3 class="panel-title">
-                        <i class="fa fa-money fa-2x"></i> 
+                        <i class="fa fa-money fa-2x"></i>
                         <span class="pull-right">
                             @if (Auth::user()->role == 'superadmin')
-                            CA 
+                            CA
                             @else
                             Factures
                             @endif
@@ -71,6 +71,36 @@
                 </div>
             </div>
         </div>
+				@if ($chooseMember)
+				<div class="col-md-4">
+					<div class="panel panel-primary">
+						<div class="panel-heading">
+							<h3 class="panel-title">Un membre au hasard</h3>
+						</div>
+						<div class="panel-body">
+							<h4 align="center">{{ $chooseMember->fullname }}</h4>
+							@if ($chooseMember->avatar)
+									{{ HTML::image('uploads/avatars/'.$chooseMember->avatar, '', array('class' => 'profile-avatar-img thumbnail')) }}
+							@else
+									{{ HTML::image('img/avatars/avatar.png', '', array('class' => 'profile-avatar-img thumbnail')) }}
+							@endif
+
+							@foreach ($chooseMember->all_skills['major'] as $key=>$skill)
+								@if ($key != 0)
+									,
+								@endif
+								{{ $skill['name'] }} ({{ $skill['value'] }}%)
+							@endforeach
+							@if ($chooseMember->all_skills['major'])
+								,
+							@endif
+							{{ $chooseMember->all_skills['minor'] }}
+
+							<div align="center"><a href="{{ URL::route('user_profile', $chooseMember->id) }}" class="btn btn-default">Consulter son profil</a></div>
+						</div>
+					</div>
+				</div>
+				@endif
     </div>
     @if (Auth::user()->role == 'superadmin')
     <div class="row">
