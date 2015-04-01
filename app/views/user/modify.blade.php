@@ -81,11 +81,11 @@
 											<div class="row">
 													<div class="col-md-9">
 															<label>Compétence</label>
-															<p><input class="form-control" type="text" value="" name="name[0]" /></p>
+															<p><input class="form-control" type="text" value="" name="skill_name[0]" /></p>
 													</div>
 													<div class="col-md-3">
 															<label>Valeur</label>
-															<p><input class="form-control" type="number" min="0" max="100" value="" name="value[0]" /></p>
+															<p><input class="form-control" type="number" min="0" max="100" value="" name="skill_value[0]" /></p>
 													</div>
 											</div>
 									</div>
@@ -164,7 +164,7 @@ var cpt=0;
 $('#add_skill').click(function(e){
     e.preventDefault();
     cpt = cpt+1;
-    row = '<div class="col-md-6"><div class="row"><div class="col-md-9" id="count'+cpt+'"><label>Compétence</label><p><input class="form-control" type="text" value="" name="name['+cpt+']" /></p></div><div class="col-md-3"><label>Compétence</label><p><input class="form-control" type="number" min="0" max="100" value="" name="value['+cpt+']" /></p></div></div></div>';
+    row = '<div class="col-md-6"><div class="row"><div class="col-md-9" id="count'+cpt+'"><label>Compétence</label><p><input class="form-control" type="text" value="" name="skill_name['+cpt+']" /></p></div><div class="col-md-3"><label>Valeur</label><p><input class="form-control" type="number" min="0" max="100" value="" name="skill_value['+cpt+']" /></p></div></div></div>';
     $('#skills').append(row);
 });
 </script>

@@ -103,6 +103,8 @@ class UserController extends BaseController
 	        $pasttimes = PastTime::Recap(Auth::user()->id, $date_pt_filtre_start, $date_pt_filtre_end);
 	    }
 
+			$chooseMember = User::where('is_member', true)->orderByRaw("RAND()")->first();
+
         /* En travaux pour les stats annu.
         $annualTotal = DB::table('invoices_items')->join('invoices', function($join)
         {
@@ -125,7 +127,8 @@ class UserController extends BaseController
 													'chargesMonthToPay' => $chargesMonthToPay,
 													'pasttimes' => $pasttimes,
 													'tva_collectee' => $tva_collectee,
-													'tva_deductible' => $tva_deductible
+													'tva_deductible' => $tva_deductible,
+													'chooseMember' => $chooseMember
 												));
 	}
 
@@ -204,27 +207,17 @@ class UserController extends BaseController
                     }
                 }
 
-                if(Input::get('name') && count(Input::get('name')) > 1) {
-                    foreach (Input::get('name') as $key => $skillname) {
+                if(Input::get('skill_name') && count(Input::get('skill_name')) > 0) {
+                    foreach (Input::get('skill_name') as $key => $skillname) {
                         if($skillname != null) {
                             $skill = new Skill();
                             $skill->user_id = $user->id;
                             $skill->name = $skillname;
-                            if (Input::get('value.'.$key)) {
-                                $skill->value = Input::get('value.'.$key);
+                            if (Input::get('skill_value.'.$key)) {
+                                $skill->value = Input::get('skill_value.'.$key);
                             }
                             $skill->save();
                         }
-                    }
-                } elseif(Input::get('name') && count(Input::get('name')) == 1) {
-                    if(Input::get('name') != '') {
-                        $skill = new Skill();
-                        $skill->user_id = $user->id;
-                        $skill->name = Input::get('name');
-                        if (Input::get('value')) {
-                            $skill->value = Input::get('value');
-                        }
-                        $skill->save();
                     }
                 }
 
