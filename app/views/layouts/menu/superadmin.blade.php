@@ -55,10 +55,10 @@
                     </ul>
                 </li>
 
-                <li class="dropdown {{ ((Request::is('invoice*') or Request::is('quote*')) ? 'active' : '') }}">
+                <li class="dropdown {{ ((Request::is('invoice*') or Request::is('quote*') || Request::is('charge*')) ? 'active' : '') }}">
                     <a href="#" class="dropdown-toggle" data-toggle="dropdown" data-hover="dropdown">
                         <i class="fa fa-money"></i>
-                        Devis &amp; Factures
+                        Gestion
                         <i class="mainnav-caret"></i>
                     </a>
 
@@ -74,12 +74,41 @@
                                 <i class="fa fa-list"></i>
                                 &nbsp;&nbsp;Devis
                             </a>
+                        </li><li>
+                            <a href="{{ URL::route('vat_overview', 'all') }}">
+                                <i class="fa fa-list"></i>
+                                &nbsp;&nbsp;TVA
+                            </a>
+                        </li>
+                        <li>
+                            <a tabindex="-1" href="{{ URL::route('charge_list', 'all') }}">
+                                <i class="fa fa-file"></i>
+                                &nbsp;&nbsp;Charges
+                            </a>
+                        </li>
+                    </ul>
+                </li>
+
+                <li class="dropdown {{ ((Request::is('stats*') ) ? 'active' : '') }}">
+                    <a href="#" class="dropdown-toggle" data-toggle="dropdown" data-hover="dropdown">
+                        <i class="fa fa-cogs"></i>
+                        Statistiques
+                        <i class="mainnav-caret"></i>
+                    </a>
+
+                    <ul class="dropdown-menu" role="menu">
+                        <li>
+                            <a tabindex="-1" href="{{ URL::route('stats_ca') }}">
+                                <i class="fa fa-barcode"></i>
+                                &nbsp;&nbsp;Vue d'ensemble
+                            </a>
+
                         </li>
 
                     </ul>
                 </li>
 
-                <li class="dropdown {{ ((Request::is('ressource*') || Request::is('country*') || Request::is('vat*') || Request::is('tag*') || Request::is('charge*')) ? 'active' : '') }}">
+                <li class="dropdown {{ ((Request::is('ressource*') || Request::is('country*') || Request::is('vat*') || Request::is('tag*')) ? 'active' : '') }}">
                     <a href="#" class="dropdown-toggle" data-toggle="dropdown" data-hover="dropdown">
                         <i class="fa fa-cogs"></i>
                         Configuration
@@ -94,14 +123,14 @@
                             </a>
 
                         </li>
-                       <li>
+                        <li>
                             <a tabindex="-1" href="{{ URL::route('country_list') }}">
                                 <i class="fa fa-flag"></i>
                                 &nbsp;&nbsp;Pays
                             </a>
 
                         </li>
-                       <li>
+                        <li>
                             <a tabindex="-1" href="{{ URL::route('vat_list') }}">
                                 <i class="fa fa-gavel"></i>
                                 &nbsp;&nbsp;TVA
@@ -113,12 +142,7 @@
                                 &nbsp;&nbsp;Tags
                             </a>
                         </li>
-                        <li>
-                            <a tabindex="-1" href="{{ URL::route('charge_list', 'all') }}">
-                                <i class="fa fa-file"></i>
-                                &nbsp;&nbsp;Charges
-                            </a>
-                        </li>
+
                     </ul>
                 </li>
             </ul>

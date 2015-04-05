@@ -83,10 +83,6 @@ class UserController extends BaseController
 	            $join->on('charges_items.vat_types_id', '=', 'vat_types.id');
 	        })->select(DB::raw('SUM(amount) as total, SUM(((amount * vat_types.value) / 100)) as mtva'))->first();
 
-	        // Déclaration TVA
-	        $tva_collectee = InvoiceItem::TotalTVA();
-	        $tva_deductible = ChargeItem::TotalTVA();
-
 	        // Temps passés
 	        $date_pt_filtre_start = date('Y-m').'-01';
             $date_pt_filtre_end = date('Y-m').'-'.date('t', Session::get('filtre_pasttime.month'));
@@ -126,8 +122,6 @@ class UserController extends BaseController
 													'chargesMonth' => $chargesMonth,
 													'chargesMonthToPay' => $chargesMonthToPay,
 													'pasttimes' => $pasttimes,
-													'tva_collectee' => $tva_collectee,
-													'tva_deductible' => $tva_deductible,
 													'chooseMember' => $chooseMember
 												));
 	}

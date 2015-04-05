@@ -30,7 +30,7 @@
                 <div class="panel-body">
                     <h3 align="center">
                         {{ (($chargesMonth) ? $chargesMonth->total : 0) }}€
-                        @if ($chargesMonthToPay)
+                        @if ($chargesMonthToPay && $chargesMonthToPay->total)
                         <br />
                         dont reste dû : {{ $chargesMonthToPay->total }}€
                         @endif
@@ -102,34 +102,5 @@
 				</div>
 				@endif
     </div>
-    @if (Auth::user()->role == 'superadmin')
-    <div class="row">
-        <div class="col-md-4">
-            <table class="table table-hover">
-                <caption>TVA collectée</caption>
-                <tbody>
-                    @foreach ($tva_collectee as $tvac)
-                    <tr>
-                        <th>{{ $tvac->days }} ({{ $tvac->value }}%)</th>
-                        <td align="right">{{ sprintf('%0.2f', $tvac->total) }}€</td>
-                    </tr>
-                    @endforeach
-                </tbody>
-            </table>
-        </div>
-        <div class="col-md-4">
-            <table class="table table-hover">
-                <caption>TVA déductible</caption>
-                <tbody>
-                    @foreach ($tva_deductible as $tvad)
-                    <tr>
-                        <th>{{ $tvad->days }} ({{ $tvad->value }}%)</th>
-                        <td align="right">{{ sprintf('%0.2f', $tvad->total) }}€</td>
-                    </tr>
-                    @endforeach
-                </tbody>
-            </table>
-        </div>
-    </div>
-    @endif
+
 @stop

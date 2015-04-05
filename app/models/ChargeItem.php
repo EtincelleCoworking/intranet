@@ -20,7 +20,7 @@ class ChargeItem extends Eloquent
                     })
                 ->join('charges', 'charge_id', '=', 'charges.id')
                 ->select(
-                    DB::raw('CONCAT(YEAR(charges.date_charge), "-", MONTH(charges.date_charge)) as days'),
+                    DB::raw('date_format(charges.date_payment, "%Y-%m") as days'),
                     'vat_types.value',
                     DB::raw('SUM((amount * vat_types.value) / 100) as total')
                 )
@@ -28,6 +28,21 @@ class ChargeItem extends Eloquent
                 ->orderBy('days', 'ASC')
                 ->get();
     }
+
+
+    public function scopeTotalPerMonth($query)
+    {
+        return $query
+            ->join('charges', 'charge_id', '=', 'charges.id')
+            ->select(
+                DB::raw('date_format(charges.date_payment, "%Y-%m") as period'),
+                DB::raw('SUM(amount) as total')
+            )
+            ->groupBy('period')
+            ->orderBy('period', 'DESC')
+            ->get();
+    }
+
 
     /**
      * Item belongs to Charge

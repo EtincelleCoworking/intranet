@@ -18,26 +18,83 @@ class InvoiceItem extends Eloquent
     protected $fillable = array('id', 'ressource_id', 'text', 'amount', 'vat_types_id');
 
 
-    public function scopeTotalTVA($query)
-    {
-    	return $query
-    			->join('vat_types', function($j)
-    				{
-    					$j->on('vat_types_id', '=', 'vat_types.id')->where('value', '>', 0);
-    				})
-    			->join('invoices', function($j)
-	    			{
-	    				$j->on('invoice_id', '=', 'invoices.id')->where('type', '=', 'F');
-	    			})
-    			->select(
-    				DB::raw('CONCAT(YEAR(invoices.date_invoice), "-", MONTH(invoices.date_invoice)) as days'),
-    				'vat_types.value',
-    				DB::raw('SUM((amount * vat_types.value) / 100) as total')
-    			)
-    			->groupBy('days', 'vat_types.value')
-    			->orderBy('days', 'ASC')
-    			->get();
-    }
+	public function scopeTotalTVA($query)
+	{
+		return $query
+			->join('vat_types', function($j)
+			{
+				$j->on('vat_types_id', '=', 'vat_types.id')->where('value', '>', 0);
+			})
+			->join('invoices', function($j)
+			{
+				$j->on('invoice_id', '=', 'invoices.id')->where('type', '=', 'F');
+			})
+			->select(
+				DB::raw('date_format(invoices.date_payment, "%Y-%m") as days'),
+//    				DB::raw('CONCAT(YEAR(invoices.date_payment), "Q", QUARTER(invoices.date_payment)) as quarter'),
+				'vat_types.value',
+				DB::raw('SUM((amount * vat_types.value) / 100) as total')
+			)
+			->groupBy('days', 'vat_types.value')
+			->orderBy('days', 'ASC')
+			->get();
+	}
+
+
+	public function scopeTotalPerMonth($query)
+	{
+		return $query
+			->join('invoices', function($j)
+			{
+				$j->on('invoice_id', '=', 'invoices.id')->where('type', '=', 'F');
+			})
+			->select(
+				DB::raw('date_format(invoices.date_invoice, "%Y-%m") as period'),
+				DB::raw('SUM(amount) as total')
+			)
+			->groupBy('period')
+			->orderBy('period', 'DESC')
+			->get();
+	}
+
+
+	public function scopeTotalPerMonthWithoutStakeholders($query)
+	{
+		return $query
+			->join('invoices', function($j)
+			{
+				$j->on('invoice_id', '=', 'invoices.id')
+					->where('type', '=', 'F')
+
+				;
+			})
+			->select(
+				DB::raw('date_format(invoices.date_invoice, "%Y-%m") as period'),
+				DB::raw('SUM(amount) as total')
+			)
+			->whereNotIn('organisation_id', array(1, 2))
+			->groupBy('period')
+			->orderBy('period', 'DESC')
+			->get();
+	}
+
+
+	public function scopePending($query)
+	{
+		return $query
+			->join('invoices', function($j)
+			{
+				$j->on('invoice_id', '=', 'invoices.id')
+					->where('type', '=', 'F')
+
+				;
+			})
+			->select(
+				DB::raw('SUM(amount) as total')
+			)
+			->whereNull('date_payment')
+			->first();
+	}
 
 	/**
 	 * Relation BelongsTo (Invoices_Items belongs to Invoice)

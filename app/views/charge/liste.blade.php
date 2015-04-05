@@ -28,9 +28,10 @@
                     <th>Date</th>
                     <th>Echéance</th>
                     <th>Tags</th>
-                    <th>Lignes</th>
+                    <th>Société</th>
+                    <th>Description</th>
                     <th>Total HT</th>
-                    <th>Total TVA</th>
+                    <th>TVA</th>
                     <th>Actions</th>
                 </tr>
             </thead>
@@ -67,12 +68,19 @@
                         @endforeach
                     </td>
                     <td>
+                            @if ($charge->organisation)
+                                {{$charge->organisation->name}}
+                            @else
+                                -
+                            @endif
+                    </td>
+                    <td>
                         @foreach ($charge->items as $item)
                             <div>{{ $item->description }}</div>
                         @endforeach
                     </td>
-                    <td>{{ $charge->total }}€</td>
-                    <td>{{ $charge->total_vat }}€</td>
+                    <td align="right">{{ $charge->total }}€</td>
+                    <td align="right">{{ $charge->total_vat }}€</td>
                     <td>
                         @if ($charge->document)
                             <a href="uploads/charges/{{ $charge->document }}" class="btn btn-xs btn-info" target="_blank"><i class="fa fa-download"></i></a>
