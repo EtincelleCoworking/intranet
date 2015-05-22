@@ -42,7 +42,7 @@ class Ressource extends Eloquent
     );
 
     /**
-     * Get list of vat
+     * Get list of ressources
      */
     public function scopeSelectAll($query)
     {

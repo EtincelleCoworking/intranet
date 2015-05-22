@@ -45,6 +45,14 @@ class PastTime extends Eloquent
     }
 
     /**
+     * Past Time belongs to Invoice
+     */
+    public function invoice()
+    {
+        return $this->belongsTo('Invoice');
+    }
+
+    /**
      * Past time total
      */
     public function getPastTimeAttribute()
@@ -80,6 +88,7 @@ class PastTime extends Eloquent
         'time_start' => 'min:5|max:5',
         'time_end' => 'min:5|max:5',
         'user_id' => 'required|exists:users,id',
+        'invoice_id' => 'exists:invoices,id',
         'ressource_id' => 'required|exists:ressources,id'
     );
 }

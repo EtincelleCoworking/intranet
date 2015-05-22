@@ -1,7 +1,8 @@
 <?php
+
 /**
-* Past Time Controller
-*/
+ * Past Time Controller
+ */
 class PastTimeController extends BaseController
 {
     /**
@@ -22,20 +23,43 @@ class PastTimeController extends BaseController
         }
     }
 
-    public function liste($month=null)
+    public function liste($month = null)
     {
-        if (Input::has('filtre_month') && Input::has('filtre_year')) {
-            Session::put('filtre_pasttime.month', Input::get('filtre_month'));
-            Session::put('filtre_pasttime.year', Input::get('filtre_year'));
+//        if (Input::has('filtre_month') && Input::has('filtre_year')) {
+//            Session::put('filtre_pasttime.month', Input::get('filtre_month'));
+//            Session::put('filtre_pasttime.year', Input::get('filtre_year'));
+//        }
+        if (Input::has('filtre_user_id')) {
+            Session::put('filtre_pasttime.user_id', Input::get('filtre_user_id'));
+        }
+        if (Input::has('filtre_start')) {
+            $date_start_explode = explode('/', Input::get('filtre_start'));
+            Session::put('filtre_pasttime.start', $date_start_explode[2] . '-' . $date_start_explode[1] . '-' . $date_start_explode[0]);
+            if (!Input::has('filtre_user_id')) {
+                Session::forget('filtre_pasttime.user_id');
+            }
+        }
+        if (Input::has('filtre_end')) {
+            $date_end_explode = explode('/', Input::get('filtre_end'));
+            Session::put('filtre_pasttime.end', $date_end_explode[2] . '-' . $date_end_explode[1] . '-' . $date_end_explode[0]);
+        } else {
+            Session::put('filtre_pasttime.end', date('Y-m-d'));
+        }
+        if (Session::has('filtre_pasttime.start')) {
+            $date_filtre_start = Session::get('filtre_pasttime.start');
+            $date_filtre_end = Session::get('filtre_pasttime.end');
+        } else {
+            $date_filtre_start = date('Y-m') . '-01';
+            $date_filtre_end = date('Y-m') . '-' . date('t', date('m'));
         }
 
-        if (Session::has('filtre_pasttime.month')) {
-            $date_filtre_start = Session::get('filtre_pasttime.year').'-'.Session::get('filtre_pasttime.month').'-01';
-            $date_filtre_end = Session::get('filtre_pasttime.year').'-'.Session::get('filtre_pasttime.month').'-'.date('t', Session::get('filtre_pasttime.month'));
-        } else {
-            $date_filtre_start = date('Y-m').'-01';
-            $date_filtre_end = date('Y-m').'-'.date('t', Session::get('filtre_pasttime.month'));
-        }
+//        if (Session::has('filtre_pasttime.month')) {
+//            $date_filtre_start = Session::get('filtre_pasttime.year').'-'.Session::get('filtre_pasttime.month').'-01';
+//            $date_filtre_end = Session::get('filtre_pasttime.year').'-'.Session::get('filtre_pasttime.month').'-'.date('t', Session::get('filtre_pasttime.month'));
+//        } else {
+//            $date_filtre_start = date('Y-m').'-01';
+//            $date_filtre_end = date('Y-m').'-'.date('t', Session::get('filtre_pasttime.month'));
+//        }
 
         $recapFilter = false;
         $q = PastTime::whereBetween('date_past', array($date_filtre_start, $date_filtre_end));
@@ -43,7 +67,10 @@ class PastTimeController extends BaseController
             $recapFilter = Auth::user()->id;
             $q->whereUserId(Auth::user()->id);
         } else {
-            
+            if (Session::has('filtre_pasttime.user_id')) {
+                $recapFilter = Session::get('filtre_pasttime.user_id');
+                $q->whereUserId($recapFilter);
+            }
         }
         $recap = PastTime::Recap($recapFilter, $date_filtre_start, $date_filtre_end);
         $times = $q->orderBy('date_past', 'DESC')->paginate(15);
@@ -62,14 +89,14 @@ class PastTimeController extends BaseController
         if (!$validator->fails()) {
             $time = new PastTime;
             $date_past_explode = explode('/', Input::get('date_past'));
-            $time->date_past = $date_past_explode[2].'-'.$date_past_explode[1].'-'.$date_past_explode[0];
+            $time->date_past = $date_past_explode[2] . '-' . $date_past_explode[1] . '-' . $date_past_explode[0];
             $dateTime_start = new DateTime($time->date_past);
-            $time->time_start = $dateTime_start->format('Y-m-d').' '.Input::get('time_start').':00';
-            if (Input::get('time_end')) { 
+            $time->time_start = $dateTime_start->format('Y-m-d') . ' ' . Input::get('time_start') . ':00';
+            if (Input::get('time_end')) {
                 if (Input::get('time_end') <= Input::get('time_start')) {
                     $dateTime_start->modify('+1 day');
                 }
-                $time->time_end = $dateTime_start->format('Y-m-d').' '.Input::get('time_end').':00'; 
+                $time->time_end = $dateTime_start->format('Y-m-d') . ' ' . Input::get('time_end') . ':00';
             }
             if (Auth::user()->role == 'superadmin') {
                 $time->user_id = Input::get('user_id');
@@ -103,11 +130,14 @@ class PastTimeController extends BaseController
         $validator = Validator::make(Input::all(), PastTime::$rules);
         if (!$validator->fails()) {
             $date_past_explode = explode('/', Input::get('date_past'));
-            $time->date_past = $date_past_explode[2].'-'.$date_past_explode[1].'-'.$date_past_explode[0];
-            $time->time_start = $time->date_past.' '.Input::get('time_start').':00';
-            if (Input::get('time_end')) { $time->time_end = $time->date_past.' '.Input::get('time_end').':00'; }
+            $time->date_past = $date_past_explode[2] . '-' . $date_past_explode[1] . '-' . $date_past_explode[0];
+            $time->time_start = $time->date_past . ' ' . Input::get('time_start') . ':00';
+            if (Input::get('time_end')) {
+                $time->time_end = $time->date_past . ' ' . Input::get('time_end') . ':00';
+            }
             if (Auth::user()->role == 'superadmin') {
                 $time->user_id = Input::get('user_id');
+                $time->invoice_id = Input::get('invoice_id');
             } else {
                 $time->user_id = Auth::user()->id;
             }

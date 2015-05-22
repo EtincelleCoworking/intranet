@@ -69,6 +69,17 @@ class Invoice extends Eloquent
 		return $this->type.$this->days.'-'.str_pad($this->number, 4, 0, STR_PAD_LEFT);
 	}
 
+	/**
+	 * Identifier invoice
+	 */
+	public function getCaptionAttribute()
+	{
+		if($this->user){
+			return $this->ident.' '.$this->user->fullname;
+		}
+		return $this->ident;
+	}
+
     /**
      * Days before deadline
      */
@@ -142,4 +153,14 @@ class Invoice extends Eloquent
    public static $rulesAdd = array(
         'address' => 'required|min:1'
     );
+
+	/**
+	 * Get list of users
+	 */
+	public function scopeSelect($query, $title = "Select")
+	{
+		$selectVals[''] = $title;
+		$selectVals += $this->orderBy('date_invoice', 'desc')->orderBy('number', 'desc')->where('type', 'F')->get()->lists('caption', 'id');
+		return $selectVals;
+	}
 }
