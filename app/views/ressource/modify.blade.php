@@ -8,16 +8,23 @@
     <h1>Modifier une ressource</h1>
 
     {{ Form::model($ressource, array('route' => array('ressource_modify', $ressource->id))) }}
-        <div class="row">
-            <div class="col-md-10">
-                {{ Form::label('name', 'Nom de la ressource') }}
-                <p>{{ Form::text('name', null, array('class' => 'form-control')) }}</p>
-            </div>
-            <div class="col-md-2">
-                {{ Form::label('order_index', 'Ordre d\'affichage') }}
-                <p>{{ Form::number('order_index', null, array('class' => 'form-control', 'min' => 1)) }}</p>
-            </div>
+    <div class="row">
+        <div class="col-md-8">
+            {{ Form::label('name', 'Nom de la ressource') }}
+            <p>{{ Form::text('name', null, array('class' => 'form-control')) }}</p>
         </div>
-        <p>{{ Form::submit('Modifier', array('class' => 'btn btn-success')) }}</p>
+        <div class="col-md-2">
+            {{ Form::label('amount', 'Valeur') }}
+            <p>{{ Form::number('amount', null, array('class' => 'form-control')) }}</p>
+        </div>
+        <div class="col-md-2">
+            {{ Form::label('order_index', 'Ordre d\'affichage') }}
+            <p>{{ Form::number('order_index', null, array('class' => 'form-control', 'min' => 1)) }}</p>
+        </div>
+    </div>
+    <p>
+        {{ Form::submit('Modifier', array('class' => 'btn btn-success')) }}
+        <a href="{{ URL::route('ressource_list') }}" class="btn btn-default">Annuler</a>
+    </p>
     {{ Form::close() }}
 @stop

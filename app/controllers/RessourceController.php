@@ -58,6 +58,7 @@ class RessourceController extends BaseController
             $ressource = new Ressource;
             $ressource->name = Input::get('name');
             $ressource->order_index = Input::get('order_index');
+            $ressource->amount = Input::get('amount');
 
             if ($ressource->save()) {
                 return Redirect::route('ressource_modify', $ressource->id)->with('mSuccess', 'La ressource a bien été ajoutée');
@@ -90,8 +91,9 @@ class RessourceController extends BaseController
         if (!$validator->fails()) {
             $ressource->name = Input::get('name');
             $ressource->order_index = Input::get('order_index');
+            $ressource->amount = Input::get('amount');
             if ($ressource->save()) {
-                return Redirect::route('ressource_modify', $ressource->id)->with('mSuccess', 'Cette ressource a bien été modifiée');
+                return Redirect::route('ressource_list')->with('mSuccess', 'Cette ressource a bien été modifiée');
             } else {
                 return Redirect::route('ressource_modify', $ressource->id)->with('mError', 'Impossible de modifier cette ressource')->withInput();
             }
