@@ -60,8 +60,10 @@
                                         @endif
                                     </div>
                                     <div>
-                                        {{ number_format($r->amount, 0) }}€ HT
-                                        / {{ number_format($r->amount * 1.2, 0) }}€ TTC
+                                        @if ($r->amount > 0)
+                                            {{ number_format($r->amount, 0) }}€ HT
+                                            / {{ number_format($r->amount * 1.2, 0) }}€ TTC
+                                        @endif
                                     </div>
                                 </div>
                             </div>
