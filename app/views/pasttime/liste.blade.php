@@ -41,7 +41,7 @@
         <div class="row">
             <div class="panel panel-default">
                 <div class="panel-heading">
-                    <h4 class="panel-title">En attente de facturation</h4>
+                    <h4 class="panel-title">En attente de facturation {{ number_format($pending_invoice_amount, 0, ',', '.') }}€ HT</h4>
                 </div>
                 <div class="panel-body">
                     @foreach ($recap as $r)
@@ -61,8 +61,8 @@
                                     </div>
                                     <div>
                                         @if ($r->amount > 0)
-                                            {{ number_format($r->amount, 0) }}€ HT
-                                            / {{ number_format($r->amount * 1.2, 0) }}€ TTC
+                                            {{ number_format($r->amount, 0, ',', '.') }}€ HT
+                                            / {{ number_format($r->amount * 1.2, 0, ',', '.') }}€ TTC
                                         @endif
                                     </div>
                                 </div>

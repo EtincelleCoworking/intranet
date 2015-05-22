@@ -73,9 +73,14 @@ class PastTimeController extends BaseController
             }
         }
         $recap = PastTime::Recap($recapFilter, $date_filtre_start, $date_filtre_end);
+        $pending_invoice_amount = 0;
+        foreach($recap as $recap_item){
+            $pending_invoice_amount += $recap_item->amount;
+        }
+
         $times = $q->orderBy('date_past', 'DESC')->paginate(15);
 
-        return View::make('pasttime.liste', array('times' => $times, 'recap' => $recap));
+        return View::make('pasttime.liste', array('times' => $times, 'recap' => $recap, 'pending_invoice_amount' => $pending_invoice_amount));
     }
 
     public function add()
