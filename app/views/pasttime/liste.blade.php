@@ -44,30 +44,29 @@
                     <h4 class="panel-title">En attente de facturation</h4>
                 </div>
                 <div class="panel-body">
-            @foreach ($recap as $r)
-                <div class="col-md-3">
-                    <div class="panel panel-default">
-                        <div class="panel-heading">
-                            <h4 class="panel-title">{{ $r->name }}</h4>
-                        </div>
-                        <div class="panel-body">
-                            <div>
-                                @if ($r->hours)
-                                    {{ $r->hours.Lang::choice('messages.times_hours', $r->hours) }}
-                                @endif
-                                @if ($r->minutes)
-                                    {{ $r->minutes.Lang::choice('messages.times_minutes', $r->minutes) }}
-                                @endif
+                    @foreach ($recap as $r)
+                        <div class="col-md-3">
+                            <div class="panel panel-default">
+                                <div class="panel-heading">
+                                    <h4 class="panel-title">{{ $r->name }}</h4>
+                                </div>
+                                <div class="panel-body">
+                                    <div>
+                                        @if ($r->hours)
+                                            {{ $r->hours.Lang::choice('messages.times_hours', $r->hours) }}
+                                        @endif
+                                        @if ($r->minutes)
+                                            {{ $r->minutes.Lang::choice('messages.times_minutes', $r->minutes) }}
+                                        @endif
+                                    </div>
+                                    <div>
+                                        {{ number_format($r->amount, 0) }}€ HT
+                                        / {{ number_format($r->amount * 1.2, 0) }}€ TTC
+                                    </div>
+                                </div>
                             </div>
-                            <div>
-                                @if ((Auth::user()->role == 'superadmin') and ($r->amount > 0))
-                                    {{ number_format($r->amount, 0) }}€ HT
-                                @endif
-                            </div>
                         </div>
-                    </div>
-                </div>
-            @endforeach
+                    @endforeach
                 </div>
             </div>
         </div>
