@@ -116,7 +116,12 @@ class SubscriptionController extends BaseController
         $invoice_line->invoice_id = $invoice->id;
         $invoice_line->ressource_id = Ressource::TYPE_COWORKING;
         $invoice_line->amount = $subscription->amount;
-        $invoice_line->text = $subscription->caption;
+        $date = new \DateTime($subscription->renew_at);
+        $date2 = new \DateTime($subscription->renew_at);
+        $date2->modify('next month');
+        $date2->modify('-1 day');
+        $invoice_line->text = sprintf("%s\nDu %s au %s", $subscription->caption,
+            $date->format('d/m/Y'), $date2->format('d/m/Y'));
         $invoice_line->vat_types_id = 1;
         $invoice_line->ressource_id = Ressource::TYPE_COWORKING;
         $invoice_line->save();

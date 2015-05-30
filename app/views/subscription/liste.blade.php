@@ -14,6 +14,7 @@
             <thead>
             <tr>
                 <th>Membre</th>
+                <th>Description</th>
                 <th>Echéance</th>
                 <th>Actions</th>
             </tr>
@@ -32,20 +33,26 @@
                         @endif
                     </td>
                     <td>
+                        {{ $subscription->caption }}
+                    </td>
+                    <td>
                         @if ($subscription->daysBeforeRenew <= 0)
                             <span class="badge badge-danger">
                         @elseif ($subscription->daysBeforeRenew < 7)
-                            <span class="badge badge-warning">
+                                    <span class="badge badge-warning">
                         @else
-                            <span class="badge badge-success">
+                                            <span class="badge badge-success">
                         @endif
-                            {{ date('d/m/Y', strtotime($subscription->renew_at)); }}
+                                                {{ date('d/m/Y', strtotime($subscription->renew_at)); }}
                         </span>
                     </td>
                     <td>
-                        <a href="{{ URL::route('subscription_renew', $subscription->id) }}" class="btn btn-sm btn-default">Renouveler</a>
-                        <a href="{{ URL::route('subscription_modify', $subscription->id) }}" class="btn btn-sm btn-default">Modifier</a>
-                        <a href="{{ URL::route('subscription_delete', $subscription->id) }}" class="btn btn-sm btn-danger">Supprimer</a>
+                        <a href="{{ URL::route('subscription_renew', $subscription->id) }}"
+                           class="btn btn-sm btn-default">Renouveler</a>
+                        <a href="{{ URL::route('subscription_modify', $subscription->id) }}"
+                           class="btn btn-sm btn-default">Modifier</a>
+                        <a href="{{ URL::route('subscription_delete', $subscription->id) }}"
+                           class="btn btn-sm btn-danger">Supprimer</a>
                     </td>
                 </tr>
             @endforeach
