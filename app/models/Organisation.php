@@ -38,7 +38,7 @@ class Organisation extends Eloquent
      */
     public function invoices()
     {
-        return $this->hasMany('Invoice');
+        return $this->hasMany('Invoice')->orderBy('date_invoice', 'DESC');
     }
 
     /**

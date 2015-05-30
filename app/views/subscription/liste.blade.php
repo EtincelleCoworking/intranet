@@ -13,6 +13,7 @@
         <table class="table table-striped table-hover">
             <thead>
             <tr>
+                <th>N°</th>
                 <th>Membre</th>
                 <th>Description</th>
                 <th>Echéance</th>
@@ -20,8 +21,9 @@
             </tr>
             </thead>
             <tbody>
-            @foreach ($subscriptions as $subscription)
+            @foreach ($subscriptions as $position => $subscription)
                 <tr>
+                    <td>{{$position + 1}}</td>
                     <td>
                         @if (Auth::user()->role == 'superadmin')
                             <a href="{{ URL::route('organisation_modify', $subscription->organisation->id) }}">{{ $subscription->organisation->name }}</a>
