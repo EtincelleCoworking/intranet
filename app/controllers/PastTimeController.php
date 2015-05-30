@@ -40,12 +40,17 @@ class PastTimeController extends BaseController
                 Session::forget('filtre_pasttime.user_id');
             }
         }
-        if (Input::has('filtre_end')) {
-            $date_end_explode = explode('/', Input::get('filtre_end'));
-            Session::put('filtre_pasttime.end', $date_end_explode[2] . '-' . $date_end_explode[1] . '-' . $date_end_explode[0]);
-        } else {
-            Session::put('filtre_pasttime.end', date('Y-m-d'));
-        }
+            if (Input::has('filtre_end')) {
+                $date_end_explode = explode('/', Input::get('filtre_end'));
+                Session::put('filtre_pasttime.end', $date_end_explode[2] . '-' . $date_end_explode[1] . '-' . $date_end_explode[0]);
+            } else {
+                Session::put('filtre_pasttime.end', date('Y-m-d'));
+            }
+            if (Input::has('filtre_toinvoice')) {
+                Session::put('filtre_pasttime.filtre_toinvoice', Input::get('filtre_toinvoice'));
+            } else {
+                Session::put('filtre_pasttime.filtre_toinvoice', false);
+            }
         }
         if (Session::has('filtre_pasttime.start')) {
             $date_filtre_start = Session::get('filtre_pasttime.start');
@@ -65,6 +70,9 @@ class PastTimeController extends BaseController
 
         $recapFilter = false;
         $q = PastTime::whereBetween('date_past', array($date_filtre_start, $date_filtre_end));
+        if(Session::get('filtre_pasttime.filtre_toinvoice')){
+            $q->where('invoice_id', 0);
+        }
         if (Auth::user()->role == 'member') {
             $recapFilter = Auth::user()->id;
             $q->whereUserId(Auth::user()->id);

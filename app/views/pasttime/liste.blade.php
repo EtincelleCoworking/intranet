@@ -27,8 +27,12 @@
                     {{ Form::hidden('filtre_user_id', Auth::user()->id) }}
                 @endif
 
-                <div class="col-md-3 input-group-sm">{{ Form::text('filtre_start', Session::get('filtre_pasttime.start') ? date('d/m/Y', strtotime(Session::get('filtre_pasttime.start'))) : date('01/m/Y'), array('class' => 'form-control datePicker')) }}</div>
-                <div class="col-md-3 input-group-sm">{{ Form::text('filtre_end', ((Session::get('filtre_pasttime.end')) ? date('d/m/Y', strtotime(Session::get('filtre_pasttime.end'))) : date('t', date('m')).'/'.date('m/Y')), array('class' => 'form-control datePicker')) }}</div>
+                <div class="col-md-2 input-group-sm">{{ Form::text('filtre_start', Session::get('filtre_pasttime.start') ? date('d/m/Y', strtotime(Session::get('filtre_pasttime.start'))) : date('01/m/Y'), array('class' => 'form-control datePicker')) }}</div>
+                <div class="col-md-2 input-group-sm">{{ Form::text('filtre_end', ((Session::get('filtre_pasttime.end')) ? date('d/m/Y', strtotime(Session::get('filtre_pasttime.end'))) : date('t', date('m')).'/'.date('m/Y')), array('class' => 'form-control datePicker')) }}</div>
+                <div class="col-md-2 input-group-sm">
+                    {{ Form::checkbox('filtre_toinvoice', true, Session::has('filtre_pasttime.toinvoice') ? Session::get('filtre_pasttime.toinvoice') : false) }} A facturer
+
+                </div>
                 <div class="col-md-2">{{ Form::submit('Filtrer', array('class' => 'btn btn-sm btn-default')) }}</div>
                 {{ Form::close() }}
             </div>
@@ -97,7 +101,7 @@
                         <td>{{ date('d/m/Y', strtotime($time->date_past)) }}</td>
                         @if (Auth::user()->role == 'superadmin')
                             <td>{{ $time->user->fullname }}
-                                <a href="?filtre_user_id={{ $time->user->id }}"><i class="fa fa-filter"></i></a>
+                                <a href="?filtre_submitted=1&filtre_user_id={{ $time->user->id }}"><i class="fa fa-filter"></i></a>
                             </td>
                         @endif
                         <td>{{ $time->ressource->name }}</td>
