@@ -85,7 +85,7 @@ class InvoiceController extends BaseController
             $invoice->date_invoice = $date_invoice_explode[2].'-'.$date_invoice_explode[1].'-'.$date_invoice_explode[0];
             $date_deadline_explode = explode('/', Input::get('deadline'));
             $invoice->deadline = $date_deadline_explode[2].'-'.$date_deadline_explode[1].'-'.$date_deadline_explode[0];
-            if (Input::get('is_paid')) {
+            if (Input::get('date_payment')) {
                 $date_payment_explode = explode('/', Input::get('date_payment'));
                 $invoice->date_payment = $date_payment_explode[2].'-'.$date_payment_explode[1].'-'.$date_payment_explode[0];
             } else {
@@ -95,7 +95,7 @@ class InvoiceController extends BaseController
             $invoice->details = Input::get('details');
 
             if ($invoice->save()) {
-                return Redirect::route('invoice_modify', $invoice->id)->with('mSuccess', 'La facture a bien été modifiée');
+                return Redirect::route('invoice_list', $invoice->id)->with('mSuccess', 'La facture a bien été modifiée');
             } else {
                 return Redirect::route('invoice_modify', $invoice->id)->with('mError', 'Il y a des erreurs')->withErrors($validator->messages())->withInput();
             }
