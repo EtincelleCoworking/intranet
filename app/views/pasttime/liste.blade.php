@@ -37,41 +37,43 @@
         <p>Aucune donnée.</p>
     @else
 
-
-        <div class="row">
-            <div class="panel panel-default">
-                <div class="panel-heading">
-                    <h4 class="panel-title">En attente de facturation {{ number_format($pending_invoice_amount, 0, ',', '.') }}€ HT</h4>
-                </div>
-                <div class="panel-body">
-                    @foreach ($recap as $r)
-                        <div class="col-md-3">
-                            <div class="panel panel-default">
-                                <div class="panel-heading">
-                                    <h4 class="panel-title">{{ $r->name }}</h4>
-                                </div>
-                                <div class="panel-body">
-                                    <div>
-                                        @if ($r->hours)
-                                            {{ $r->hours.Lang::choice('messages.times_hours', $r->hours) }}
-                                        @endif
-                                        @if ($r->minutes)
-                                            {{ $r->minutes.Lang::choice('messages.times_minutes', $r->minutes) }}
-                                        @endif
+        @if(count($recap)>0)
+            <div class="row">
+                <div class="panel panel-default">
+                    <div class="panel-heading">
+                        <h4 class="panel-title">En attente de
+                            facturation {{ number_format($pending_invoice_amount, 0, ',', '.') }}€ HT</h4>
+                    </div>
+                    <div class="panel-body">
+                        @foreach ($recap as $r)
+                            <div class="col-md-3">
+                                <div class="panel panel-default">
+                                    <div class="panel-heading">
+                                        <h4 class="panel-title">{{ $r->name }}</h4>
                                     </div>
-                                    <div>
-                                        @if ($r->amount > 0)
-                                            {{ number_format($r->amount, 0, ',', '.') }}€ HT
-                                            / {{ number_format($r->amount * 1.2, 0, ',', '.') }}€ TTC
-                                        @endif
+                                    <div class="panel-body">
+                                        <div>
+                                            @if ($r->hours)
+                                                {{ $r->hours.Lang::choice('messages.times_hours', $r->hours) }}
+                                            @endif
+                                            @if ($r->minutes)
+                                                {{ $r->minutes.Lang::choice('messages.times_minutes', $r->minutes) }}
+                                            @endif
+                                        </div>
+                                        <div>
+                                            @if ($r->amount > 0)
+                                                {{ number_format($r->amount, 0, ',', '.') }}€ HT
+                                                / {{ number_format($r->amount * 1.2, 0, ',', '.') }}€ TTC
+                                            @endif
+                                        </div>
                                     </div>
                                 </div>
                             </div>
-                        </div>
-                    @endforeach
+                        @endforeach
+                    </div>
                 </div>
             </div>
-        </div>
+        @endif
         <div class="row">
             <table class="table table-striped">
                 <thead>
@@ -84,9 +86,7 @@
                     <th>Arrivé</th>
                     <th>Départ</th>
                     <th>Total</th>
-                    @if (Auth::user()->role == 'superadmin')
-                        <th>Facture</th>
-                    @endif
+                    <th>Facture</th>
                     <th>Actions</th>
                 </tr>
                 </thead>
@@ -109,15 +109,13 @@
                                             class="fa fa-question-circle"></i></span>
                             @endif
                         </td>
-                        @if (Auth::user()->role == 'superadmin')
-                            <td>
-                                @if ($time->invoice_id)
-                                    {{ $time->invoice->ident }}
-                                @else
-                                    -
-                                @endif
-                            </td>
-                        @endif
+                        <td>
+                            @if ($time->invoice_id)
+                                {{ $time->invoice->ident }}
+                            @else
+                                -
+                            @endif
+                        </td>
                         <td>
                             <a href="{{ URL::route('pasttime_modify', $time->id) }}"
                                class="btn btn-xs btn-success">Modifier</a>

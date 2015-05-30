@@ -349,7 +349,7 @@ class InvoiceController extends BaseController
                         </tr>
                         <tr>
                             <td colspan="2" align="center">
-                                '.(($invoice->type == 'F') ? (($invoice->date_payment) ? 'Facture payée le '.date('d/m/Y', strtotime($invoice->date_payment)) : 'Cette facture est payable avant le '.date('d/m/Y', strtotime($invoice->deadline))) : 'Ce devis est valide jusqu\'au '.date('d/m/Y', strtotime($invoice->deadline))).'
+                                '.(($invoice->type == 'F') ? (($invoice->date_payment) ? 'Facture payée le '.date('d/m/Y', strtotime($invoice->date_payment)) : 'Cette facture est payable à réception de facture') : 'Ce devis est valide jusqu\'au '.date('d/m/Y', strtotime($invoice->deadline))).'
                             </td>
                         </tr>
                     </tbody>
@@ -412,6 +412,6 @@ class InvoiceController extends BaseController
 
         $pdf = App::make('snappy.pdf.wrapper');
         $pdf->loadHTML($html);
-        return $pdf->stream($invoice->ident.'.pdf');
+        return $pdf->stream($invoice->ident.'.pdf');;
     }
 }

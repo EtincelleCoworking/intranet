@@ -39,7 +39,7 @@
 							{{ $invoice->organisation->name }}
                         @endif
                     @else
-                        -- Libre --
+						{{ $invoice->address }}
                     @endif
 				</td>
                 <td>
@@ -51,7 +51,6 @@
                         @else
                         <span class="badge badge-danger">
                         @endif
-
                         {{ date('d/m/Y', strtotime($invoice->deadline)) }}
                         </span>
                     @else

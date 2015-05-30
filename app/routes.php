@@ -103,6 +103,16 @@ Route::group(['before' => 'superadmin'], function() {
     Route::get('/charge/duplicate/{id}', array('as' => 'charge_duplicate', 'uses' => 'ChargeController@duplicate'))->where(array('id' => '[0-9]+'));
 
     Route::delete('/pasttime/delete/{id}', array('as' => 'pasttime_delete', 'uses' => 'PastTimeController@delete'))->where(array('id' => '[0-9]+'));
+
+
+    Route::get('/subscriptions', array('as' => 'subscription_liste', 'uses' => 'SubscriptionController@liste'));
+    Route::get('/subscription/add', array('as' => 'subscription_add', 'uses' => 'SubscriptionController@add'));
+    Route::post('/subscription/add', array('as' => 'subscription_add_check', 'uses' => 'SubscriptionController@add_check'));
+    Route::get('/subscription/modify/{id}', array('as' => 'subscription_modify', 'uses' => 'SubscriptionController@modify'));
+    Route::post('/subscription/modify/{id}', array('as' => 'subscription_modify_check', 'uses' => 'SubscriptionController@modify_check'));
+    Route::get('/subscription/delete/{id}', array('as' => 'subscription_delete', 'uses' => 'SubscriptionController@delete'));
+    Route::get('/subscription/renew/{id}', array('as' => 'subscription_renew', 'uses' => 'SubscriptionController@renew'));
+
 });
 
 // JSON

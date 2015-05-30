@@ -15,7 +15,6 @@
 	<!-- Google Font: Open Sans -->
     <link rel="stylesheet" href="http://fonts.googleapis.com/css?family=Open+Sans:400,400italic,600,600italic,800,800italic">
     <link rel="stylesheet" href="http://fonts.googleapis.com/css?family=Oswald:400,300,700">
-
     <!-- Font Awesome CSS -->
     {{ HTML::style('css/font-awesome.min.css') }}
 
@@ -40,6 +39,8 @@
     {{ HTML::style('css/mvpready-admin.css') }}
     {{ HTML::style('css/mvpready-flat.css') }}
 	{{ HTML::style('css/style.css') }}
+
+    {{ HTML::style('css/select2.min.css') }}
 </head>
 <body>
     <div id="wrapper">
@@ -173,10 +174,13 @@
     {{ HTML::script('js/datedropper.min.js') }}
 
 	{{ HTML::script('js/rails.js') }}
+	{{ HTML::script('js/select2.min.js') }}
+
     <script type="text/javascript">
     $('[data-toggle="tooltip"]').tooltip();
     $.datepicker.setDefaults( $.datepicker.regional[ "fr" ] );
     </script>
+
 	@yield('javascript')
 </body>
 </html>

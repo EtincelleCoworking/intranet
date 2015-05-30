@@ -74,7 +74,8 @@
                                 <i class="fa fa-list"></i>
                                 &nbsp;&nbsp;Devis
                             </a>
-                        </li><li>
+                        </li>
+                        <li>
                             <a href="{{ URL::route('vat_overview', 'all') }}">
                                 <i class="fa fa-list"></i>
                                 &nbsp;&nbsp;TVA
@@ -106,6 +107,10 @@
                         </li>
 
                     </ul>
+                </li>
+
+                <li class="dropdown {{ ((Request::is('subscription*') ) ? 'active' : '') }}">
+                    <a href="{{ URL::route('subscription_liste') }}">Abonnements</a>
                 </li>
 
                 <li class="dropdown {{ ((Request::is('ressource*') || Request::is('country*') || Request::is('vat*') || Request::is('tag*')) ? 'active' : '') }}">

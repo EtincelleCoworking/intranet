@@ -85,4 +85,15 @@ class Organisation extends Eloquent
         }
         return $selectVals;
     }
+
+
+    /**
+     * Get list of organisations
+     */
+    public function scopeSelect($query, $title = "Select")
+    {
+        $selectVals[''] = $title;
+        $selectVals += $this->orderBy('name', 'ASC')->get()->lists('name', 'id');
+        return $selectVals;
+    }
 }
