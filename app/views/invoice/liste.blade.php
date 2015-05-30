@@ -27,7 +27,11 @@
 		</thead>
 		<tbody>
 		@foreach ($invoices as $invoice)
-			<tr>
+			<tr
+					@if($invoice->date_payment)
+						class="text-muted"
+								@endif
+					>
 				<td>{{ $invoice->ident }}</td>
 				<td>{{ date('d/m/Y', strtotime($invoice->date_invoice)) }}</td>
 				<td>

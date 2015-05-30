@@ -29,6 +29,7 @@ class PastTimeController extends BaseController
 //            Session::put('filtre_pasttime.month', Input::get('filtre_month'));
 //            Session::put('filtre_pasttime.year', Input::get('filtre_year'));
 //        }
+        if (Input::has('filtre_submitted')) {
         if (Input::has('filtre_user_id')) {
             Session::put('filtre_pasttime.user_id', Input::get('filtre_user_id'));
         }
@@ -44,6 +45,7 @@ class PastTimeController extends BaseController
             Session::put('filtre_pasttime.end', $date_end_explode[2] . '-' . $date_end_explode[1] . '-' . $date_end_explode[0]);
         } else {
             Session::put('filtre_pasttime.end', date('Y-m-d'));
+        }
         }
         if (Session::has('filtre_pasttime.start')) {
             $date_filtre_start = Session::get('filtre_pasttime.start');

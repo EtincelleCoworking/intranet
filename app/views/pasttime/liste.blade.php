@@ -18,9 +18,10 @@
             </div>
             <div class="panel-body">
                 {{ Form::open(array('route' => array('pasttime_list'))) }}
+                {{ Form::hidden('filtre_submitted', 1) }}
                 @if (Auth::user()->role == 'superadmin')
                     <div class="col-md-4">
-                        {{ Form::select('filtre_user_id', User::Select('Sélectionnez un client'), Session::get('filtre_pasttime.user_id') ? Session::get('filtre_pasttime.user_id') : null, array('class' => 'form-control')) }}
+                        {{ Form::select('filtre_user_id', User::Select('Sélectionnez un client'), Session::get('filtre_pasttime.user_id') ? Session::get('filtre_pasttime.user_id') : null, array('id' => 'filter-client','class' => 'form-control')) }}
                     </div>
                 @else
                     {{ Form::hidden('filtre_user_id', Auth::user()->id) }}
@@ -148,6 +149,7 @@
                 format: "m",
                 placeholder: "{{ ((Session::get('filtre_pasttime.month'))?:date('m')) }}"
             });
+            $('#filter-client').select2();
         });
     </script>
 @stop
