@@ -7,9 +7,36 @@
 @section('content')
     <a href="{{ URL::route('subscription_add') }}" class="btn btn-primary pull-right">Ajouter un abonnement</a>
     <h1>Liste des abonnements</h1>
+
+
+
+
+
+
     @if(count($subscriptions)==0)
         <p>Aucun abonnement.</p>
     @else
+
+        <table class="table table-bordered table-striped table-hover">
+            <thead>
+            <tr>
+                <th>Mois</th>
+            @foreach ($pending as $period => $amount)
+                    <td>{{$period}}</td>
+            @endforeach
+            </tr>
+            </thead>
+            <tbody>
+                <th>Montant</th>
+            @foreach ($pending as $period => $amount)
+                    <td>
+                        {{ $amount }}
+                    </td>
+            @endforeach
+            </tbody>
+        </table>
+
+
         <table class="table table-striped table-hover">
             <thead>
             <tr>

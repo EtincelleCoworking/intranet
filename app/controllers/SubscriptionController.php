@@ -10,7 +10,12 @@ class SubscriptionController extends BaseController
         $subscriptions = Subscription::orderBy('renew_at', 'ASC')
             ->paginate(15);
 
-        return View::make('subscription.liste', array('subscriptions' => $subscriptions));
+        $datas = array();
+        foreach(Subscription::TotalPerMonth()->get() as $item){
+            $datas[$item->period] = $item->total;
+        }
+
+        return View::make('subscription.liste', array('subscriptions' => $subscriptions, 'pending' => $datas));
     }
 
     public function add()

@@ -46,7 +46,7 @@
 							{{ $invoice->organisation->name }}
                         @endif
                     @else
-                        -- Libre --
+						{{ $invoice->address }}
                     @endif
 				</td>
                 <td>

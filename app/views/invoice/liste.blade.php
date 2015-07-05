@@ -113,3 +113,22 @@
 	</table>
     @endif
 @stop
+
+@section('javascript')
+	<script type="text/javascript">
+		$().ready(function () {
+			$('.datePicker').datepicker();
+			$('.yearDropper').dateDropper({
+				animate_current: false,
+				format: "Y",
+				placeholder: "{{ ((Session::get('filtre_pasttime.year'))?:date('Y')) }}"
+			});
+			$('.monthDropper').dateDropper({
+				animate_current: false,
+				format: "m",
+				placeholder: "{{ ((Session::get('filtre_pasttime.month'))?:date('m')) }}"
+			});
+			$('#filter-client').select2();
+		});
+	</script>
+@stop

@@ -48,6 +48,20 @@ class Subscription extends Eloquent
     }
 
 
+    public function scopeTotalPerMonth($query)
+    {
+        return $query
+            ->select(
+                DB::raw('date_format(renew_at, "%Y-%m") as period'),
+                DB::raw('SUM(amount) as total')
+            )
+            ->groupBy('period')
+            ->orderBy('period', 'ASC')
+            //->get()
+            ;
+    }
+
+
 //    /**
 //     * Get list of vat
 //     */
