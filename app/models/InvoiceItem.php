@@ -37,7 +37,8 @@ class InvoiceItem extends Eloquent
 			)
 			->groupBy('days', 'vat_types.value')
 			->orderBy('days', 'ASC')
-			->get();
+			//->get()
+			;
 	}
 
 
@@ -54,7 +55,33 @@ class InvoiceItem extends Eloquent
 			)
 			->groupBy('period')
 			->orderBy('period', 'DESC')
-			->get();
+			//->get()
+			;
+	}
+
+
+	public function scopeCoworking($query)
+	{
+		return $query
+			->whereIn('ressource_id', array(1, 5))
+			//->get()
+			;
+	}
+
+	public function scopeRoomRental($query)
+	{
+		return $query
+			->whereIn('ressource_id', array(2, 3, 4, 8))
+			//->get()
+			;
+	}
+
+	public function scopeOther($query)
+	{
+		return $query
+			->whereNotIn('ressource_id', array(1, 2, 3, 4, 5, 8))
+			//->get()
+			;
 	}
 
 
@@ -75,7 +102,8 @@ class InvoiceItem extends Eloquent
 			->whereNotIn('organisation_id', array(1, 2))
 			->groupBy('period')
 			->orderBy('period', 'DESC')
-			->get();
+			//->get()
+			;
 	}
 
 

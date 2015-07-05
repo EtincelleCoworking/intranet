@@ -8,11 +8,20 @@ class StatsController extends BaseController
     public function ca()
     {
         $charts = array();
-        foreach (InvoiceItem::TotalPerMonthWithoutStakeholders() as $item) {
+
+        foreach (InvoiceItem::TotalPerMonthWithoutStakeholders()->coworking()->get() as $item) {
+            $charts['Coworking'][$item->period] = $item->total;
+        }
+
+        foreach (InvoiceItem::TotalPerMonthWithoutStakeholders()->roomRental()->get() as $item) {
+            $charts['Location de salles'][$item->period] = $item->total;
+        }
+
+        foreach (InvoiceItem::TotalPerMonthWithoutStakeholders()->get() as $item) {
             $charts['Produits (hors associés)'][$item->period] = $item->total;
         }
 
-        foreach (InvoiceItem::TotalPerMonth() as $item) {
+        foreach (InvoiceItem::TotalPerMonth()->get() as $item) {
             $charts['Produits'][$item->period] = $item->total;
         }
 
