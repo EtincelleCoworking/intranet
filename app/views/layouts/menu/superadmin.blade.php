@@ -90,67 +90,77 @@
                     </ul>
                 </li>
 
+                {{--<li class="dropdown {{ ((Request::is('stats*') ) ? 'active' : '') }}">--}}
+                {{--<a href="#" class="dropdown-toggle" data-toggle="dropdown" data-hover="dropdown">--}}
+                {{--<i class="fa fa-cogs"></i>--}}
+                {{--Statistiques--}}
+                {{--<i class="mainnav-caret"></i>--}}
+                {{--</a>--}}
+
+                {{--<ul class="dropdown-menu" role="menu">--}}
+                {{--<li>--}}
+                {{--<a tabindex="-1" href="{{ URL::route('stats_ca') }}">--}}
+                {{--<i class="fa fa-barcode"></i>--}}
+                {{--&nbsp;&nbsp;Vue d'ensemble--}}
+                {{--</a>--}}
+
+                {{--</li>--}}
+
+                {{--</ul>--}}
+                {{--</li>--}}
+
+
                 <li class="dropdown {{ ((Request::is('stats*') ) ? 'active' : '') }}">
-                    <a href="#" class="dropdown-toggle" data-toggle="dropdown" data-hover="dropdown">
-                        <i class="fa fa-cogs"></i>
-                        Statistiques
-                        <i class="mainnav-caret"></i>
-                    </a>
+                <a tabindex="-1" href="{{ URL::route('stats_ca') }}">
+                    <i class="fa fa-cogs"></i>
+                    Statistiques
+                </a>
 
-                    <ul class="dropdown-menu" role="menu">
-                        <li>
-                            <a tabindex="-1" href="{{ URL::route('stats_ca') }}">
-                                <i class="fa fa-barcode"></i>
-                                &nbsp;&nbsp;Vue d'ensemble
-                            </a>
-
-                        </li>
-
-                    </ul>
                 </li>
 
-                <li class="dropdown {{ ((Request::is('subscription*') ) ? 'active' : '') }}">
-                    <a href="{{ URL::route('subscription_liste') }}">Abonnements</a>
-                </li>
 
-                <li class="dropdown {{ ((Request::is('ressource*') || Request::is('country*') || Request::is('vat*') || Request::is('tag*')) ? 'active' : '') }}">
-                    <a href="#" class="dropdown-toggle" data-toggle="dropdown" data-hover="dropdown">
-                        <i class="fa fa-cogs"></i>
-                        Configuration
-                        <i class="mainnav-caret"></i>
-                    </a>
+<li class="dropdown {{ ((Request::is('subscription*') ) ? 'active' : '') }}">
+    <a href="{{ URL::route('subscription_liste') }}">Abonnements</a>
+</li>
 
-                    <ul class="dropdown-menu" role="menu">
-                        <li>
-                            <a tabindex="-1" href="{{ URL::route('ressource_list') }}">
-                                <i class="fa fa-barcode"></i>
-                                &nbsp;&nbsp;Ressources
-                            </a>
+<li class="dropdown {{ ((Request::is('ressource*') || Request::is('country*') || Request::is('vat*') || Request::is('tag*')) ? 'active' : '') }}">
+    <a href="#" class="dropdown-toggle" data-toggle="dropdown" data-hover="dropdown">
+        <i class="fa fa-cogs"></i>
+        Configuration
+        <i class="mainnav-caret"></i>
+    </a>
 
-                        </li>
-                        <li>
-                            <a tabindex="-1" href="{{ URL::route('country_list') }}">
-                                <i class="fa fa-flag"></i>
-                                &nbsp;&nbsp;Pays
-                            </a>
+    <ul class="dropdown-menu" role="menu">
+        <li>
+            <a tabindex="-1" href="{{ URL::route('ressource_list') }}">
+                <i class="fa fa-barcode"></i>
+                &nbsp;&nbsp;Ressources
+            </a>
 
-                        </li>
-                        <li>
-                            <a tabindex="-1" href="{{ URL::route('vat_list') }}">
-                                <i class="fa fa-gavel"></i>
-                                &nbsp;&nbsp;TVA
-                            </a>
-                        </li>
-                        <li>
-                            <a tabindex="-1" href="{{ URL::route('tag_list') }}">
-                                <i class="fa fa-tags"></i>
-                                &nbsp;&nbsp;Tags
-                            </a>
-                        </li>
+        </li>
+        <li>
+            <a tabindex="-1" href="{{ URL::route('country_list') }}">
+                <i class="fa fa-flag"></i>
+                &nbsp;&nbsp;Pays
+            </a>
 
-                    </ul>
-                </li>
-            </ul>
-        </nav>
-    </div>
+        </li>
+        <li>
+            <a tabindex="-1" href="{{ URL::route('vat_list') }}">
+                <i class="fa fa-gavel"></i>
+                &nbsp;&nbsp;TVA
+            </a>
+        </li>
+        <li>
+            <a tabindex="-1" href="{{ URL::route('tag_list') }}">
+                <i class="fa fa-tags"></i>
+                &nbsp;&nbsp;Tags
+            </a>
+        </li>
+
+    </ul>
+</li>
+</ul>
+</nav>
+</div>
 </div>
