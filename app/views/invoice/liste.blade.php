@@ -161,7 +161,7 @@
                             currency: "eur",
                             amount: {{ Invoice::TotalInvoiceWithTaxes($invoice->items) * 100 }},
                             panelLabel: 'Payer \{\{amount\}\}',
-                            email: '{{$invoice->user->email}}',
+                            email: '{{$invoice->user?$invoice->user->email:''}}',
                             allowRememberMe: false
                         });
                     });
