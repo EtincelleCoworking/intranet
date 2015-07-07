@@ -493,6 +493,13 @@ class InvoiceController extends BaseController
             );
             $invoice->date_payment = date('Y-m-d');
             $invoice->save();
+
+            $invoice_comment = new InvoiceComment();
+            $invoice_comment->invoice_id = $invoice->id;
+            $invoice_comment->user_id = Auth::user()->id;
+            $invoice_comment->content = 'Payé par CB avec Stripe';
+            $invoice_comment->save();
+
             return Redirect::route('invoice_list')
                 ->with('mSuccess', sprintf('La facture %s a été payée', $invoice->ident));
 
