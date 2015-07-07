@@ -10,8 +10,9 @@
 		"barryvdh/laravel-snappy": "0.1.x",
         "zizaco/testcases-laravel": "dev-master",
 		"guilhermeguitte/behat-laravel": "dev-master",
-        "phpunit/phpunit": "4.0.*",
-	  "stripe/stripe-php": "2.*"
+	  "stripe/stripe-php": "2.*",
+        "h4cc/wkhtmltopdf-amd64": "0.12.x",
+ "phpunit/phpunit": "4.0.*"
 	},
 	"autoload": {
 		"classmap": [
