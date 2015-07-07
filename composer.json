@@ -10,7 +10,8 @@
 		"barryvdh/laravel-snappy": "0.1.x",
         "zizaco/testcases-laravel": "dev-master",
 		"guilhermeguitte/behat-laravel": "dev-master",
-        "phpunit/phpunit": "4.0.*"
+        "phpunit/phpunit": "4.0.*",
+	  "stripe/stripe-php": "2.*"
 	},
 	"autoload": {
 		"classmap": [

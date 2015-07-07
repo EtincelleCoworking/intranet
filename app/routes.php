@@ -55,6 +55,8 @@ Route::group(['before' => 'superadmin'], function() {
 	Route::post('/invoice/{id}/item/modify', array('as' => 'invoice_item_modify', 'uses' => 'InvoiceItemController@modify'))->where(array('id' => '[0-9]+'));
 	Route::delete('/invoice/{invoice}/item/{id}/delete', array('as' => 'invoice_item_delete', 'uses' => 'InvoiceItemController@delete'))->where(array('invoice' => '[0-9]+', 'id' => '[0-9]+'));
 
+    Route::post('/invoice/stripe/{id}', array('as' => 'invoice_stripe', 'uses' => 'InvoiceController@stripe'))->where(array('id' => '[0-9]+'));
+
 	Route::get('/ressources', array('as' => 'ressource_list', 'uses' => 'RessourceController@liste'));
 	Route::get('/ressource/add', array('as' => 'ressource_add', 'uses' => 'RessourceController@add'));
 	Route::post('/ressource/add', array('as' => 'ressource_add_check', 'uses' => 'RessourceController@add_check'));

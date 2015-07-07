@@ -472,4 +472,32 @@ class InvoiceController extends BaseController
         $pdf->loadHTML($html);
         return $pdf->stream($invoice->ident . '.pdf');;
     }
+
+    public function stripe($id){
+        $invoice = $this->dataExist($id, 'invoice_list');
+
+        // Set your secret key: remember to change this to your live secret key in production
+// See your keys here https://dashboard.stripe.com/account/apikeys
+        \Stripe\Stripe::setApiKey($_ENV['stripe_sk']);
+
+// Get the credit card details submitted by the form
+        $stripeToken =Request::input('stripeToken');
+
+// Create the charge on Stripe's servers - this will charge the user's card
+        try {
+            $charge = \Stripe\Charge::create(array(
+                    "amount" => Invoice::TotalInvoiceWithTaxes($invoice->items) * 100 , // amount in cents, again
+                    "currency" => "eur",
+                    "source" => $stripeToken,
+                    "description" => "Facture ".$invoice->ident)
+            );
+            $invoice->date_payment = date('Y-m-d');
+            $invoice->save();
+            return Redirect::route('invoice_list')
+                ->with('mSuccess', sprintf('La facture %s a été payée', $invoice->ident));
+
+        } catch(\Stripe\Error\Card $e) {
+            // The card has been declined
+        }
+    }
 }

@@ -104,7 +104,8 @@ class Invoice extends Eloquent
         $total = 0;
 
         if ($this->items) {
-            foreach ($this->items as $key => $value) {
+			/** @var InvoiceItem $value */
+			foreach ($this->items as $key => $value) {
                 $total += $value->amount;
             }
         }
@@ -121,6 +122,21 @@ class Invoice extends Eloquent
 		if ($items) {
 			foreach ($items as $key => $value) {
 				$total += $value->amount;
+			}
+		}
+
+		return sprintf('%0.2f', $total);
+	}
+
+	/**
+	 * Total amount
+	 */
+	public function scopeTotalInvoiceWithTaxes($query, $items) {
+		$total = 0;
+
+		if ($items) {
+			foreach ($items as $key => $value) {
+				$total += $value->amount * (1 + $value->vat->value / 100);
 			}
 		}
 
