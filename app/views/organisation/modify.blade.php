@@ -67,8 +67,10 @@
 		</div>
 	</div>
 	
-
+<div class="row">
+	<a href="{{ URL::route('invoice_add_organisation', array('type' => 'F', 'organisation' =>$organisation->id)) }}" class="btn btn-primary pull-right">Ajouter une facture</a>
 	<h2>Liste des devis/factures</h2>
+
 	<table class="table table-hover">
 		<thead>
 			<tr>
@@ -123,4 +125,5 @@
 			@endforeach
 		</tbody>
 	</table>
+</div>
 @stop

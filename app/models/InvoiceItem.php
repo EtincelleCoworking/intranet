@@ -106,6 +106,27 @@ class InvoiceItem extends Eloquent
 			;
 	}
 
+	public function scopeTotalCountPerMonthWithoutStakeholders($query)
+	{
+		return $query
+			->join('invoices', function($j)
+			{
+				$j->on('invoice_id', '=', 'invoices.id')
+					->where('type', '=', 'F')
+
+				;
+			})
+			->select(
+				DB::raw('date_format(invoices.date_invoice, "%Y-%m") as period'),
+				DB::raw('count(distinct(organisation_id)) as total')
+			)
+			->whereNotIn('organisation_id', array(1, 2))
+			->groupBy('period')
+			->orderBy('period', 'DESC')
+			//->get()
+			;
+	}
+
 
 	public function scopePending($query)
 	{

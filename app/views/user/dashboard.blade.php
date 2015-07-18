@@ -2,6 +2,24 @@
 
 @section('content')
 	<h1>Tableau de bord</h1>
+    @if (Auth::user()->role == 'superadmin')
+    <div class="row">
+        <div class="col-md-4">
+            <div class="panel panel-success">
+                <div class="panel-heading">
+                    <h3 class="panel-title">
+                        <i class="fa fa-money fa-2x"></i>
+                        <span class="pull-right">
+                            Total Encours Clients</span>
+                    </h3>
+                </div>
+                <div class="panel-body">
+                    <h3 align="center">{{ sprintf('%0.2f€', $pending['total']) }}</h3>
+                </div>
+            </div>
+        </div>
+    </div>
+    @endif
 
     <div class="row">
         <div class="col-md-4">
