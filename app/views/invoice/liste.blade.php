@@ -50,7 +50,6 @@
                 <th>Créée le</th>
                 <th>Client</th>
                 <th>Echéance</th>
-                <th>Paiement</th>
                 <th>Montant</th>
                 <th>Actions</th>
             </tr>
@@ -83,20 +82,30 @@
                         @if (!$invoice->date_payment)
                             @if ($invoice->daysDeadline > 7)
                                 <span class="badge badge-success">
-                        @elseif ($invoice->daysDeadline <= 7 && $invoice->daysDeadline != -1)
-                                        <span class="badge badge-warning">
-                        @else
-                                                <span class="badge badge-danger">
-                        @endif
-                                                    {{ date('d/m/Y', strtotime($invoice->deadline)) }}
-                        </span>
+                                    {{ date('d/m/Y', strtotime($invoice->deadline)) }}
+                                </span>
+                            @elseif ($invoice->daysDeadline <= 7 && $invoice->daysDeadline != -1)
+                                <span class="badge badge-warning">
+                                    {{ date('d/m/Y', strtotime($invoice->deadline)) }}
+                                </span>
                             @else
-                                {{ date('d/m/Y', strtotime($invoice->deadline)) }}
+                                <span class="badge badge-danger">
+                                   {{ date('d/m/Y', strtotime($invoice->deadline)) }}
+                                </span>
                             @endif
+                        @else
+                            Payée le {{ date('d/m/Y', strtotime($invoice->date_payment)) }}
+                        @endif
                     </td>
-                    <td>{{ (($invoice->date_payment) ? date('d/m/Y', strtotime($invoice->date_payment)) : '') }}</td>
                     <td style="text-align:right">{{ Invoice::TotalInvoice($invoice->items) }}€</td>
                     <td>
+                        @if (Auth::user()->role == 'superadmin')
+                            <a href="{{ URL::route('invoice_modify', $invoice->id) }}" class="btn btn-sm btn-default">
+                                Modifier
+                            </a>
+                        @endif
+                        <a href="{{ URL::route('invoice_print_pdf', $invoice->id) }}" class="btn btn-sm btn-default"
+                           target="_blank">PDF</a>
                         @if(!$invoice->date_payment)
                             <form action="{{ URL::route('invoice_stripe', $invoice->id) }}" method="POST"
                                   id="stripe{{$invoice->id}}form">
@@ -109,15 +118,6 @@
 
                             </form>
                         @endif
-                        <a href="{{ URL::route('invoice_modify', $invoice->id) }}" class="btn btn-sm btn-default">
-                            @if (Auth::user()->role == 'superadmin')
-                                Modifier
-                            @else
-                                Consulter
-                            @endif
-                        </a>
-                        <a href="{{ URL::route('invoice_print_pdf', $invoice->id) }}" class="btn btn-sm btn-default"
-                           target="_blank">PDF</a>
                     </td>
                 </tr>
             @endforeach
@@ -142,7 +142,11 @@
                 token: function (token) {
                     {{--// Use the token to create the charge with a server-side script.--}}
                     {{--// You can access the token ID with `token.id`--}}
-                    stripeForm.append($('<input>').attr({type: 'hidden', name: 'stripeToken', value: token.id})).submit();
+                    stripeForm.append($('<input>').attr({
+                        type: 'hidden',
+                        name: 'stripeToken',
+                        value: token.id
+                    })).submit();
                 }
             });
 
