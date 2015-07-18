@@ -111,11 +111,41 @@
 
 
                 <li class="dropdown {{ ((Request::is('stats*') ) ? 'active' : '') }}">
-                <a tabindex="-1" href="{{ URL::route('stats_ca') }}">
-                    <i class="fa fa-cogs"></i>
-                    Statistiques
-                </a>
+                    <a href="#" class="dropdown-toggle" data-toggle="dropdown" data-hover="dropdown">
+                        <i class="fa fa-cogs"></i>
+                        Statistiques
+                        <i class="mainnav-caret"></i>
+                    </a>
 
+                    <ul class="dropdown-menu" role="menu">
+                        <li>
+                            <a tabindex="-1" href="{{ URL::route('stats_overview') }}">
+                                <i class="fa fa-barcode"></i>
+                                &nbsp;&nbsp;Vue d'ensemble
+                            </a>
+
+                        </li>
+                        <li>
+                            <a tabindex="-1" href="{{ URL::route('stats_sales') }}">
+                                <i class="fa fa-flag"></i>
+                                &nbsp;&nbsp;Ventes
+                            </a>
+
+                        </li>
+                        <li>
+                            <a tabindex="-1" href="{{ URL::route('stats_customers') }}">
+                                <i class="fa fa-flag"></i>
+                                &nbsp;&nbsp;Clients
+                            </a>
+
+                        </li>
+                        <li>
+                            <a tabindex="-1" href="{{ URL::route('stats_charges') }}">
+                                <i class="fa fa-gavel"></i>
+                                &nbsp;&nbsp;Dépenses
+                            </a>
+                        </li>
+                    </ul>
                 </li>
 
 

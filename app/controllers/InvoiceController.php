@@ -213,9 +213,17 @@ class InvoiceController extends BaseController
      */
     public function validate($id)
     {
+        /** @var Invoice $invoice */
         $invoice = $this->dataExist($id, 'invoice_list');
 
+        $invoice_comment = new InvoiceComment();
+        $invoice_comment->invoice_id = $invoice->id;
+        $invoice_comment->user_id = Auth::user()->id;
+        $invoice_comment->content = sprintf('Devis %s validé', $invoice->ident);
+        $invoice_comment->save();
+
         $invoice->type = 'F';
+        $invoice->days = sprintf('Ym');
         $invoice->number = Invoice::next_invoice_number('F', $invoice->days);
         $invoice->date_invoice = new DateTime();
 
