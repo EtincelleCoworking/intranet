@@ -46,7 +46,7 @@
 							{{ $invoice->organisation->name }}
                         @endif
                     @else
-						{{ $invoice->address }}
+						{{ preg_replace("/\n.+/", '', $invoice->address) }}
                     @endif
 				</td>
                 <td>

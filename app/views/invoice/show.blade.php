@@ -40,7 +40,7 @@
             <p><strong>Date de paiement :</strong></p>
             <p>
                 @if ($invoice->date_payment)
-                    date('d/m/Y', strtotime($invoice->date_payment))
+                    {{date('d/m/Y', strtotime($invoice->date_payment))}}
                 @else
                     En attente de paiement
                 @endif
