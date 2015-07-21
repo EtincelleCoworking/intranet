@@ -10,9 +10,11 @@
             <h2>Membres</h2>
         </div>
         <div class="col-sm-8">
+            @if (Auth::user()->role == 'superadmin')
             <div class="title-action">
                 <a href="{{ URL::route('user_add') }}" class="btn btn-default">Ajouter un membre</a>
             </div>
+            @endif
         </div>
     </div>
 @stop

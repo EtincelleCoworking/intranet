@@ -1,13 +1,13 @@
 @extends('layouts.master')
 
 @section('meta_title')
-    Consommations
+    Suivi du temps passé
 @stop
 
 @section('breadcrumb')
     <div class="row wrapper border-bottom white-bg page-heading">
         <div class="col-sm-4">
-            <h2>Consommations</h2>
+            <h2>Suivi du temps passé</h2>
         </div>
         <div class="col-sm-8">
             <div class="title-action">

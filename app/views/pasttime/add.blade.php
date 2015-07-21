@@ -1,13 +1,13 @@
 @extends('layouts.master')
 
 @section('meta_title')
-    Ajouter une consommation
+    Ajouter une utilisation
 @stop
 
 @section('breadcrumb')
     <div class="row wrapper border-bottom white-bg page-heading">
         <div class="col-sm-4">
-            <h2>Ajouter une consommation</h2>
+            <h2>Ajouter une utilisation</h2>
         </div>
 
     </div>
