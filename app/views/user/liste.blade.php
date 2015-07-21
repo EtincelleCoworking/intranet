@@ -1,40 +1,64 @@
 @extends('layouts.master')
 
 @section('meta_title')
-	Liste des utilisateurs
+    Membres
+@stop
+
+@section('breadcrumb')
+    <div class="row wrapper border-bottom white-bg page-heading">
+        <div class="col-sm-4">
+            <h2>Membres</h2>
+        </div>
+        <div class="col-sm-8">
+            <div class="title-action">
+                <a href="{{ URL::route('user_add') }}" class="btn btn-default">Ajouter un membre</a>
+            </div>
+        </div>
+    </div>
 @stop
 
 @section('content')
-    <a href="{{ URL::route('user_add') }}" class="btn btn-primary pull-right">Ajouter un utilisateur</a>
-    <h1>Liste des utilisateurs</h1>
-	
-	<table class="table table-striped table-hover">
-		<thead>
-			<tr>
-				<th>#</th>
-				<th>Nom complet</th>
-				<th>Adresse email</th>
-				<th>Dernière modification</th>
-				<th>Actions</th>
-			</tr>
-		</thead>
-		<tbody>
-		@foreach ($users as $user)
-			<tr>
-				<td>{{ $user->id }}</td>
-				<td>{{ $user->fullname }}</td>
-				<td>{{ $user->email }}</td>
-				<td>{{ $user->updated_at }}</td>
-				<td>
-					<a href="{{ URL::route('user_modify', $user->id) }}">Modifier</a>
-				</td>
-			</tr>
-		@endforeach
-		</tbody>
-		<tfoot>
-			<tr>
-				<td colspan="5">{{ $users->links() }}</td>
-			</tr>
-		</tfoot>
-	</table>
+
+    <div class="row">
+        @foreach ($users as $index => $user)
+            <div class="col-md-3">
+
+                {{--<div class="ibox" style="border-top: 5px solid #542274">--}}
+                {{--<div class="ibox" style="border-top: 5px solid #FF9930">--}}
+                <div class="ibox">
+                    <div class="ibox-content text-center">
+                        <h1>{{ $user->fullname }}</h1>
+
+                        <div class="m-b-sm">
+                            {{$user->avatarTag}}
+                        </div>
+                        @if($user->bio_short)
+                            <p class="font-bold">{{ $user->bio_short }}</p>
+                        @endif
+
+                        <div class="text-center">
+                            @if($user->phone)
+                                <span class="btn btn-xs btn-white"><i
+                                            class="fa fa-phone"></i> {{ $user->phone }}</span>
+                            @endif
+
+                            @if($user->twitter)
+                                <a class="btn btn-xs btn-white" href="https://twitter.com/{{ $user->twitter }}"><i
+                                            class="fa fa-twitter"></i> {{ '@'.$user->twitter }} </a>
+                            @endif
+
+                            @if($user->website)
+                                <a href="https://twitter.com/{{ $user->website }}" class="btn btn-xs btn-white">
+                                    <i class="fa fa-link" title="{{ $user->website }}"></i> {{ $user->website }}
+                                </a>
+                            @endif
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+        @endforeach
+    </div>
+
+    {{ $users->links() }}
 @stop

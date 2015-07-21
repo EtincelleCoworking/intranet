@@ -1,27 +1,77 @@
 @extends('layouts.master')
 
 @section('meta_title')
-    Liste des charges
+    Liste des dépenses
+@stop
+
+@section('breadcrumb')
+    <div class="row wrapper border-bottom white-bg page-heading">
+        <div class="col-sm-4">
+            <h2>Liste des dépenses</h2>
+        </div>
+        <div class="col-sm-8">
+            <div class="title-action">
+                <a href="{{ URL::route('charge_add') }}" class="btn btn-default">Ajouter un dépense</a>
+            </div>
+        </div>
+    </div>
 @stop
 
 @section('content')
 
-    <div class="pull-right">
-        {{ Form::open(array('route' => array('charge_list', $filtre))) }}
-            <span class="btn btn-info">
-                <div class="col-md-3 input-group-sm">{{ Form::select('type', array('all' => 'Toutes', 'deadline_close' => 'Proches', 'deadline_exceeded' => 'Dépassées'), ((Session::get('filtre_charge.type'))?:'all'), array('class' => 'form-control')) }}</div>
-                <div class="col-md-3 input-group-sm">{{ Form::text('filtre_start', ((Session::get('filtre_charge.start')) ? date('d/m/Y', strtotime(Session::get('filtre_charge.start'))) : date('d/m/Y')), array('class' => 'form-control datePicker')) }}</div>
-                <div class="col-md-3 input-group-sm">{{ Form::text('filtre_end', ((Session::get('filtre_charge.end')) ? date('d/m/Y', strtotime(Session::get('filtre_charge.end'))) : date('t', date('m')).'/'.date('m/Y')), array('class' => 'form-control datePicker')) }}</div>
-                <div class="col-md-3">{{ Form::submit('Ok', array('class' => 'btn btn-sm btn-default')) }}</div>
-            </span>
-        {{ Form::close() }}
-        <a href="{{ URL::route('charge_add') }}" class="btn btn-lg btn-primary">Ajouter une charge</a>
+
+
+
+
+
+    <div class="row">
+        <div class="col-lg-12">
+            <div class="ibox collapsed">
+                <div class="ibox-title">
+                    <h5>Filtre
+                    </h5>
+
+                    <div class="ibox-tools">
+                        <a class="collapse-link">
+                            <i class="fa fa-chevron-up"></i>
+                        </a>
+                    </div>
+                </div>
+                <div class="ibox-content">
+                    <div class="row">
+                        {{ Form::open(array('route' => array('charge_list', $filtre))) }}
+                        <div class="col-md-3 input-group-sm">{{ Form::select('type', array('all' => 'Toutes', 'deadline_close' => 'Proches', 'deadline_exceeded' => 'Dépassées'), ((Session::get('filtre_charge.type'))?:'all'), array('class' => 'form-control')) }}</div>
+                        <div class="col-md-3 input-group-sm">{{ Form::text('filtre_start', ((Session::get('filtre_charge.start')) ? date('d/m/Y', strtotime(Session::get('filtre_charge.start'))) : date('d/m/Y')), array('class' => 'form-control datePicker')) }}</div>
+                        <div class="col-md-3 input-group-sm">{{ Form::text('filtre_end', ((Session::get('filtre_charge.end')) ? date('d/m/Y', strtotime(Session::get('filtre_charge.end'))) : date('t', date('m')).'/'.date('m/Y')), array('class' => 'form-control datePicker')) }}</div>
+                        <div class="col-md-3">{{ Form::submit('Ok', array('class' => 'btn btn-sm btn-default')) }}</div>
+                        {{ Form::close() }}
+
+                    </div>
+                </div>
+            </div>
+        </div>
     </div>
 
-    <h1>Liste des charges</h1>
-    @if(count($charges)==0)
-        <p>Aucune charge.</p>
+    @if(count($charges) == 0)
+        <div class="middle-box text-center">
+            <h3 class="font-bold">Aucune dépense</h3>
+
+            <div class="error-desc">
+                <br/><a href="{{ URL::route('charge_add') }}" class="btn btn-default">Ajouter un dépense</a>
+            </div>
+        </div>
     @else
+
+    <div class="row">
+        <div class="col-lg-12">
+            <div class="ibox ">
+                <div class="ibox-title">
+                    <h5>Dépenses</h5>
+
+                </div>
+                <div class="ibox-content">
+                    <div class="row">
+
         <table class="table">
             <thead>
                 <tr>
@@ -83,11 +133,11 @@
                     <td align="right">{{ $charge->total_vat }}€</td>
                     <td>
                         @if ($charge->document)
-                            <a href="uploads/charges/{{ $charge->document }}" class="btn btn-xs btn-info" target="_blank"><i class="fa fa-download"></i></a>
+                            <a href="uploads/charges/{{ $charge->document }}" class="btn btn-xs btn-default btn-outline" target="_blank"><i class="fa fa-download"></i></a>
                         @endif
                         <div class="pull-right">
-                        <a href="{{ URL::route('charge_modify', $charge->id) }}" class="btn btn-xs btn-success">Modifier</a>
-                        <a href="{{ URL::route('charge_delete', array($charge->id)) }}" data-method="delete" data-confirm="Etes-vous certain de vouloir retirer cette charge ?" rel="nofollow" class="btn btn-xs btn-danger">Retirer</a>
+                        <a href="{{ URL::route('charge_modify', $charge->id) }}" class="btn btn-xs btn-default btn-outline">Modifier</a>
+                        <a href="{{ URL::route('charge_delete', array($charge->id)) }}" data-method="delete" data-confirm="Etes-vous certain de vouloir retirer cette charge ?" rel="nofollow" class="btn btn-xs btn-danger btn-outline">Supprimer</a>
                         </div>
                     </td>
                 </tr>
@@ -95,6 +145,11 @@
             </tbody>
         </table>
             {{ $charges->links() }}
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
     @endif
 @stop
 

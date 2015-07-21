@@ -125,7 +125,7 @@ class Invoice extends Eloquent
             $total += $value->amount * (1 + $value->vat->value / 100);
         }
 
-        return sprintf('%0.2f', $total ? 0.25 + 1.8 / 100 * $total:0 );
+        return sprintf('%0.2f', $total ? 0.25 + 1.8 / 100 * $total : 0);
     }
 
     /**
@@ -187,13 +187,15 @@ class Invoice extends Eloquent
         'address' => 'required|min:1'
     );
 
-    /**
-     * Get list of users
-     */
-    public function scopeSelect($query, $title = "Select")
+    public function scopeSelect($query, $title = "Select", $user_id = null)
     {
         $selectVals[''] = $title;
-        $selectVals += $this->orderBy('date_invoice', 'desc')->orderBy('number', 'desc')->where('type', 'F')->get()->lists('caption', 'id');
+        $query = $this;
+        if ($user_id) {
+            $query = $query->where('user_id', $user_id);
+        }
+        $query = $query->orderBy('days', 'desc')->orderBy('number', 'desc')->where('type', 'F');
+        $selectVals += $query->get()->lists('caption', 'id');
         return $selectVals;
     }
 }

@@ -1,72 +1,52 @@
-<div class="mainnav">
-    <div class="container">
-        <a class="mainnav-toggle" data-toggle="collapse" data-target=".mainnav-collapse">
-            <span class="sr-only">Toggle navigation</span>
-            <i class="fa fa-bars"></i>
-        </a>
-
-        <nav class="collapse mainnav-collapse" role="navigation">
-            <!--
-            <form class="mainnav-form pull-right" role="search">
-                <input type="text" class="form-control input-md mainnav-search-query" placeholder="Search">
-                <button class="btn btn-sm mainnav-form-btn"><i class="fa fa-search"></i></button>
-            </form>
-            -->
-
-            <ul class="mainnav-menu">
-                <li class="{{ ((Request::is('/')) ? 'active' : '') }}">
-                    <a href="{{ URL::route('dashboard') }}">
-                        Dashboard
-                    </a>
-                </li>
-
-                <li class="dropdown {{ ((Request::is('user*') || Request::is('organisation*')) ? 'active' : '') }}">
-                    <a href="#" class="dropdown-toggle" data-toggle="dropdown" data-hover="dropdown">
-                        <i class="fa fa-users"></i>
-                        Utilisateurs
-                        <i class="mainnav-caret"></i>
-                    </a>
-
-                    <ul class="dropdown-menu" role="menu">
-                        <li>
-                            <a href="{{ URL::route('user_directory') }}">
-                                <i class="fa fa-list"></i>
-                                &nbsp;&nbsp;Annuaire des utilisateurs
-                            </a>
-                        </li>
-                    </ul>
-                </li>
-
-                <li class="dropdown {{ ((Request::is('invoice*')) ? 'active' : '') }}">
-                    <a href="#" class="dropdown-toggle" data-toggle="dropdown" data-hover="dropdown">
-                        <i class="fa fa-money"></i>
-                        Comptabilité
-                        <i class="mainnav-caret"></i>
-                    </a>
-
-                    <ul class="dropdown-menu" role="menu">
-                        <li>
-                            <a href="{{ URL::route('quote_list') }}">
-                                <i class="fa fa-list"></i>
-                                &nbsp;&nbsp;Liste de mes devis
-                            </a>
-                        </li>
-                        <li>
-                            <a href="{{ URL::route('invoice_list') }}">
-                                <i class="fa fa-list"></i>
-                                &nbsp;&nbsp;Liste de mes factures
-                            </a>
-                        </li>
-                    </ul>
-                </li>
-
-                <li class="{{ ((Request::is('pasttime*')) ? 'active' : '') }}">
-                    <a href="{{ URL::route('pasttime_list') }}">
-                        <i class="fa fa-clock-o"></i>
-                        Mon temps passé
-                    </a>
-                </li>
+<ul class="nav metismenu" id="side-menu">
+    <li class="nav-header">
+        <div class="dropdown profile-element">
+            <span>
+                <img alt="image" class="img-circle img-responsive" src="{{Auth::user()->avatarUrl}}"/>
+            </span>
+            <a data-toggle="dropdown" class="dropdown-toggle" href="#">
+                <span class="clear"> <span class="block m-t-xs">
+                        <strong class="font-bold">{{Auth::user()->fullname}}</strong>
+                </span>
+                <span class="text-muted text-xs block">Membre <b class="caret"></b></span> </span>
+            </a>
+            <ul class="dropdown-menu animated fadeInRight m-t-xs">
+                <li><a href="{{ URL::route('user_edit') }}">Profil</a></li>
+                {{--<li><a href="contacts.html">Contacts</a></li>--}}
+                {{--<li><a href="mailbox.html">Mailbox</a></li>--}}
+                <li class="divider"></li>
+                <li><a href="{{ URL::route('user_logout') }}">Déconnexion</a></li>
             </ul>
-        </nav>
-    </div>
-</div>
+        </div>
+        <div class="logo-element">
+            EC
+        </div>
+    </li>
+
+    <li class="{{ ((Request::is('/')) ? 'active' : '') }}">
+        <a href="{{ URL::route('dashboard') }}"><i class="fa fa-th-large"></i> <span
+                    class="nav-label">Tableau de bord</span></a>
+    </li>
+
+    <li{{ Request::is('user*') ? ' class="active"' : '' }}>
+        <a href="{{ URL::route('user_list') }}"><i class="fa fa-user"></i> <span class="nav-label">Membres</span></a>
+    </li>
+
+    <li{{ Request::is('pasttime*') ? ' class="active"' : '' }}>
+        <a href="{{ URL::route('pasttime_list') }}"><i class="fa fa-ticket"></i> <span
+                    class="nav-label">Consommations</span></a>
+    </li>
+
+    <li{{ Request::is('quote*') ? ' class="active"' : '' }}>
+        <a href="{{ URL::route('quote_list', 'all') }}"><i class="fa fa-file-text"></i> <span class="nav-label">Devis</span></a>
+    </li>
+
+    <li{{ Request::is('invoice*') ? ' class="active"' : '' }}>
+        <a href="{{ URL::route('invoice_list') }}"><i class="fa fa-money"></i> <span
+                    class="nav-label">Factures</span></a>
+    </li>
+
+
+</ul>
+
+

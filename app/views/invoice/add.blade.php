@@ -1,43 +1,61 @@
 @extends('layouts.master')
 
 @section('meta_title')
-    Ajout
     @if ($type == 'F')
-        d'une facture
+        Nouvelle facture
     @elseif ($type == 'D')
-        d'un devis
+        Nouveau devis
     @endif
 @stop
 
-@section('content')
-    @if ($errors->has())
-        <div class="alert alert-danger">
-            @foreach ($errors->all() as $error)
-                {{ $error }}<br>
-            @endforeach
-        </div>
-    @endif
 
-    <h1>
-        @if ($type == 'F')
-            Nouvelle facture
-        @elseif ($type == 'D')
-            Nouveau devis
-        @endif
-    </h1>
-    {{ Form::open(array('route' => array('invoice_add_check', $type))) }}
-    {{ Form::hidden('type', $type) }}
-    <input type="hidden" name="last_orga" id="oldOrganisation" value="{{ $last_organisation_id }}">
-    {{ Form::label('user_id', 'Client') }}
-    <p>{{ Form::select('user_id', User::Select('Sélectionnez un client'), null, array('id' => 'selectUserId', 'class' => 'form-control')) }}</p>
-    {{ Form::label('organisation_id', 'Organisation') }}
-    <p>{{ Form::select('organisation_id', array(), null, array('id' => 'selectOrganisationId', 'class' => 'form-control')) }}</p>
-    {{ Form::label('address', 'Adresse de facturation') }}
-    <p>{{ Form::textarea('address', null, array('id' => 'addressInvoice', 'class' => 'form-control', 'rows' => '5')) }}</p>
-    {{ Form::label('date_invoice', 'Date de facturation') }}
-    <p>{{ Form::text('date_invoice', date('d/m/Y'), array('class' => 'form-control datePicker')) }}</p>
-    <p>{{ Form::submit('Ajouter', array('class' => 'btn btn-success')) }}</p>
-    {{ Form::close() }}
+@section('breadcrumb')
+    <div class="row wrapper border-bottom white-bg page-heading">
+        <div class="col-sm-4">
+            <h2>
+                @if ($type == 'F')
+                    Nouvelle facture
+                @elseif ($type == 'D')
+                    Nouveau devis
+                @endif
+            </h2>
+        </div>
+
+    </div>
+@stop
+
+@section('content')
+    <div class="row">
+        <div class="col-lg-12">
+
+            <div class="ibox">
+                <div class="ibox-content">
+                    {{ Form::open(array('route' => array('invoice_add_check', $type))) }}
+                    {{ Form::hidden('type', $type) }}
+                    <input type="hidden" name="last_orga" id="oldOrganisation" value="{{ $last_organisation_id }}">
+                    {{ Form::label('user_id', 'Client') }}
+                    <p>{{ Form::select('user_id', User::Select('Sélectionnez un client'), null, array('id' => 'selectUserId', 'class' => 'form-control')) }}</p>
+                    {{ Form::label('organisation_id', 'Organisation') }}
+                    <p>{{ Form::select('organisation_id', array(), null, array('id' => 'selectOrganisationId', 'class' => 'form-control')) }}</p>
+                    {{ Form::label('address', 'Adresse de facturation') }}
+                    <p>{{ Form::textarea('address', null, array('id' => 'addressInvoice', 'class' => 'form-control', 'rows' => '5')) }}</p>
+                    {{ Form::label('date_invoice', 'Date de facturation') }}
+                    <p>{{ Form::text('date_invoice', date('d/m/Y'), array('class' => 'form-control datePicker')) }}</p>
+
+
+                    <div class="hr-line-dashed"></div>
+                    <div class="form-group">
+                        {{ Form::submit('Enregistrer', array('class' => 'btn btn-success')) }}
+                        <a href="{{ URL::route('invoice_list', 'all') }}" class="btn btn-white">Annuler</a>
+                    </div>
+                    {{ Form::close() }}
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+
 @stop
 
 @section('javascript')

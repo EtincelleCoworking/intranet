@@ -10,12 +10,7 @@ class SubscriptionController extends BaseController
         $subscriptions = Subscription::orderBy('renew_at', 'ASC')
             ->paginate(15);
 
-        $datas = array();
-        foreach(Subscription::TotalPerMonth()->get() as $item){
-            $datas[$item->period] = $item->total;
-        }
-
-        return View::make('subscription.liste', array('subscriptions' => $subscriptions, 'pending' => $datas));
+        return View::make('subscription.liste', array('subscriptions' => $subscriptions));
     }
 
     public function add()
@@ -45,7 +40,7 @@ class SubscriptionController extends BaseController
             $this->populate($subscription);
 
             if ($subscription->save()) {
-                return Redirect::route('subscription_liste')->with('mSuccess', 'L\'abonnement a été ajouté');
+                return Redirect::route('subscription_list')->with('mSuccess', 'L\'abonnement a été ajouté');
             } else {
                 return Redirect::route('subscription_add')->with('mError', 'Impossible de créer cet abonnement')->withInput();
             }
@@ -58,7 +53,7 @@ class SubscriptionController extends BaseController
     {
         $data = Subscription::find($id);
         if (!$data) {
-            return Redirect::route('subscription_liste')->with('mError', 'Cet abonnement est introuvable !');
+            return Redirect::route('subscription_list')->with('mError', 'Cet abonnement est introuvable !');
         } else {
             return $data;
         }
@@ -81,7 +76,7 @@ class SubscriptionController extends BaseController
             $this->populate($subscription);
 
             if ($subscription->save()) {
-                return Redirect::route('subscription_liste')->with('mSuccess', 'L\'abonnement a été mis à jour');
+                return Redirect::route('subscription_list')->with('mSuccess', 'L\'abonnement a été mis à jour');
             } else {
                 return Redirect::route('subscription_modify', $subscription->id)->with('mError', 'Impossible de modifier cet abonnement')->withInput();
             }
@@ -94,9 +89,9 @@ class SubscriptionController extends BaseController
     public function delete($id)
     {
         if (Subscription::destroy($id)) {
-            return Redirect::route('subscription_liste')->with('mSuccess', 'Cet abonnement a bien été supprimé');
+            return Redirect::route('subscription_list')->with('mSuccess', 'Cet abonnement a bien été supprimé');
         } else {
-            return Redirect::route('subscription_liste')->with('mError', 'Impossible de supprimer cet abonnement');
+            return Redirect::route('subscription_list')->with('mError', 'Impossible de supprimer cet abonnement');
         }
     }
     public function renew($id)
