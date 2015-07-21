@@ -1,46 +1,69 @@
 @extends('layouts.master')
 
 @section('meta_title')
-	Liste des organisations
+	Liste des sociétés
 @stop
 
+@section('breadcrumb')
+	<div class="row wrapper border-bottom white-bg page-heading">
+		<div class="col-sm-4">
+			<h2>Liste des sociétés</h2>
+		</div>
+		<div class="col-sm-8">
+			@if (Auth::user()->role == 'superadmin')
+				<div class="title-action">
+					<a href="{{ URL::route('organisation_add') }}" class="btn btn-default">Ajouter une société</a>
+				</div>
+			@endif
+		</div>
+	</div>
+@stop
+
+
+
 @section('content')
-    <a href="{{ URL::route('organisation_add') }}" class="btn btn-primary pull-right">Ajouter une organisation</a>
+	<div class="row">
+		<div class="col-lg-12">
+			<div class="ibox ">
+				<div class="ibox-content">
+					<div class="row">
+						<table class="table table-striped table-hover">
+							<thead>
+							<tr>
+								<th>Nom</th>
+								<th>Code achat</th>
+								<th>Code vente</th>
+								<th>Actions</th>
+							</tr>
+							</thead>
+							<tbody>
+							@foreach ($organisations as $organisation)
+								<tr>
+									<td>
+										<a href="{{ URL::route('organisation_modify', $organisation->id) }}">{{ $organisation->name }}</a>
+									</td>
+									<td>{{ $organisation->code_purchase }}</td>
+									<td>{{ $organisation->code_sale }}</td>
+									<td>
+										<a href="{{ URL::route('organisation_modify', $organisation->id) }}"" class="btn btn-xs btn-default">Modifier</a>
+										<a href="{{ URL::route('invoice_add_organisation', array('D', $organisation->id)) }}" class="btn btn-xs btn-default btn-outline">Ajouter un devis</a>
+										<a href="{{ URL::route('invoice_add_organisation', array('F', $organisation->id)) }}" class="btn btn-xs btn-default btn-outline">Ajouter une facture</a>
+									</td>
+								</tr>
+							@endforeach
+							</tbody>
+							<tfoot>
+							<tr>
+								<td colspan="6">{{ $organisations->links() }}</td>
+							</tr>
+							</tfoot>
+						</table>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+@stop
+@section('content')
 
-    <h1>Liste des organisations</h1>
-
-	<table class="table table-striped table-hover">
-		<thead>
-			<tr>
-				<th>#</th>
-				<th>Nom</th>
-                <th>Code achat</th>
-                <th>Code vente</th>
-				<th>Dernière modification</th>
-				<th>Action</th>
-			</tr>
-		</thead>
-		<tbody>
-		@foreach ($organisations as $orga)
-			<tr>
-				<td>{{ $orga->id }}</td>
-				<td>
-					<a href="{{ URL::route('organisation_modify', $orga->id) }}">{{ $orga->name }}</a>
-				</td>
-                <td>{{ $orga->code_purchase }}</td>
-                <td>{{ $orga->code_sale }}</td>
-				<td>{{ $orga->updated_at }}</td>
-				<td>
-					<a href="{{ URL::route('invoice_add_organisation', array('D', $orga->id)) }}" class="btn btn-xs btn-success">Devis</a>
-					<a href="{{ URL::route('invoice_add_organisation', array('F', $orga->id)) }}" class="btn btn-xs btn-primary">Facture</a>
-				</td>
-			</tr>
-		@endforeach
-		</tbody>
-		<tfoot>
-			<tr>
-				<td colspan="6">{{ $organisations->links() }}</td>
-			</tr>
-		</tfoot>
-	</table>
 @stop

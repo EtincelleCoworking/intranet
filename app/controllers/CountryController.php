@@ -49,7 +49,7 @@ class CountryController extends BaseController
             $country->name = Input::get('name');
 
             if ($country->save()) {
-                return Redirect::route('country_modify', $country->id)->with('mSuccess', 'Ce pays a bien été modifié');
+                return Redirect::route('country_list', $country->id)->with('mSuccess', 'Ce pays a bien été modifié');
             } else {
                 return Redirect::route('country_modify', $country->id)->with('mError', 'Impossible de modifier ce pays')->withInput();
             }
@@ -76,7 +76,7 @@ class CountryController extends BaseController
             $country = new Country(Input::all());
 
             if ($country->save()) {
-                return Redirect::route('country_modify', $country->id)->with('mSuccess', 'Le pays a bien été ajouté');
+                return Redirect::route('country_list', $country->id)->with('mSuccess', 'Le pays a bien été modifié');
             } else {
                 return Redirect::route('country_add')->with('mError', 'Impossible de créer ce pays')->withInput();
             }

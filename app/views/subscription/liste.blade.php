@@ -4,93 +4,122 @@
     Abonnements
 @stop
 
+@section('breadcrumb')
+    <div class="row wrapper border-bottom white-bg page-heading">
+        <div class="col-sm-4">
+            <h2>Liste des abonnements</h2>
+        </div>
+        <div class="col-sm-8">
+            <div class="title-action">
+                <a href="{{ URL::route('subscription_add') }}" class="btn btn-default">Ajouter un abonnement</a>
+            </div>
+        </div>
+    </div>
+@stop
+
 @section('content')
-    <a href="{{ URL::route('subscription_add') }}" class="btn btn-primary pull-right">Ajouter un abonnement</a>
-    <h1>Liste des abonnements</h1>
+    @if(count($subscriptions) == 0)
+        <div class="middle-box text-center animated fadeInRightBig">
+            <h3 class="font-bold">Aucun abonnement</h3>
 
-
-
-
-
-
-    @if(count($subscriptions)==0)
-        <p>Aucun abonnement.</p>
+            <div class="error-desc">
+                <br/><a href="{{ URL::route('subscription_add') }}" class="btn btn-primary m-t">Ajouter un
+                    abonnement</a>
+            </div>
+        </div>
     @else
 
-        <table class="table table-bordered table-striped table-hover">
-            <thead>
-            <tr>
-                <th>Mois</th>
-            @foreach ($pending as $period => $amount)
-                    <td>{{$period}}</td>
-            @endforeach
-            </tr>
-            </thead>
-            <tbody>
-                <th>Montant</th>
-            @foreach ($pending as $period => $amount)
-                    <td>
-                        {{ $amount }}
-                    </td>
-            @endforeach
-            </tbody>
-        </table>
+        <div class="row">
+            <div class="col-lg-12">
+                <div class="ibox float-e-margins">
+                    <div class="ibox-title">
+                        <h5></h5>
+                        {{--
+                        <div class="ibox-tools">
+                            <a class="collapse-link">
+                                <i class="fa fa-chevron-up"></i>
+                            </a>
+                            <a class="dropdown-toggle" data-toggle="dropdown" href="#">
+                                <i class="fa fa-wrench"></i>
+                            </a>
+                            <ul class="dropdown-menu dropdown-user">
+                                <li><a href="#">Config option 1</a>
+                                </li>
+                                <li><a href="#">Config option 2</a>
+                                </li>
+                            </ul>
+                            <a class="close-link">
+                                <i class="fa fa-times"></i>
+                            </a>
+                        </div>
+                        --}}
+                    </div>
+                    <div class="ibox-content">
 
 
-        <table class="table table-striped table-hover">
-            <thead>
-            <tr>
-                <th>N°</th>
-                <th>Membre</th>
-                <th>Description</th>
-                <th>Echéance</th>
-                <th>Actions</th>
-            </tr>
-            </thead>
-            <tbody>
-            @foreach ($subscriptions as $position => $subscription)
-                <tr>
-                    <td>{{$position + 1}}</td>
-                    <td>
-                        @if (Auth::user()->role == 'superadmin')
-                            <a href="{{ URL::route('organisation_modify', $subscription->organisation->id) }}">{{ $subscription->organisation->name }}</a>
-                            (
-                            <a href="{{ URL::route('user_modify', $subscription->user->id) }}">{{ $subscription->user->fullname }}</a>
-                            )
-                        @else
-                            {{ $subscription->organisation->name }}
-                        @endif
-                    </td>
-                    <td>
-                        {{ $subscription->caption }}
-                    </td>
-                    <td>
-                        @if ($subscription->daysBeforeRenew <= 0)
-                            <span class="badge badge-danger">
-                        @elseif ($subscription->daysBeforeRenew < 7)
-                                    <span class="badge badge-warning">
-                        @else
-                                            <span class="badge badge-success">
-                        @endif
-                                                {{ date('d/m/Y', strtotime($subscription->renew_at)); }}
+                        <table class="table table-striped table-hover">
+                            <thead>
+                            <tr>
+                                <th>N°</th>
+                                <th>Membre</th>
+                                <th>Description</th>
+                                <th>Echéance</th>
+                                <th>Actions</th>
+                            </tr>
+                            </thead>
+                            <tbody>
+                            @foreach ($subscriptions as $position => $subscription)
+                                <tr>
+                                    <td>{{$position + 1}}</td>
+                                    <td>
+                                        @if (Auth::user()->role == 'superadmin')
+                                            <a href="{{ URL::route('organisation_modify', $subscription->organisation->id) }}">{{ $subscription->organisation->name }}</a>
+                                            (
+                                            <a href="{{ URL::route('user_modify', $subscription->user->id) }}">{{ $subscription->user->fullname }}</a>
+                                            )
+                                        @else
+                                            {{ $subscription->organisation->name }}
+                                        @endif
+                                    </td>
+                                    <td>
+                                        {{ $subscription->caption }}
+                                    </td>
+                                    <td>
+                                        @if ($subscription->daysBeforeRenew <= 0)
+                                            <span class="badge badge-danger">
+                                                  {{ date('d/m/Y', strtotime($subscription->renew_at)); }}
                         </span>
-                    </td>
-                    <td>
-                        <a href="{{ URL::route('subscription_renew', $subscription->id) }}"
-                           class="btn btn-sm btn-default">Renouveler</a>
-                        <a href="{{ URL::route('subscription_modify', $subscription->id) }}"
-                           class="btn btn-sm btn-default">Modifier</a>
-                        <a href="{{ URL::route('subscription_delete', $subscription->id) }}"
-                           class="btn btn-sm btn-danger">Supprimer</a>
-                    </td>
-                </tr>
-            @endforeach
-            </tbody>
-            <tfoot>
-            <tr>
-                <td colspan="5">{{ $subscriptions->links() }}</td>
-            </tr>
-            </tfoot>
-        </table>
-    @endif
+                                        @elseif ($subscription->daysBeforeRenew < 7)
+                                            <span class="badge badge-warning">
+                                                          {{ date('d/m/Y', strtotime($subscription->renew_at)); }}
+                        </span>
+                                        @else
+                                            <span class="badge badge-success">
+                                                                  {{ date('d/m/Y', strtotime($subscription->renew_at)); }}
+                        </span>
+                                        @endif
+                                    </td>
+                                    <td>
+                                        <a href="{{ URL::route('subscription_renew', $subscription->id) }}"
+                                           class="btn btn-xs btn-default">Renouveler</a>
+                                        <a href="{{ URL::route('subscription_modify', $subscription->id) }}"
+                                           class="btn btn-xs btn-outline btn-default">Modifier</a>
+                                        <a href="{{ URL::route('subscription_delete', $subscription->id) }}"
+                                           class="btn btn-xs btn-outline btn-danger">Supprimer</a>
+                                    </td>
+                                </tr>
+                            @endforeach
+                            </tbody>
+                            <tfoot>
+                            <tr>
+                                <td colspan="5">{{ $subscriptions->links() }}</td>
+                            </tr>
+                            </tfoot>
+                        </table>
+                        @endif
+                    </div>
+                </div>
+            </div>
+        </div>
+
 @stop

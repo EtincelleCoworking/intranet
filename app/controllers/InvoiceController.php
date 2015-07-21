@@ -107,11 +107,7 @@ class InvoiceController extends BaseController
      */
     public function modify($id)
     {
-        if (Auth::user()->role == 'superadmin') {
             $template = 'invoice.modify';
-        } else {
-            $template = 'invoice.show';
-        }
 
         $invoice = $this->dataExist($id, $template);
 

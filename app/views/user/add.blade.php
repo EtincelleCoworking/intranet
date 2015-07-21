@@ -1,58 +1,118 @@
 @extends('layouts.master')
 
 @section('meta_title')
-	Ajout d'un utilisateur
+    Ajouter un membre
+@stop
+
+@section('breadcrumb')
+    <div class="row wrapper border-bottom white-bg page-heading">
+        <div class="col-sm-12">
+            <h2>Ajouter un membre</h2>
+        </div>
+    </div>
 @stop
 
 @section('content')
-	<h1>Nouvel utilisateur</h1>
+    {{ Form::open(array('route' => 'user_add', 'class' => 'form'), array()) }}
+    <div class="row">
+        <div class="col-lg-6">
+            <div class="ibox ">
+                <div class="ibox-title">
+                    <h5>Etat civil</h5>
+                </div>
+                <div class="ibox-content">
+                    <div class="row">
+                        <div class="col-lg-6">
+                            {{ Form::label('firstname', 'Prénom') }}
+                            <p>{{ Form::text('firstname', null, array('class' => 'form-control')) }}</p>
+                        </div>
+                        <div class="col-lg-6">
+                            {{ Form::label('lastname', 'Nom') }}
+                            <p>{{ Form::text('lastname', null, array('class' => 'form-control')) }}</p>
+                        </div>
 
-	{{ Form::open(array('route' => 'user_add', 'class' => 'form'), array()) }}
-        <ul id="tabUserAdd" class="nav nav-tabs" role="tablist">
-            <li role="presentation" class="active">
-                <a href="#connexion" aria-controls="connexion" role="tab" data-toggle="tab">Informations de connexion</a>
-            </li>
-            <li role="presentation">
-                <a href="#bio" aria-controls="bio" role="tab" data-toggle="tab">Biographie</a>
-            </li>
-            <li role="presentation">
-                <a href="#socials" aria-controls="socials" role="tab" data-toggle="tab">Réseaux sociaux</a>
-            </li>
-        </ul>
+                    </div>
 
-        <div class="tab-content">
-            <div role="tabpanel" class="tab-pane active" id="connexion">
-                {{ Form::label('email', 'Adresse email') }}
-                <p>{{ Form::email('email', null, array('class' => 'form-control')) }}</p>
-                {{ Form::label('firstname', 'Prénom') }}
-                <p>{{ Form::text('firstname', null, array('class' => 'form-control')) }}</p>
-                {{ Form::label('lastname', 'Nom de famille') }}
-                <p>{{ Form::text('lastname', null, array('class' => 'form-control')) }}</p>
-                {{ Form::label('password', 'Mot de passe') }}
-                <p>{{ Form::password('password', array('class' => 'form-control')) }}</p>
-                <div class="checkbox">
-                    {{ Form::label('is_member', 'Il est membre') }}
-                    {{ Form::checkbox('is_member', true) }}
+
                 </div>
             </div>
-            <div role="tabpanel" class="tab-pane" id="bio">
-                {{ Form::label('bio_short', 'Courte bio') }}
-                <p>{{Form::textarea('bio_short', null, array('class' => 'form-control')) }}</p>
-                {{ Form::label('bio_long', 'Longue bio') }}
-                <p>{{Form::textarea('bio_long', null, array('class' => 'form-control')) }}</p>
+
+            <div class="ibox ">
+                <div class="ibox-title">
+                    <h5>Contact</h5>
+                </div>
+
+                <div class="ibox-content">
+                    <div class="row">
+                        <div class="col-lg-6">
+                            {{ Form::label('phone', 'Téléphone') }}
+                            <p>{{ Form::text('phone', null, array('class' => 'form-control')) }}</p>
+                        </div>
+                        <div class="col-lg-6">
+                            {{ Form::label('email', 'Adresse email') }}
+                            <p>{{ Form::email('email', null, array('class' => 'form-control')) }}</p>
+                        </div>
+                        <div class="col-lg-6">
+                            {{ Form::label('website', 'Site internet') }}
+                            <p>{{ Form::text('website', null, array('class' => 'form-control')) }}</p>
+                            <span class="help-block m-b-none">Exemple: http://www.coworking-toulouse.com</span>
+                        </div>
+                        <div class="col-lg-6">
+                            {{ Form::label('twitter', 'Twitter') }}
+                            <p>{{ Form::text('twitter', null, array('class' => 'form-control')) }}</p>
+                            <span class="help-block m-b-none">Exemple: etincelle_tls</span>
+                        </div>
+                    </div>
+
+
+                </div>
             </div>
-            <div role="tabpanel" class="tab-pane" id="socials">
-                {{ Form::label('twitter', 'Twitter') }}
-                <p>{{ Form::text('twitter', null, array('class' => 'form-control')) }}</p>
-                {{ Form::label('website', 'Site internet') }}
-                <p>{{ Form::text('website', null, array('class' => 'form-control')) }}</p>
-                {{ Form::label('phone', 'Téléphone') }}
-                <p>{{ Form::text('phone', null, array('class' => 'form-control')) }}</p>
+
+            <div class="ibox ">
+                <div class="ibox-title">
+                    <h5>Configuration</h5>
+                </div>
+                <div class="ibox-content">
+
+                    <div class="row">
+                        <div class="col-lg-6">
+                            {{ Form::label('password', 'Mot de passe') }}
+                            <p>{{ Form::password('password', array('class' => 'form-control')) }}</p>
+                        </div>
+                        <div class="col-lg-6">
+                            {{ Form::checkbox('is_member', true) }}
+                            {{ Form::label('is_member', 'Membre') }}
+                        </div>
+                    </div>
+                </div>
             </div>
         </div>
 
-        <div align="center">
-            {{ Form::submit('Ajouter cet utilisateur', array('class' => 'btn btn-success')) }}
+        <div class="col-lg-6">
+            <div class="ibox ">
+                <div class="ibox-title">
+                    <h5>Présentation</h5>
+                </div>
+                <div class="ibox-content">
+                    {{ Form::label('bio_short', 'Métier') }}
+                    <p>{{Form::text('bio_short', null, array('class' => 'form-control')) }}</p>
+                    {{ Form::label('bio_long', 'Présentation') }}
+                    <p>{{Form::textarea('bio_long', null, array('class' => 'form-control')) }}</p>
+                </div>
+            </div>
         </div>
-	{{ Form::close() }}
+
+
+
+
+    </div>
+    <div class="row">
+        <div class="hr-line-dashed"></div>
+        <div class="form-group">
+            {{ Form::submit('Enregistrer', array('class' => 'btn btn-success')) }}
+            <a href="{{ URL::route('user_list') }}" class="btn btn-white">Annuler</a>
+        </div>
+
+    </div>
+    {{ Form::close() }}
 @stop

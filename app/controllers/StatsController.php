@@ -91,4 +91,12 @@ class StatsController extends BaseController
         return View::make('stats.ca', array('charts' => $charts));
     }
 
+    public function subscriptions(){
+        $datas = array();
+        foreach(Subscription::TotalPerMonth()->get() as $item){
+            $datas[$item->period] = $item->total;
+        }
+        return View::make('stats.subscriptions', array('datas' => $datas));
+    }
+
 }

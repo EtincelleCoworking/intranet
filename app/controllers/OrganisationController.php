@@ -106,12 +106,12 @@ class OrganisationController extends BaseController
 				$add->organisation_id = $organisation->id;
 
 				if ($add->save()) {
-					return Redirect::route('organisation_modify', $organisation->id)->with('mSuccess', 'Cet utilisateur a bien été ajouté dans l\'organisme');
+					return Redirect::route('organisation_modify', $organisation->id)->with('mSuccess', 'Cet utilisateur a bien été associé à la société');
 				} else {
-					return Redirect::route('organisation_modify', $organisation->id)->with('mError', 'Il y a des erreurs')->withErrors('Impossible d\'ajouter cet utilisateur dans l\'organisme')->withInput();
+					return Redirect::route('organisation_modify', $organisation->id)->with('mError', 'Il y a des erreurs')->withErrors('Impossible d\'associer cet utilisateur à cette société')->withInput();
 				}
 			} else {
-				return Redirect::route('organisation_modify', $organisation->id)->with('mError', 'Il y a des erreurs')->withErrors('Cet utilisateur est déjà présent dans l\'organisme')->withInput();
+				return Redirect::route('organisation_modify', $organisation->id)->with('mError', 'Il y a des erreurs')->withErrors('Cet utilisateur est déjà associé à cette société')->withInput();
 			}
 		} else {
 			return Redirect::route('organisation_modify', $organisation->id)->with('mError', 'Il y a des erreurs')->withErrors('Merci de renseigner un utilisateur')->withInput();
@@ -130,12 +130,12 @@ class OrganisationController extends BaseController
                 $add->organisation_id = Input::get('organisation_id');
 
                 if ($add->save()) {
-                    return Redirect::route('user_modify', $id)->with('mSuccess', 'Cet utilisateur a bien été ajouté dans l\'organisme');
+                    return Redirect::route('user_modify', $id)->with('mSuccess', 'Cet utilisateur a bien été associé à la osciété');
                 } else {
-                    return Redirect::route('user_modify', $id)->with('mError', 'Il y a des erreurs')->withErrors('Impossible d\'ajouter cet utilisateur dans l\'organisme')->withInput();
+                    return Redirect::route('user_modify', $id)->with('mError', 'Il y a des erreurs')->withErrors('Impossible d\'associer cet utilisateur à cette société')->withInput();
                 }
             } else {
-                return Redirect::route('user_modify', $id)->with('mError', 'Il y a des erreurs')->withErrors('Cet utilisateur est déjà présent dans l\'organisme')->withInput();
+                return Redirect::route('user_modify', $id)->with('mError', 'Il y a des erreurs')->withErrors('Cet utilisateur est déjà associé à cette société')->withInput();
             }
         } else {
             return Redirect::route('user_modify', $id)->with('mError', 'Il y a des erreurs')->withErrors('Merci de renseigner un utilisateur')->withInput();
@@ -148,7 +148,7 @@ class OrganisationController extends BaseController
 	public function delete_user($organisation, $id)
 	{
 		if (OrganisationUser::where('organisation_id', $organisation)->where('user_id', $id)->delete()) {
-			return Redirect::route('organisation_modify', $organisation)->with('mSuccess', 'Cet utilisateur a bien été retiré de cet organisme');
+			return Redirect::route('organisation_modify', $organisation)->with('mSuccess', 'Cet utilisateur a bien été retiré de cette société');
 		} else {
 			return Redirect::route('organisation_modify', $organisation)->with('mError', 'Impossible de retirer cet utilisateur');
 		}
