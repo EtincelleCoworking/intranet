@@ -14,7 +14,7 @@
 @stop
 
 @section('content')
-    {{ HTML::script('js/plugins/chartjs/Chart.min.js') }}
+    {{ HTML::script('js/plugins/chartJs/Chart.min.js') }}
 
     @if(count($charts) == 1)
         {{--*/ $index = 0 /*--}}
