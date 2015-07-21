@@ -10,11 +10,9 @@
             <h2>Consommations</h2>
         </div>
         <div class="col-sm-8">
-            @if (Auth::user()->role == 'superadmin')
-                <div class="title-action">
-                    <a href="{{ URL::route('pasttime_add') }}" class="btn btn-default">Ajouter</a>
-                </div>
-            @endif
+            <div class="title-action">
+                <a href="{{ URL::route('pasttime_add') }}" class="btn btn-success">Ajouter</a>
+            </div>
         </div>
     </div>
 @stop
@@ -22,16 +20,15 @@
 @section('content')
     <div class="row">
         <div class="col-lg-12">
-            <div class="ibox collapsed">
+            <div class="ibox">
                 <div class="ibox-title">
-                    <h5>Filtre
-                    </h5>
+                    <h5>Filtre</h5>
 
-                    <div class="ibox-tools">
-                        <a class="collapse-link">
-                            <i class="fa fa-chevron-up"></i>
-                        </a>
-                    </div>
+                    {{--<div class="ibox-tools">--}}
+                        {{--<a class="collapse-link">--}}
+                            {{--<i class="fa fa-chevron-up"></i>--}}
+                        {{--</a>--}}
+                    {{--</div>--}}
                 </div>
                 <div class="ibox-content">
                     <div class="row">
@@ -48,7 +45,8 @@
                         <div class="col-md-2 input-group-sm">{{ Form::text('filtre_start', Session::get('filtre_pasttime.start') ? date('d/m/Y', strtotime(Session::get('filtre_pasttime.start'))) : date('01/m/Y'), array('class' => 'form-control datePicker')) }}</div>
                         <div class="col-md-2 input-group-sm">{{ Form::text('filtre_end', ((Session::get('filtre_pasttime.end')) ? date('d/m/Y', strtotime(Session::get('filtre_pasttime.end'))) : date('t', date('m')).'/'.date('m/Y')), array('class' => 'form-control datePicker')) }}</div>
                         <div class="col-md-2 input-group-sm">
-                            {{ Form::checkbox('filtre_toinvoice', true, Session::has('filtre_pasttime.toinvoice') ? Session::get('filtre_pasttime.toinvoice') : false) }} A facturer
+                            {{ Form::checkbox('filtre_toinvoice', true, Session::has('filtre_pasttime.toinvoice') ? Session::get('filtre_pasttime.toinvoice') : false) }}
+                            A facturer
 
                         </div>
                         <div class="col-md-2">{{ Form::submit('Filtrer', array('class' => 'btn btn-sm btn-default')) }}</div>
@@ -71,7 +69,8 @@
                 <div class="col-lg-12">
                     <div class="ibox">
                         <div class="ibox-title">
-                            <h5>En attente de facturation {{ number_format($pending_invoice_amount, 0, ',', '.') }}€ HT</h5>
+                            <h5>En attente de facturation {{ number_format($pending_invoice_amount, 0, ',', '.') }}€
+                                HT</h5>
                         </div>
                         <div class="ibox-content">
                             <div class="row">
@@ -137,7 +136,8 @@
                                         <td>{{ date('d/m/Y', strtotime($time->date_past)) }}</td>
                                         @if (Auth::user()->role == 'superadmin')
                                             <td>{{ $time->user->fullname }}
-                                                <a href="?filtre_submitted=1&filtre_user_id={{ $time->user->id }}"><i class="fa fa-filter"></i></a>
+                                                <a href="?filtre_submitted=1&filtre_user_id={{ $time->user->id }}"><i
+                                                            class="fa fa-filter"></i></a>
                                             </td>
                                         @endif
                                         <td>{{ $time->ressource->name }}</td>
@@ -146,16 +146,18 @@
                                         <td>
                                             {{ $time->past_time }}
                                             @if ($time->comment)
-                                                <span data-toggle="tooltip" data-placement="left" title="{{ $time->comment }}"><i
+                                                <span data-toggle="tooltip" data-placement="left"
+                                                      title="{{ $time->comment }}"><i
                                                             class="fa fa-question-circle"></i></span>
                                             @endif
                                         </td>
                                         <td>
                                             @if ($time->invoice_id)
                                                 @if ((Auth::user()->role == 'superadmin'))
-                                                    <a target="_blank" href="{{ URL::route('invoice_print_pdf', $time->invoice->id) }}">{{ $time->invoice->ident }}</a>
+                                                    <a target="_blank"
+                                                       href="{{ URL::route('invoice_print_pdf', $time->invoice->id) }}">{{ $time->invoice->ident }}</a>
                                                 @else
-                                                {{ $time->invoice->ident }}
+                                                    {{ $time->invoice->ident }}
                                                 @endif
                                             @else
                                                 -

@@ -10,11 +10,9 @@
             <h2>Liste des ressources</h2>
         </div>
         <div class="col-sm-8">
-            @if (Auth::user()->role == 'superadmin')
                 <div class="title-action">
                     <a href="{{ URL::route('ressource_add') }}" class="btn btn-default">Ajouter une ressource</a>
                 </div>
-            @endif
         </div>
     </div>
 @stop
