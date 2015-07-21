@@ -11,9 +11,9 @@
         </div>
         <div class="col-sm-8">
             @if (Auth::user()->role == 'superadmin')
-            <div class="title-action">
-                <a href="{{ URL::route('user_add') }}" class="btn btn-default">Ajouter un membre</a>
-            </div>
+                <div class="title-action">
+                    <a href="{{ URL::route('user_add') }}" class="btn btn-default">Ajouter un membre</a>
+                </div>
             @endif
         </div>
     </div>
@@ -55,6 +55,9 @@
                                 </a>
                             @endif
                         </div>
+                        @if (Auth::user()->role == 'superadmin')
+                            <a href="{{URL::route('user_modify', $user->id)}}" class="btn btn-default">Modifier</a>
+                        @endif
                     </div>
                 </div>
             </div>
