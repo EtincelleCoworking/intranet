@@ -10,11 +10,11 @@
             <h2>Liste des étiquettes</h2>
         </div>
         <div class="col-sm-8">
-            @if (Auth::user()->role == 'superadmin')
+
                 <div class="title-action">
                     <a href="{{ URL::route('tag_add') }}" class="btn btn-default">Ajouter une étiquette</a>
                 </div>
-            @endif
+
         </div>
     </div>
 @stop

@@ -1,13 +1,13 @@
 @extends('layouts.master')
 
 @section('meta_title')
-    Modifier une consommation
+    Modifier une utilisation
 @stop
 
 @section('breadcrumb')
     <div class="row wrapper border-bottom white-bg page-heading">
         <div class="col-sm-4">
-            <h2>Modifier une consommation</h2>
+            <h2>Modifier une utilisation</h2>
         </div>
 
     </div>
