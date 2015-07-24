@@ -30,16 +30,16 @@ class PastTimeController extends BaseController
 //            Session::put('filtre_pasttime.year', Input::get('filtre_year'));
 //        }
         if (Input::has('filtre_submitted')) {
-        if (Input::has('filtre_user_id')) {
-            Session::put('filtre_pasttime.user_id', Input::get('filtre_user_id'));
-        }
-        if (Input::has('filtre_start')) {
-            $date_start_explode = explode('/', Input::get('filtre_start'));
-            Session::put('filtre_pasttime.start', $date_start_explode[2] . '-' . $date_start_explode[1] . '-' . $date_start_explode[0]);
-            if (!Input::has('filtre_user_id')) {
-                Session::forget('filtre_pasttime.user_id');
+            if (Input::has('filtre_user_id')) {
+                Session::put('filtre_pasttime.user_id', Input::get('filtre_user_id'));
             }
-        }
+            if (Input::has('filtre_start')) {
+                $date_start_explode = explode('/', Input::get('filtre_start'));
+                Session::put('filtre_pasttime.start', $date_start_explode[2] . '-' . $date_start_explode[1] . '-' . $date_start_explode[0]);
+                if (!Input::has('filtre_user_id')) {
+                    Session::forget('filtre_pasttime.user_id');
+                }
+            }
             if (Input::has('filtre_end')) {
                 $date_end_explode = explode('/', Input::get('filtre_end'));
                 Session::put('filtre_pasttime.end', $date_end_explode[2] . '-' . $date_end_explode[1] . '-' . $date_end_explode[0]);
@@ -70,7 +70,7 @@ class PastTimeController extends BaseController
 
         $recapFilter = false;
         $q = PastTime::whereBetween('date_past', array($date_filtre_start, $date_filtre_end));
-        if(Session::get('filtre_pasttime.filtre_toinvoice')){
+        if (Session::get('filtre_pasttime.filtre_toinvoice')) {
             $q->where('invoice_id', 0);
         }
         if (Auth::user()->role == 'member') {
@@ -84,7 +84,7 @@ class PastTimeController extends BaseController
         }
         $recap = PastTime::Recap($recapFilter, $date_filtre_start, $date_filtre_end);
         $pending_invoice_amount = 0;
-        foreach($recap as $recap_item){
+        foreach ($recap as $recap_item) {
             $pending_invoice_amount += $recap_item->amount;
         }
 
@@ -115,6 +115,7 @@ class PastTimeController extends BaseController
             }
             if (Auth::user()->role == 'superadmin') {
                 $time->user_id = Input::get('user_id');
+                $time->invoice_id = Input::get('invoice_id');
             } else {
                 $time->user_id = Auth::user()->id;
             }

@@ -79,9 +79,9 @@ class Organisation extends Eloquent
         $ids = OrganisationUser::where('user_id', $user)->lists('organisation_id');
         $selectVals[''] = $title;
         if ($ids) {
-            $selectVals += $this->whereNotIn('id', $ids)->lists('name', 'id');
+            $selectVals += $this->whereNotIn('id', $ids)->orderBy('name', 'asc')->lists('name', 'id');
         } else {
-            $selectVals += $this->lists('name', 'id');
+            $selectVals += $this->orderBy('name', 'asc')->lists('name', 'id');
         }
         return $selectVals;
     }

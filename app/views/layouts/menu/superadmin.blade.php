@@ -42,8 +42,10 @@
         </ul>
     </li>
     <li{{ Request::is('pasttime*') ? ' class="active"' : '' }}>
-        <a href="{{ URL::route('pasttime_list') }}"><i class="fa fa-ticket"></i> <span
-                    class="nav-label">Consommations</span></a>
+        <a href="{{ URL::route('pasttime_list') }}">
+            <i class="fa fa-clock-o"></i>
+            <span class="nav-label">Temps passé</span>
+        </a>
     </li>
 
     {{--<li{{ Request::is('booking*') ? ' class="active"' : '' }}>--}}

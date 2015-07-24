@@ -130,7 +130,9 @@ class UserController extends BaseController
      */
     public function liste()
     {
-        $users = User::paginate(15);
+        $users = User::where('is_member', true)
+            ->orderBy('lastname', 'asc')
+            ->get();
 
         return View::make('user.liste', array('users' => $users));
     }
@@ -367,15 +369,6 @@ class UserController extends BaseController
         }
     }
 
-    /**
-     * List of users
-     */
-    public function directory()
-    {
-        $users = User::paginate(15);
-
-        return View::make('user.directory', array('users' => $users));
-    }
 
     /**
      * Get organisations list of an user (JSON)

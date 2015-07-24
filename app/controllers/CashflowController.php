@@ -21,7 +21,7 @@ class CashflowController extends BaseController
 
         $received = array();
         $received_rates = array();
-        foreach (InvoiceItem::TotalTVA() as $item) {
+        foreach (InvoiceItem::TotalTVA()->get() as $item) {
             $received[$item->days][$item->value] = $item->total;
             $received_rates[$item->value] = true;
             if (empty($sum[$item->days])) {

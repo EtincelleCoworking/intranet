@@ -80,6 +80,7 @@
                                     <th>Client</th>
                                     <th>Echéance</th>
                                     <th>Montant HT</th>
+                                    <th>Montant TTC</th>
                                     <th>Actions</th>
                                 </tr>
                                 </thead>
@@ -127,7 +128,10 @@
                                             @endif
                                         </td>
                                         <td style="text-align:right">
-                                           {{ Invoice::TotalInvoice($invoice->items) }}€
+                                            {{ Invoice::TotalInvoice($invoice->items) }}€
+                                        </td>
+                                        <td style="text-align:right">
+                                            {{ Invoice::TotalInvoiceWithTaxes($invoice->items) }}€
                                         </td>
                                         <td>
 
@@ -232,16 +236,6 @@
             });
 
             $('.datePicker').datepicker();
-            $('.yearDropper').dateDropper({
-                animate_current: false,
-                format: "Y",
-                placeholder: "{{ ((Session::get('filtre_pasttime.year'))?:date('Y')) }}"
-            });
-            $('.monthDropper').dateDropper({
-                animate_current: false,
-                format: "m",
-                placeholder: "{{ ((Session::get('filtre_pasttime.month'))?:date('m')) }}"
-            });
             $('#filter-client').select2();
         });
     </script>

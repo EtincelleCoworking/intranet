@@ -11,7 +11,7 @@
         </div>
         <div class="col-sm-8">
             <div class="title-action">
-                <a href="{{ URL::route('pasttime_add') }}" class="btn btn-success">Ajouter</a>
+                <a href="{{ URL::route('pasttime_add') }}" class="btn btn-primary">Ajouter</a>
             </div>
         </div>
     </div>
@@ -49,7 +49,7 @@
                             A facturer
 
                         </div>
-                        <div class="col-md-2">{{ Form::submit('Filtrer', array('class' => 'btn btn-sm btn-default')) }}</div>
+                        <div class="col-md-2">{{ Form::submit('Filtrer', array('class' => 'btn btn-sm btn-primary')) }}</div>
                         {{ Form::close() }}
                     </div>
                 </div>
@@ -165,10 +165,10 @@
                                         </td>
                                         <td>
                                             <a href="{{ URL::route('pasttime_modify', $time->id) }}"
-                                               class="btn btn-xs btn-default btn-outline">Modifier</a>
+                                               class="btn btn-xs btn-default">Modifier</a>
                                             @if (Auth::user()->role == 'superadmin')<a
                                                     href="{{ URL::route('pasttime_delete', $time->id) }}"
-                                                    class="btn btn-xs btn-danger btn-outline" data-method="delete"
+                                                    class="btn btn-xs btn-danger" data-method="delete"
                                                     data-confirm="Etes-vous certain de vouloir supprimer cette ligne ?"
                                                     rel="nofollow">Supprimer</a>@endif
                                         </td>
@@ -176,7 +176,7 @@
                                 @endforeach
                                 </tbody>
                             </table>
-                            {{ $times->links() }}
+                            {{--{{ $times->links() }}--}}
                         </div>
                     </div>
                 </div>
@@ -189,16 +189,6 @@
     <script type="text/javascript">
         $().ready(function () {
             $('.datePicker').datepicker();
-            $('.yearDropper').dateDropper({
-                animate_current: false,
-                format: "Y",
-                placeholder: "{{ ((Session::get('filtre_pasttime.year'))?:date('Y')) }}"
-            });
-            $('.monthDropper').dateDropper({
-                animate_current: false,
-                format: "m",
-                placeholder: "{{ ((Session::get('filtre_pasttime.month'))?:date('m')) }}"
-            });
             $('#filter-client').select2();
         });
     </script>
