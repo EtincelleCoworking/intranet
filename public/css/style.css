@@ -3806,6 +3806,12 @@ table.table-mail tr td {
 .text-muted a{
   color: #aaaaaa;
 }
+.text-muted a.btn{
+  color: #ffffff;
+}
+.text-muted a.btn.btn-default.btn-outline{
+  color: #aaaaaa;
+}
 .simple_tag {
   background-color: #f3f3f4;
   border: 1px solid #e7eaec;

@@ -12,7 +12,7 @@
         <div class="col-sm-8">
             @if (Auth::user()->role == 'superadmin')
                 <div class="title-action">
-                    <a href="{{ URL::route('user_add') }}" class="btn btn-default">Ajouter un membre</a>
+                    <a href="{{ URL::route('user_add') }}" class="btn btn-success">Ajouter un membre</a>
                 </div>
             @endif
         </div>
@@ -50,7 +50,7 @@
                             @endif
 
                             @if($user->website)
-                                <a href="https://twitter.com/{{ $user->website }}" class="btn btn-xs btn-white">
+                                <a href="{{ $user->website }}" class="btn btn-xs btn-white">
                                     <i class="fa fa-link" title="{{ $user->website }}"></i> {{ $user->website }}
                                 </a>
                             @endif
@@ -65,5 +65,4 @@
         @endforeach
     </div>
 
-    {{ $users->links() }}
 @stop

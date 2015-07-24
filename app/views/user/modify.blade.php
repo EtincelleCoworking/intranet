@@ -1,171 +1,236 @@
 @extends('layouts.master')
 
 @section('meta_title')
-	Modification de {{ $user->fullname }}
+    Modification de {{ $user->fullname }}
+@stop
+
+@section('breadcrumb')
+    <div class="row wrapper border-bottom white-bg page-heading">
+        <div class="col-sm-12">
+            <h2>Modification de {{ $user->fullname }}</h2>
+        </div>
+    </div>
 @stop
 
 @section('content')
-	<h1>Modifier un utilisateur</h1>
+    {{ Form::model($user, array('route' => array('user_modify', $user->id))) }}
+    <div class="row">
+        <div class="col-lg-6">
+            <div class="ibox ">
+                <div class="ibox-title">
+                    <h5>Etat civil</h5>
+                </div>
+                <div class="ibox-content">
+                    <div class="row">
+                        <div class="col-lg-6">
+                            {{ Form::label('firstname', 'Prénom') }}
+                            <p>{{ Form::text('firstname', null, array('class' => 'form-control')) }}</p>
+                        </div>
+                        <div class="col-lg-6">
+                            {{ Form::label('lastname', 'Nom') }}
+                            <p>{{ Form::text('lastname', null, array('class' => 'form-control')) }}</p>
+                        </div>
 
-	{{ Form::model($user, array('route' => array('user_modify', $user->id))) }}
-        <ul id="tabUserAdd" class="nav nav-tabs" role="tablist">
-            <li role="presentation" class="active">
-                <a href="#connexion" aria-controls="connexion" role="tab" data-toggle="tab">Informations de connexion</a>
-            </li>
-            <li role="presentation">
-                <a href="#bio" aria-controls="bio" role="tab" data-toggle="tab">Biographie</a>
-            </li>
-            <li role="presentation">
-                <a href="#socials" aria-controls="socials" role="tab" data-toggle="tab">Réseaux sociaux</a>
-            </li>
-            <li role="presentation">
-                <a href="#competence" aria-controls="competence" role="tab" data-toggle="tab">Compétences</a>
-            </li>
-        </ul>
+                    </div>
 
-        <div class="tab-content">
-            <div role="tabpanel" class="tab-pane active" id="connexion">
-                {{ Form::label('email', 'Adresse email') }}
-                <p>{{ Form::email('email', null, array('class' => 'form-control')) }}</p>
-                {{ Form::label('firstname', 'Prénom') }}
-                <p>{{ Form::text('firstname', null, array('class' => 'form-control')) }}</p>
-                {{ Form::label('lastname', 'Nom de famille') }}
-                <p>{{ Form::text('lastname', null, array('class' => 'form-control')) }}</p>
-                {{ Form::label('password', 'Mot de passe') }}
-                <p>{{ Form::password('password', array('class' => 'form-control')) }}</p>
-                {{ Form::label('role', 'Rôle (droits)') }}
-                <p>{{ Form::select('role', User::SelectRoles(), null, array('class' => 'form-control')) }}</p>
-                <div class="checkbox">
-                    {{ Form::label('is_member', 'Il est membre') }}
-                    {{ Form::checkbox('is_member', true) }}
+
                 </div>
             </div>
-            <div role="tabpanel" class="tab-pane" id="bio">
-                {{ Form::label('bio_short', 'Courte bio') }}
-                <p>{{Form::textarea('bio_short', null, array('class' => 'form-control')) }}</p>
-                {{ Form::label('bio_long', 'Longue bio') }}
-                <p>{{Form::textarea('bio_long', null, array('class' => 'form-control')) }}</p>
+
+            <div class="ibox ">
+                <div class="ibox-title">
+                    <h5>Contact</h5>
+                </div>
+
+                <div class="ibox-content">
+                    <div class="row">
+                        <div class="col-lg-6">
+                            {{ Form::label('phone', 'Téléphone') }}
+                            <p>{{ Form::text('phone', null, array('class' => 'form-control')) }}</p>
+                        </div>
+                        <div class="col-lg-6">
+                            {{ Form::label('email', 'Adresse email') }}
+                            <p>{{ Form::email('email', null, array('class' => 'form-control')) }}</p>
+                        </div>
+                        <div class="col-lg-6">
+                            {{ Form::label('website', 'Site internet') }}
+                            <p>{{ Form::text('website', null, array('class' => 'form-control')) }}</p>
+                            <span class="help-block m-b-none">Exemple: http://www.coworking-toulouse.com</span>
+                        </div>
+                        <div class="col-lg-6">
+                            {{ Form::label('twitter', 'Twitter') }}
+                            <p>{{ Form::text('twitter', null, array('class' => 'form-control')) }}</p>
+                            <span class="help-block m-b-none">Exemple: etincelle_tls</span>
+                        </div>
+                    </div>
+
+
+                </div>
             </div>
-            <div role="tabpanel" class="tab-pane" id="socials">
-                {{ Form::label('twitter', 'Twitter') }}
-                <p>{{ Form::text('twitter', null, array('class' => 'form-control')) }}</p>
-                {{ Form::label('website', 'Site internet') }}
-                <p>{{ Form::text('website', null, array('class' => 'form-control')) }}</p>
-                {{ Form::label('phone', 'Téléphone') }}
-                <p>{{ Form::text('phone', null, array('class' => 'form-control')) }}</p>
-            </div>
-            <div role="tabpanel" class="tab-pane" id="competence">
-							<div class="row" id="skills">
-							@if(count($skills) != 0)
-							@foreach($skills as $skill)
-									<input type="hidden" name="modif[{{ $skill->id }}]" value="{{ $skill->id }}"/>
-									<div class="col-md-6" id="skill">
-											<div class="row">
-													<div class="col-md-8">
-															{{ Form::label('nameExist['.$skill->id.']', 'Compétence') }}
-															<p>{{ Form::text('nameExist['.$skill->id.']', $skill->name, array('class' => 'form-control')) }}</p>
-													</div>
-													<div class="col-md-2">
-															{{ Form::label('valueExist['.$skill->id.']', 'Valeur') }}
-															<p>{{ Form::number('valueExist['.$skill->id.']', $skill->value, array('class' => 'form-control', 'min' => 0, 'max' => 100)) }}</p>
-													</div>
-													<div class="col-md-2">
-															{{ Form::label('deleteExist['.$skill->id.']', 'Supprimer') }}
-															<p>{{ Form::checkbox('deleteExist['.$skill->id.']') }}</p>
-													</div>
-											</div>
-									</div>
-							@endforeach
-							@else
-									<div class="col-md-6" id="skill">
-											<div class="row">
-													<div class="col-md-9">
-															<label>Compétence</label>
-															<p><input class="form-control" type="text" value="" name="skill_name[0]" /></p>
-													</div>
-													<div class="col-md-3">
-															<label>Valeur</label>
-															<p><input class="form-control" type="number" min="0" max="100" value="" name="skill_value[0]" /></p>
-													</div>
-											</div>
-									</div>
-							@endif
-							</div>
-							<div align="left">
-									<button class="btn btn-info btn-xs col-lg-1" id="add_skill">+</button>
-							</div>
-							<br />
+
+            <div class="ibox ">
+                <div class="ibox-title">
+                    <h5>Configuration</h5>
+                </div>
+                <div class="ibox-content">
+
+                    <div class="row">
+                        <div class="col-lg-6">
+                            {{ Form::label('password', 'Mot de passe') }}
+                            <p>{{ Form::password('password', array('class' => 'form-control')) }}</p>
+                        </div>
+                        <div class="col-lg-6">
+                            {{ Form::checkbox('is_member', true) }}
+                            {{ Form::label('is_member', 'Membre') }}
+                        </div>
+                    </div>
+                </div>
             </div>
         </div>
 
-        <div align="center">
-            {{ Form::submit('Modifier cet utilisateur', array('class' => 'btn btn-success')) }}
+        <div class="col-lg-6">
+            <div class="ibox ">
+                <div class="ibox-title">
+                    <h5>Présentation</h5>
+                </div>
+                <div class="ibox-content">
+                    {{ Form::label('bio_short', 'Métier') }}
+                    <p>{{Form::text('bio_short', null, array('class' => 'form-control')) }}</p>
+                    {{ Form::label('bio_long', 'Présentation') }}
+                    <p>{{Form::textarea('bio_long', null, array('class' => 'form-control')) }}</p>
+                </div>
+            </div>
         </div>
-	{{ Form::close() }}
 
-	<h2>Liste de ses organisations</h2>
+
+    </div>
+    <div class="row">
+        <div class="hr-line-dashed"></div>
+        <div class="form-group">
+            {{ Form::submit('Enregistrer', array('class' => 'btn btn-success')) }}
+            <a href="{{ URL::route('user_list') }}" class="btn btn-white">Annuler</a>
+        </div>
+
+    </div>
+    {{ Form::close() }}
+
     <div class="row">
         <div class="col-md-6">
-            <table class="table table-striped table-hover">
-                <thead>
-                    <tr>
-                        <th>#</th>
-                        <th>Nom</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    @foreach ($user->organisations as $orga)
-                    <tr>
-                        <td>{{ $orga->id }}</td>
-                        <td><a href="{{ URL::route('organisation_modify', $orga->id) }}">{{ $orga->name }}</a></td>
-                    </tr>
-                    @endforeach
-                </tbody>
-            </table>
-        </div>
-        <div class="col-md-6">
-            {{ Form::open(array('route' => array('organisation_user_add', $user->id))) }}
-                <div class="panel panel-default">
-                    <div class="panel-heading">
-                        <h3 class="panel-title">Ajouter dans une organisation</h3>
+            <div class="ibox ">
+                <div class="ibox-title">
+                    <h5>Organisations</h5>
+                </div>
+
+                <div class="ibox-content">
+                    <div class="row">
+                        {{ Form::open(array('route' => array('organisation_user_add', $user->id))) }}
+                        <table class="table table-striped table-hover">
+                            <thead>
+                            <tr>
+                                <th>Nom</th>
+                                <th>Actions</th>
+                            </tr>
+                            </thead>
+                            <tbody>
+                            @foreach ($user->organisations as $orga)
+                                <tr>
+                                    <td>{{ $orga->name }}</td>
+                                    <td>
+                                        <a class="btn btn-xs btn-default"
+                                           href="{{ URL::route('organisation_modify', $orga->id) }}">Modifier</a>
+                                        <a class="btn btn-xs btn-danger"
+                                           href="{{ URL::route('organisation_delete_user', $orga->id, $user->id) }}">Retirer</a>
+                                    </td>
+                                </tr>
+                            @endforeach
+                            </tbody>
+                            <tfoot>
+                            <tr>
+                                <td> {{ Form::select('organisation_id', Organisation::SelectNotInOrganisation($user->id, 'Sélectionnez une organisation'), null, array('class' => 'form-control')) }}</td>
+                                <td>{{ Form::submit('Ajouter', array('class' => 'btn btn-info')) }}</td>
+                            </tr>
+                            </tfoot>
+                        </table>
+
+
                     </div>
-                    <div class="panel-body">
-                        <p>{{ Form::select('organisation_id', Organisation::SelectNotInOrganisation($user->id, 'Sélectionnez une organisation'), null, array('class' => 'form-control')) }}</p>
-                        <p>{{ Form::submit('Ajouter dans cette organisation', array('class' => 'btn btn-info')) }}</p>
+                    {{ Form::close() }}
+                </div>
+
+
+            </div>
+        </div>
+
+        <div class="col-md-6">
+            <div class="ibox ">
+                <div class="ibox-title">
+                    <h5>Factures</h5>
+                </div>
+
+                <div class="ibox-content">
+                    <div class="row">
+                        <table class="table table-hover">
+                            <thead>
+                            <tr>
+                                <th>#</th>
+                                <th>Créée le</th>
+                                <th>Echéance</th>
+                                <th>Montant HT</th>
+                                <th>Actions</th>
+                            </tr>
+                            </thead>
+                            <tbody>
+                            @foreach ($user->invoices as $invoice)
+                                <tr>
+                                    <td>{{ $invoice->ident }}</td>
+                                    <td>{{ $invoice->created_at->format('d/m/Y') }}</td>
+                                    <td>
+                                        @if ($invoice->date_canceled)
+                                            <span class="badge badge-danger">Refusé</span>
+                                        @else
+                                            @if (!$invoice->date_payment)
+                                                @if ($invoice->daysDeadline > 7)
+                                                    <span class="badge badge-success">
+                                                    {{ date('d/m/Y', strtotime($invoice->deadline)) }}
+                                                </span>
+                                                @elseif ($invoice->daysDeadline <= 7 && $invoice->daysDeadline != -1)
+                                                    <span class="badge badge-warning">
+                                                    {{ date('d/m/Y', strtotime($invoice->deadline)) }}
+                                                </span>
+                                                @else
+                                                    <span class="badge badge-danger">
+                                                   {{ date('d/m/Y', strtotime($invoice->deadline)) }}
+                                                </span>
+                                                @endif
+                                            @else
+                                                Payée le {{ date('d/m/Y', strtotime($invoice->date_payment)) }}
+                                            @endif
+                                        @endif
+
+
+                                    </td>
+                                    <td style="text-align:right">{{ Invoice::TotalInvoice($invoice->items) }}€</td>
+                                    <td>
+                                        <a href="{{ URL::route('invoice_modify', $invoice->id) }}"
+                                           class="btn btn-xs btn-default btn-outline">Modifier</a>
+                                        <a href="{{ URL::route('invoice_print_pdf', $invoice->id) }}"
+                                           class="btn btn-xs btn-default"
+                                           target="_blank">PDF</a>
+                                    </td>
+                                </tr>
+                            @endforeach
+                            </tbody>
+                        </table>
                     </div>
                 </div>
-            {{ Form::close() }}
+
+
+            </div>
         </div>
     </div>
 
-	<h2>Liste des factures</h2>
-	<table class="table table-striped table-hover">
-		<thead>
-			<tr>
-				<th>#</th>
-				<th>Date de création</th>
-			</tr>
-		</thead>
-		<tbody>
-			@foreach ($user->invoices as $invoice)
-			<tr>
-				<td><a href="{{ URL::route('invoice_modify', $invoice->id) }}">{{ $invoice->ident }}</a></td>
-				<td>{{ $invoice->created_at }}</td>
-			</tr>
-			@endforeach
-		</tbody>
-	</table>
+
+
 @stop
 
-@section('javascript')
-<script type="text/javascript">
-var cpt=0;
 
-$('#add_skill').click(function(e){
-    e.preventDefault();
-    cpt = cpt+1;
-    row = '<div class="col-md-6"><div class="row"><div class="col-md-9" id="count'+cpt+'"><label>Compétence</label><p><input class="form-control" type="text" value="" name="skill_name['+cpt+']" /></p></div><div class="col-md-3"><label>Valeur</label><p><input class="form-control" type="number" min="0" max="100" value="" name="skill_value['+cpt+']" /></p></div></div></div>';
-    $('#skills').append(row);
-});
-</script>
-@endsection
