@@ -176,7 +176,7 @@
                                 @endforeach
                                 </tbody>
                             </table>
-                            {{--{{ $times->links() }}--}}
+                            {{ $times->links() }}
                         </div>
                     </div>
                 </div>
