@@ -99,8 +99,11 @@ class InvoiceItem extends Eloquent
 				DB::raw('date_format(invoices.date_invoice, "%Y-%m") as period'),
 				DB::raw('SUM(amount) as total')
 			)
-			->whereNotIn('organisation_id', array(1, 2))
-			->orWhereNull('organisation_id')
+			->where(function ($query) {
+				$query->whereNotIn('organisation_id', array(1, 2))
+					->orWhereNull('organisation_id');
+			})
+
 			->groupBy('period')
 			->orderBy('period', 'DESC')
 			//->get()
@@ -121,8 +124,10 @@ class InvoiceItem extends Eloquent
 				DB::raw('date_format(invoices.date_invoice, "%Y-%m") as period'),
 				DB::raw('count(distinct(organisation_id)) as total')
 			)
-			->whereNotIn('organisation_id', array(1, 2))
-			->orWhereNull('organisation_id')
+			->where(function ($query) {
+				$query->whereNotIn('organisation_id', array(1, 2))
+					->orWhereNull('organisation_id');
+			})
 			->groupBy('period')
 			->orderBy('period', 'DESC')
 			//->get()
