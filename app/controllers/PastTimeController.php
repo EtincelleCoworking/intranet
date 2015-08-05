@@ -88,9 +88,31 @@ class PastTimeController extends BaseController
             $pending_invoice_amount += $recap_item->amount;
         }
 
-        $times = $q->orderBy('date_past', 'DESC')->paginate(15);
+        $params = array();
+        $params['times'] = $q->orderBy('date_past', 'DESC')->paginate(15);
+        $params['recap'] = $recap;
+        $params['pending_invoice_amount'] = $pending_invoice_amount;
 
-        return View::make('pasttime.liste', array('times' => $times, 'recap' => $recap, 'pending_invoice_amount' => $pending_invoice_amount));
+        $active_subscription = InvoiceItem::where('ressource_id', Ressource::TYPE_COWORKING)
+            ->where('invoices.user_id', Auth::user()->id)
+            ->where('subscription_to', '>', time())
+            ->join('invoices', function($j)
+            {
+                $j->on('invoice_id', '=', 'invoices.id')->where('type', '=', 'F');
+            })
+            ->first();
+
+        $params['active_subscription'] = $active_subscription;
+
+        if ($active_subscription) {
+            $params['subscription_used'] = PastTime::recap(Auth::user()->id, $active_subscription->subscription_from, $active_subscription->subscription_to, Ressource::TYPE_COWORKING, false)->first();
+            $params['subscription_ratio'] = round(100 * ($params['subscription_used']->hours + $params['subscription_used']->minutes / 60) / $active_subscription->subscription_hours_quota);
+        } else {
+            $params['subscription_used'] = array('hours' => 0,'minutes' =>0);
+            $params['subscription_ratio'] = 0;
+        }
+
+        return View::make('pasttime.liste', $params);
     }
 
     public function add()

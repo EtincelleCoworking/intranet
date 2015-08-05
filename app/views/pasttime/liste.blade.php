@@ -25,9 +25,9 @@
                     <h5>Filtre</h5>
 
                     {{--<div class="ibox-tools">--}}
-                        {{--<a class="collapse-link">--}}
-                            {{--<i class="fa fa-chevron-up"></i>--}}
-                        {{--</a>--}}
+                    {{--<a class="collapse-link">--}}
+                    {{--<i class="fa fa-chevron-up"></i>--}}
+                    {{--</a>--}}
                     {{--</div>--}}
                 </div>
                 <div class="ibox-content">
@@ -59,14 +59,10 @@
 
 
 
-    @if(count($times)==0)
-        <p>Aucune donnée.</p>
-    @else
-
-        @if(count($recap)>0)
+        @if(count($recap)>0 or $active_subscription)
 
             <div class="row">
-                <div class="col-lg-12">
+                <div class="col-lg-8">
                     <div class="ibox">
                         <div class="ibox-title">
                             <h5>En attente de facturation {{ number_format($pending_invoice_amount, 0, ',', '.') }}€
@@ -103,9 +99,52 @@
                         </div>
                     </div>
                 </div>
+                @if($active_subscription)
+                <div class="col-lg-4">
+                    <div class="ibox">
+                        <div class="ibox-title">
+                            <h5>Abonnement</h5>
+                        </div>
+                        <div class="ibox-content">
+                                <small>
+                                    du {{date('d/m/Y', strtotime($active_subscription->subscription_from ))}}
+                                    au {{date('d/m/Y', strtotime('-1 day', strtotime($active_subscription->subscription_to)))}}
+                                </small>
+                            <h1 class="no-margins">
+                                @if($subscription_used)
+                                @if ($subscription_used->hours)
+                                    {{ $subscription_used->hours }} h
+                                @endif
+                                @if ($subscription_used->minutes)
+                                    {{ $subscription_used->minutes }} min
+                                @endif
+                                @else
+                                    0
+                                @endif
+                                    / {{$active_subscription->subscription_hours_quota}} h
+                            </h1>
+                            <div class="stat-percent">{{$subscription_ratio}}%</div>
+                            <div class="progress progress-mini">
+                                <div style="width: {{$subscription_ratio}}%;" class="progress-bar
+                                @if($subscription_ratio > 100)
+                                        progress-bar-danger
+                                        @elseif($subscription_ratio>80)
+                                        progress-bar-warning
+
+                                        @endif
+                                "></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                    @endif
             </div>
 
         @endif
+    @if(count($times)==0)
+        <p>Aucune donnée.</p>
+    @else
+
 
 
         <div class="row">
