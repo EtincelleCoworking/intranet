@@ -11,7 +11,7 @@ class PastTime extends Eloquent
      */
     protected $table = 'past_times';
 
-    public function scopeRecap($query, $user, $start, $end)
+    public function scopeRecap($query, $user, $start, $end, $ressource_id = null, $to_invoice = true)
     {
         $query->select(
                         'ressources.name',
@@ -21,8 +21,13 @@ class PastTime extends Eloquent
                     )
                     ->join('ressources', 'ressource_id', '=', 'ressources.id')
                     ->whereBetween('date_past', array($start, $end))
-            ->where('invoice_id', '=', 0)
                     ->groupBy('ressource_id');
+        if($to_invoice){
+            $query->where('invoice_id', '=', 0);
+        }
+        if ($ressource_id) {
+            $query->whereRessourceId($ressource_id);
+        }
         if ($user) {
             $query->whereUserId($user);
         }

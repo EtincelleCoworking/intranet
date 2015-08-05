@@ -109,7 +109,7 @@ Route::group(['before' => 'superadmin'], function() {
     Route::delete('/charge/{charge}/payment/{id}/delete', array('as' => 'charge_payment_delete', 'uses' => 'ChargePaymentController@delete'))->where(array('charge' => '[0-9]+', 'id' => '[0-9]+'));
     Route::get('/charge/duplicate/{id}', array('as' => 'charge_duplicate', 'uses' => 'ChargeController@duplicate'))->where(array('id' => '[0-9]+'));
 
-    Route::delete('/pasttime/delete/{id}', array('as' => 'pasttime_delete', 'uses' => 'PastTimeController@delete'))->where(array('id' => '[0-9]+'));
+    Route::get('/pasttime/delete/{id}', array('as' => 'pasttime_delete', 'uses' => 'PastTimeController@delete'))->where(array('id' => '[0-9]+'));
 
 
     Route::get('/subscriptions', array('as' => 'subscription_list', 'uses' => 'SubscriptionController@liste'));
