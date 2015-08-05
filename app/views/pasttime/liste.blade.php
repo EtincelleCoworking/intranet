@@ -121,8 +121,13 @@
                                 @else
                                     0
                                 @endif
+                                @if($active_subscription->subscription_hours_quota > 0)
                                     / {{$active_subscription->subscription_hours_quota}} h
+                                    @else
+                                Illimité
+                                    @endif
                             </h1>
+                            @if($active_subscription->subscription_hours_quota > 0)
                             <div class="stat-percent">{{$subscription_ratio}}%</div>
                             <div class="progress progress-mini">
                                 <div style="width: {{$subscription_ratio}}%;" class="progress-bar
@@ -134,6 +139,7 @@
                                         @endif
                                 "></div>
                             </div>
+                            @endif
                         </div>
                     </div>
                 </div>
@@ -192,12 +198,8 @@
                                         </td>
                                         <td>
                                             @if ($time->invoice_id)
-                                                @if ((Auth::user()->role == 'superadmin'))
                                                     <a target="_blank"
                                                        href="{{ URL::route('invoice_print_pdf', $time->invoice->id) }}">{{ $time->invoice->ident }}</a>
-                                                @else
-                                                    {{ $time->invoice->ident }}
-                                                @endif
                                             @else
                                                 -
                                             @endif
