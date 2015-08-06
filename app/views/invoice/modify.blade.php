@@ -56,8 +56,10 @@
                         @if ($invoice->organisation)
                             {{ $invoice->organisation->name }}
                             &gt;
+@if($invoice->user)
                             {{ $invoice->user->fullname }}
-                        @endif
+                                           @endif
+     @endif
                     </h5>
                 </div>
                 <div class="ibox-content">

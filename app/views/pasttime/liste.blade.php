@@ -62,7 +62,7 @@
         @if(count($recap)>0 or $active_subscription)
 
             <div class="row">
-                <div class="col-lg-8">
+                <div class="@if($active_subscription) col-lg-8 @else  col-lg-12 @endif">
                     <div class="ibox">
                         <div class="ibox-title">
                             <h5>En attente de facturation {{ number_format($pending_invoice_amount, 0, ',', '.') }}€
@@ -79,10 +79,10 @@
                                             <div class="panel-body">
                                                 <div>
                                                     @if ($r->hours)
-                                                        {{ $r->hours.Lang::choice('messages.times_hours', $r->hours) }}
+                                                        {{ $r->hours }} h
                                                     @endif
                                                     @if ($r->minutes)
-                                                        {{ $r->minutes.Lang::choice('messages.times_minutes', $r->minutes) }}
+                                                        {{ $r->minutes }} min
                                                     @endif
                                                 </div>
                                                 <div>
@@ -101,47 +101,7 @@
                 </div>
                 @if($active_subscription)
                 <div class="col-lg-4">
-                    <div class="ibox">
-                        <div class="ibox-title">
-                            <h5>Abonnement</h5>
-                        </div>
-                        <div class="ibox-content">
-                                <small>
-                                    du {{date('d/m/Y', strtotime($active_subscription->subscription_from ))}}
-                                    au {{date('d/m/Y', strtotime('-1 day', strtotime($active_subscription->subscription_to)))}}
-                                </small>
-                            <h1 class="no-margins">
-                                @if($subscription_used)
-                                @if ($subscription_used->hours)
-                                    {{ $subscription_used->hours }} h
-                                @endif
-                                @if ($subscription_used->minutes)
-                                    {{ $subscription_used->minutes }} min
-                                @endif
-                                @else
-                                    0
-                                @endif
-                                @if($active_subscription->subscription_hours_quota > 0)
-                                    / {{$active_subscription->subscription_hours_quota}} h
-                                    @else
-                                Illimité
-                                    @endif
-                            </h1>
-                            @if($active_subscription->subscription_hours_quota > 0)
-                            <div class="stat-percent">{{$subscription_ratio}}%</div>
-                            <div class="progress progress-mini">
-                                <div style="width: {{$subscription_ratio}}%;" class="progress-bar
-                                @if($subscription_ratio > 100)
-                                        progress-bar-danger
-                                        @elseif($subscription_ratio>80)
-                                        progress-bar-warning
-
-                                        @endif
-                                "></div>
-                            </div>
-                            @endif
-                        </div>
-                    </div>
+                    @include('partials.active_subscription', array('active_subscription' => $active_subscription, 'subscription_used' => $subscription_used, 'subscription_ratio' => $subscription_ratio))
                 </div>
                     @endif
             </div>

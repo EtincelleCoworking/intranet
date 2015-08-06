@@ -115,14 +115,20 @@ class UserController extends BaseController
         }
         */
 
-        return View::make('user.dashboard', array(
+        $params = array(
             'totalMonth' => $totalMonth,
             'chargesMonth' => $chargesMonth,
             'chargesMonthToPay' => $chargesMonthToPay,
             'pasttimes' => $pasttimes,
             'chooseMember' => $chooseMember,
             'pending' => $pending
-        ));
+        );
+
+        $params['messages'] = WallPost::where('level', 0)->orderBy('created_at', 'DESC')->limit(5)->get();
+
+        $params = array_merge($params, Subscription::getActiveSubscriptionInfos());
+
+        return View::make('user.dashboard', $params);
     }
 
     /**
