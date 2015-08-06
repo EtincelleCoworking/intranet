@@ -43,7 +43,7 @@ class WallPostController extends BaseController
             $post->message = Input::get('message');
 
             if ($post->save()) {
-                return Response::json(array('status' => 'OK', 'created_at' => date('d/m/Y H:i', strtotime($post->created_at))));
+                return Response::json(array('status' => 'OK', 'created' => $post->created));
             } else {
                 return Response::json(array('status' => 'KO'));
             }

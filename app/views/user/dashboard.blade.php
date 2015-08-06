@@ -220,9 +220,9 @@
                     success: function(data) {
                         var snippet = '<div class="tree tree-level-1">'
                                 + '<div class="social-comment"><a href="" class="pull-left">{{Auth::user()->avatarTag}}</a>'
-                                + '<div class="media-body"><a href="#">{{Auth::user()->fullname}}</a>'
+                                + '<div class="media-body"><a href="#">{{Auth::user()->fullname}}</a> '
+                                + '<small class="text-muted">' + data.created+ '</small>'
                                 + '<div>' + $formTextarea.val() + '</div>'
-                                + '<small class="text-muted">' + data.created_at+ '</small>'
                                 + '</div>'
                                 + '</div>'
                                 + '</div>';
