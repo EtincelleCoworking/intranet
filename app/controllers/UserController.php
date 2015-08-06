@@ -123,6 +123,9 @@ class UserController extends BaseController
             'chooseMember' => $chooseMember,
             'pending' => $pending
         );
+
+        $params['messages'] = WallPost::where('level', 0)->orderBy('created_at', 'DESC')->limit(5)->get();
+
         $params = array_merge($params, Subscription::getActiveSubscriptionInfos());
 
         return View::make('user.dashboard', $params);

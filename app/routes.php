@@ -38,6 +38,9 @@ Route::group(['before' => 'member'], function() {
     Route::get('/quotes/{filtre}', array('as' => 'quote_list', 'uses' => 'InvoiceController@quoteList'));
     Route::get('/invoice/{id}/print/pdf', array('as' => 'invoice_print_pdf', 'uses' => 'InvoiceController@print_pdf'))->where(array('id' => '[0-9]+'));
     Route::post('/invoice/stripe/{id}', array('as' => 'invoice_stripe', 'uses' => 'InvoiceController@stripe'))->where(array('id' => '[0-9]+'));
+
+    Route::post('/wall/add', array('as' => 'wall_add_check', 'uses' => 'WallPostController@add_check'));
+    Route::post('/wall/reply', array('as' => 'wall_reply', 'uses' => 'WallPostController@reply'));
 });
 
 Route::group(['before' => 'superadmin'], function() {
