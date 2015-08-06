@@ -97,7 +97,7 @@
                         {{--</div>--}}
                         <div class="social-avatar">
                             <a href="">{{$message->user->fullname}}</a>
-                            <small class="text-muted">{{date('d/m/Y H:i', strtotime($message->created_at))}}</small>
+                            <small class="text-muted">{{$message->created}}</small>
                         </div>
                         <div class="social-body">
                             {{$message->message}}
@@ -114,22 +114,21 @@
                         {{--*/ $children = $message->children()->get() /*--}}
                         @foreach($children as $child)
                                 {{$child->render('div', function ($node) {
-                                    return '<div class="social-comment">
-                                                            <a href="" class="pull-left">
-                                                                '.$node->user->avatarTag.'
-                                                            </a>
-                                                            <div class="media-body">
-                                                                <a href="#">
-                                                                    '.$node->user->fullname.'
-                                                                </a>
-                                                                <div>'.$node->message.'</div>
-                                                                <!--
-                                                                <br/>
-                                                                <a href="#" class="small"><i class="fa fa-thumbs-up"></i> 26 Like this!</a> -
-                                                                -->
-                                                                <small class="text-muted">'.date('d/m/Y H:i', strtotime($node->created_at)).'</small>
-                                                            </div>
-                                                        </div>';
+                                    return '<div class="social-comment row">
+                                    <div class="col-lg-12">
+                                        <a href="#" class="pull-left">'.$node->user->avatarTag.'</a>
+                                        <div class="media-body">
+                                            <a href="#">'.$node->user->fullname.'</a>
+                                            <small class="text-muted">'.$node->created.'</small>
+                                        <div>'.$node->message.'</div>
+
+                                        <!--
+                                        <br/>
+                                        <a href="#" class="small"><i class="fa fa-thumbs-up"></i> 26 Like this!</a> -
+                                        -->
+                                    </div>
+                                    </div>
+                                </div>';
                                 },
                                 TRUE
                                 )}}
