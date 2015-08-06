@@ -141,11 +141,17 @@
                                 {{Auth::user()->avatarTag}}
                             </a>
                             <div class="media-body">
-                                {{ Form::open(array('route' => array('wall_add_check'), 'id' => 'wall_add')) }}
+                                {{ Form::open(array('route' => array('wall_add_check'), 'class' => 'wall_reply_form')) }}
                                 {{ Form::hidden('parent_id', $message->id) }}
+                                <div class="form-group">
                                         <textarea name="message" class="form-control wallReply"
                                                   data-parent="{{$message->id}}"
                                                   placeholder="Commentez ici"></textarea>
+
+                                </div>
+                                <div class="form-group">
+                                {{ Form::submit('Commenter', array('class' => 'btn btn-success')) }}
+                                </div>
                                 {{ Form::close() }}
                             </div>
                         </div>
@@ -200,20 +206,20 @@
                 $('input[name=message]').val($('#post_message_summernote').code());
             });
 
-            $('.wallReply').keydown(function(event) {
-                if (event.keyCode == 13) {
-                    var $formTextarea = $(this);
+            $('.wall_reply_form').submit(function(e) {
+                e.preventDefault();
 
-                    $.ajax({
-                        dataType: 'json',
-                        url: '{{ URL::route('wall_reply') }}',
-                        type: "POST",
-                        data: {
-                            parent_id: $formTextarea.attr('data-parent'),
-                            message: $formTextarea.val()
-                        },
-                        success: function(data) {
-                            var snippet = '<div class="tree tree-level-1">'
+                var $formTextarea = $(this).find('textarea');
+                $.ajax({
+                    dataType: 'json',
+                    url: '{{ URL::route('wall_reply') }}',
+                    type: "POST",
+                    data: {
+                        parent_id: $formTextarea.attr('data-parent'),
+                        message: $formTextarea.val()
+                    },
+                    success: function(data) {
+                        var snippet = '<div class="tree tree-level-1">'
                                 + '<div class="social-comment"><a href="" class="pull-left">{{Auth::user()->avatarTag}}</a>'
                                 + '<div class="media-body"><a href="#">{{Auth::user()->fullname}}</a>'
                                 + '<div>' + $formTextarea.val() + '</div>'
@@ -221,16 +227,19 @@
                                 + '</div>'
                                 + '</div>'
                                 + '</div>';
-                            $(snippet).insertBefore($formTextarea.closest('.social-comment'));
-                            $formTextarea.val('');
-                        },
-                        error: function(data) {
+                        $(snippet).insertBefore($formTextarea.closest('.social-comment'));
+                        $formTextarea.val('');
+                    },
+                    error: function(data) {
 
-                        }
-                    });
+                    }
+                });
 
+            });
 
-
+            $('.wallReply').keydown(function(event) {
+                if (event.keyCode == 13) {
+                   $(this.form).submit();
                     return false;
                 }
             })
