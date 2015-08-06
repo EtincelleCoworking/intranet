@@ -115,14 +115,17 @@ class UserController extends BaseController
         }
         */
 
-        return View::make('user.dashboard', array(
+        $params = array(
             'totalMonth' => $totalMonth,
             'chargesMonth' => $chargesMonth,
             'chargesMonthToPay' => $chargesMonthToPay,
             'pasttimes' => $pasttimes,
             'chooseMember' => $chooseMember,
             'pending' => $pending
-        ));
+        );
+        $params = array_merge($params, Subscription::getActiveSubscriptionInfos());
+
+        return View::make('user.dashboard', $params);
     }
 
     /**
