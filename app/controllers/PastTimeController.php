@@ -73,14 +73,14 @@ class PastTimeController extends BaseController
         if (Session::get('filtre_pasttime.filtre_toinvoice')) {
             $q->where('invoice_id', 0);
         }
-        if (Auth::user()->role == 'member') {
-            $recapFilter = Auth::user()->id;
-            $q->whereUserId(Auth::user()->id);
-        } else {
+        if (Auth::user()->role == 'superadmin') {
             if (Session::has('filtre_pasttime.user_id')) {
                 $recapFilter = Session::get('filtre_pasttime.user_id');
                 $q->whereUserId($recapFilter);
             }
+        } else {
+            $recapFilter = Auth::user()->id;
+            $q->whereUserId(Auth::user()->id);
         }
         $recap = PastTime::Recap($recapFilter, $date_filtre_start, $date_filtre_end);
         $pending_invoice_amount = 0;

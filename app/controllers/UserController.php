@@ -184,7 +184,7 @@ class UserController extends BaseController
                 $user->twitter = Input::get('twitter');
                 $user->website = Input::get('website');
                 $user->phone = Input::get('phone');
-                $user->role = Input::get('role');
+                $user->role = 'member';
 
                 if (count(Input::get('modif')) > 0) {
                     $save = false;
@@ -250,6 +250,7 @@ class UserController extends BaseController
         if (!$validator->fails()) {
             Input::merge(array('password' => Hash::make(Input::get('password')), 'role' => 'member'));
             $user = new User(Input::all());
+            $user->role = 'member';
 
             if ($user->save()) {
                 return Redirect::route('user_list')->with('mSuccess', 'Cet utilisateur a bien été ajouté');

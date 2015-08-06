@@ -207,6 +207,7 @@ class User extends Eloquent implements UserInterface, RemindableInterface
     static public function getRoles($name)
     {
         $roles = array(
+            '' => array('member'),
             'member' => array('member'),
             'superadmin' => array('member', 'superadmin')
         );
