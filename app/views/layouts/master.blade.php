@@ -60,7 +60,11 @@
     <nav class="navbar-default navbar-static-side" role="navigation">
         <div class="sidebar-collapse">
             @if (Auth::user())
-                @include('layouts.menu.'.Auth::user()->role)
+                @if(Auth::user()->role)
+                    @include('layouts.menu.'.Auth::user()->role)
+                @else
+                    @include('layouts.menu.member')
+                @endif
             @endif
 
         </div>
