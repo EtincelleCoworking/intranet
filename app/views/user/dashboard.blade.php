@@ -86,7 +86,7 @@
                     </div>
 
                     <div class="social-feed-box">
-
+                        @if (Auth::user()->role == 'superadmin')
                         <div class="pull-right social-action dropdown">
                             <button data-toggle="dropdown" class="dropdown-toggle btn-white">
                                 <i class="fa fa-angle-down"></i>
@@ -95,6 +95,7 @@
                                 <li><a href="{{ URL::route('wall_delete', $message->id) }}">Supprimer</a></li>
                             </ul>
                         </div>
+                        @endif
                         <div class="social-avatar">
                             <a href="">{{$message->user->fullname}}</a>
                             <small class="text-muted">{{$message->created}}</small>
@@ -114,12 +115,14 @@
                             {{--*/ $children = $message->children()->get() /*--}}
                             @foreach($children as $child)
                                 {{$child->render('div', function ($node) {
-                                    return '<div class="tree tree-level-1"><div class="social-comment row">
+                                    $snippet = '<div class="tree tree-level-1"><div class="social-comment row">
                                     <div class="col-lg-12">
                                         <a href="#" class="pull-left">'.$node->user->avatarTag.'</a>
-                                        <div class="media-body">
-                                            <a href="/wall/delete-reply/'.$node->id.'" class="btn btn-xs btn-danger btn-outline pull-right ajaxDeleteReply">Supprimer</a>
-                                            <a href="#">'.$node->user->fullname.'</a>
+                                        <div class="media-body">';
+                                        if(Auth::user()->role == 'superadmin'){
+                                        $snippet .= '<a href="/wall/delete-reply/'.$node->id.'" class="btn btn-xs btn-danger btn-outline pull-right ajaxDeleteReply">Supprimer</a>';
+                                        }
+                                        $snippet .= '<a href="#">'.$node->user->fullname.'</a>
                                             <small class="text-muted">'.$node->created.'</small>
                                         <div>'.nl2br($node->message).'</div>
 
@@ -130,6 +133,9 @@
                                     </div>
                                     </div>
                                 </div></div>';
+                                return $snippet;
+
+
                                 },
                                 TRUE
                                 )}}
@@ -220,7 +226,9 @@
                         var snippet = '<div class="tree tree-level-1"><div class="tree tree-level-1">'
                                 + '<div class="social-comment"><a href="" class="pull-left">{{Auth::user()->avatarTag}}</a>'
                                 + '<div class="media-body">'
+                                @if (Auth::user()->role == 'superadmin')
                                 + '<a href="/wall/delete-reply/' + data.id + '" class="btn btn-xs btn-danger btn-outline pull-right ajaxDeleteReply">Supprimer</a>'
+                                @endif
                                 + '<a href="#">{{Auth::user()->fullname}}</a> '
                                 + '<small class="text-muted">' + data.created + '</small>'
                                 + '<div>' + data.content + '</div>'
