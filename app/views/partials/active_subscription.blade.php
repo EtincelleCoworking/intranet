@@ -1,3 +1,4 @@
+@if($active_subscription)
 <div class="ibox">
     <div class="ibox-title">
         <h5>Abonnement en cours</h5>
@@ -39,3 +40,4 @@
         @endif
     </div>
 </div>
+@endif
