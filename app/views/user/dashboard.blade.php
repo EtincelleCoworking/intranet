@@ -87,14 +87,14 @@
 
                     <div class="social-feed-box">
 
-                        {{--<div class="pull-right social-action dropdown">--}}
-                        {{--<button data-toggle="dropdown" class="dropdown-toggle btn-white">--}}
-                        {{--<i class="fa fa-angle-down"></i>--}}
-                        {{--</button>--}}
-                        {{--<ul class="dropdown-menu m-t-xs">--}}
-                        {{--<li><a href="#">Config</a></li>--}}
-                        {{--</ul>--}}
-                        {{--</div>--}}
+                        <div class="pull-right social-action dropdown">
+                            <button data-toggle="dropdown" class="dropdown-toggle btn-white">
+                                <i class="fa fa-angle-down"></i>
+                            </button>
+                            <ul class="dropdown-menu m-t-xs">
+                                <li><a href="{{ URL::route('wall_delete', $message->id) }}">Supprimer</a></li>
+                            </ul>
+                        </div>
                         <div class="social-avatar">
                             <a href="">{{$message->user->fullname}}</a>
                             <small class="text-muted">{{$message->created}}</small>
@@ -110,17 +110,18 @@
 
 
                         </div>
-                            <div class="social-footer">
-                        {{--*/ $children = $message->children()->get() /*--}}
-                        @foreach($children as $child)
+                        <div class="social-footer">
+                            {{--*/ $children = $message->children()->get() /*--}}
+                            @foreach($children as $child)
                                 {{$child->render('div', function ($node) {
-                                    return '<div class="social-comment row">
+                                    return '<div class="tree tree-level-1"><div class="social-comment row">
                                     <div class="col-lg-12">
                                         <a href="#" class="pull-left">'.$node->user->avatarTag.'</a>
                                         <div class="media-body">
+                                            <a href="/wall/delete-reply/'.$node->id.'" class="btn btn-xs btn-danger btn-outline pull-right ajaxDeleteReply">Supprimer</a>
                                             <a href="#">'.$node->user->fullname.'</a>
                                             <small class="text-muted">'.$node->created.'</small>
-                                        <div>'.$node->message.'</div>
+                                        <div>'.nl2br($node->message).'</div>
 
                                         <!--
                                         <br/>
@@ -128,36 +129,34 @@
                                         -->
                                     </div>
                                     </div>
-                                </div>';
+                                </div></div>';
                                 },
                                 TRUE
                                 )}}
 
 
-                        @endforeach
-                        <div class="social-comment">
-                            <a href="#" class="pull-left">
-                                {{Auth::user()->avatarTag}}
-                            </a>
-                            <div class="media-body">
-                                {{ Form::open(array('route' => array('wall_add_check'), 'class' => 'wall_reply_form')) }}
-                                {{ Form::hidden('parent_id', $message->id) }}
-                                <div class="form-group">
+                            @endforeach
+                            <div class="social-comment">
+                                <a href="#" class="pull-left">
+                                    {{Auth::user()->avatarTag}}
+                                </a>
+
+                                <div class="media-body">
+                                    {{ Form::open(array('route' => array('wall_add_check'), 'class' => 'wall_reply_form')) }}
+                                    {{ Form::hidden('parent_id', $message->id) }}
+                                    <div class="form-group">
                                         <textarea name="message" class="form-control wallReply"
                                                   data-parent="{{$message->id}}"
                                                   placeholder="Commentez ici"></textarea>
 
+                                    </div>
+                                    <div class="form-group">
+                                        {{ Form::submit('Commenter', array('class' => 'btn btn-success')) }}
+                                    </div>
+                                    {{ Form::close() }}
                                 </div>
-                                <div class="form-group">
-                                {{ Form::submit('Commenter', array('class' => 'btn btn-success')) }}
-                                </div>
-                                {{ Form::close() }}
                             </div>
                         </div>
-                            </div>
-
-
-
 
 
                     </div>
@@ -167,29 +166,29 @@
 
             @endforeach
         </div>
-    <div class="col-lg-4">
-        <div class="ibox ">
-            <div class="ibox-title">
-                <h5>Nouveau message</h5>
-            </div>
-            <div class="ibox-content">
-                {{ Form::open(array('route' => array('wall_add_check'), 'id' => 'wall_add')) }}
+        <div class="col-lg-4">
+            <div class="ibox ">
+                <div class="ibox-title">
+                    <h5>Nouveau message</h5>
+                </div>
+                <div class="ibox-content">
+                    {{ Form::open(array('route' => array('wall_add_check'), 'id' => 'wall_add')) }}
 
-                <div class="row">
-                    <div class="col-md-12">
-                        <div class="form-control summernote" id="post_message_summernote"></div>
-                        {{ Form::hidden('message') }}
+                    <div class="row">
+                        <div class="col-md-12">
+                            <div class="form-control summernote" id="post_message_summernote"></div>
+                            {{ Form::hidden('message') }}
+                        </div>
                     </div>
+                    <div class="hr-line-dashed"></div>
+                    <div class="form-group">
+                        {{ Form::submit('Enregistrer', array('class' => 'btn btn-success', 'id' => 'wall_submit')) }}
+                    </div>
+                    {{ Form::close() }}
                 </div>
-                <div class="hr-line-dashed"></div>
-                <div class="form-group">
-                    {{ Form::submit('Enregistrer', array('class' => 'btn btn-success', 'id' => 'wall_submit')) }}
-                </div>
-                {{ Form::close() }}
-            </div>
 
+            </div>
         </div>
-    </div>
     </div>
 
 
@@ -205,7 +204,7 @@
                 $('input[name=message]').val($('#post_message_summernote').code());
             });
 
-            $('.wall_reply_form').submit(function(e) {
+            $('.wall_reply_form').submit(function (e) {
                 e.preventDefault();
 
                 var $formTextarea = $(this).find('textarea');
@@ -217,31 +216,45 @@
                         parent_id: $formTextarea.attr('data-parent'),
                         message: $formTextarea.val()
                     },
-                    success: function(data) {
-                        var snippet = '<div class="tree tree-level-1">'
+                    success: function (data) {
+                        var snippet = '<div class="tree tree-level-1"><div class="tree tree-level-1">'
                                 + '<div class="social-comment"><a href="" class="pull-left">{{Auth::user()->avatarTag}}</a>'
-                                + '<div class="media-body"><a href="#">{{Auth::user()->fullname}}</a> '
-                                + '<small class="text-muted">' + data.created+ '</small>'
-                                + '<div>' + $formTextarea.val() + '</div>'
+                                + '<div class="media-body">'
+                                + '<a href="/wall/delete-reply/' + data.id + '" class="btn btn-xs btn-danger btn-outline pull-right ajaxDeleteReply">Supprimer</a>'
+                                + '<a href="#">{{Auth::user()->fullname}}</a> '
+                                + '<small class="text-muted">' + data.created + '</small>'
+                                + '<div>' + data.content + '</div>'
+                                + '</div>'
                                 + '</div>'
                                 + '</div>'
                                 + '</div>';
                         $(snippet).insertBefore($formTextarea.closest('.social-comment'));
                         $formTextarea.val('');
                     },
-                    error: function(data) {
+                    error: function (data) {
 
                     }
                 });
 
             });
 
-            $('.wallReply').keydown(function(event) {
-                if (event.keyCode == 13) {
-                   $(this.form).submit();
-                    return false;
-                }
-            })
+            $(document).on("click", ".ajaxDeleteReply", function (e) {
+                e.preventDefault();
+                var $reply = $(this).closest('.social-comment');
+                $.ajax({
+                    url: $(this).attr('href'),
+                    type: "GET",
+                    success: function (data) {
+                        $reply.hide('slow');
+                    },
+                    error: function (data) {
+
+                    }
+                });
+
+
+                return false;
+            });
 
         });
     </script>

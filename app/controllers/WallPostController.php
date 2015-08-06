@@ -43,13 +43,34 @@ class WallPostController extends BaseController
             $post->message = Input::get('message');
 
             if ($post->save()) {
-                return Response::json(array('status' => 'OK', 'created' => $post->created));
+                return Response::json(array('status' => 'OK',
+                    'created' => $post->created,
+                    'content' => nl2br($post->message),
+                    'id' => $post->id));
             } else {
                 return Response::json(array('status' => 'KO'));
             }
         } else {
             return Response::json(array('status' => 'KO', 'message' => $validator->messages()));
 //            return Redirect::route('dashboard')->with('mError', 'Il y a des erreurs')->withErrors($validator->messages())->withInput();
+        }
+    }
+
+    public function delete($id)
+    {
+        WallPost::where('path', 'LIKE', sprintf('%d/', $id))->delete();
+        return Redirect::route('dashboard')->with('mSuccess', 'Le message a été supprimé');
+    }
+
+
+    public function deleteReply($id)
+    {
+        WallPost::destroy($id);
+        if (Request::ajax()) {
+            return Response::make();
+        } else {
+            return Redirect::route('dashboard');
+
         }
     }
 
