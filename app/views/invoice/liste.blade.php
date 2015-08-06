@@ -12,7 +12,7 @@
         <div class="col-sm-8">
             @if (Auth::user()->role == 'superadmin')
                 <div class="title-action">
-                    <a href="{{ URL::route('invoice_add', 'F') }}" class="btn btn-default">Ajouter une facture</a>
+                    <a href="{{ URL::route('invoice_add', 'F') }}" class="btn btn-primary">Ajouter une facture</a>
                 </div>
             @endif
         </div>
@@ -51,7 +51,10 @@
                             {{ Form::checkbox('filtre_unpaid', true, Session::has('filtre_invoice.filtre_unpaid') ? Session::get('filtre_invoice.filtre_unpaid') : false) }}
                             Impayé
                         </div>
-                        <div class="col-md-2">{{ Form::submit('Filtrer', array('class' => 'btn btn-sm btn-default')) }}</div>
+                        <div class="col-md-2">
+                            {{ Form::submit('Filtrer', array('class' => 'btn btn-sm btn-primary')) }}
+                            <a href="{{URL::route('invoice_filter_reset')}}" class="btn btn-sm btn-default">Réinitialiser</a>
+                        </div>
                         {{ Form::close() }}
                     </div>
                 </div>
@@ -142,7 +145,7 @@
                                                           id="stripe{{$invoice->id}}form">
 
                                                         <a href="{{ URL::route('invoice_print_pdf', $invoice->id) }}"
-                                                           class="btn btn-xs btn-default btn-outline"
+                                                           class="btn btn-xs btn-default"
                                                            target="_blank">PDF</a>
                                                         @if (Auth::user()->role == 'superadmin')
                                                             <a href="{{ URL::route('invoice_modify', $invoice->id) }}"
@@ -153,14 +156,14 @@
                                                         <input
                                                                 type="submit"
                                                                 value="Payer par CB"
-                                                                class="btn btn-xs btn-default"
+                                                                class="btn btn-xs btn-default btn-outline"
                                                                 id="stripe{{$invoice->id}}"
                                                                 />
 
                                                     </form>
                                                 @else
                                                 <a href="{{ URL::route('invoice_print_pdf', $invoice->id) }}"
-                                                   class="btn btn-xs btn-default btn-outline"
+                                                   class="btn btn-xs btn-default"
                                                    target="_blank">PDF</a>
                                                 @if (Auth::user()->role == 'superadmin')
                                                     <a href="{{ URL::route('invoice_modify', $invoice->id) }}"

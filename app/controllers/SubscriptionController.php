@@ -18,15 +18,16 @@ class SubscriptionController extends BaseController
         return View::make('subscription.add');
     }
 
-    protected function populate($subscription){
-            $date_explode = explode('/', Input::get('renew_at'));
+    protected function populate($subscription)
+    {
+        $date_explode = explode('/', Input::get('renew_at'));
 
-            $subscription->user_id = Input::get('user_id');
-            $subscription->organisation_id = Input::get('organisation_id');
-            $subscription->caption = Input::get('caption');
-            $subscription->renew_at = $date_explode[2].'-'.$date_explode[1].'-'.$date_explode[0];
-            $subscription->duration = Input::get('duration');
-            $subscription->amount = Input::get('amount');
+        $subscription->user_id = Input::get('user_id');
+        $subscription->organisation_id = Input::get('organisation_id');
+        $subscription->caption = Input::get('caption');
+        $subscription->renew_at = $date_explode[2] . '-' . $date_explode[1] . '-' . $date_explode[0];
+        $subscription->duration = Input::get('duration');
+        $subscription->amount = Input::get('amount');
     }
 
     /**
@@ -69,7 +70,8 @@ class SubscriptionController extends BaseController
         return View::make('subscription.add', array('subscription' => $subscription));
     }
 
-    public function modify_check($id){
+    public function modify_check($id)
+    {
         $validator = Validator::make(Input::all(), Subscription::$rulesAdd);
         if (!$validator->fails()) {
             $subscription = $this->dataExist($id);
@@ -94,9 +96,28 @@ class SubscriptionController extends BaseController
             return Redirect::route('subscription_list')->with('mError', 'Impossible de supprimer cet abonnement');
         }
     }
+
     public function renew($id)
     {
         $subscription = $this->dataExist($id);
+
+        // TODO créer des ressources spécifiques avec en option le volume horaire associé à chacune des formules?
+        // implique aussi probablement de rajouter une notion de catégorie pour distinguer location de salle et coworking
+        $hours_quota = 0;
+        switch ($subscription->amount) {
+            case 60:
+                $hours_quota = 40;
+                break;
+            case 110:
+                $hours_quota = 80;
+                break;
+            case 165:
+                $hours_quota = -1;
+                break;
+            default:
+                return Redirect::route('subscription_list')->with('mError', 'Impossible de renouveler cet abonnement, montant inconnu (60, 110, 165)');
+        }
+
 
         $invoice = new Invoice();
         $invoice->type = 'F';
@@ -105,7 +126,7 @@ class SubscriptionController extends BaseController
         $invoice->days = date('Ym');
         $invoice->date_invoice = date('Y-m-d');
         $invoice->number = Invoice::next_invoice_number($invoice->type, $invoice->days);
-        $invoice->address =$subscription->organisation->fulladdress;
+        $invoice->address = $subscription->organisation->fulladdress;
 
         $date = new DateTime($invoice->date_invoice);
         $date->modify('+1 month');
@@ -118,11 +139,15 @@ class SubscriptionController extends BaseController
         $invoice_line->amount = $subscription->amount;
         $date = new \DateTime($subscription->renew_at);
         $date2 = new \DateTime($subscription->renew_at);
+        $invoice_line->subscription_from = $date->format('Y-m-d');
         $date2->modify('next month');
+        $invoice_line->subscription_to = $date->format('Y-m-d');
+        $invoice_line->subscription_hours_quota = $hours_quota;
+
         $date2->modify('-1 day');
         $invoice_line->text = sprintf("%s\nDu %s au %s", $subscription->caption,
             $date->format('d/m/Y'), $date2->format('d/m/Y'));
-        $invoice_line->vat_types_id = 1;
+        $invoice_line->vat_types_id = 1; // TODO aller chercher celui à 20% de TVA
         $invoice_line->ressource_id = Ressource::TYPE_COWORKING;
         $invoice_line->save();
         $invoice_line->order_index = 1;

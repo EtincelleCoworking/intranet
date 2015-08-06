@@ -23,6 +23,14 @@ class InvoiceController extends BaseController
         }
     }
 
+    public function cancelFilter(){
+        Session::forget('filtre_invoice.user_id');
+        Session::forget('filtre_invoice.start');
+        Session::forget('filtre_invoice.end');
+        Session::forget('filtre_invoice.filtre_unpaid');
+        return Redirect::route('invoice_list');
+    }
+
     public function invoiceList()
     {
         if (Input::has('filtre_submitted')) {
