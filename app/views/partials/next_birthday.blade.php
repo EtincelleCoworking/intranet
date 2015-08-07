@@ -1,4 +1,4 @@
-@if($users)
+@if(count($users)>0)
     <div class="ibox">
         <div class="ibox-title">
             <h5>Prochains anniversaires</h5>
