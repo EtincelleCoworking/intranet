@@ -198,7 +198,7 @@ class InvoiceController extends BaseController
             $invoice->date_invoice = $date_explode[2] . '-' . $date_explode[1] . '-' . $date_explode[0];
             $invoice->number = Invoice::next_invoice_number(Input::get('type'), $days);
             $invoice->address = Input::get('address');
-            $invoice->on_hold = Input::get('on_hold');
+            $invoice->on_hold = false;
 
             $date = new DateTime($invoice->date_invoice);
             $date->modify('+1 month');

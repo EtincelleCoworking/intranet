@@ -197,50 +197,52 @@ class UserController extends BaseController
                 $user->website = Input::get('website');
                 $user->phone = Input::get('phone');
 
+                if (Input::get('birthday')) {
                 $birthday = explode('/', Input::get('birthday'));
-                if ($birthday) {
                     $user->birthday = $birthday[2] . '-' . $birthday[1] . '-' . $birthday[0];
                 }
+                if(!$user->role){
                 $user->role = 'member';
-
-                if (count(Input::get('modif')) > 0) {
-                    $save = false;
-                    foreach (Input::get('modif') as $key => $skillId) {
-                        $skillExist = Skill::find($skillId);
-                        if (Input::get('deleteExist.' . $skillExist->id)) {
-                            Skill::destroy($skillExist->id);
-                        } else {
-                            if ($skillExist->name != Input::get('nameExist.' . $skillExist->id)) {
-                                $skillExist->name = Input::get('nameExist.' . $skillExist->id);
-                                $save = true;
-                            }
-                            if ($skillExist->value != Input::get('valueExist.' . $skillExist->id)) {
-                                $skillExist->value = Input::get('valueExist.' . $skillExist->id);
-                                $save = true;
-                            }
-                            if ($save) {
-                                $skillExist->save();
-                            }
-                        }
-                    }
                 }
 
-                if (Input::get('skill_name') && count(Input::get('skill_name')) > 0) {
-                    foreach (Input::get('skill_name') as $key => $skillname) {
-                        if ($skillname != null) {
-                            $skill = new Skill();
-                            $skill->user_id = $user->id;
-                            $skill->name = $skillname;
-                            if (Input::get('skill_value.' . $key)) {
-                                $skill->value = Input::get('skill_value.' . $key);
-                            }
-                            $skill->save();
-                        }
-                    }
-                }
+//                if (count(Input::get('modif')) > 0) {
+//                    $save = false;
+//                    foreach (Input::get('modif') as $key => $skillId) {
+//                        $skillExist = Skill::find($skillId);
+//                        if (Input::get('deleteExist.' . $skillExist->id)) {
+//                            Skill::destroy($skillExist->id);
+//                        } else {
+//                            if ($skillExist->name != Input::get('nameExist.' . $skillExist->id)) {
+//                                $skillExist->name = Input::get('nameExist.' . $skillExist->id);
+//                                $save = true;
+//                            }
+//                            if ($skillExist->value != Input::get('valueExist.' . $skillExist->id)) {
+//                                $skillExist->value = Input::get('valueExist.' . $skillExist->id);
+//                                $save = true;
+//                            }
+//                            if ($save) {
+//                                $skillExist->save();
+//                            }
+//                        }
+//                    }
+//                }
+//
+//                if (Input::get('skill_name') && count(Input::get('skill_name')) > 0) {
+//                    foreach (Input::get('skill_name') as $key => $skillname) {
+//                        if ($skillname != null) {
+//                            $skill = new Skill();
+//                            $skill->user_id = $user->id;
+//                            $skill->name = $skillname;
+//                            if (Input::get('skill_value.' . $key)) {
+//                                $skill->value = Input::get('skill_value.' . $key);
+//                            }
+//                            $skill->save();
+//                        }
+//                    }
+//                }
 
                 if ($user->save()) {
-                    return Redirect::route('user_modify', $user->id)->with('mSuccess', 'Cet utilisateur a bien été modifié');
+                    return Redirect::route('user_profile', $user->id)->with('mSuccess', 'Cet utilisateur a bien été modifié');
                 } else {
                     return Redirect::route('user_modify', $user->id)->with('mError', 'Impossible de modifier cet utilisateur');
                 }

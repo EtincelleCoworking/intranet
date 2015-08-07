@@ -29,6 +29,7 @@
                 {{--<div class="ibox" style="border-top: 5px solid #FF9930">--}}
                 <div class="ibox">
                     <div class="ibox-content text-center">
+                        <a href="{{URL::Route('user_profile', $user->id)}}">
                         <h1>{{ $user->fullname }}</h1>
 
                         <div class="m-b-sm">
@@ -55,6 +56,7 @@
                                 </a>
                             @endif
                         </div>
+                        </a>
                         @if (Auth::user()->role == 'superadmin')
                             <a href="{{URL::route('user_modify', $user->id)}}" class="btn btn-default">Modifier</a>
                         @endif

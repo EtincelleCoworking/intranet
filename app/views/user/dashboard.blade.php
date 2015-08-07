@@ -105,7 +105,7 @@
                         </div>
                         @endif
                         <div class="social-avatar">
-                            <a href="">{{$message->user->fullname}}</a>
+                            <a href="{{URL::route('user_profile', $message->user->id)}}">{{$message->user->fullname}}</a>
                             <small class="text-muted">{{$message->created}}</small>
                         </div>
                         <div class="social-body">
@@ -130,7 +130,7 @@
                                         if(Auth::user()->role == 'superadmin'){
                                         $snippet .= '<a href="/wall/delete-reply/'.$node->id.'" class="btn btn-xs btn-danger btn-outline pull-right ajaxDeleteReply">Supprimer</a>';
                                         }
-                                        $snippet .= '<a href="#">'.$node->user->fullname.'</a>
+                                        $snippet .= '<a href="/profile/'.$node->user->id.'">'.$node->user->fullname.'</a>
                                             <small class="text-muted">'.$node->created.'</small>
                                         <div>'.nl2br($node->message).'</div>
 
@@ -151,7 +151,7 @@
 
                             @endforeach
                             <div class="social-comment">
-                                <a href="#" class="pull-left">
+                                <a href="{{URL::route('user_profile', Auth::user()->id)}}" class="pull-left">
                                     {{Auth::user()->avatarTag}}
                                 </a>
 
@@ -232,12 +232,12 @@
                     },
                     success: function (data) {
                         var snippet = '<div class="tree tree-level-1"><div class="tree tree-level-1">'
-                                + '<div class="social-comment"><a href="" class="pull-left">{{Auth::user()->avatarTag}}</a>'
+                                + '<div class="social-comment"><a href="{{URL::Route('user_profile', Auth::user()->id) }}" class="pull-left">{{Auth::user()->avatarTag}}</a>'
                                 + '<div class="media-body">'
                                 @if (Auth::user()->role == 'superadmin')
                                 + '<a href="/wall/delete-reply/' + data.id + '" class="btn btn-xs btn-danger btn-outline pull-right ajaxDeleteReply">Supprimer</a>'
                                 @endif
-                                + '<a href="#">{{Auth::user()->fullname}}</a> '
+                                + '<a href="{{URL::Route('user_profile', Auth::user()->id) }}">{{Auth::user()->fullname}}</a> '
                                 + '<small class="text-muted">' + data.created + '</small>'
                                 + '<div>' + data.content + '</div>'
                                 + '</div>'

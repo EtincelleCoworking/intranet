@@ -14,7 +14,7 @@ class Partnership extends Migration {
 	{
 		Schema::table('invoices', function(Blueprint $table)
 		{
-			$table->boolean('on_hold')->nullable();
+			$table->boolean('on_hold')->default(0);
 		});
 	}
 

@@ -153,6 +153,18 @@ class User extends Eloquent implements UserInterface, RemindableInterface
 
 
     }
+    public function getLargeAvatarUrlAttribute(){
+        $size = 500;
+        $default = '404';
+        $default = 'mm';
+        //$default = 'identicon';
+        //$default = 'monsterid';
+        //$default = 'wavatar';
+        $url = "http://www.gravatar.com/avatar/" . md5( strtolower( trim( $this->email ) ) ) . "?d=" . urlencode( $default ) . "&s=" . $size;
+        return $url;
+
+
+    }
 
     /**
      * Get list of users
