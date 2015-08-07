@@ -24,45 +24,73 @@
     <div class="row">
         @foreach ($users as $index => $user)
             <div class="col-md-3">
+                <div class="contact-box">
+                    <a href="{{URL::Route('user_profile', $user->id)}}">
+                        <div class="col-sm-4">
+                            <div class="text-center">
+                                <img alt="image" class="img-circle m-t-xs img-responsive" src="{{$user->avatarUrl}}">
 
-                {{--<div class="ibox" style="border-top: 5px solid #542274">--}}
-                {{--<div class="ibox" style="border-top: 5px solid #FF9930">--}}
-                <div class="ibox">
-                    <div class="ibox-content text-center">
-                        <a href="{{URL::Route('user_profile', $user->id)}}">
-                        <h1>{{ $user->fullname }}</h1>
+                                <p>
+                                    @if($user->twitter)
+                                        <a href="https://twitter.com/{{ $user->twitter }}">
+                                            <i class="fa fa-twitter"></i>
+                                        </a>
+                                    @endif
 
-                        <div class="m-b-sm">
-                            {{$user->avatarTag}}
+                                    @if($user->social_instagram)
+                                        <a href="{{ $user->social_instagram }}">
+                                            <i class="fa fa-instagram"></i>
+                                        </a>
+                                    @endif
+                                    @if($user->social_github)
+                                        <a href="{{ $user->social_github }}">
+                                            <i class="fa fa-github"></i>
+                                        </a>
+                                    @endif
+                                    @if($user->social_linkedin)
+                                        <a href="{{ $user->social_linkedin }}">
+                                            <i class="fa fa-linkedin"></i>
+                                        </a>
+                                    @endif
+
+                                    @if($user->website)
+                                        <a href="{{ $user->website }}">
+                                            <i class="fa fa-link" title="{{ $user->website }}"></i>
+                                        </a>
+                                    @endif
+
+                                </p>
+                                @if (Auth::user()->role == 'superadmin')
+                                    <a href="{{URL::route('user_modify', $user->id)}}" class="btn btn-xs btn-default">Modifier</a>
+                                @endif
+
+                            </div>
                         </div>
-                        @if($user->bio_short)
-                            <p class="font-bold">{{ $user->bio_short }}</p>
-                        @endif
+                        <div class="col-sm-8">
+                            <a href="{{URL::Route('user_profile', $user->id)}}">
+                            <h3><strong>{{ $user->fullname }}</strong></h3>
+                            @if($user->bio_short)
+                                <p>{{ $user->bio_short }}</p>
+                            @endif
 
-                        <div class="text-center">
+
                             @if($user->phone)
-                                <span class="btn btn-xs btn-white"><i
-                                            class="fa fa-phone"></i> {{ $user->phone }}</span>
+                                <i class="fa fa-phone"></i>
+                                {{ $user->phone }}
+                                <br/>
                             @endif
+</a>
 
-                            @if($user->twitter)
-                                <a class="btn btn-xs btn-white" href="https://twitter.com/{{ $user->twitter }}"><i
-                                            class="fa fa-twitter"></i> {{ '@'.$user->twitter }} </a>
-                            @endif
-
-                            @if($user->website)
-                                <a href="{{ $user->website }}" class="btn btn-xs btn-white">
-                                    <i class="fa fa-link" title="{{ $user->website }}"></i> {{ $user->website }}
-                                </a>
-                            @endif
                         </div>
-                        </a>
-                        @if (Auth::user()->role == 'superadmin')
-                            <a href="{{URL::route('user_modify', $user->id)}}" class="btn btn-default">Modifier</a>
-                        @endif
-                    </div>
+                        <div class="clearfix"></div>
+                    </a>
                 </div>
             </div>
+
+            @if($index % 4 == 3)
+    </div>
+    <div class="row">
+        @endif
 
         @endforeach
     </div>

@@ -197,6 +197,10 @@ class UserController extends BaseController
                 $user->website = Input::get('website');
                 $user->phone = Input::get('phone');
 
+                $user->social_github = Input::get('social_github');
+                $user->social_instagram = Input::get('social_instagram');
+                $user->social_linkedin = Input::get('social_linkedin');
+
                 if (Input::get('birthday')) {
                 $birthday = explode('/', Input::get('birthday'));
                     $user->birthday = $birthday[2] . '-' . $birthday[1] . '-' . $birthday[0];
