@@ -186,4 +186,12 @@ class PastTimeController extends BaseController
             return Redirect::route('pasttime_list')->with('mError', 'Impossible de supprimer cette ligne !');
         }
     }
+
+    public function cancelFilter(){
+        Session::forget('filtre_pasttime.user_id');
+        Session::forget('filtre_pasttime.start');
+        Session::forget('filtre_pasttime.end');
+        Session::forget('filtre_pasttime.filtre_toinvoice');
+        return Redirect::route('pasttime_list');
+    }
 }
