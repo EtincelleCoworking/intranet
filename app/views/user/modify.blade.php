@@ -35,7 +35,7 @@
                     <div class="row">
                         <div class="col-lg-6">
                             {{ Form::label('birthday', 'Date de naissance') }}
-                            <p>{{ Form::text('birthday', date('d/m/Y', strtotime($user->birthday)), array('class' => 'form-control datePicker')) }}</p>
+                            <p>{{ Form::text('birthday', ($user->birthday == '0000-00-00')?'':date('d/m/Y', strtotime($user->birthday)), array('class' => 'form-control datePicker')) }}</p>
                         </div>
                         <div class="col-lg-6">
 
