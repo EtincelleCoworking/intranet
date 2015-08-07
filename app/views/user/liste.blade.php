@@ -60,7 +60,7 @@
 
                                     @if($user->website)
                                         <a href="{{ $user->website }}">
-                                            <i class="fa fa-link" title="{{ $user->website }}"></i>
+                                            <i class="fa fa-globe" title="{{ $user->website }}"></i>
                                         </a>
                                     @endif
 
@@ -81,7 +81,7 @@
 
                                 @if($user->phone)
                                     <i class="fa fa-phone"></i>
-                                    {{ $user->phone }}
+                                    {{ $user->phoneFmt }}
                                     <br/>
                                 @endif
                             </a>

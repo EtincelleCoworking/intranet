@@ -140,6 +140,11 @@ class User extends Eloquent implements UserInterface, RemindableInterface
 
     }
 
+    public function getPhoneFmtAttribute(){
+        $result = preg_replace('/[^0-9]/', '', $this->phone);
+        $result = preg_replace('/([0-9]{2})/', '\1 ', $result);
+        return $result;
+    }
 
     public function getAvatarUrlAttribute(){
         $size = 80;
