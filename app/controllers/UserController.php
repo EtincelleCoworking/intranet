@@ -133,7 +133,7 @@ class UserController extends BaseController
                 INTERVAL YEAR(CURDATE())-YEAR(birthday)
                          + IF(DAYOFYEAR(CURDATE()) > DAYOFYEAR(birthday),1,0)
                 YEAR)
-            BETWEEN CURDATE() AND DATE_ADD(CURDATE(), INTERVAL 30 DAY)')
+            BETWEEN CURDATE() AND DATE_ADD(CURDATE(), INTERVAL 365 DAY)')
             ->whereIsMember(true)
             ->orderByRaw('DATE_FORMAT(birthday, "%m-%d") ASC')
             ->limit(5)->get();
@@ -200,6 +200,7 @@ class UserController extends BaseController
                 $user->social_github = Input::get('social_github');
                 $user->social_instagram = Input::get('social_instagram');
                 $user->social_linkedin = Input::get('social_linkedin');
+                $user->social_facebook = Input::get('social_facebook');
 
                 if (Input::get('birthday')) {
                 $birthday = explode('/', Input::get('birthday'));

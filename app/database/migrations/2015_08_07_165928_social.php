@@ -17,6 +17,7 @@ class Social extends Migration {
 			$table->string('social_github');
 			$table->string('social_instagram');
 			$table->string('social_linkedin');
+			$table->string('social_facebook');
 		});
 	}
 

@@ -109,6 +109,16 @@
                                 </p>
                             </div>
                         @endif
+
+
+                        @if ($user->social_facebook)
+                            <div class="col-lg-4">
+                                <p>
+                                    <i class="fa fa-facebook"></i>
+                                    <a href="{{$user->social_facebook}}">{{ $user->social_facebook }}</a>
+                                </p>
+                            </div>
+                        @endif
                     </div>
                 </div>
             </div>

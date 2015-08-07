@@ -52,6 +52,11 @@
                                             <i class="fa fa-linkedin"></i>
                                         </a>
                                     @endif
+                                    @if($user->social_facebook)
+                                        <a href="{{ $user->social_facebook }}">
+                                            <i class="fa fa-facebook"></i>
+                                        </a>
+                                    @endif
 
                                     @if($user->website)
                                         <a href="{{ $user->website }}">
@@ -68,18 +73,18 @@
                         </div>
                         <div class="col-sm-8">
                             <a href="{{URL::Route('user_profile', $user->id)}}">
-                            <h3><strong>{{ $user->fullname }}</strong></h3>
-                            @if($user->bio_short)
-                                <p>{{ $user->bio_short }}</p>
-                            @endif
+                                <h3><strong>{{ $user->fullname }}</strong></h3>
+                                @if($user->bio_short)
+                                    <p>{{ $user->bio_short }}</p>
+                                @endif
 
 
-                            @if($user->phone)
-                                <i class="fa fa-phone"></i>
-                                {{ $user->phone }}
-                                <br/>
-                            @endif
-</a>
+                                @if($user->phone)
+                                    <i class="fa fa-phone"></i>
+                                    {{ $user->phone }}
+                                    <br/>
+                                @endif
+                            </a>
 
                         </div>
                         <div class="clearfix"></div>
