@@ -10,7 +10,11 @@
             <h2>Liste des factures</h2>
         </div>
         <div class="col-sm-8">
-
+            <div class="title-action">
+            @if (Auth::user()->role == 'superadmin')
+                <a href="{{ URL::route('invoice_add', 'F') }}" class="btn btn-primary">Ajouter une facture</a>
+            @endif
+        </div>
         </div>
     </div>
 @stop
@@ -23,9 +27,9 @@
                     <h5>Filtre</h5>
 
                     {{--<div class="ibox-tools">--}}
-                        {{--<a class="collapse-link">--}}
-                            {{--<i class="fa fa-chevron-up"></i>--}}
-                        {{--</a>--}}
+                    {{--<a class="collapse-link">--}}
+                    {{--<i class="fa fa-chevron-up"></i>--}}
+                    {{--</a>--}}
                     {{--</div>--}}
                 </div>
                 <div class="ibox-content">
@@ -96,13 +100,13 @@
                                             @if ($invoice->organisation)
                                                 @if (Auth::user()->role == 'superadmin')
                                                     <a href="{{ URL::route('organisation_modify', $invoice->organisation->id) }}">{{ $invoice->organisation->name }}</a>
-@if ($invoice->user)                                                    
-(
-                                                    <a href="{{ URL::route('user_modify', $invoice->user->id) }}">{{ $invoice->user->fullname }}</a>
-                                                    <a href="?filtre_submitted=1&filtre_user_id={{ $invoice->user->id }}"><i
-                                                                class="fa fa-filter"></i></a>)
-@endif                    
-                            @else
+                                                    @if ($invoice->user)
+                                                        (
+                                                        <a href="{{ URL::route('user_modify', $invoice->user->id) }}">{{ $invoice->user->fullname }}</a>
+                                                        <a href="?filtre_submitted=1&filtre_user_id={{ $invoice->user->id }}"><i
+                                                                    class="fa fa-filter"></i></a>)
+                                                    @endif
+                                                @else
                                                     {{ $invoice->organisation->name }}
                                                 @endif
                                             @else
@@ -111,18 +115,22 @@
                                         </td>
                                         <td>
                                             @if (!$invoice->date_payment)
-                                                @if ($invoice->daysDeadline > 7)
-                                                    <span class="badge badge-success">
-                                    {{ date('d/m/Y', strtotime($invoice->deadline)) }}
-                                </span>
-                                                @elseif ($invoice->daysDeadline <= 7 && $invoice->daysDeadline != -1)
-                                                    <span class="badge badge-warning">
-                                    {{ date('d/m/Y', strtotime($invoice->deadline)) }}
-                                </span>
+                                                @if($invoice->on_hold)
+                                                    <span class="badge">En compte</span>
                                                 @else
-                                                    <span class="badge badge-danger">
+                                                    @if ($invoice->daysDeadline > 7)
+                                                        <span class="badge badge-success">
+                                    {{ date('d/m/Y', strtotime($invoice->deadline)) }}
+                                </span>
+                                                    @elseif ($invoice->daysDeadline <= 7 && $invoice->daysDeadline != -1)
+                                                        <span class="badge badge-warning">
+                                    {{ date('d/m/Y', strtotime($invoice->deadline)) }}
+                                </span>
+                                                    @else
+                                                        <span class="badge badge-danger">
                                    {{ date('d/m/Y', strtotime($invoice->deadline)) }}
                                 </span>
+                                                    @endif
                                                 @endif
                                             @else
                                                 Payée le {{ date('d/m/Y', strtotime($invoice->date_payment)) }}
@@ -137,29 +145,29 @@
                                         <td>
 
 
-                                                @if(!$invoice->date_payment)
-                                                    <form action="{{ URL::route('invoice_stripe', $invoice->id) }}"
-                                                          method="POST"
-                                                          id="stripe{{$invoice->id}}form">
+                                            @if(!$invoice->date_payment)
+                                                <form action="{{ URL::route('invoice_stripe', $invoice->id) }}"
+                                                      method="POST"
+                                                      id="stripe{{$invoice->id}}form">
 
-                                                        <a href="{{ URL::route('invoice_print_pdf', $invoice->id) }}"
-                                                           class="btn btn-xs btn-default"
-                                                           target="_blank">PDF</a>
-                                                        @if (Auth::user()->role == 'superadmin')
-                                                            <a href="{{ URL::route('invoice_modify', $invoice->id) }}"
-                                                               class="btn btn-xs btn-default btn-outline">
-                                                                Modifier
-                                                            </a>
-                                                        @endif
-                                                        <input
-                                                                type="submit"
-                                                                value="Payer par CB"
-                                                                class="btn btn-xs btn-default btn-outline"
-                                                                id="stripe{{$invoice->id}}"
-                                                                />
+                                                    <a href="{{ URL::route('invoice_print_pdf', $invoice->id) }}"
+                                                       class="btn btn-xs btn-default"
+                                                       target="_blank">PDF</a>
+                                                    @if (Auth::user()->role == 'superadmin')
+                                                        <a href="{{ URL::route('invoice_modify', $invoice->id) }}"
+                                                           class="btn btn-xs btn-default btn-outline">
+                                                            Modifier
+                                                        </a>
+                                                    @endif
+                                                    <input
+                                                            type="submit"
+                                                            value="Payer par CB"
+                                                            class="btn btn-xs btn-default btn-outline"
+                                                            id="stripe{{$invoice->id}}"
+                                                            />
 
-                                                    </form>
-                                                @else
+                                                </form>
+                                            @else
                                                 <a href="{{ URL::route('invoice_print_pdf', $invoice->id) }}"
                                                    class="btn btn-xs btn-default"
                                                    target="_blank">PDF</a>
@@ -169,7 +177,7 @@
                                                         Modifier
                                                     </a>
                                                 @endif
-                                                @endif
+                                            @endif
 
 
                                         </td>

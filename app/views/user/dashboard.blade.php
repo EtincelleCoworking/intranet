@@ -43,7 +43,7 @@
                     </div>
                     <div class="ibox-content">
                         <h1 class="no-margins">{{ number_format($pending['total'], 0, ',', '.') }}€</h1>
-                        <small>&nbsp;</small>
+                        <small>En compte: {{ number_format($on_hold['total'], 0, ',', '.') }}€</small>
 
                     </div>
                 </div>

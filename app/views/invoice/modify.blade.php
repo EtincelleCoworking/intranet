@@ -82,6 +82,8 @@
 
                             {{ Form::label('date_payment', 'Date de paiement') }}
                             <p>{{ Form::text('date_payment', (($invoice->date_payment) ? date('d/m/Y', strtotime($invoice->date_payment)) : null), array('class' => 'form-control datePicker')) }}</p>
+
+                            <p>{{Form::checkbox('on_hold', true, $invoice->on_hold)}} {{ Form::label('on_hold', 'En compte') }}</p>
                         </div>
                     </div>
                     <div class="row">

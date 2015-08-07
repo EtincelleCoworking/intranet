@@ -84,12 +84,14 @@ class UserController extends BaseController
             $date_pt_filtre_end = date('Y-m') . '-' . date('t', Session::get('filtre_pasttime.month'));
             $pasttimes = PastTime::Recap(false, $date_pt_filtre_start, $date_pt_filtre_end);
             $pending = InvoiceItem::Pending();
+            $on_hold = InvoiceItem::OnHold();
         } else {
             $chargesMonth = false;
             $chargesMonthToPay = false;
             $tva_collectee = false;
             $tva_deductible = false;
             $pending = false;
+            $on_hold = false;
 
             // Temps passés
             $date_pt_filtre_start = date('Y-m') . '-01';
@@ -121,7 +123,8 @@ class UserController extends BaseController
             'chargesMonthToPay' => $chargesMonthToPay,
             'pasttimes' => $pasttimes,
             'chooseMember' => $chooseMember,
-            'pending' => $pending
+            'pending' => $pending,
+            'on_hold' => $on_hold,
         );
 
         $params['messages'] = WallPost::where('level', 0)->orderBy('created_at', 'DESC')->limit(5)->get();

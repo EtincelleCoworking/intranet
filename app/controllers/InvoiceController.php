@@ -155,6 +155,7 @@ class InvoiceController extends BaseController
             }
             $invoice->address = Input::get('address');
             $invoice->details = Input::get('details');
+            $invoice->on_hold = Input::get('on_hold');
 
             if ($invoice->save()) {
                 return Redirect::route('invoice_list', $invoice->id)->with('mSuccess', 'La facture a bien été modifiée');
@@ -185,7 +186,7 @@ class InvoiceController extends BaseController
     public function add_check()
     {
         $validator = Validator::make(Input::all(), Invoice::$rulesAdd);
-        if (!$validator->fails()) {
+        if (!$validator->fails() and (!Input::get('organisation_id') or Input::get('user_id'))) {
             $date_explode = explode('/', Input::get('date_invoice'));
             $days = $date_explode[2] . $date_explode[1];
 
@@ -197,6 +198,7 @@ class InvoiceController extends BaseController
             $invoice->date_invoice = $date_explode[2] . '-' . $date_explode[1] . '-' . $date_explode[0];
             $invoice->number = Invoice::next_invoice_number(Input::get('type'), $days);
             $invoice->address = Input::get('address');
+            $invoice->on_hold = Input::get('on_hold');
 
             $date = new DateTime($invoice->date_invoice);
             $date->modify('+1 month');

@@ -142,12 +142,29 @@ class InvoiceItem extends Eloquent
 			{
 				$j->on('invoice_id', '=', 'invoices.id')
 					->where('type', '=', 'F')
-
 				;
 			})
 			->select(
 				DB::raw('SUM(amount) as total')
 			)
+					->where('on_hold', '=', false)
+			->whereNull('date_payment')
+			->first();
+	}
+
+	public function scopeOnHold($query)
+	{
+		return $query
+			->join('invoices', function($j)
+			{
+				$j->on('invoice_id', '=', 'invoices.id')
+					->where('type', '=', 'F')
+				;
+			})
+			->select(
+				DB::raw('SUM(amount) as total')
+			)
+					->where('on_hold', '=', true)
 			->whereNull('date_payment')
 			->first();
 	}
