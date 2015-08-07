@@ -72,14 +72,14 @@
             {{--</div>--}}
             {{--</div>--}}
             {{--</div>--}}
+            <div class="col-lg-3">
+                @include('partials.next_birthday', array('users' => $birthdays))
+            </div>
 
             <div class="col-lg-3">
                 @include('partials.active_subscription', array('active_subscription' => $active_subscription, 'subscription_used' => $subscription_used, 'subscription_ratio' => $subscription_ratio))
             </div>
 
-            <div class="col-lg-3">
-                @include('partials.next_birthday', array('users' => $birthdays))
-            </div>
         </div>
     @endif
 

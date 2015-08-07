@@ -17,7 +17,7 @@
                     {{ $subscription_used->minutes }} min
                 @endif
             @else
-                0
+                0 h
             @endif
             @if($active_subscription->subscription_hours_quota > 0)
                 / {{$active_subscription->subscription_hours_quota}} h

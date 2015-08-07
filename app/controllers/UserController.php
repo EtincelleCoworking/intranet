@@ -99,7 +99,7 @@ class UserController extends BaseController
             $pasttimes = PastTime::Recap(Auth::user()->id, $date_pt_filtre_start, $date_pt_filtre_end);
         }
 
-      //  $chooseMember = User::where('is_member', true)->orderByRaw("RAND()")->first();
+        //  $chooseMember = User::where('is_member', true)->orderByRaw("RAND()")->first();
 
         /* En travaux pour les stats annu.
         $annualTotal = DB::table('invoices_items')->join('invoices', function($join)
@@ -122,7 +122,7 @@ class UserController extends BaseController
             'chargesMonth' => $chargesMonth,
             'chargesMonthToPay' => $chargesMonthToPay,
             'pasttimes' => $pasttimes,
-     //       'chooseMember' => $chooseMember,
+            //       'chooseMember' => $chooseMember,
             'pending' => $pending,
             'on_hold' => $on_hold,
         );
@@ -206,11 +206,11 @@ class UserController extends BaseController
                 $user->social_facebook = Input::get('social_facebook');
 
                 if (Input::get('birthday')) {
-                $birthday = explode('/', Input::get('birthday'));
+                    $birthday = explode('/', Input::get('birthday'));
                     $user->birthday = $birthday[2] . '-' . $birthday[1] . '-' . $birthday[0];
                 }
-                if(!$user->role){
-                $user->role = 'member';
+                if (!$user->role) {
+                    $user->role = 'member';
                 }
 
 //                if (count(Input::get('modif')) > 0) {
@@ -276,8 +276,8 @@ class UserController extends BaseController
         $validator = Validator::make(Input::all(), User::$rulesAdd);
         if (!$validator->fails()) {
             $params = array('password' => Hash::make(Input::get('password')), 'role' => 'member');
-            $birthday = explode('/', Input::get('birthday'));
-            if ($birthday) {
+            if (Input::get('birthday')) {
+                $birthday = explode('/', Input::get('birthday'));
                 $params['birthday'] = $birthday[2] . '-' . $birthday[1] . '-' . $birthday[0];
             }
             Input::merge($params);
