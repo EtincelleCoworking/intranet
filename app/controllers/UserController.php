@@ -133,9 +133,12 @@ class UserController extends BaseController
                 INTERVAL YEAR(CURDATE())-YEAR(birthday)
                          + IF(DAYOFYEAR(CURDATE()) > DAYOFYEAR(birthday),1,0)
                 YEAR)
-            BETWEEN CURDATE() AND DATE_ADD(CURDATE(), INTERVAL 365 DAY)')
+            BETWEEN CURDATE() AND DATE_ADD(CURDATE(), INTERVAL 60 DAY)')
             ->whereIsMember(true)
-            ->orderByRaw('DATE_FORMAT(birthday, "%m-%d") ASC')
+            ->orderByRaw('DATE_ADD(birthday,
+                INTERVAL YEAR(CURDATE())-YEAR(birthday)
+                         + IF(DAYOFYEAR(CURDATE()) > DAYOFYEAR(birthday),1,0)
+                YEAR) ASC')
             ->limit(5)->get();
 
         $params = array_merge($params, Subscription::getActiveSubscriptionInfos());
