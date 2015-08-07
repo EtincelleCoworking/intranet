@@ -125,6 +125,7 @@ class UserController extends BaseController
         );
 
         $params['messages'] = WallPost::where('level', 0)->orderBy('created_at', 'DESC')->limit(5)->get();
+        $params['birthdays'] = User::where('birthday', '<>', '0000-00-00')->orderBy('birthday', 'ASC')->limit(5)->get();
 
         $params = array_merge($params, Subscription::getActiveSubscriptionInfos());
 
@@ -184,6 +185,11 @@ class UserController extends BaseController
                 $user->twitter = Input::get('twitter');
                 $user->website = Input::get('website');
                 $user->phone = Input::get('phone');
+
+                $birthday = explode('/', Input::get('birthday'));
+                if ($birthday) {
+                    $user->birthday = $birthday[2] . '-' . $birthday[1] . '-' . $birthday[0];
+                }
                 $user->role = 'member';
 
                 if (count(Input::get('modif')) > 0) {
@@ -248,7 +254,12 @@ class UserController extends BaseController
     {
         $validator = Validator::make(Input::all(), User::$rulesAdd);
         if (!$validator->fails()) {
-            Input::merge(array('password' => Hash::make(Input::get('password')), 'role' => 'member'));
+            $params = array('password' => Hash::make(Input::get('password')), 'role' => 'member');
+            $birthday = explode('/', Input::get('birthday'));
+            if ($birthday) {
+                $params['birthday'] = $birthday[2] . '-' . $birthday[1] . '-' . $birthday[0];
+            }
+            Input::merge($params);
             $user = new User(Input::all());
             $user->role = 'member';
 

@@ -70,7 +70,7 @@ Avant de pouvoir accéder aux ressources merveilleuses que nous vous avons prép
     <hr/>
     <div class="row">
         <div class="col-md-6">
-            Copyright Etincelle Coworking
+            Copyright Sébastien Hordeaux
         </div>
         <div class="col-md-6 text-right">
             <small>&copy; 2014-{{date('Y')}}</small>

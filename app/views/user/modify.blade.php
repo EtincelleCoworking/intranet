@@ -32,7 +32,15 @@
                         </div>
 
                     </div>
+                    <div class="row">
+                        <div class="col-lg-6">
+                            {{ Form::label('birthday', 'Date de naissance') }}
+                            <p>{{ Form::text('birthday', date('d/m/Y', strtotime($user->birthday)), array('class' => 'form-control datePicker')) }}</p>
+                        </div>
+                        <div class="col-lg-6">
 
+                        </div>
+                    </div>
 
                 </div>
             </div>
@@ -234,3 +242,10 @@
 @stop
 
 
+@section('javascript')
+    <script type="text/javascript">
+        $().ready(function () {
+            $('.datePicker').datepicker();
+        });
+    </script>
+@stop

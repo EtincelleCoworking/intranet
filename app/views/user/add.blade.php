@@ -30,7 +30,15 @@
                             {{ Form::label('lastname', 'Nom') }}
                             <p>{{ Form::text('lastname', null, array('class' => 'form-control')) }}</p>
                         </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-lg-6">
+                            {{ Form::label('birthday', 'Date de naissance') }}
+                            <p>{{ Form::text('birthday', null, array('class' => 'form-control datePicker')) }}</p>
+                        </div>
+                        <div class="col-lg-6">
 
+                        </div>
                     </div>
 
 
@@ -115,4 +123,12 @@
 
     </div>
     {{ Form::close() }}
+@stop
+
+@section('javascript')
+    <script type="text/javascript">
+        $().ready(function () {
+            $('.datePicker').datepicker();
+        });
+    </script>
 @stop
