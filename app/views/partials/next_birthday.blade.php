@@ -4,34 +4,30 @@
             <h5>Prochains anniversaires</h5>
         </div>
         <div class="ibox-content">
-            <table class="table">
-                <thead>
-                <tr>
-                    <th>Membre</th>
-                    <th>Date</th>
-                    <th>Age</th>
-                </tr>
-                </thead>
-                <tbody>
+            <div class="feed-activity-list">
                 @foreach($users as $user)
-                    <tr>
-                        <td>
-                            @if (Auth::user()->role == 'superadmin')
-                                <a href="{{ URL::route('user_modify', $user->id) }}">{{ $user->fullname }}</a>
-                            @else
+                    <div class="feed-element">
+                        <a href="{{ URL::route('user_profile', $user->id) }}" class="pull-left">
+                            {{$user->avatarTag}}
+                        </a>
+
+                        <div class="media-body ">
+                            <small class="pull-right text-navy">{{date('d/m', strtotime($user->birthday))}}</small>
+                            <strong>
                                 <a href="{{ URL::route('user_profile', $user->id) }}">{{ $user->fullname }}</a>
-                            @endif
-                        </td>
-                        <td>
-                            {{date('d/m', strtotime($user->birthday))}}
-                        </td>
-                        <td>
-                            {{ date('Y') - date('Y', strtotime($user->birthday)) + 1 }} ans
-                        </td>
-                    </tr>
+                            </strong><br/>
+                            <small class="text-muted">{{ date('Y') - date('Y', strtotime($user->birthday)) + 1 }} ans
+                            </small>
+                            {{--<div class="actions">--}}
+                            {{--<a class="btn btn-xs btn-white"><i class="fa fa-thumbs-up"></i> Like </a>--}}
+                            {{--<a class="btn btn-xs btn-danger"><i class="fa fa-heart"></i> Love</a>--}}
+                            {{--</div>--}}
+                        </div>
+                    </div>
                 @endforeach
-                </tbody>
-            </table>
+            </div>
+
+
         </div>
     </div>
 @endif
