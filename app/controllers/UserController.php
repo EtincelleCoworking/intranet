@@ -309,61 +309,61 @@ class UserController extends BaseController
                 $user->website = Input::get('website');
                 $user->phone = Input::get('phone');
 
-                if (count(Input::get('modif')) > 0) {
-                    $save = false;
-                    foreach (Input::get('modif') as $key => $skillId) {
-                        $skillExist = Skill::find($skillId);
-                        if (Input::get('deleteExist.' . $skillExist->id)) {
-                            Skill::destroy($skillExist->id);
-                        } else {
-                            if ($skillExist->name != Input::get('nameExist.' . $skillExist->id)) {
-                                $skillExist->name = Input::get('nameExist.' . $skillExist->id);
-                                $save = true;
-                            }
-                            if ($skillExist->value != Input::get('valueExist.' . $skillExist->id)) {
-                                $skillExist->value = Input::get('valueExist.' . $skillExist->id);
-                                $save = true;
-                            }
-                            if ($save) {
-                                $skillExist->save();
-                            }
-                        }
-                    }
-                }
-
-                if (Input::get('name') && count(Input::get('name')) > 1) {
-                    foreach (Input::get('name') as $key => $skillname) {
-                        if ($skillname != null) {
-                            $skill = new Skill();
-                            $skill->user_id = $user->id;
-                            $skill->name = $skillname;
-                            if (Input::get('value.' . $key)) {
-                                $skill->value = Input::get('value.' . $key);
-                            }
-                            $skill->save();
-                        }
-                    }
-                } elseif (Input::get('name') && count(Input::get('name')) == 1) {
-                    if (Input::get('name') != '') {
-                        $skill = new Skill();
-                        $skill->user_id = $user->id;
-                        $skill->name = Input::get('name');
-                        if (Input::get('value')) {
-                            $skill->value = Input::get('value');
-                        }
-                        $skill->save();
-                    }
-                }
-
-                if (Input::file('avatar')) {
-                    $avatar = $user->id . '.' . Input::file('avatar')->guessClientExtension();
-                    if ($user->avatar) {
-                        unlink(public_path() . '/uploads/avatars/' . $user->avatar);
-                    }
-                    if (Input::file('avatar')->move('uploads/avatars', $avatar)) {
-                        $user->avatar = $avatar;
-                    }
-                }
+//                if (count(Input::get('modif')) > 0) {
+//                    $save = false;
+//                    foreach (Input::get('modif') as $key => $skillId) {
+//                        $skillExist = Skill::find($skillId);
+//                        if (Input::get('deleteExist.' . $skillExist->id)) {
+//                            Skill::destroy($skillExist->id);
+//                        } else {
+//                            if ($skillExist->name != Input::get('nameExist.' . $skillExist->id)) {
+//                                $skillExist->name = Input::get('nameExist.' . $skillExist->id);
+//                                $save = true;
+//                            }
+//                            if ($skillExist->value != Input::get('valueExist.' . $skillExist->id)) {
+//                                $skillExist->value = Input::get('valueExist.' . $skillExist->id);
+//                                $save = true;
+//                            }
+//                            if ($save) {
+//                                $skillExist->save();
+//                            }
+//                        }
+//                    }
+//                }
+//
+//                if (Input::get('name') && count(Input::get('name')) > 1) {
+//                    foreach (Input::get('name') as $key => $skillname) {
+//                        if ($skillname != null) {
+//                            $skill = new Skill();
+//                            $skill->user_id = $user->id;
+//                            $skill->name = $skillname;
+//                            if (Input::get('value.' . $key)) {
+//                                $skill->value = Input::get('value.' . $key);
+//                            }
+//                            $skill->save();
+//                        }
+//                    }
+//                } elseif (Input::get('name') && count(Input::get('name')) == 1) {
+//                    if (Input::get('name') != '') {
+//                        $skill = new Skill();
+//                        $skill->user_id = $user->id;
+//                        $skill->name = Input::get('name');
+//                        if (Input::get('value')) {
+//                            $skill->value = Input::get('value');
+//                        }
+//                        $skill->save();
+//                    }
+//                }
+//
+//                if (Input::file('avatar')) {
+//                    $avatar = $user->id . '.' . Input::file('avatar')->guessClientExtension();
+//                    if ($user->avatar) {
+//                        unlink(public_path() . '/uploads/avatars/' . $user->avatar);
+//                    }
+//                    if (Input::file('avatar')->move('uploads/avatars', $avatar)) {
+//                        $user->avatar = $avatar;
+//                    }
+//                }
 
                 if ($user->save()) {
                     return Redirect::route('user_profile', $user->id)->with('mSuccess', 'Votre profil a bien été modifié');
