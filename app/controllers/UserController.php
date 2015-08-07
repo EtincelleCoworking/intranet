@@ -125,7 +125,10 @@ class UserController extends BaseController
         );
 
         $params['messages'] = WallPost::where('level', 0)->orderBy('created_at', 'DESC')->limit(5)->get();
-        $params['birthdays'] = User::where('birthday', '<>', '0000-00-00')->orderBy('birthday', 'ASC')->limit(5)->get();
+        $params['birthdays'] = User::where('birthday', '<>', '0000-00-00')
+            ->whereIsMember(true)
+            ->orderByRaw('DATE_FORMAT(birthday, "%m-%d") ASC')
+            ->limit(5)->get();
 
         $params = array_merge($params, Subscription::getActiveSubscriptionInfos());
 
