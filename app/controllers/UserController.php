@@ -99,7 +99,7 @@ class UserController extends BaseController
             $pasttimes = PastTime::Recap(Auth::user()->id, $date_pt_filtre_start, $date_pt_filtre_end);
         }
 
-        $chooseMember = User::where('is_member', true)->orderByRaw("RAND()")->first();
+      //  $chooseMember = User::where('is_member', true)->orderByRaw("RAND()")->first();
 
         /* En travaux pour les stats annu.
         $annualTotal = DB::table('invoices_items')->join('invoices', function($join)
@@ -122,7 +122,7 @@ class UserController extends BaseController
             'chargesMonth' => $chargesMonth,
             'chargesMonthToPay' => $chargesMonthToPay,
             'pasttimes' => $pasttimes,
-            'chooseMember' => $chooseMember,
+     //       'chooseMember' => $chooseMember,
             'pending' => $pending,
             'on_hold' => $on_hold,
         );
