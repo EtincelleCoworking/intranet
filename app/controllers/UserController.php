@@ -130,7 +130,7 @@ class UserController extends BaseController
                 INTERVAL YEAR(CURDATE())-YEAR(birthday)
                          + IF(DAYOFYEAR(CURDATE()) > DAYOFYEAR(birthday),1,0)
                 YEAR)
-            BETWEEN CURDATE() AND DATE_ADD(CURDATE(), INTERVAL 7 DAY)')
+            BETWEEN CURDATE() AND DATE_ADD(CURDATE(), INTERVAL 30 DAY)')
             ->whereIsMember(true)
             ->orderByRaw('DATE_FORMAT(birthday, "%m-%d") ASC')
             ->limit(5)->get();
