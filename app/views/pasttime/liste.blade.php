@@ -59,54 +59,54 @@
 
 
 
-        @if(count($recap)>0 or $active_subscription)
+    @if(count($recap)>0 or $active_subscription)
 
-            <div class="row">
-                <div class="@if($active_subscription) col-lg-8 @else  col-lg-12 @endif">
-                    <div class="ibox">
-                        <div class="ibox-title">
-                            <h5>En attente de facturation {{ number_format($pending_invoice_amount, 0, ',', '.') }}€
-                                HT</h5>
-                        </div>
-                        <div class="ibox-content">
-                            <div class="row">
-                                @foreach ($recap as $r)
-                                    <div class="col-md-3">
-                                        <div class="panel panel-default">
-                                            <div class="panel-heading">
-                                                <h4 class="panel-title">{{ $r->name }}</h4>
+        <div class="row">
+            <div class="@if($active_subscription) col-lg-8 @else  col-lg-12 @endif">
+                <div class="ibox">
+                    <div class="ibox-title">
+                        <h5>En attente de facturation {{ number_format($pending_invoice_amount, 0, ',', '.') }}€
+                            HT</h5>
+                    </div>
+                    <div class="ibox-content">
+                        <div class="row">
+                            @foreach ($recap as $r)
+                                <div class="col-md-3">
+                                    <div class="panel panel-default">
+                                        <div class="panel-heading">
+                                            <h4 class="panel-title">{{ $r->name }}</h4>
+                                        </div>
+                                        <div class="panel-body">
+                                            <div>
+                                                @if ($r->hours)
+                                                    {{ $r->hours }} h
+                                                @endif
+                                                @if ($r->minutes)
+                                                    {{ $r->minutes }} min
+                                                @endif
                                             </div>
-                                            <div class="panel-body">
-                                                <div>
-                                                    @if ($r->hours)
-                                                        {{ $r->hours }} h
-                                                    @endif
-                                                    @if ($r->minutes)
-                                                        {{ $r->minutes }} min
-                                                    @endif
-                                                </div>
-                                                <div>
-                                                    @if ($r->amount > 0)
-                                                        {{ number_format($r->amount, 0, ',', '.') }}€ HT
-                                                        / {{ number_format($r->amount * 1.2, 0, ',', '.') }}€ TTC
-                                                    @endif
-                                                </div>
+                                            <div>
+                                                @if ($r->amount > 0)
+                                                    {{ number_format($r->amount, 0, ',', '.') }}€ HT
+                                                    / {{ number_format($r->amount * 1.2, 0, ',', '.') }}€ TTC
+                                                @endif
                                             </div>
                                         </div>
                                     </div>
-                                @endforeach
-                            </div>
+                                </div>
+                            @endforeach
                         </div>
                     </div>
                 </div>
-                @if($active_subscription)
+            </div>
+            @if($active_subscription)
                 <div class="col-lg-4">
                     @include('partials.active_subscription', array('active_subscription' => $active_subscription, 'subscription_used' => $subscription_used, 'subscription_ratio' => $subscription_ratio))
                 </div>
-                    @endif
-            </div>
+            @endif
+        </div>
 
-        @endif
+    @endif
     @if(count($times)==0)
         <p>Aucune donnée.</p>
     @else
@@ -137,10 +137,11 @@
                                 </thead>
                                 <tbody>
                                 @foreach ($times as $time)
-                                    <tr @if ((Auth::user()->role == 'superadmin') and $time->invoice_id) class="text-muted" @endif >
+                                    <tr @if ((Auth::user()->role == 'superadmin') and ($time->invoice_id or $time->is_free)) class="text-muted" @endif >
                                         <td>{{ date('d/m/Y', strtotime($time->date_past)) }}</td>
                                         @if (Auth::user()->role == 'superadmin')
-                                            <td>{{ $time->user->fullname }}
+                                            <td>
+                                                <a href="{{ URL::route('user_modify', $time->user->id) }}">{{ $time->user->fullname }}</a>
                                                 <a href="?filtre_submitted=1&filtre_user_id={{ $time->user->id }}"><i
                                                             class="fa fa-filter"></i></a>
                                             </td>
@@ -158,10 +159,14 @@
                                         </td>
                                         <td>
                                             @if ($time->invoice_id)
-                                                    <a target="_blank"
-                                                       href="{{ URL::route('invoice_print_pdf', $time->invoice->id) }}">{{ $time->invoice->ident }}</a>
+                                                <a target="_blank"
+                                                   href="{{ URL::route('invoice_print_pdf', $time->invoice->id) }}">{{ $time->invoice->ident }}</a>
                                             @else
-                                                -
+                                                @if ($time->is_free)
+                                                    Offert
+                                                @else
+                                                    -
+                                                @endif
                                             @endif
                                         </td>
                                         <td>

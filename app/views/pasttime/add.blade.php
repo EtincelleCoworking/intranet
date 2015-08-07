@@ -41,13 +41,19 @@
                     </div>
                     @if (Auth::user()->role == 'superadmin')
                         <div class="row">
-                            <div class="col-md-6">
+                            <div class="col-md-5">
                                 {{ Form::label('user_id', 'Client') }}
                                 <p>{{ Form::select('user_id', User::Select('Sélectionnez un client'), null, array('class' => 'form-control', 'id' => 'userSelector')) }}</p>
                             </div>
-                            <div class="col-md-6">
+                            <div class="col-md-5">
                                 {{ Form::label('invoice_id', 'Facture') }}
                                 <p>{{ Form::select('invoice_id', Invoice::Select('Sélectionnez une facture'), null, array('class' => 'form-control')) }}</p>
+                            </div>
+                            <div class="col-md-2">
+                                <p>
+                                    <br />{{ Form::checkbox('is_free', true, false) }}
+                                {{ Form::label('is_free', 'Gratuit') }}
+                                </p>
                             </div>
                         </div>
                     @else

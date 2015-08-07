@@ -72,6 +72,7 @@ class PastTimeController extends BaseController
         $q = PastTime::whereBetween('date_past', array($date_filtre_start, $date_filtre_end));
         if (Session::get('filtre_pasttime.filtre_toinvoice')) {
             $q->where('invoice_id', 0);
+            $q->where('is_free', false);
         }
         if (Auth::user()->role == 'superadmin') {
             if (Session::has('filtre_pasttime.user_id')) {
@@ -121,6 +122,7 @@ class PastTimeController extends BaseController
             if (Auth::user()->role == 'superadmin') {
                 $time->user_id = Input::get('user_id');
                 $time->invoice_id = Input::get('invoice_id');
+                $time->is_free = Input::get('is_free');
             } else {
                 $time->user_id = Auth::user()->id;
             }
@@ -159,6 +161,7 @@ class PastTimeController extends BaseController
             if (Auth::user()->role == 'superadmin') {
                 $time->user_id = Input::get('user_id');
                 $time->invoice_id = Input::get('invoice_id');
+                $time->is_free = Input::get('is_free');
             } else {
                 $time->user_id = Auth::user()->id;
             }
