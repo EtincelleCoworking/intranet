@@ -16,7 +16,7 @@
                             <strong>
                                 <a href="{{ URL::route('user_profile', $user->id) }}">{{ $user->fullname }}</a>
                             </strong><br/>
-                            <small class="text-muted">{{ date('Y') - date('Y', strtotime($user->birthday)) + 1 }} ans
+                            <small class="text-muted">aura alors {{ date('Y') - date('Y', strtotime($user->birthday)) + 1 }} ans
                             </small>
                             {{--<div class="actions">--}}
                             {{--<a class="btn btn-xs btn-white"><i class="fa fa-thumbs-up"></i> Like </a>--}}
