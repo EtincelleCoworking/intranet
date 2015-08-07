@@ -79,7 +79,7 @@
                                 @endif
 
 
-                                @if($user->phone)
+                                @if($user->phoneFmt)
                                     <i class="fa fa-phone"></i>
                                     {{ $user->phoneFmt }}
                                     <br/>
