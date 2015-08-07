@@ -38,7 +38,7 @@
                                    class="btn btn-danger btn-outline">Supprimer</a>
                     @endif
 
-                    <a href="{{ URL::route('invoice_print_pdf', $invoice->id) }}" class="btn btn-default">PDF</a>
+                    <a href="{{ URL::route('invoice_print_pdf', $invoice->id) }}" class="btn btn-default" target="_blank">PDF</a>
                 </div>
             @endif
         </div>

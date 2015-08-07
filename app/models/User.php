@@ -219,4 +219,11 @@ class User extends Eloquent implements UserInterface, RemindableInterface
     {
 
     }
+
+    public function hasQuotes(){
+        return (bool)(Invoice::whereType('D')->whereUserId($this->id)->count() > 0);
+    }
+    public function getPendingInvoiceCount(){
+        return Invoice::whereType('F')->whereUserId($this->id)->whereNull('date_payment')->count();
+    }
 }

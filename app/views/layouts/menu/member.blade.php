@@ -36,16 +36,23 @@
         <a href="{{ URL::route('pasttime_list') }}"><i class="fa fa-clock-o"></i> <span
                     class="nav-label">Temps passé</span></a>
     </li>
-
+    @if (Auth::user()->hasQuotes())
     <li{{ Request::is('quote*') ? ' class="active"' : '' }}>
         <a href="{{ URL::route('quote_list', 'all') }}"><i class="fa fa-file-text"></i> <span class="nav-label">Devis</span></a>
     </li>
+    @endif
+
+    {{-- */ $invoiceCount = Auth::user()->getPendingInvoiceCount(); /* --}}
 
     <li{{ Request::is('invoice*') ? ' class="active"' : '' }}>
-        <a href="{{ URL::route('invoice_list') }}"><i class="fa fa-money"></i> <span
-                    class="nav-label">Factures</span></a>
+        <a href="{{ URL::route('invoice_list') }}">
+            <i class="fa fa-money"></i>
+            <span class="nav-label">Factures</span>
+    @if ($invoiceCount)
+            <span class="label label-danger pull-right">{{$invoiceCount}}</span>
+    @endif
+        </a>
     </li>
-
 
 </ul>
 

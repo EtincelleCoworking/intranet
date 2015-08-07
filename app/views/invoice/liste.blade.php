@@ -10,11 +10,7 @@
             <h2>Liste des factures</h2>
         </div>
         <div class="col-sm-8">
-            @if (Auth::user()->role == 'superadmin')
-                <div class="title-action">
-                    <a href="{{ URL::route('invoice_add', 'F') }}" class="btn btn-primary">Ajouter une facture</a>
-                </div>
-            @endif
+
         </div>
     </div>
 @stop
