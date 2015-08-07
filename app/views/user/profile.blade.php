@@ -67,16 +67,16 @@
                     @endif
                 </div>
                 <div class="ibox-content">
-                    <div class="col-lg-6">
+                    <div class="col-lg-4">
                         <p><i class="fa fa-envelope"></i> {{ HTML::mailto($user->email) }}</p>
                     </div>
                     @if ($user->website)
-                        <div class="col-lg-6">
+                        <div class="col-lg-4">
                             <p><i class="fa fa-globe"></i> {{ link_to($user->website) }}</p>
                         </div>
                     @endif
                     @if ($user->twitter)
-                        <div class="col-lg-3">
+                        <div class="col-lg-4">
                             <p>
                                 <i class="fa fa-twitter"></i>
                                 <a href="http://twitter.com/{{$user->twitter}}">{{ $user->twitter }}</a>
@@ -84,7 +84,7 @@
                         </div>
                     @endif
                     @if ($user->social_github)
-                        <div class="col-lg-3">
+                        <div class="col-lg-4">
                             <p>
                                 <i class="fa fa-github"></i>
                                 <a href="{{$user->social_github}}">{{ $user->social_github }}</a>
@@ -92,7 +92,7 @@
                         </div>
                     @endif
                     @if ($user->social_instagram)
-                        <div class="col-lg-3">
+                        <div class="col-lg-4">
                             <p>
                                 <i class="fa fa-instagram"></i>
                                 <a href="{{$user->social_instagram}}">{{ $user->social_instagram }}</a>
@@ -101,7 +101,7 @@
                     @endif
 
                     @if ($user->social_linkedin)
-                        <div class="col-lg-3">
+                        <div class="col-lg-4">
                             <p>
                                 <i class="fa fa-linkedin"></i>
                                 <a href="{{$user->social_linkedin}}">{{ $user->social_linkedin }}</a>
