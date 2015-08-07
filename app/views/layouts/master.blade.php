@@ -409,6 +409,7 @@
 {{ HTML::script('js/inspinia.js') }}
 {{ HTML::script('js/plugins/pace/pace.min.js') }}
 {{ HTML::script('js/plugins/summernote/summernote.min.js') }}
+{{ HTML::script('js/jquery.equalheights.js') }}
 <script type="text/javascript">
     $.fn.datepicker.defaults.format = "dd/mm/yyyy";
 
