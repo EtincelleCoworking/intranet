@@ -156,7 +156,7 @@
 
                         </div>
                         <div class="social-footer">
-                            {{--*/ $children = $message->children()->get() /*--}}
+                            {{--*/ $children = $message->children()->with('user')->get() /*--}}
                             @foreach($children as $child)
                                 {{$child->render('div', function ($node) {
                                     $snippet = '<div class="tree tree-level-1"><div class="social-comment row">

@@ -128,6 +128,7 @@ class UserController extends BaseController
         );
 
         $params['messages'] = WallPost::where('level', 0)
+            ->with('user')
             ->orderBy('created_at', 'DESC')->limit(5)->get();
         $params['birthdays'] = User::where('birthday', '<>', '0000-00-00')
             ->whereRaw('DATE_ADD(birthday,
