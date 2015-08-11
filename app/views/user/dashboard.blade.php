@@ -1,7 +1,7 @@
 @extends('layouts.master')
 
 @section('content')
-    @if (Auth::user()->role == 'superadmin')
+    @if (Auth::user()->isSuperAdmin())
         <div class="row">
             <div class="col-lg-3">
                 <div class="ibox">
@@ -84,7 +84,43 @@
     @endif
 
     <div class="row">
-        <div class="col-lg-8">
+        <div class="col-lg-12">
+
+            <div class="modal inmodal fade" id="wallNewMessage" tabindex="-1" role="dialog" aria-hidden="true">
+                <div class="modal-dialog modal-lg">
+                    <div class="modal-content">
+                        {{ Form::open(array('route' => array('wall_add_check'), 'id' => 'wall_add')) }}
+                        <div class="modal-header">
+                            <button type="button" class="close" data-dismiss="modal"><span
+                                        aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+                            <h4 class="modal-title">Nouveau message</h4>
+                            {{--<small class="font-bold">Lorem Ipsum is simply dummy text of the printing and typesetting--}}
+                                {{--industry.--}}
+                            {{--</small>--}}
+                        </div>
+                        <div class="modal-body">
+
+                            <div class="row">
+                                <div class="col-md-12">
+                                    <div class="form-control summernote" id="post_message_summernote"></div>
+                                    {{ Form::hidden('message') }}
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-white" data-dismiss="modal">Annuler</button>
+                            {{ Form::submit('Enregistrer', array('class' => 'btn btn-primary', 'id' => 'wall_submit')) }}
+                        </div>
+                        {{ Form::close() }}
+                    </div>
+                </div>
+            </div>
+            <p>
+                <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#wallNewMessage">Ajouter
+                    un message
+                </button>
+            </p>
 
             @foreach($messages as $message)
                 <div class="social-feed-separated">
@@ -94,15 +130,15 @@
                     </div>
 
                     <div class="social-feed-box">
-                        @if (Auth::user()->role == 'superadmin')
-                        <div class="pull-right social-action dropdown">
-                            <button data-toggle="dropdown" class="dropdown-toggle btn-white">
-                                <i class="fa fa-angle-down"></i>
-                            </button>
-                            <ul class="dropdown-menu m-t-xs">
-                                <li><a href="{{ URL::route('wall_delete', $message->id) }}">Supprimer</a></li>
-                            </ul>
-                        </div>
+                        @if (Auth::user()->isSuperAdmin())
+                            <div class="pull-right social-action dropdown">
+                                <button data-toggle="dropdown" class="dropdown-toggle btn-white">
+                                    <i class="fa fa-angle-down"></i>
+                                </button>
+                                <ul class="dropdown-menu m-t-xs">
+                                    <li><a href="{{ URL::route('wall_delete', $message->id) }}">Supprimer</a></li>
+                                </ul>
+                            </div>
                         @endif
                         <div class="social-avatar">
                             <a href="{{URL::route('user_profile', $message->user->id)}}">{{$message->user->fullname}}</a>
@@ -127,7 +163,7 @@
                                     <div class="col-lg-12">
                                         <a href="#" class="pull-left">'.$node->user->avatarTag.'</a>
                                         <div class="media-body">';
-                                        if(Auth::user()->role == 'superadmin'){
+                                        if(Auth::user()->isSuperAdmin()){
                                         $snippet .= '<a href="/wall/delete-reply/'.$node->id.'" class="btn btn-xs btn-danger btn-outline pull-right ajaxDeleteReply">Supprimer</a>';
                                         }
                                         $snippet .= '<a href="/profile/'.$node->user->id.'">'.$node->user->fullname.'</a>
@@ -180,29 +216,7 @@
 
             @endforeach
         </div>
-        <div class="col-lg-4">
-            <div class="ibox ">
-                <div class="ibox-title">
-                    <h5>Nouveau message</h5>
-                </div>
-                <div class="ibox-content">
-                    {{ Form::open(array('route' => array('wall_add_check'), 'id' => 'wall_add')) }}
 
-                    <div class="row">
-                        <div class="col-md-12">
-                            <div class="form-control summernote" id="post_message_summernote"></div>
-                            {{ Form::hidden('message') }}
-                        </div>
-                    </div>
-                    <div class="hr-line-dashed"></div>
-                    <div class="form-group">
-                        {{ Form::submit('Enregistrer', array('class' => 'btn btn-success', 'id' => 'wall_submit')) }}
-                    </div>
-                    {{ Form::close() }}
-                </div>
-
-            </div>
-        </div>
     </div>
 
 
@@ -234,10 +248,10 @@
                         var snippet = '<div class="tree tree-level-1"><div class="tree tree-level-1">'
                                 + '<div class="social-comment"><a href="{{URL::Route('user_profile', Auth::user()->id) }}" class="pull-left">{{Auth::user()->avatarTag}}</a>'
                                 + '<div class="media-body">'
-                                @if (Auth::user()->role == 'superadmin')
-                                + '<a href="/wall/delete-reply/' + data.id + '" class="btn btn-xs btn-danger btn-outline pull-right ajaxDeleteReply">Supprimer</a>'
+                                @if (Auth::user()->isSuperAdmin())
+                                 + '<a href="/wall/delete-reply/' + data.id + '" class="btn btn-xs btn-danger btn-outline pull-right ajaxDeleteReply">Supprimer</a>'
                                 @endif
-                                + '<a href="{{URL::Route('user_profile', Auth::user()->id) }}">{{Auth::user()->fullname}}</a> '
+                                 + '<a href="{{URL::Route('user_profile', Auth::user()->id) }}">{{Auth::user()->fullname}}</a> '
                                 + '<small class="text-muted">' + data.created + '</small>'
                                 + '<div>' + data.content + '</div>'
                                 + '</div>'

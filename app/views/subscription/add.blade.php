@@ -38,7 +38,7 @@
                     @endif
 
                     <div class="row">
-                        @if (Auth::user()->role == 'superadmin')
+                        @if (Auth::user()->isSuperAdmin())
                             <div class="col-md-6">
                                 {{ Form::label('user_id', 'Client') }}
                                 <p>{{ Form::select('user_id', User::Select('Sélectionnez un client'), isset($subscription)?$subscription->user_id:null, array('id' => 'selectUserId', 'class' => 'form-control')) }}</p>

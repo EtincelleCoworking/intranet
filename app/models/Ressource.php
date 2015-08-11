@@ -1,7 +1,8 @@
 <?php
+
 /**
-* Ressource Entity
-*/
+ * Ressource Entity
+ */
 class Ressource extends Eloquent
 {
     const TYPE_COWORKING = 1;
@@ -47,8 +48,21 @@ class Ressource extends Eloquent
      */
     public function scopeSelectAll($query)
     {
-        $selectVals['null'] = 'Aucune ressource';
+        $selectVals[null] = 'Aucune ressource';
         $selectVals += $this->orderBy('order_index', 'ASC')->lists('name', 'id');
+        return $selectVals;
+    }
+
+    /**
+     * Get list of ressources
+     */
+    public function scopeBookable($query, $emptyCaption = '')
+    {
+        $selectVals = array();
+        if (!empty($emptyCaption)) {
+            $selectVals[null] = $emptyCaption;
+        }
+        $selectVals += $this->whereIsBookable(true)->orderBy('order_index', 'ASC')->lists('name', 'id');
         return $selectVals;
     }
 }

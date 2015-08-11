@@ -13,7 +13,7 @@
         </div>
         <div class="col-sm-4">
             <div class="title-action">
-                @if ((Auth::user()->role == 'superadmin') or (Auth::user()->id == $user->id))
+                @if ((Auth::user()->isSuperAdmin()) or (Auth::user()->id == $user->id))
                     <a href="{{ URL::route('user_modify', $user->id) }}" class="btn btn-success pull-right">Modifier</a>
                 @endif
             </div>

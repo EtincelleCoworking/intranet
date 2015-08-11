@@ -124,6 +124,8 @@ return array(
 		'Barryvdh\Debugbar\ServiceProvider',
         'Barryvdh\Snappy\ServiceProvider',
         'GuilhermeGuitte\BehatLaravel\BehatLaravelServiceProvider',
+
+		'Etincelle\Booking\BookingServiceProvider',
 	),
 
 	/*
@@ -175,7 +177,7 @@ return array(
 		'Mail'              => 'Illuminate\Support\Facades\Mail',
 		'Paginator'         => 'Illuminate\Support\Facades\Paginator',
 		'Password'          => 'Illuminate\Support\Facades\Password',
-        'PDF'               => 'Thujohn\Pdf\PdfFacade',
+//        'PDF'               => 'Thujohn\Pdf\PdfFacade',
 		'Queue'             => 'Illuminate\Support\Facades\Queue',
 		'Redirect'          => 'Illuminate\Support\Facades\Redirect',
 		'Redis'             => 'Illuminate\Support\Facades\Redis',

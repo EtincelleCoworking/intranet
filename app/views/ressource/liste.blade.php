@@ -26,7 +26,8 @@
                         <thead>
                         <tr>
                             <th>Nom</th>
-                            <th>Valeur</th>
+                            <th>Réservable</th>
+                            <th>Prix horaire HT</th>
                             <th>Ordre</th>
                             <th>Actions</th>
                         </tr>
@@ -37,6 +38,7 @@
                                 <td>
                                     <a href="{{ URL::route('ressource_modify', $ressource->id) }}">{{ $ressource->name }}</a>
                                 </td>
+                                <td>{{ $ressource->is_bookable?'Oui':'Non' }}</td>
                                 <td align="right">{{ $ressource->amount }}€</td>
                                 <td>
                                     @if ($ressource->order_index > 1)

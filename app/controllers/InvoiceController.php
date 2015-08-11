@@ -10,7 +10,7 @@ class InvoiceController extends BaseController
      */
     private function dataExist($id, $tpl)
     {
-        if (Auth::user()->role == 'superadmin') {
+        if (Auth::user()->isSuperAdmin()) {
             $data = Invoice::find($id);
         } else {
             $data = Invoice::whereUserId(Auth::user()->id)->find($id);
@@ -91,6 +91,7 @@ class InvoiceController extends BaseController
 
 
         $q->orderBy('created_at', 'DESC');
+        $q->with('user', 'organisation', 'items', 'items.vat');
         if (Auth::user()->role != 'superadmin') {
             $q->whereUserId(Auth::user()->id);
         }
@@ -102,7 +103,7 @@ class InvoiceController extends BaseController
     public function quoteList($filtre)
     {
         $q = Invoice::QuoteOnly($filtre)->orderBy('created_at', 'DESC');
-        if (Auth::user()->role != 'superadmin') {
+        if (!Auth::user()->isSuperAdmin()) {
             $q->whereUserId(Auth::user()->id);
         }
         $invoices = $q->paginate(15);

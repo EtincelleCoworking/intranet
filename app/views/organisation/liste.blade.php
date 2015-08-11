@@ -10,7 +10,7 @@
 			<h2>Liste des sociétés</h2>
 		</div>
 		<div class="col-sm-8">
-			@if (Auth::user()->role == 'superadmin')
+			@if (Auth::user()->isSuperAdmin())
 				<div class="title-action">
 					<a href="{{ URL::route('organisation_add') }}" class="btn btn-default">Ajouter une société</a>
 				</div>

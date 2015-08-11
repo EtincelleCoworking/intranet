@@ -32,6 +32,20 @@
         <a href="{{ URL::route('user_list') }}"><i class="fa fa-user"></i> <span class="nav-label">Membres</span></a>
     </li>
 
+    <li{{ (Request::is('booking*') ? ' class="active"' : '') }}>
+        <a href="{{ URL::route('booking_list') }}"><i class="fa fa-calendar"></i> <span class="nav-label">Réservations</span>
+            <span class="fa arrow"></span></a>
+        <ul class="nav nav-second-level {{ (Request::is('booking*') ? '' : 'collapse') }}">
+            <li{{ Request::is('booking') ? ' class="active"' : '' }}>
+                <a href="{{ URL::route('booking') }}"><i class="fa fa-calendar"></i> Calendrier</a>
+            </li>
+            <li{{ Request::is('booking/list') ? ' class="active"' : '' }}>
+                <a href="{{ URL::route('booking_list') }}"><i class="fa fa-calendar-o"></i> Liste</a>
+            </li>
+            {{--<li><a href="{{ URL::route('user_directory') }}">Annuaire</a></li>--}}
+        </ul>
+    </li>
+
     <li{{ Request::is('pasttime*') ? ' class="active"' : '' }}>
         <a href="{{ URL::route('pasttime_list') }}"><i class="fa fa-clock-o"></i> <span
                     class="nav-label">Temps passé</span></a>

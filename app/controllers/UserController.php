@@ -49,7 +49,7 @@ class UserController extends BaseController
         }
 
         $totalMonth = DB::table('invoices_items')->join('invoices', function ($join) {
-            if (Auth::user()->role == 'superadmin') {
+            if (Auth::user()->isSuperAdmin()) {
                 $join->on('invoices_items.invoice_id', '=', 'invoices.id')
                     ->where('invoices.type', '=', 'F')
                     ->where('invoices.days', '=', date('Ym'));
@@ -61,7 +61,7 @@ class UserController extends BaseController
             }
         })->select(DB::raw('SUM(amount) as total'))->groupBy('invoices.days')->first();
 
-        if (Auth::user()->role == 'superadmin') {
+        if (Auth::user()->isSuperAdmin()) {
             $chargesMonth = DB::table('charges_items')->join('charges', function ($join) {
                 $join->on('charges_items.charge_id', '=', 'charges.id')
                     ->where(DB::raw('MONTH(charges.date_charge)'), '=', date('n'))
@@ -127,7 +127,8 @@ class UserController extends BaseController
             'on_hold' => $on_hold,
         );
 
-        $params['messages'] = WallPost::where('level', 0)->orderBy('created_at', 'DESC')->limit(5)->get();
+        $params['messages'] = WallPost::where('level', 0)
+            ->orderBy('created_at', 'DESC')->limit(5)->get();
         $params['birthdays'] = User::where('birthday', '<>', '0000-00-00')
             ->whereRaw('DATE_ADD(birthday,
                 INTERVAL YEAR(CURDATE())-YEAR(birthday)

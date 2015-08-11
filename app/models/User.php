@@ -134,41 +134,39 @@ class User extends Eloquent implements UserInterface, RemindableInterface
         return $skills;
     }
 
-    public function getAvatarTagAttribute(){
+    public function getAvatarTagAttribute()
+    {
         return sprintf('<img alt="" class="img-circle m-t-xs" src="%s">', $this->avatarUrl);
 
 
     }
 
-    public function getPhoneFmtAttribute(){
+    public function getPhoneFmtAttribute()
+    {
         $result = preg_replace('/[^0-9]/', '', $this->phone);
         $result = preg_replace('/([0-9]{2})/', '\1 ', $result);
         return $result;
     }
 
-    public function getAvatarUrlAttribute(){
-        $size = 80;
-        $default = '404';
-        $default = 'mm';
-        //$default = 'identicon';
-        //$default = 'monsterid';
-        //$default = 'wavatar';
-        $url = "http://www.gravatar.com/avatar/" . md5( strtolower( trim( $this->email ) ) ) . "?d=" . urlencode( $default ) . "&s=" . $size;
-        return $url;
-
-
+    public function getAvatarUrlAttribute()
+    {
+        return $this->getGravatarUrl(80);
     }
-    public function getLargeAvatarUrlAttribute(){
-        $size = 500;
+
+    protected function getGravatarUrl($size)
+    {
+        //return '/img/profile_small.jpg';
         $default = '404';
         $default = 'mm';
         //$default = 'identicon';
         //$default = 'monsterid';
         //$default = 'wavatar';
-        $url = "http://www.gravatar.com/avatar/" . md5( strtolower( trim( $this->email ) ) ) . "?d=" . urlencode( $default ) . "&s=" . $size;
-        return $url;
+        return "http://www.gravatar.com/avatar/" . md5(strtolower(trim($this->email))) . "?d=" . urlencode($default) . "&s=" . $size;
+    }
 
-
+    public function getLargeAvatarUrlAttribute()
+    {
+        return $this->getGravatarUrl(500);
     }
 
     /**
@@ -177,7 +175,7 @@ class User extends Eloquent implements UserInterface, RemindableInterface
     public function scopeSelect($query, $title = "Select")
     {
         $selectVals[''] = $title;
-        $selectVals += $this->orderBy('lastname', 'ASC')->orderBy('firstname', 'ASC')->get()->lists('fullnameOrga', 'id');
+        $selectVals += $this->orderBy('lastname', 'ASC')->with('organisations')->orderBy('firstname', 'ASC')->get()->lists('fullnameOrga', 'id');
         return $selectVals;
     }
 
@@ -237,11 +235,18 @@ class User extends Eloquent implements UserInterface, RemindableInterface
 
     }
 
-    public function hasQuotes(){
+    public function hasQuotes()
+    {
         return (bool)(Invoice::whereType('D')->whereUserId($this->id)->count() > 0);
     }
 
-    public function getPendingInvoiceCount(){
+    public function getPendingInvoiceCount()
+    {
         return Invoice::whereType('F')->whereUserId($this->id)->whereNull('date_payment')->count();
+    }
+
+    public function isSuperAdmin()
+    {
+        return ($this->role == 'superadmin');
     }
 }

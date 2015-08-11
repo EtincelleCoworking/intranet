@@ -17,10 +17,14 @@
     </title>
 
     <!-- Google Font: Open Sans -->
-    <link rel="stylesheet"
-          href="http://fonts.googleapis.com/css?family=Open+Sans:400,400italic,600,600italic,800,800italic">
-    <link rel="stylesheet" href="http://fonts.googleapis.com/css?family=Oswald:400,300,700">
-    <!-- Font Awesome CSS -->
+    {{--<link rel="stylesheet"--}}
+    {{--href="http://fonts.googleapis.com/css?family=Open+Sans:400,400italic,600,600italic,800,800italic">--}}
+
+    {{ HTML::style('fonts/open_sans.css') }}
+    {{ HTML::style('fonts/oswald.css') }}
+
+    {{--<link rel="stylesheet" href="http://fonts.googleapis.com/css?family=Oswald:400,300,700">--}}
+            <!-- Font Awesome CSS -->
     {{ HTML::style('font-awesome/css/font-awesome.min.css') }}
 
             <!-- Bootstrap CSS -->
@@ -52,6 +56,9 @@
 
     {{ HTML::style('css/plugins/summernote/summernote.css') }}
     {{ HTML::style('css/plugins/summernote/summernote-bs3.css') }}
+    {{ HTML::style('css/etincelle.css') }}
+
+    @yield('stylesheets')
 </head>
 <body>
 
@@ -411,7 +418,21 @@
 {{ HTML::script('js/plugins/summernote/summernote.min.js') }}
 {{ HTML::script('js/jquery.equalheights.js') }}
 <script type="text/javascript">
-    $.fn.datepicker.defaults.format = "dd/mm/yyyy";
+    $.fn.datepicker.dates['fr'] = {
+        days: ["dimanche", "lundi", "mardi", "mercredi", "jeudi", "vendredi", "samedi"],
+        daysShort: ["dim.", "lun.", "mar.", "mer.", "jeu.", "ven.", "sam."],
+        daysMin: ["d", "l", "ma", "me", "j", "v", "s"],
+        months: ["janvier", "février", "mars", "avril", "mai", "juin", "juillet", "août", "septembre", "octobre", "novembre", "décembre"],
+        monthsShort: ["janv.", "févr.", "mars", "avril", "mai", "juin", "juil.", "août", "sept.", "oct.", "nov.", "déc."],
+        today: "Aujourd'hui",
+        clear: "Effacer",
+        weekStart: 1,
+        format: "dd/mm/yyyy"
+    };
+    $.fn.datepicker.defaults.zIndexOffset = 3151;
+    $.fn.datepicker.defaults.todayHighlight = true;
+    $.fn.datepicker.defaults.language = 'fr';
+    $.fn.datepicker.defaults.autoclose = true;
 
 </script>
 @yield('javascript')

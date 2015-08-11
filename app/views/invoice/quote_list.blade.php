@@ -17,7 +17,7 @@
                     <a href="{{ URL::route('quote_list', 'canceled') }}" class="btn btn-white">Afficher les devis
                         refusés</a>
                 @endif
-                @if (Auth::user()->role == 'superadmin')
+                @if (Auth::user()->isSuperAdmin())
                     <a href="{{ URL::route('invoice_add', 'D') }}" class="btn btn-default">Ajouter un devis</a>
                 @endif
             </div>
@@ -52,7 +52,7 @@
                                         <td>{{ $invoice->created_at->format('d/m/Y') }}</td>
                                         <td>
                                             @if ($invoice->organisation)
-                                                @if (Auth::user()->role == 'superadmin')
+                                                @if (Auth::user()->isSuperAdmin())
                                                     <a href="{{ URL::route('organisation_modify', $invoice->organisation->id) }}">{{ $invoice->organisation->name }}</a>
                                                     (
                                                     <a href="{{ URL::route('user_modify', $invoice->user->id) }}">{{ $invoice->user->fullname }}</a>
@@ -91,7 +91,7 @@
                                         </td>
                                         <td style="text-align:right">{{ Invoice::TotalInvoice($invoice->items) }}€</td>
                                         <td>
-                                                @if (Auth::user()->role == 'superadmin')
+                                                @if (Auth::user()->isSuperAdmin())
                                             <a href="{{ URL::route('invoice_modify', $invoice->id) }}"
                                                class="btn btn-xs btn-default btn-outline">
                                                     Modifier

@@ -44,4 +44,5 @@ return array(
     // Stripe
     'stripe_sk' =>  'sk_test_',
     'stripe_pk' =>  'pk_test_',
+
 );

@@ -21,7 +21,7 @@
             </h2>
         </div>
         <div class="col-sm-4">
-            @if (Auth::user()->role == 'superadmin')
+            @if (Auth::user()->isSuperAdmin())
                 <div class="title-action">
 
                     @if ($invoice->type == 'D')

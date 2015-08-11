@@ -34,7 +34,7 @@
                     <div class="row">
                         {{ Form::open(array('route' => array('pasttime_list'))) }}
                         {{ Form::hidden('filtre_submitted', 1) }}
-                        @if (Auth::user()->role == 'superadmin')
+                        @if (Auth::user()->isSuperAdmin())
                             <div class="col-md-4">
                                 {{ Form::select('filtre_user_id', User::Select('Sélectionnez un client'), Session::get('filtre_pasttime.user_id') ? Session::get('filtre_pasttime.user_id') : null, array('id' => 'filter-client','class' => 'form-control')) }}
                             </div>
@@ -127,7 +127,7 @@
                                 <thead>
                                 <tr>
                                     <th>Date</th>
-                                    @if (Auth::user()->role == 'superadmin')
+                                    @if (Auth::user()->isSuperAdmin())
                                         <th>Utilisateur</th>
                                     @endif
                                     <th>Ressource</th>
@@ -140,9 +140,9 @@
                                 </thead>
                                 <tbody>
                                 @foreach ($times as $time)
-                                    <tr @if ((Auth::user()->role == 'superadmin') and ($time->invoice_id or $time->is_free)) class="text-muted" @endif >
+                                    <tr @if ((Auth::user()->isSuperAdmin()) and ($time->invoice_id or $time->is_free)) class="text-muted" @endif >
                                         <td>{{ date('d/m/Y', strtotime($time->date_past)) }}</td>
-                                        @if (Auth::user()->role == 'superadmin')
+                                        @if (Auth::user()->isSuperAdmin())
                                             <td>
                                                 <a href="{{ URL::route('user_modify', $time->user->id) }}">{{ $time->user->fullname }}</a>
                                                 <a href="?filtre_submitted=1&filtre_user_id={{ $time->user->id }}"><i
@@ -175,7 +175,7 @@
                                         <td>
                                             <a href="{{ URL::route('pasttime_modify', $time->id) }}"
                                                class="btn btn-xs btn-default">Modifier</a>
-                                            @if (Auth::user()->role == 'superadmin')<a
+                                            @if (Auth::user()->isSuperAdmin())<a
                                                     href="{{ URL::route('pasttime_delete', $time->id) }}"
                                                     class="btn btn-xs btn-danger" data-method="delete"
                                                     data-confirm="Etes-vous certain de vouloir supprimer cette ligne ?"

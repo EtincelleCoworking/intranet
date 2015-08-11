@@ -72,7 +72,7 @@
                                 <tr>
                                     <td>{{$position + 1}}</td>
                                     <td>
-                                        @if (Auth::user()->role == 'superadmin')
+                                        @if (Auth::user()->isSuperAdmin())
                                             <a href="{{ URL::route('organisation_modify', $subscription->organisation->id) }}">{{ $subscription->organisation->name }}</a>
                                             (
                                             <a href="{{ URL::route('user_modify', $subscription->user->id) }}">{{ $subscription->user->fullname }}</a>

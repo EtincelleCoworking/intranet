@@ -10,7 +10,7 @@ class PastTimeController extends BaseController
      */
     private function dataExist($id)
     {
-        if (Auth::user()->role == 'superadmin') {
+        if (Auth::user()->isSuperAdmin()) {
             $data = PastTime::find($id);
         } else {
             $data = PastTime::whereUserId(Auth::user()->id)->find($id);
@@ -70,11 +70,12 @@ class PastTimeController extends BaseController
 
         $recapFilter = false;
         $q = PastTime::whereBetween('date_past', array($date_filtre_start, $date_filtre_end));
+        $q->with('user', 'ressource');
         if (Session::get('filtre_pasttime.filtre_toinvoice')) {
             $q->where('invoice_id', 0);
             $q->where('is_free', false);
         }
-        if (Auth::user()->role == 'superadmin') {
+        if (Auth::user()->isSuperAdmin()) {
             if (Session::has('filtre_pasttime.user_id')) {
                 $recapFilter = Session::get('filtre_pasttime.user_id');
                 $q->whereUserId($recapFilter);
@@ -119,7 +120,7 @@ class PastTimeController extends BaseController
                 }
                 $time->time_end = $dateTime_start->format('Y-m-d') . ' ' . Input::get('time_end') . ':00';
             }
-            if (Auth::user()->role == 'superadmin') {
+            if (Auth::user()->isSuperAdmin()) {
                 $time->user_id = Input::get('user_id');
                 $time->invoice_id = Input::get('invoice_id');
                 $time->is_free = Input::get('is_free');
@@ -158,7 +159,7 @@ class PastTimeController extends BaseController
             if (Input::get('time_end')) {
                 $time->time_end = $time->date_past . ' ' . Input::get('time_end') . ':00';
             }
-            if (Auth::user()->role == 'superadmin') {
+            if (Auth::user()->isSuperAdmin()) {
                 $time->user_id = Input::get('user_id');
                 $time->invoice_id = Input::get('invoice_id');
                 $time->is_free = Input::get('is_free');

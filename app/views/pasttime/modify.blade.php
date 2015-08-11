@@ -41,7 +41,7 @@
                             <p>{{ Form::select('ressource_id', Ressource::SelectAll('Sélectionnez une ressource', $time->ressource_id), null, array('class' => 'form-control')) }}</p>
                         </div>
                     </div>
-                    @if (Auth::user()->role == 'superadmin')
+                    @if (Auth::user()->isSuperAdmin())
                         <div class="row">
                             <div class="col-md-5">
                                 {{ Form::label('user_id', 'Client') }}

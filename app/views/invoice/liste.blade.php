@@ -11,10 +11,10 @@
         </div>
         <div class="col-sm-8">
             <div class="title-action">
-            @if (Auth::user()->role == 'superadmin')
-                <a href="{{ URL::route('invoice_add', 'F') }}" class="btn btn-primary">Ajouter une facture</a>
-            @endif
-        </div>
+                @if (Auth::user()->isSuperAdmin())
+                    <a href="{{ URL::route('invoice_add', 'F') }}" class="btn btn-primary">Ajouter une facture</a>
+                @endif
+            </div>
         </div>
     </div>
 @stop
@@ -37,7 +37,7 @@
 
                         {{ Form::open(array('route' => array('invoice_list'))) }}
                         {{ Form::hidden('filtre_submitted', 1) }}
-                        @if (Auth::user()->role == 'superadmin')
+                        @if (Auth::user()->isSuperAdmin())
                             <div class="col-md-4">
                                 {{ Form::select('filtre_user_id', User::Select('Sélectionnez un client'), Session::get('filtre_invoice.user_id') ? Session::get('filtre_invoice.user_id') : null, array('id' => 'filter-client','class' => 'form-control')) }}
                             </div>
@@ -98,7 +98,7 @@
                                         <td>{{ date('d/m/Y', strtotime($invoice->date_invoice)) }}</td>
                                         <td>
                                             @if ($invoice->organisation)
-                                                @if (Auth::user()->role == 'superadmin')
+                                                @if (Auth::user()->isSuperAdmin())
                                                     <a href="{{ URL::route('organisation_modify', $invoice->organisation->id) }}">{{ $invoice->organisation->name }}</a>
                                                     @if ($invoice->user)
                                                         (
@@ -153,7 +153,7 @@
                                                     <a href="{{ URL::route('invoice_print_pdf', $invoice->id) }}"
                                                        class="btn btn-xs btn-default"
                                                        target="_blank">PDF</a>
-                                                    @if (Auth::user()->role == 'superadmin')
+                                                    @if (Auth::user()->isSuperAdmin())
                                                         <a href="{{ URL::route('invoice_modify', $invoice->id) }}"
                                                            class="btn btn-xs btn-default btn-outline">
                                                             Modifier
@@ -171,7 +171,7 @@
                                                 <a href="{{ URL::route('invoice_print_pdf', $invoice->id) }}"
                                                    class="btn btn-xs btn-default"
                                                    target="_blank">PDF</a>
-                                                @if (Auth::user()->role == 'superadmin')
+                                                @if (Auth::user()->isSuperAdmin())
                                                     <a href="{{ URL::route('invoice_modify', $invoice->id) }}"
                                                        class="btn btn-xs btn-default btn-outline">
                                                         Modifier
