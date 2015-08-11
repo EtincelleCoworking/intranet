@@ -1,0 +1,26 @@
+{
+    "name": "etincelle/booking",
+    "description": "",
+    "authors": [
+        {
+            "name": "Sébastien Hordeaux",
+            "email": "sebastien@coworking-toulouse.com"
+        }
+    ],
+    "require": {
+        "php": ">=5.4.0",
+        "illuminate/support": "4.2.*",
+        "illuminate/database": "4.2.x"
+    },
+    "autoload": {
+        "classmap": [
+            "src/migrations",
+            "src/models",
+            "src/controllers"
+        ],
+        "psr-0": {
+            "Etincelle\\Booking\\": "src/"
+        }
+    },
+    "minimum-stability": "stable"
+}
