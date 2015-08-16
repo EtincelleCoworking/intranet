@@ -196,7 +196,6 @@
 
 @section('javascript')
 
-    {{ HTML::script('js/plugins/fullcalendar/moment.min.js') }}
     {{ HTML::script('js/plugins/fullcalendar/fullcalendar.min.js') }}
     {{ HTML::script('js/plugins/fullcalendar/lang-all.js') }}
 

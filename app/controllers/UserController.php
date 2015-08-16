@@ -127,21 +127,9 @@ class UserController extends BaseController
             'on_hold' => $on_hold,
         );
 
-        $params['messages'] = WallPost::where('level', 0)
-            ->with('user')
-            ->orderBy('created_at', 'DESC')->limit(5)->get();
-        $params['birthdays'] = User::where('birthday', '<>', '0000-00-00')
-            ->whereRaw('DATE_ADD(birthday,
-                INTERVAL YEAR(CURDATE())-YEAR(birthday)
-                         + IF(DAYOFYEAR(CURDATE()) > DAYOFYEAR(birthday),1,0)
-                YEAR)
-            BETWEEN CURDATE() AND DATE_ADD(CURDATE(), INTERVAL 60 DAY)')
-            ->whereIsMember(true)
-            ->orderByRaw('DATE_ADD(birthday,
-                INTERVAL YEAR(CURDATE())-YEAR(birthday)
-                         + IF(DAYOFYEAR(CURDATE()) > DAYOFYEAR(birthday),1,0)
-                YEAR) ASC')
-            ->limit(5)->get();
+
+
+
 
         $params = array_merge($params, Subscription::getActiveSubscriptionInfos());
 
@@ -314,101 +302,98 @@ class UserController extends BaseController
      */
     public function edit()
     {
-        $profile = User::find(Auth::user()->id);
-        $skills = Skill::findSkillsForUser(Auth::user()->id);
-
-        return View::make('user.edit', array('user' => $profile, 'skills' => $skills));
+        return View::make('user.modify', array('user' => Auth::user()));
     }
-
-    /**
-     * Edit user (form)
-     */
-    public function edit_check()
-    {
-        $user = User::find(Auth::user()->id);
-        $validator = Validator::make(Input::all(), User::$rules);
-        if (!$validator->fails()) {
-            // Vérifier que l'adresse email soit unique (peut-être à améliorer... directement dans l'entity ?)
-            $check = User::where('email', '=', $user->email)->where('id', '!=', $user->id)->first();
-            if (!$check) {
-                $user->email = Input::get('email');
-                $user->firstname = Input::get('firstname');
-                $user->lastname = Input::get('lastname');
-                if (Input::get('password')) {
-                    $user->password = Hash::make(Input::get('password'));
-                }
-                $user->bio_short = Input::get('bio_short');
-                $user->bio_long = Input::get('bio_long');
-                $user->twitter = Input::get('twitter');
-                $user->website = Input::get('website');
-                $user->phone = Input::get('phone');
-
-//                if (count(Input::get('modif')) > 0) {
-//                    $save = false;
-//                    foreach (Input::get('modif') as $key => $skillId) {
-//                        $skillExist = Skill::find($skillId);
-//                        if (Input::get('deleteExist.' . $skillExist->id)) {
-//                            Skill::destroy($skillExist->id);
-//                        } else {
-//                            if ($skillExist->name != Input::get('nameExist.' . $skillExist->id)) {
-//                                $skillExist->name = Input::get('nameExist.' . $skillExist->id);
-//                                $save = true;
-//                            }
-//                            if ($skillExist->value != Input::get('valueExist.' . $skillExist->id)) {
-//                                $skillExist->value = Input::get('valueExist.' . $skillExist->id);
-//                                $save = true;
-//                            }
-//                            if ($save) {
-//                                $skillExist->save();
-//                            }
-//                        }
-//                    }
-//                }
 //
-//                if (Input::get('name') && count(Input::get('name')) > 1) {
-//                    foreach (Input::get('name') as $key => $skillname) {
-//                        if ($skillname != null) {
-//                            $skill = new Skill();
-//                            $skill->user_id = $user->id;
-//                            $skill->name = $skillname;
-//                            if (Input::get('value.' . $key)) {
-//                                $skill->value = Input::get('value.' . $key);
-//                            }
-//                            $skill->save();
-//                        }
-//                    }
-//                } elseif (Input::get('name') && count(Input::get('name')) == 1) {
-//                    if (Input::get('name') != '') {
-//                        $skill = new Skill();
-//                        $skill->user_id = $user->id;
-//                        $skill->name = Input::get('name');
-//                        if (Input::get('value')) {
-//                            $skill->value = Input::get('value');
-//                        }
-//                        $skill->save();
-//                    }
+//    /**
+//     * Edit user (form)
+//     */
+//    public function edit_check()
+//    {
+//        $user = User::find(Auth::user()->id);
+//        $validator = Validator::make(Input::all(), User::$rules);
+//        if (!$validator->fails()) {
+//            // Vérifier que l'adresse email soit unique (peut-être à améliorer... directement dans l'entity ?)
+//            $check = User::where('email', '=', $user->email)->where('id', '!=', $user->id)->first();
+//            if (!$check) {
+//                $user->email = Input::get('email');
+//                $user->firstname = Input::get('firstname');
+//                $user->lastname = Input::get('lastname');
+//                if (Input::get('password')) {
+//                    $user->password = Hash::make(Input::get('password'));
 //                }
+//                $user->bio_short = Input::get('bio_short');
+//                $user->bio_long = Input::get('bio_long');
+//                $user->twitter = Input::get('twitter');
+//                $user->website = Input::get('website');
+//                $user->phone = Input::get('phone');
 //
-//                if (Input::file('avatar')) {
-//                    $avatar = $user->id . '.' . Input::file('avatar')->guessClientExtension();
-//                    if ($user->avatar) {
-//                        unlink(public_path() . '/uploads/avatars/' . $user->avatar);
-//                    }
-//                    if (Input::file('avatar')->move('uploads/avatars', $avatar)) {
-//                        $user->avatar = $avatar;
-//                    }
+////                if (count(Input::get('modif')) > 0) {
+////                    $save = false;
+////                    foreach (Input::get('modif') as $key => $skillId) {
+////                        $skillExist = Skill::find($skillId);
+////                        if (Input::get('deleteExist.' . $skillExist->id)) {
+////                            Skill::destroy($skillExist->id);
+////                        } else {
+////                            if ($skillExist->name != Input::get('nameExist.' . $skillExist->id)) {
+////                                $skillExist->name = Input::get('nameExist.' . $skillExist->id);
+////                                $save = true;
+////                            }
+////                            if ($skillExist->value != Input::get('valueExist.' . $skillExist->id)) {
+////                                $skillExist->value = Input::get('valueExist.' . $skillExist->id);
+////                                $save = true;
+////                            }
+////                            if ($save) {
+////                                $skillExist->save();
+////                            }
+////                        }
+////                    }
+////                }
+////
+////                if (Input::get('name') && count(Input::get('name')) > 1) {
+////                    foreach (Input::get('name') as $key => $skillname) {
+////                        if ($skillname != null) {
+////                            $skill = new Skill();
+////                            $skill->user_id = $user->id;
+////                            $skill->name = $skillname;
+////                            if (Input::get('value.' . $key)) {
+////                                $skill->value = Input::get('value.' . $key);
+////                            }
+////                            $skill->save();
+////                        }
+////                    }
+////                } elseif (Input::get('name') && count(Input::get('name')) == 1) {
+////                    if (Input::get('name') != '') {
+////                        $skill = new Skill();
+////                        $skill->user_id = $user->id;
+////                        $skill->name = Input::get('name');
+////                        if (Input::get('value')) {
+////                            $skill->value = Input::get('value');
+////                        }
+////                        $skill->save();
+////                    }
+////                }
+////
+////                if (Input::file('avatar')) {
+////                    $avatar = $user->id . '.' . Input::file('avatar')->guessClientExtension();
+////                    if ($user->avatar) {
+////                        unlink(public_path() . '/uploads/avatars/' . $user->avatar);
+////                    }
+////                    if (Input::file('avatar')->move('uploads/avatars', $avatar)) {
+////                        $user->avatar = $avatar;
+////                    }
+////                }
+//
+//                if ($user->save()) {
+//                    return Redirect::route('user_profile', $user->id)->with('mSuccess', 'Votre profil a bien été modifié');
+//                } else {
+//                    return Redirect::route('user_edit')->with('mError', 'Impossible de modifier votre profil');
 //                }
-
-                if ($user->save()) {
-                    return Redirect::route('user_profile', $user->id)->with('mSuccess', 'Votre profil a bien été modifié');
-                } else {
-                    return Redirect::route('user_edit')->with('mError', 'Impossible de modifier votre profil');
-                }
-            }
-        } else {
-            return Redirect::route('user_edit')->with('mError', 'Il y a des erreurs')->withErrors($validator->messages())->withInput();
-        }
-    }
+//            }
+//        } else {
+//            return Redirect::route('user_edit')->with('mError', 'Il y a des erreurs')->withErrors($validator->messages())->withInput();
+//        }
+//    }
 
 
     /**

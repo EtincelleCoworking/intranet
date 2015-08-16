@@ -28,7 +28,7 @@
                     class="nav-label">Tableau de bord</span></a>
     </li>
 
-    <li{{ Request::is('user*') ? ' class="active"' : '' }}>
+    <li{{ (Request::is('user*') ||  Request::is('profile*')) ? ' class="active"' : '' }}>
         <a href="{{ URL::route('user_list') }}"><i class="fa fa-user"></i> <span class="nav-label">Membres</span></a>
     </li>
 

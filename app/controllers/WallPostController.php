@@ -14,10 +14,11 @@ class WallPostController extends BaseController
                 $post = new WallPost();
                 $post->setAsRoot();
             }
-            $post->user_id = Auth::user()->id;
+            $post->user_id = Auth::id();
             $post->message = Input::get('message');
 
             if ($post->save()) {
+                $this->purgeCache();
                 return Redirect::route('dashboard')->with('mSuccess', 'Le message a été ajouté');
             } else {
                 return Redirect::route('dashboard')->with('mError', 'Impossible de créer le message')->withInput();
@@ -43,8 +44,10 @@ class WallPostController extends BaseController
             $post->message = Input::get('message');
 
             if ($post->save()) {
+                $this->purgeCache();
                 return Response::json(array('status' => 'OK',
-                    'created' => $post->created,
+                    'created_at' => $post->created_at,
+//                    'created' => $post->created,
                     'content' => nl2br($post->message),
                     'id' => $post->id));
             } else {
@@ -56,9 +59,18 @@ class WallPostController extends BaseController
         }
     }
 
+    protected function purgeCache()
+    {
+        foreach (array(0, 1) as $key) {
+            Cache::forget(sprintf('wall.%s', $key));
+        }
+
+    }
+
     public function delete($id)
     {
         WallPost::where('path', 'LIKE', sprintf('%d/', $id))->delete();
+        $this->purgeCache();
         return Redirect::route('dashboard')->with('mSuccess', 'Le message a été supprimé');
     }
 
@@ -66,6 +78,7 @@ class WallPostController extends BaseController
     public function deleteReply($id)
     {
         WallPost::destroy($id);
+        $this->purgeCache();
         if (Request::ajax()) {
             return Response::make();
         } else {

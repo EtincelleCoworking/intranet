@@ -1,33 +1,25 @@
-@if(count($users)>0)
-    <div class="ibox">
-        <div class="ibox-title">
-            <h5>Prochains anniversaires</h5>
-        </div>
-        <div class="ibox-content">
-            <div class="feed-activity-list">
-                @foreach($users as $user)
-                    <div class="feed-element">
-                        <a href="{{ URL::route('user_profile', $user->id) }}" class="pull-left">
-                            {{$user->avatarTag}}
-                        </a>
-
-                        <div class="media-body ">
-                            <small class="pull-right text-navy">{{date('d/m', strtotime($user->birthday))}}</small>
-                            <strong>
-                                <a href="{{ URL::route('user_profile', $user->id) }}">{{ $user->fullname }}</a>
-                            </strong><br/>
-                            <small class="text-muted">aura alors {{ date('Y') - date('Y', strtotime($user->birthday)) + 1 }} ans
-                            </small>
-                            {{--<div class="actions">--}}
-                            {{--<a class="btn btn-xs btn-white"><i class="fa fa-thumbs-up"></i> Like </a>--}}
-                            {{--<a class="btn btn-xs btn-danger"><i class="fa fa-heart"></i> Love</a>--}}
-                            {{--</div>--}}
-                        </div>
-                    </div>
-                @endforeach
-            </div>
+<?php
 
 
-        </div>
-    </div>
-@endif
+$cacheKey = 'birthday';
+$cacheContent = Cache::get($cacheKey);
+if (empty($cacheContent)) {
+    $users = User::where('birthday', '<>', '0000-00-00')
+            ->whereRaw('DATE_ADD(birthday,
+                INTERVAL YEAR(CURDATE())-YEAR(birthday)
+                         + IF(DAYOFYEAR(CURDATE()) > DAYOFYEAR(birthday),1,0)
+                YEAR)
+            BETWEEN CURDATE() AND DATE_ADD(CURDATE(), INTERVAL 60 DAY)')
+            ->whereIsMember(true)
+            ->orderByRaw('DATE_ADD(birthday,
+                INTERVAL YEAR(CURDATE())-YEAR(birthday)
+                         + IF(DAYOFYEAR(CURDATE()) > DAYOFYEAR(birthday),1,0)
+                YEAR) ASC')
+            ->limit(5)->get();
+    if (count($users) > 0) {
+        $cacheContent = View::make('partials.next_birthday_inner', array('users' => $users))->render();
+        Cache::put($cacheKey, $cacheContent, new \dateTime(date('Y-m-d 00:00:00', strtotime('tomorrow'))));
+    }
+}
+echo $cacheContent;
+?>
