@@ -27,6 +27,21 @@ class BookingController extends Controller
         $rooms = Input::get('rooms');
         if (empty($rooms)) {
             $messages['rooms'] = 'La salle doit être renseignée';
+        }else{
+//            $start = newDateTime(Input::get('date'), Input::get('start'));
+//            $end = newDateTime(Input::get('date'), Input::get('start'));
+//            $end->modify(sprintf('+%d hours', getDuration(Input::get('start'), Input::get('end'))));
+//
+//            foreach (Input::get('rooms') as $ressource_id) {
+//                'SELECT count(*) FROM booking_item WHERE
+//                  start_at < :start AND DATE_ADD()
+//
+//'
+//            BookingItem::whereRessourceId($ressource_id)
+//                ->where('start_at', '<', $start->format('Y-m-d H:i:s'))
+//                ->where('start_at', '<', $start->format('Y-m-d H:i:s'))
+//                ;
+//            }
         }
         if (count($messages)) {
             return Response::json(array(
@@ -39,7 +54,10 @@ class BookingController extends Controller
         $booking = new Booking();
         $booking->title = Input::get('title');
         if (Auth::user()->isSuperAdmin()) {
-            $booking->user_id = Input::get('user_id', Auth::user()->id);
+            $booking->user_id = Input::get('user_id');
+            if(empty($booking->user_id)){
+                $booking->user_id = Auth::user()->id;
+            }
         } else {
             $booking->user_id = Auth::user()->id;
         }
@@ -56,8 +74,11 @@ class BookingController extends Controller
 
             $result[] = $booking_item->toJsonEvent();
         }
+        $this->sendNewBookingNotification($booking);
         return Response::json(array('status' => 'OK', 'events' => $result));
     }
+
+
 
     public function listAjax()
     {
@@ -87,27 +108,6 @@ class BookingController extends Controller
             $i += 24 * 3600;
         }
 
-        // default
-
-        // bleu
-        // backgroundColor  #6296EA
-        // borderColor #3C7BD6
-        // textColor #1D1D1D
-
-        // Violet
-        // backgroundColor  #AF8AE5
-        // borderColor #9F49E5
-        // textColor #1D1D1D
-
-        // Jaune
-        // backgroundColor  #FAD677
-        // borderColor #C9A017
-        // textColor #1D1D1D
-
-
-        // Rouge
-        // #D06B64
-        // #924420
         return Response::json($result);
 
     }
@@ -149,9 +149,22 @@ class BookingController extends Controller
     {
         $booking_item_id = Input::get('id');
         $booking_item = BookingItem::find($booking_item_id);
+
+        $old = array(
+            'start_at' => $booking_item->start_at,
+            'duration' => $booking_item->duration
+        );
+
         $booking_item->start_at = Input::get('start');
         $booking_item->duration = floor((strtotime(Input::get('end')) - strtotime(Input::get('start'))) / 60);
         $booking_item->save();
+
+        $new = array(
+            'start_at' => $booking_item->start_at,
+            'duration' => $booking_item->duration
+        );
+
+        $this->sendUpdatedBookingNotification($booking_item, $old, $new);
 
         return Response::json(array('status' => 'OK',
             'id' => $booking_item_id,
@@ -166,12 +179,15 @@ class BookingController extends Controller
             return Redirect::route('booking_list')->with('mError', 'La réservation est inconnue');
         }
 
+        $this->sendDeletedBookingNotification($booking_item);
+
         if ($booking_item->booking->items()->count() == 1) {
             $booking_item->delete();
             $booking_item->booking->delete();
         } else {
             $booking_item->delete();
         }
+
 
         return Redirect::route('booking_list')->with('mSuccess', 'La réservation a été supprimée');
     }
@@ -258,5 +274,17 @@ class BookingController extends Controller
         Session::forget('filtre_booking.ressource_id');
         Session::forget('filtre_booking.toinvoice');
         return Redirect::route('booking_list');
+    }
+
+    protected function sendNewBookingNotification($booking){
+
+    }
+
+    protected function sendUpdatedBookingNotification($booking_item, $old, $new){
+
+    }
+
+    protected function sendDeletedBookingNotification($booking_item){
+
     }
 }

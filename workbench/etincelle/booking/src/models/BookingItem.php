@@ -9,6 +9,26 @@ class BookingItem extends Illuminate\Database\Eloquent\Model
      */
     protected $table = 'booking_item';
 
+    /**
+     * Rules
+     */
+    public static $rules = array(
+        'ressource_id' => 'required|exists:ressource',
+        'booking_id' => 'required|exists:booking',
+        'start_at'=> 'date|unique_booking',
+        'duration' => 'required|min:15'
+    );
+
+    /**
+     * Rules Add
+     */
+    public static $rulesAdd = array(
+        'ressource_id' => 'required|exists:ressource',
+        'booking_id' => 'required|exists:booking',
+        'start_at'=> 'date|unique_booking',
+        'duration' => 'required|min:15'
+    );
+
     public function ressource()
     {
         return $this->belongsTo('Ressource');
@@ -58,7 +78,8 @@ class BookingItem extends Illuminate\Database\Eloquent\Model
             'canDelete' => (bool)$canManage,
             'editable' => (bool)$canManage,
             'backgroundColor' => $this->ressource->booking_background_color,
-            'color' => $this->ressource->booking_text_color,
+            'borderColor' => adjustBrightness($this->ressource->booking_background_color, -32),
+            'textColor' => adjustBrightness($this->ressource->booking_background_color, -128),
             'location' => $this->ressource->name,
             'className' => $className
         );

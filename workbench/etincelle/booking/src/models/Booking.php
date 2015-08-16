@@ -10,6 +10,23 @@ class Booking extends Illuminate\Database\Eloquent\Model
     protected $table = 'booking';
 
     /**
+     * Rules
+     */
+    public static $rules = array(
+        'user_id' => 'required|exists:users',
+        'title' => 'required|min:1'
+    );
+
+    /**
+     * Rules Add
+     */
+    public static $rulesAdd = array(
+        'user_id' => 'required|exists:users',
+        'title' => 'required|min:1'
+    );
+
+
+    /**
      * Relation BelongsTo (Invoices belongs to User)
      */
     public function user()

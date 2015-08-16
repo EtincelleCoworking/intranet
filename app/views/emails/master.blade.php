@@ -5,7 +5,9 @@
     <meta name="viewport" content="width=device-width"/>
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
     <title>
-        Nouvel outil de réservation de salles
+        @section('title')
+            Etincelle Coworking
+        @show
     </title>
     <style type="text/css">
         /* -------------------------------------
@@ -242,7 +244,7 @@
         /* -------------------------------------
             RESPONSIVE AND MOBILE FRIENDLY STYLES
         ------------------------------------- */
-        @media  only screen and (max-width: 640px) {
+        @media only screen and (max-width: 640px) {
             h1, h2, h3, h4 {
                 font-weight: 600 !important;
                 margin: 20px 0 5px !important;
@@ -286,64 +288,14 @@
                 <table class="main" width="100%" cellpadding="0" cellspacing="0">
                     <tr>
                         <td class="alert alert-good">
-                            Etincelle Coworking - Nouvel outil de réservation de salles
+                            @section('title')
+                                Etincelle Coworking
+                            @show
                         </td>
                     </tr>
                     <tr>
                         <td class="content-wrap">
-                            <table width="100%" cellpadding="0" cellspacing="0">
-                                <tr>
-                                    <td class="content-block">
-                                        Vous avez accès à notre outil de gestion de réservation de salles qui était jusqu'à présent accessible à l'adresse
-                                        <a href="https://etincelle.skedda.com/" target="_blank">https://etincelle.skedda.com/</a>
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <td class="content-block">
-                                        Cet outil est abandonné au profil d'une solution intégrée à notre intranet qui permettra:
-                                        <ul>
-                                            <li>Un outil en français</li>
-                                            <li>Une ergonomie améliorée</li>
-                                            <li>Une meilleure intégration avec nos autres outils</li>
-                                            <li>Une meilleure communication interne</li>
-                                        </ul>
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <td class="content-block">
-                                        Nous vous avons créé un compte sur l'intranet pour vous permettre d'accéder à cette nouvelle interface
-                                        et y avons réintégré vos éventuelles réservations pour les semaines à venir.
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <td class="content-block">
-                                        <table>
-                                            <tr>
-                                                <td width="30%">Identifiant</td>
-                                                <td><strong>sebastien@coworking-toulouse.com</strong></td>
-                                            </tr>
-                                            <tr>
-                                                <td>Mot de passe</td>
-                                                <td>
-                                                    <strong>etincelle</strong>
-                                                    <br /><small><i>(vous pouvez le changer depuis l'interface)</i></small>
-                                                </td>
-                                            </tr>
-                                        </table>
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <td class="content-block aligncenter">
-                                        <a href="http://intranet.coworking-toulouse.local/booking" class="btn-primary">Me connecter</a>
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <td class="content-block">
-                                        Pour toute question ou suggestion, n'hésitez pas à
-                                        <a href="mailto:sebastien@coworking-toulouse.com">me contacter</a>.
-                                    </td>
-                                </tr>
-                            </table>
+                            @yield('content')
                         </td>
                     </tr>
                 </table>

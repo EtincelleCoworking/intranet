@@ -153,7 +153,7 @@ class User extends Eloquent implements UserInterface, RemindableInterface
         return $this->getGravatarUrl(80);
     }
 
-    protected function getGravatarUrl($size)
+    public function getGravatarUrl($size)
     {
         //return '/img/profile_small.jpg';
         $default = '404';
