@@ -75,6 +75,7 @@ class ImportUsersFromSkeddaCommand extends Command
                             Mail::send('emails.skedda-migration', array('user' => $user), function($m) use ($user)
                             {
                                 $m->from('sebastien@coworking-toulouse.com', 'Sébastien Hordeaux')
+                                    ->bcc('sebastien@coworking-toulouse.com', 'Sébastien Hordeaux')
                                     ->to($user->email, $user->fullname)
                                     ->subject('Etincelle Coworking - Outil de réservation de salles');
 
