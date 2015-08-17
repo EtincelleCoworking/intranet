@@ -172,7 +172,12 @@ class UserController extends BaseController
             return Redirect::route('user_list')->with('mError', 'Cet utilisateur est introuvable !');
         }
 
-        $validator = Validator::make(Input::all(), User::$rules);
+        if(!Auth::user()->isSuperAdmin() && $id <> Auth::id()){
+            App::abort(403, 'Unauthorized action.');
+            return false;
+        }
+
+            $validator = Validator::make(Input::all(), User::$rules);
         if (!$validator->fails()) {
             // Vérifier que l'adresse email soit unique (peut-être à améliorer... directement dans l'entity ?)
             $check = User::where('email', '=', $user->email)->where('id', '!=', $user->id)->first();
