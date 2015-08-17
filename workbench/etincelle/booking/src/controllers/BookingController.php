@@ -312,7 +312,7 @@ class BookingController extends Controller
 
     protected function sendDeletedBookingNotification($booking_item, $ressource, $booking, $user)
     {
-        Mail::send('booking::emails.deleted', array('booking_item' => $booking_item, 'ressource' => $ressource, 'booking' => $booking), function ($m) use ($user, $booking_item) {
+        Mail::send('booking::emails.deleted', array('booking_item' => $booking_item, 'ressource' => $ressource, 'booking' => $booking, 'user' => $user), function ($m) use ($user, $booking_item) {
             $m->from('sebastien@coworking-toulouse.com', 'Sébastien Hordeaux')
                 ->bcc('sebastien@coworking-toulouse.com', 'Sébastien Hordeaux')
                 ->to($user->email, $user->fullname)
