@@ -128,9 +128,6 @@ class UserController extends BaseController
         );
 
 
-
-
-
         $params = array_merge($params, Subscription::getActiveSubscriptionInfos());
 
         return View::make('user.dashboard', $params);
@@ -172,12 +169,12 @@ class UserController extends BaseController
             return Redirect::route('user_list')->with('mError', 'Cet utilisateur est introuvable !');
         }
 
-        if(!Auth::user()->isSuperAdmin() && $id <> Auth::id()){
+        if (!Auth::user()->isSuperAdmin() && $id <> Auth::id()) {
             App::abort(403, 'Unauthorized action.');
             return false;
         }
 
-            $validator = Validator::make(Input::all(), User::$rules);
+        $validator = Validator::make(Input::all(), User::$rules);
         if (!$validator->fails()) {
             // Vérifier que l'adresse email soit unique (peut-être à améliorer... directement dans l'entity ?)
             $check = User::where('email', '=', $user->email)->where('id', '!=', $user->id)->first();
@@ -190,7 +187,6 @@ class UserController extends BaseController
                 }
                 $user->bio_short = Input::get('bio_short');
                 $user->bio_long = Input::get('bio_long');
-                $user->is_member = Input::get('is_member');
                 $user->twitter = Input::get('twitter');
                 $user->website = Input::get('website');
                 $user->phone = Input::get('phone');
@@ -199,6 +195,9 @@ class UserController extends BaseController
                 $user->social_instagram = Input::get('social_instagram');
                 $user->social_linkedin = Input::get('social_linkedin');
                 $user->social_facebook = Input::get('social_facebook');
+                if (Auth::user()->isSuperAdmin()) {
+                    $user->is_member = Input::get('is_member');
+                }
 
                 if (Input::get('birthday')) {
                     $birthday = explode('/', Input::get('birthday'));
