@@ -126,7 +126,7 @@ $messages = WallPost::where('level', 0)
 
                                 </div>
                                 <div class="form-group">
-                                    {{ Form::submit('Commenter', array('class' => 'btn btn-success')) }}
+                                    {{ Form::submit('Commenter', array('class' => 'btn btn-primary')) }}
                                 </div>
                                 {{ Form::close() }}
                             </div>
