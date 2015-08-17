@@ -10,6 +10,8 @@
             <h2>Réservations</h2>
 
             <p>Cliquez dans l'agenda pour créer une nouvelle réservation</p>
+
+
         </div>
         <div class="col-sm-4">
             <div class="title-action">
@@ -18,6 +20,15 @@
         </div>
 
     </div>
+        <div class="row">
+            @foreach(Ressource::whereIsBookable(true)->get() as $ressource)
+            <div class="col-lg-3">
+                <div class="widget" style="background-color: {{$ressource->booking_background_color}}; color: {{ adjustBrightness($ressource->booking_background_color, -128)}};">
+                    {{$ressource->name}}
+                </div>
+            </div>
+            @endforeach
+        </div>
 @stop
 
 @section('content')
@@ -43,35 +54,35 @@
                             </div>
                         @endif
 
-                            <div class="col-xs-12">
-                                {{ Form::label('title', 'Titre') }}
-                                <p>{{ Form::text('title', null, array('class' => 'form-control')) }}</p>
-                            </div>
+                        <div class="col-xs-12">
+                            {{ Form::label('title', 'Titre') }}
+                            <p>{{ Form::text('title', null, array('class' => 'form-control')) }}</p>
+                        </div>
 
-                            <div class="col-xs-4">
-                                {{ Form::label('date', 'Date') }}
-                                <p>{{ Form::text('date', null, array('class' => 'form-control datePicker')) }}</p>
-                            </div>
+                        <div class="col-xs-4">
+                            {{ Form::label('date', 'Date') }}
+                            <p>{{ Form::text('date', null, array('class' => 'form-control datePicker')) }}</p>
+                        </div>
 
-                            <div class="col-xs-4">
-                                {{ Form::label('start', 'Début') }}
-                                <p>{{ Form::select('start', Booking::selectableHours(), false, array('class' => 'form-control')) }}</p>
-                            </div>
+                        <div class="col-xs-4">
+                            {{ Form::label('start', 'Début') }}
+                            <p>{{ Form::select('start', Booking::selectableHours(), false, array('class' => 'form-control')) }}</p>
+                        </div>
 
-                            <div class="col-xs-4">
-                                {{ Form::label('end', 'Fin') }}
-                                <p>{{ Form::select('end', Booking::selectableHours(), false, array('class' => 'form-control')) }}</p>
-                            </div>
+                        <div class="col-xs-4">
+                            {{ Form::label('end', 'Fin') }}
+                            <p>{{ Form::select('end', Booking::selectableHours(), false, array('class' => 'form-control')) }}</p>
+                        </div>
 
-                            <div class="col-xs-12">
-                                {{ Form::label('rooms', 'Lieu') }}
-                                @foreach(Ressource::bookable() as $id => $ressource)
-                                    <p>
-                                        {{ Form::checkbox('rooms[]', $id, false, array('id'=> sprintf('meeting-add-room%d', $id))) }}
-                                        <label for="meeting-add-room{{$id}}">{{$ressource}}</label>
-                                    </p>
-                                @endforeach
-                            </div>
+                        <div class="col-xs-12">
+                            {{ Form::label('rooms', 'Lieu') }}
+                            @foreach(Ressource::bookable() as $id => $ressource)
+                                <p>
+                                    {{ Form::checkbox('rooms[]', $id, false, array('id'=> sprintf('meeting-add-room%d', $id))) }}
+                                    <label for="meeting-add-room{{$id}}">{{$ressource}}</label>
+                                </p>
+                            @endforeach
+                        </div>
                     </div>
                 </div>
 
@@ -180,9 +191,9 @@
     <style type="text/css">
         @foreach(Ressource::whereIsBookable(true)->get() as $ressource)
 
-.fc-event.booking-ofuscated-{{$ressource->id}}{
+.fc-event.booking-ofuscated-{{$ressource->id}} {
             background: repeating-linear-gradient(
-                    135deg,
+            135deg,
                     {{ adjustBrightness($ressource->booking_background_color, -32)}},
                     {{adjustBrightness($ressource->booking_background_color, -32)}} 10px,
                     {{$ressource->booking_background_color}} 10px,
