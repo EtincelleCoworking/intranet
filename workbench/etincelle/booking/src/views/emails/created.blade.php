@@ -16,6 +16,10 @@
             <td class="content-block">
                 <table>
                     <tr>
+                        <td width="30%">Utilisateur</td>
+                        <td><strong>{{$booking->user->fullname}}</strong></td>
+                    </tr>
+                    <tr>
                         <td width="30%">Salle</td>
                         <td><strong>{{$booking_item->ressource->name}}</strong></td>
                     </tr>

@@ -15,26 +15,30 @@
             <td class="content-block">
                 <table>
                     <tr>
+                        <td width="30%">Utilisateur</td>
+                        <td><strong>{{$booking_item->booking->user->fullname}}</strong></td>
+                    </tr>
+                    <tr>
                         <td width="30%">Salle</td>
                         <td><strong>{{$booking_item->ressource->name}}</strong></td>
                     </tr>
                     <tr>
                         <td width="30%">Date</td>
                         <td>
-                            @if($old['start_at'] <> $new['start_at'])
-                                <strong>
-                                    {{date('d/m/Y H:i', strtotime($old['start_at']))}}
-                                    &raquo;
-                                    {{date('d/m/Y H:i', strtotime($new['start_at']))}}
-                                </strong>
-                                <br/>
-                            @endif
-                            @if($old['start_at'] <> $new['start_at'])
-                                Durée:
-                                {{ durationToHuman($old['duration']) }}
+                            <strong>
+                                @if($old['start_at'] <> $new['start_at'])
+                                {{date('d/m/Y H:i', strtotime($old['start_at']))}}
                                 &raquo;
-                                {{ durationToHuman($new['duration']) }}
+                                @endif
+                                {{date('d/m/Y H:i', strtotime($new['start_at']))}}
+                            </strong>
+                            <br/>
+                            Durée:
+                            @if($old['duration'] <> $new['duration'])
+                            {{ durationToHuman($old['duration']) }}
+                            &raquo;
                             @endif
+                            {{ durationToHuman($new['duration']) }}
                         </td>
                     </tr>
                 </table>

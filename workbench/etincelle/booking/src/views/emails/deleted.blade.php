@@ -15,6 +15,10 @@
             <td class="content-block">
                 <table>
                     <tr>
+                        <td width="30%">Utilisateur</td>
+                        <td><strong>{{$user->fullname}}</strong></td>
+                    </tr>
+                    <tr>
                         <td width="30%">Salle</td>
                         <td><strong>{{$ressource->name}}</strong></td>
                     </tr>

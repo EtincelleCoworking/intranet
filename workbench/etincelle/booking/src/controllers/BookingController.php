@@ -297,13 +297,16 @@ class BookingController extends Controller
     protected function sendUpdatedBookingNotification($booking_item, $old, $new)
     {
         Mail::send('booking::emails.updated', array('booking_item' => $booking_item, 'old' => $old, 'new' => $new), function ($m) use ($booking_item, $old, $new) {
+            if ($old['start_at'] == $new['start_at']) {
+                $update = sprintf('%s %s > %s', date('d/m/Y H:i', strtotime($old['start_at'])), durationToHuman($old['duration']), durationToHuman($new['duration']));
+            } else {
+                $update = sprintf('%s > %s', date('d/m/Y H:i', strtotime($old['start_at'])), date('d/m/Y H:i', strtotime($new['start_at'])));
+            }
+
             $m->from('sebastien@coworking-toulouse.com', 'Sébastien Hordeaux')
                 ->bcc('sebastien@coworking-toulouse.com', 'Sébastien Hordeaux')
                 ->to($booking_item->booking->user->email, $booking_item->booking->user->fullname)
-                ->subject(sprintf('Etincelle Coworking - Modification de réservation - %s > %s',
-                    date('d/m/Y H:i', strtotime($old['start_at'])),
-                    date('d/m/Y H:i', strtotime($new['start_at']))
-                ));
+                ->subject(sprintf('Etincelle Coworking - Modification de réservation - %s', $update));
         });
     }
 
