@@ -26,19 +26,19 @@
                         <td width="30%">Date</td>
                         <td>
                             <strong>
-                                @if($old['start_at'] <> $new['start_at'])
+                                @if($old['start_at'] != $new['start_at'])
                                 {{date('d/m/Y H:i', strtotime($old['start_at']))}}
                                 &raquo;
                                 @endif
                                 {{date('d/m/Y H:i', strtotime($new['start_at']))}}
+                                (
+                                @if($old['duration'] != $new['duration'])
+                                {{ durationToHuman($old['duration']) }}
+                                &raquo;
+                                @endif
+                                {{ durationToHuman($new['duration']) }}
+                                )
                             </strong>
-                            <br/>
-                            Durée:
-                            @if($old['duration'] <> $new['duration'])
-                            {{ durationToHuman($old['duration']) }}
-                            &raquo;
-                            @endif
-                            {{ durationToHuman($new['duration']) }}
                         </td>
                     </tr>
                 </table>

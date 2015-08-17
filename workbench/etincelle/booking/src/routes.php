@@ -1,5 +1,6 @@
 <?php
 
+    Route::get('/booking/ical', array('as' => 'booking_ical', 'uses' => 'BookingController@ical'));
 Route::group(['before' => 'member'], function () {
     Route::get('/booking', array('as' => 'booking', 'uses' => 'BookingController@index'));
     Route::get('/booking/events', array('as' => 'booking_list_ajax', 'uses' => 'BookingController@listAjax'));

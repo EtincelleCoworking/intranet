@@ -71,8 +71,8 @@ class BookingItem extends Illuminate\Database\Eloquent\Model
 
         return array(
             'title' => $ofuscated_title,
-            'start' => $start->format('Y-m-d\TH:i:00'),
-            'end' => $end->format('Y-m-d\TH:i:00'),
+            'start' => $start->format('c'),
+            'end' => $end->format('c'),
             'booking_id' => $this->booking->id,
             'id' => $this->id,
             'canDelete' => (bool)$canManage,

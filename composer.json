@@ -17,7 +17,8 @@
     "h4cc/wkhtmltopdf-amd64": "0.12.x",
     "stripe/stripe-php": "2.*",
     "gzero/eloquent-tree": "v2.0",
-    "league/csv": "^7.1@dev"
+    "league/csv": "^7.1@dev",
+    "eluceo/ical": "*"
   },
   "autoload": {
     "classmap": [
