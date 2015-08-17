@@ -87,6 +87,14 @@
                                         {{ $user->phoneFmt }}
                                         <br/>
                                     @endif
+
+                                    @foreach($user->organisations as $company)
+                                        @if($company->name != $user->fullname)
+                                        <br/>
+                                        <i class="fa fa-university"></i>
+                                        {{ $company->name }}
+                                        @endif
+                                    @endforeach
                                 </a>
 
                             </div>
