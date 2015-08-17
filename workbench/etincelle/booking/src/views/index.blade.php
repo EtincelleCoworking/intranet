@@ -9,8 +9,12 @@
         <div class="col-sm-8">
             <h2>Réservations</h2>
 
-            <p>Cliquez dans l'agenda pour créer une nouvelle réservation</p>
-
+            Légende:
+            @foreach(Ressource::whereIsBookable(true)->get() as $ressource)
+                <div class="label" style="background-color: {{adjustBrightness($ressource->booking_background_color, 16)}}; color: {{ adjustBrightness($ressource->booking_background_color, -128)}}; border: 1px solid {{adjustBrightness($ressource->booking_background_color, -32)}}; margin-right: 10px">
+                    {{$ressource->name}}
+                </div>
+            @endforeach
 
         </div>
         <div class="col-sm-4">
@@ -20,15 +24,6 @@
         </div>
 
     </div>
-        <div class="row">
-            @foreach(Ressource::whereIsBookable(true)->get() as $ressource)
-            <div class="col-lg-3">
-                <div class="widget" style="background-color: {{$ressource->booking_background_color}}; color: {{ adjustBrightness($ressource->booking_background_color, -128)}};">
-                    {{$ressource->name}}
-                </div>
-            </div>
-            @endforeach
-        </div>
 @stop
 
 @section('content')
