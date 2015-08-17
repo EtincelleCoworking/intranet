@@ -34,7 +34,7 @@
                             {{ Form::label('order_index', 'Ordre d\'affichage') }}
                             <p>{{ Form::number('order_index', null, array('class' => 'form-control', 'min' => 1)) }}</p>
                         </div>
-                        <div class="col-md-4">
+                        <div class="col-md-2">
                             <p>
                                 {{ Form::checkbox('is_bookable', true) }}
                                 {{ Form::label('is_bookable', 'Réservable') }}
@@ -44,12 +44,6 @@
                             {{ Form::label('booking_background_color', 'Couleur de fond') }}
                             <p>
                                 {{ Form::text('booking_background_color', null, array('class' => 'form-control')) }}
-                            </p>
-                        </div>
-                        <div class="col-md-4">
-                            {{ Form::label('booking_text_color', 'Couleur du texte') }}
-                            <p>
-                                {{ Form::text('booking_text_color', null, array('class' => 'form-control')) }}
                             </p>
                         </div>
 

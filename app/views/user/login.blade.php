@@ -24,9 +24,8 @@
         <div class="col-md-6">
             <h2 class="font-bold">Intranet Etincelle Coworking</h2>
 
-            <p>
-Avant de pouvoir accéder aux ressources merveilleuses que nous vous avons préparés, il vous faut vous identifier avec le formulaire à droite.
-            </p>
+            <p>Avant de pouvoir accéder aux ressources merveilleuses que nous vous avons préparés, il vous faut vous identifier avec le formulaire à droite.</p>
+            <p>Un problème pour vous connecter? <a href="mailto:contact@coworking-toulouse.com">Contactez nous</a></p>
 
 
         </div>

@@ -87,7 +87,7 @@
 
 
     $isSuperAdmin = Auth::user()->isSuperAdmin();
-    $cacheKey = sprintf('wall.%s', $isSuperAdmin);
+    $cacheKey = sprintf('wall.%d', (bool)$isSuperAdmin);
     $wallContent = Cache::get($cacheKey);
     if (empty($wallContent)) {
         $wallContent = View::make('partials.wall', array('isSuperAdmin' => $isSuperAdmin))->render();

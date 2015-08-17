@@ -229,8 +229,9 @@ class InvoiceController extends BaseController
         $invoice_comment->content = sprintf('Devis %s validé', $invoice->ident);
         $invoice_comment->save();
 
+        $invoice->created_at = new \DateTime();
         $invoice->type = 'F';
-        $invoice->days = sprintf('Ym');
+        $invoice->days = date('Ym');
         $invoice->number = Invoice::next_invoice_number('F', $invoice->days);
         $invoice->date_invoice = new DateTime();
 

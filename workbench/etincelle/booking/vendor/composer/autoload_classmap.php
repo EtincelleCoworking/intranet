@@ -10,7 +10,7 @@ return array(
     'BookingController' => $baseDir . '/src/controllers/BookingController.php',
     'BookingItem' => $baseDir . '/src/models/BookingItem.php',
     'BookingMigration' => $baseDir . '/src/migrations/2015_08_10_104111_booking.php',
-    'Colors' => $baseDir . '/src/migrations/2015_08_11_065753_colors.php',
+    'ColorsMigration' => $baseDir . '/src/migrations/2015_08_11_065753_colors.php',
     'Etincelle\\Booking\\BookingServiceProvider' => $baseDir . '/src/Etincelle/Booking/BookingServiceProvider.php',
-    'Invoice' => $baseDir . '/src/migrations/2015_08_11_103230_invoice.php',
+    'InvoiceMigration' => $baseDir . '/src/migrations/2015_08_11_103230_invoice.php',
 );

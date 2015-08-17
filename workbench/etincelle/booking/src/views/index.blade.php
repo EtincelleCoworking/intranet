@@ -11,7 +11,8 @@
 
             Légende:
             @foreach(Ressource::whereIsBookable(true)->get() as $ressource)
-                <div class="label" style="background-color: {{adjustBrightness($ressource->booking_background_color, 16)}}; color: {{ adjustBrightness($ressource->booking_background_color, -128)}}; border: 1px solid {{adjustBrightness($ressource->booking_background_color, -32)}}; margin-right: 10px">
+
+                <div class="label" style="background-color: {{$ressource->booking_background_color}}; color: {{ adjustBrightness($ressource->booking_background_color, -128)}}; border: 1px solid {{ adjustBrightness($ressource->booking_background_color, -32)}}; margin-right: 10px; opacity: 0.75">
                     {{$ressource->name}}
                 </div>
             @endforeach

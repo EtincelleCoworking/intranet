@@ -27,7 +27,7 @@ class BookingController extends Controller
         $rooms = Input::get('rooms');
         if (empty($rooms)) {
             $messages['rooms'] = 'La salle doit être renseignée';
-        }else{
+        } else {
 //            $start = newDateTime(Input::get('date'), Input::get('start'));
 //            $end = newDateTime(Input::get('date'), Input::get('start'));
 //            $end->modify(sprintf('+%d hours', getDuration(Input::get('start'), Input::get('end'))));
@@ -55,7 +55,7 @@ class BookingController extends Controller
         $booking->title = Input::get('title');
         if (Auth::user()->isSuperAdmin()) {
             $booking->user_id = Input::get('user_id');
-            if(empty($booking->user_id)){
+            if (empty($booking->user_id)) {
                 $booking->user_id = Auth::user()->id;
             }
         } else {
@@ -77,7 +77,6 @@ class BookingController extends Controller
         $this->sendNewBookingNotification($booking);
         return Response::json(array('status' => 'OK', 'events' => $result));
     }
-
 
 
     public function listAjax()
@@ -132,11 +131,18 @@ class BookingController extends Controller
             return Response::json(array('status' => 'KO', 'message' => 'Réservation inconnue'));
         }
 
-        if ($booking->items()->count() == 0) {
+        $user = $booking->user;
+        $booking_item = BookingItem::find($booking_item_id);
+        $ressource = $booking_item->ressource;
+
+        if ($booking->items()->count() == 1) {
+            BookingItem::destroy($booking_item_id);
             Booking::destroy($booking_id);
         } else {
             BookingItem::destroy($booking_item_id);
         }
+
+        $this->sendDeletedBookingNotification($booking_item, $ressource, $booking, $user);
 
         if (Request::ajax()) {
             return Response::json(array('status' => 'OK', 'id' => $booking_item_id));
@@ -179,15 +185,17 @@ class BookingController extends Controller
             return Redirect::route('booking_list')->with('mError', 'La réservation est inconnue');
         }
 
-        $this->sendDeletedBookingNotification($booking_item);
+        $booking = $booking_item->booking;
+        $user = $booking->user;
+        $ressource = $booking_item->ressource;
+        $this->sendDeletedBookingNotification($booking_item, $ressource, $booking, $user);
 
         if ($booking_item->booking->items()->count() == 1) {
             $booking_item->delete();
-            $booking_item->booking->delete();
+            $booking->delete();
         } else {
             $booking_item->delete();
         }
-
 
         return Redirect::route('booking_list')->with('mSuccess', 'La réservation a été supprimée');
     }
@@ -276,15 +284,36 @@ class BookingController extends Controller
         return Redirect::route('booking_list');
     }
 
-    protected function sendNewBookingNotification($booking){
-
+    protected function sendNewBookingNotification($booking)
+    {
+        Mail::send('booking::emails.created', array('booking' => $booking), function ($m) use ($booking) {
+            $m->from('sebastien@coworking-toulouse.com', 'Sébastien Hordeaux')
+                ->bcc('sebastien@coworking-toulouse.com', 'Sébastien Hordeaux')
+                ->to($booking->user->email, $booking->user->fullname)
+                ->subject(sprintf('Etincelle Coworking - Nouvelle réservation - %s', date('d/m/Y H:i', strtotime($booking->items->first()->start_at))));
+        });
     }
 
-    protected function sendUpdatedBookingNotification($booking_item, $old, $new){
-
+    protected function sendUpdatedBookingNotification($booking_item, $old, $new)
+    {
+        Mail::send('booking::emails.updated', array('booking_item' => $booking_item, 'old' => $old, 'new' => $new), function ($m) use ($booking_item, $old, $new) {
+            $m->from('sebastien@coworking-toulouse.com', 'Sébastien Hordeaux')
+                ->bcc('sebastien@coworking-toulouse.com', 'Sébastien Hordeaux')
+                ->to($booking_item->booking->user->email, $booking_item->booking->user->fullname)
+                ->subject(sprintf('Etincelle Coworking - Modification de réservation - %s > %s',
+                    date('d/m/Y H:i', strtotime($old['start_at'])),
+                    date('d/m/Y H:i', strtotime($new['start_at']))
+                ));
+        });
     }
 
-    protected function sendDeletedBookingNotification($booking_item){
-
+    protected function sendDeletedBookingNotification($booking_item, $ressource, $booking, $user)
+    {
+        Mail::send('booking::emails.deleted', array('booking_item' => $booking_item, 'ressource' => $ressource, 'booking' => $booking), function ($m) use ($user, $booking_item) {
+            $m->from('sebastien@coworking-toulouse.com', 'Sébastien Hordeaux')
+                ->bcc('sebastien@coworking-toulouse.com', 'Sébastien Hordeaux')
+                ->to($user->email, $user->fullname)
+                ->subject(sprintf('Etincelle Coworking - Annulation de réservation - %s', date('d/m/Y H:i', strtotime($booking_item->start_at))));
+        });
     }
 }

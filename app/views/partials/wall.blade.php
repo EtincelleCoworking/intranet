@@ -66,7 +66,7 @@ $messages = WallPost::where('level', 0)
                     @endif
                     <div class="social-avatar">
                         <a href="{{URL::route('user_profile', $message->user->id)}}">{{$message->user->fullname}}</a>
-                        <small class="text-muted" data-from-now="{{$message->created_at}}"></small>
+                        <small class="text-muted" data-from-now="{{$message->created_at->format('c')}}"></small>
                     </div>
                     <div class="social-body">
                         {{$message->message}}
@@ -91,7 +91,7 @@ $messages = WallPost::where('level', 0)
                                     $snippet .= '<a href="/wall/delete-reply/'.$node->id.'" class="btn btn-xs btn-danger btn-outline pull-right ajaxDeleteReply">Supprimer</a>';
                                     }
                                     $snippet .= '<a href="/profile/'.$node->user->id.'">'.$node->user->fullname.'</a>
-                                        <small class="text-muted" data-from-now="'.$node->created_at.'"></small>
+                                        <small class="text-muted" data-from-now="'.$node->created_at->format('c').'"></small>
                                     <div>'.nl2br($node->message).'</div>
 
                                     <!--

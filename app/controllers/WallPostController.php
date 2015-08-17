@@ -46,7 +46,7 @@ class WallPostController extends BaseController
             if ($post->save()) {
                 $this->purgeCache();
                 return Response::json(array('status' => 'OK',
-                    'created_at' => $post->created_at,
+                    'created_at' => $post->created_at->format('c'),
 //                    'created' => $post->created,
                     'content' => nl2br($post->message),
                     'id' => $post->id));
@@ -62,7 +62,7 @@ class WallPostController extends BaseController
     protected function purgeCache()
     {
         foreach (array(0, 1) as $key) {
-            Cache::forget(sprintf('wall.%s', $key));
+            Cache::forget(sprintf('wall.%d', $key));
         }
 
     }
