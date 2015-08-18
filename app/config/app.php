@@ -39,7 +39,7 @@ return array(
 	|
 	*/
 
-	'timezone' => 'UTC',
+	'timezone' => 'Europe/Paris', // date_default_timezone_get() ?
 
 	/*
 	|--------------------------------------------------------------------------

@@ -323,17 +323,19 @@ class BookingController extends Controller
     public function ical()
     {
         $vCalendar = new \Eluceo\iCal\Component\Calendar('intranet.coworking-toulouse.com');
+        $tz = new DateTimeZone(date_default_timezone_get());
         foreach (BookingItem::where('start_at', '>=', date('Y-m-d'))->with('booking', 'ressource')->get() as $booking_item) {
             $start = new \DateTime($booking_item->start_at);
+            $start->setTimezone($tz);
             $end = new \DateTime($booking_item->start_at);
+            $start->setTimezone($tz);
             $end->modify(sprintf('+%d minutes', $booking_item->duration));
 
             $vEvent = new \Eluceo\iCal\Component\Event();
             $vEvent
                 ->setDtStart($start)
                 ->setDtEnd($end)
-                //->setUseTimezone(true)
-                ->setUseUtc(false)
+                ->setUseTimezone(true)
                 ->setSummary(sprintf('%s (%s)', $booking_item->booking->title, $booking_item->ressource->name));
             $vCalendar->addComponent($vEvent);
         }
