@@ -85,8 +85,12 @@ class BookingItem extends Illuminate\Database\Eloquent\Model
             $className = 'booking';
         }
         $backgroundColor = $this->ressource->booking_background_color;
+        $borderColor = adjustBrightness($this->ressource->booking_background_color, -32);
+        $textColor = adjustBrightness($this->ressource->booking_background_color, -128);
         if ($end->format('Y-m-d H:i:s') < date('Y-m-d H:i:s')) {
             $backgroundColor = $this->hexColorToRgbWithTransparency($backgroundColor, '0.4');
+            $borderColor = $this->hexColorToRgbWithTransparency($borderColor, '0.4');
+            $textColor = $this->hexColorToRgbWithTransparency($textColor, '0.4');
         }
         return array(
             'title' => $ofuscated_title,
@@ -99,8 +103,8 @@ class BookingItem extends Illuminate\Database\Eloquent\Model
             'canDelete' => (bool)$canManage,
             'editable' => (bool)$canManage,
             'backgroundColor' => $backgroundColor,
-            'borderColor' => adjustBrightness($this->ressource->booking_background_color, -32),
-            'textColor' => adjustBrightness($this->ressource->booking_background_color, -128),
+            'borderColor' => $borderColor,
+            'textColor' => $textColor,
             'location' => $this->ressource->name,
             'className' => $className
         );
