@@ -123,9 +123,10 @@ class PastTimeController extends BaseController
             if (Auth::user()->isSuperAdmin()) {
                 $time->user_id = Input::get('user_id');
                 $time->invoice_id = Input::get('invoice_id');
-                $time->is_free = Input::get('is_free');
+                $time->is_free = Input::get('is_free', false);
             } else {
                 $time->user_id = Auth::user()->id;
+                $time->is_free = false;
             }
             $time->ressource_id = Input::get('ressource_id');
             $time->comment = Input::get('comment');
