@@ -15,7 +15,7 @@ class BookingItem extends Illuminate\Database\Eloquent\Model
     public static $rules = array(
         'ressource_id' => 'required|exists:ressource',
         'booking_id' => 'required|exists:booking',
-        'start_at'=> 'date|unique_booking',
+        'start_at' => 'date|unique_booking',
         'duration' => 'required|min:15'
     );
 
@@ -25,7 +25,7 @@ class BookingItem extends Illuminate\Database\Eloquent\Model
     public static $rulesAdd = array(
         'ressource_id' => 'required|exists:ressource',
         'booking_id' => 'required|exists:booking',
-        'start_at'=> 'date|unique_booking',
+        'start_at' => 'date|unique_booking',
         'duration' => 'required|min:15'
     );
 
@@ -42,6 +42,22 @@ class BookingItem extends Illuminate\Database\Eloquent\Model
     public function scopeAll($query)
     {
         return $query;
+    }
+
+    protected function hexColorToRgbWithTransparency($color, $transparency)
+    {
+        $color = str_replace("#", "", $color);
+
+        if (strlen($color) == 3) {
+            $r = hexdec(substr($color, 0, 1) . substr($color, 0, 1));
+            $g = hexdec(substr($color, 1, 1) . substr($color, 1, 1));
+            $b = hexdec(substr($color, 2, 1) . substr($color, 2, 1));
+        } else {
+            $r = hexdec(substr($color, 0, 2));
+            $g = hexdec(substr($color, 2, 2));
+            $b = hexdec(substr($color, 4, 2));
+        }
+        return sprintf('rgba(%d, %d, %d, %s)', $r, $g, $b, $transparency);
     }
 
     public function toJsonEvent()
@@ -65,10 +81,13 @@ class BookingItem extends Illuminate\Database\Eloquent\Model
         if (!$user->isSuperAdmin() && ($this->booking->user_id != $user->id)) {
             $ofuscated_title = 'Réservé';
             $className = sprintf('booking-ofuscated-%d', $this->ressource_id);
-        }else{
+        } else {
             $className = 'booking';
         }
-
+        $backgroundColor = $this->ressource->booking_background_color;
+        if ($end->format('Y-m-d H:i:s') < date('Y-m-d H:i:s')) {
+            $backgroundColor = $this->hexColorToRgbWithTransparency($backgroundColor, '0.4');
+        }
         return array(
             'title' => $ofuscated_title,
             'start' => $start->format('c'),
@@ -79,7 +98,7 @@ class BookingItem extends Illuminate\Database\Eloquent\Model
             'description' => $this->booking->content,
             'canDelete' => (bool)$canManage,
             'editable' => (bool)$canManage,
-            'backgroundColor' => $this->ressource->booking_background_color,
+            'backgroundColor' => $backgroundColor,
             'borderColor' => adjustBrightness($this->ressource->booking_background_color, -32),
             'textColor' => adjustBrightness($this->ressource->booking_background_color, -128),
             'location' => $this->ressource->name,
