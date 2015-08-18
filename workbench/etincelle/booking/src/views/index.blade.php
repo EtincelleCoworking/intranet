@@ -144,35 +144,28 @@
         <div class="col-lg-12">
             <div class="ibox">
                 <div class="ibox-content">
-                    {{--<button type="button" class="btn btn-primary" data-toggle="modal" data-target="#wallNewMessage">Ajouter un message</button>--}}
-
-
                     <div id="calendar"></div>
                 </div>
             </div>
         </div>
-        {{--<div class="col-lg-4">--}}
-        {{--<div class="ibox">--}}
-        {{--<div class="ibox-title">--}}
-        {{--<h5>Nouvelle réservation</h5>--}}
-        {{--</div>--}}
-        {{--<div class="ibox-content">--}}
-        {{--<div class="row">--}}
-        {{----}}
-        {{--</div>--}}
-        {{--</div>--}}
-        {{--</div>--}}
 
-        {{--<div class="ibox">--}}
-        {{--<div class="ibox-title">--}}
-        {{--<h5>Salles</h5>--}}
-        {{--</div>--}}
-        {{--<div class="ibox-content">--}}
+    </div>
+    <div class="row">
+        <div class="col-lg-12">
+            <div class="ibox">
+                <div class="ibox-title">
+                    Exporter au format iCalendar
+                </div>
+                <div class="ibox-content">
+                    <p>Vous pouvez exporter toutes vos réservations privées via cette adresse:</p>
+                    <pre>{{route('booking_ical', Auth::user()->booking_key)}}</pre>
 
-        {{--</div>--}}
-        {{--</div>--}}
+                    <p>Vous pouvez exporter tous les rendez-vous publiques via cette adresse:</p>
+                    <pre>{{route('booking_ical', 'public')}}</pre>
+                </div>
+            </div>
+        </div>
 
-        {{--</div>--}}
     </div>
 @stop
 
@@ -295,6 +288,13 @@
                     left: 'prev,next today',
                     center: 'title',
                     right: 'agendaWeek,agendaDay' // month,basicWeek,basicDay,
+                },
+                eventRender: function(event, element) {
+                    if(event.is_private){
+                        element.find(".fc-time").before($("<span class=\"fa fa-lock pull-right\"></span>"));
+                    }else{
+                        //element.find(".fc-time").before($("<span class=\"fa fa-unlock pull-right\"></span>"));
+                    }
                 },
                 editable: false,
                 firstDay: 1,

@@ -320,11 +320,38 @@ class BookingController extends Controller
         });
     }
 
-    public function ical()
+    public function ical($key)
     {
-        $vCalendar = new \Eluceo\iCal\Component\Calendar('intranet.coworking-toulouse.com');
+
+        switch ($key) {
+            case 'public':
+                $items = BookingItem::where('start_at', '>=', date('Y-m-d'))
+                    ->where('booking.is_private', '=', false)
+                    ->with('booking', 'ressource')->get();
+                $description = '';
+                break;
+            default:
+                $owner = User::where('booking_key', '=', $key)->first();
+                if (!$owner) {
+                    App::abort(404);
+                    return false;
+                }
+                $description = $owner->fullname;
+
+                $items = BookingItem::where('start_at', '>=', date('Y-m-d'))
+                    ->join('booking', 'booking_item.booking_id', '=', 'booking.id')
+                    ->join('users', 'booking.user_id', '=', 'users.id')
+                    ->where('users.booking_key', '=', $key)
+                    ->with('booking', 'ressource')->get();
+
+                break;
+        }
+
+
+        $vCalendar = new \Eluceo\iCal\Component\Calendar(Request::server('SERVER_NAME'));
+        $vCalendar->setDescription($description);
         $tz = new DateTimeZone(date_default_timezone_get());
-        foreach (BookingItem::where('start_at', '>=', date('Y-m-d'))->with('booking', 'ressource')->get() as $booking_item) {
+        foreach ($items as $booking_item) {
             $start = new \DateTime($booking_item->start_at);
             $start->setTimezone($tz);
             $end = new \DateTime($booking_item->start_at);

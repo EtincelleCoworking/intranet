@@ -75,6 +75,8 @@ class BookingItem extends Illuminate\Database\Eloquent\Model
             'end' => $end->format('c'),
             'booking_id' => $this->booking->id,
             'id' => $this->id,
+            'is_private' => $this->booking->is_private,
+            'description' => $this->booking->content,
             'canDelete' => (bool)$canManage,
             'editable' => (bool)$canManage,
             'backgroundColor' => $this->ressource->booking_background_color,
