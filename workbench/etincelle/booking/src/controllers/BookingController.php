@@ -51,30 +51,60 @@ class BookingController extends Controller
 
         }
 
-        $booking = new Booking();
+        $id = Input::get('id');
+        $booking_items = array();
+        if ($id) {
+            $booking_item = BookingItem::whereId($id)->with('booking')->first();
+            if (!$booking_item) {
+                App::abort(404);
+            }
+            $booking = $booking_item->booking;
+            if (!Auth::user()->isSuperAdmin() && (Auth::id() != $booking->user_id)) {
+                App::abort(403);
+            }
+            foreach ($booking->items()->where('start_at', '=', $booking_item->start_at)->get() as $item) {
+                $booking_items[$item->ressource_id] = $item;
+            }
+            $is_new = false;
+        } else {
+            $booking = new Booking();
+            $is_new = true;
+        }
+
         $booking->title = Input::get('title');
+        $booking->content = Input::get('description');
         if (Auth::user()->isSuperAdmin()) {
             $booking->user_id = Input::get('user_id');
             if (empty($booking->user_id)) {
-                $booking->user_id = Auth::user()->id;
+                $booking->user_id = Auth::id();
             }
         } else {
-            $booking->user_id = Auth::user()->id;
+            $booking->user_id = Auth::id();
         }
+        $booking->is_private = Input::get('is_private');
         $booking->save();
 
         $result = array();
         foreach (Input::get('rooms') as $ressource_id) {
-            $booking_item = new BookingItem();
-            $booking_item->booking_id = $booking->id;
+            if (isset($booking_items[$ressource_id])) {
+                $booking_item = $booking_items[$ressource_id];
+                unset($booking_items[$ressource_id]);
+            } else {
+                $booking_item = new BookingItem();
+                $booking_item->booking_id = $booking->id;
+                $booking_item->ressource_id = $ressource_id;
+            }
             $booking_item->start_at = newDateTime(Input::get('date'), Input::get('start'));
             $booking_item->duration = getDuration(Input::get('start'), Input::get('end'));
-            $booking_item->ressource_id = $ressource_id;
+            $booking_item->is_open_to_registration = Input::get('is_open_to_registration', false);
             $booking_item->save();
 
             $result[] = $booking_item->toJsonEvent();
         }
-        $this->sendNewBookingNotification($booking);
+        foreach ($booking_items as $booking_item) {
+            $booking_item->delete();
+        }
+        $this->sendNewBookingNotification($booking, $is_new);
         return Response::json(array('status' => 'OK', 'events' => $result));
     }
 
@@ -284,13 +314,25 @@ class BookingController extends Controller
         return Redirect::route('booking_list');
     }
 
-    protected function sendNewBookingNotification($booking)
+    protected function sendNewBookingNotification($booking, $is_new)
     {
-        Mail::send('booking::emails.created', array('booking' => $booking), function ($m) use ($booking) {
+        Mail::send('booking::emails.created', array('booking' => $booking), function ($m) use ($booking, $is_new) {
+            $start_at = $booking->items->first()->start_at;
+            if ($start_at instanceof \DateTime) {
+                $start_at = $start_at->format('d/m/Y H:i');
+            } else {
+                $start_at = date('d/m/Y H:i', strtotime($start_at));
+            }
+            if($is_new){
+                $title = 'Nouvelle réservation';
+            }else{
+                $title = 'Modification de réservation';
+            }
+
             $m->from('sebastien@coworking-toulouse.com', 'Sébastien Hordeaux')
                 ->bcc('sebastien@coworking-toulouse.com', 'Sébastien Hordeaux')
                 ->to($booking->user->email, $booking->user->fullname)
-                ->subject(sprintf('Etincelle Coworking - Nouvelle réservation - %s', date('d/m/Y H:i', strtotime($booking->items->first()->start_at))));
+                ->subject(sprintf('Etincelle Coworking - %s - %s', $title, $start_at));
         });
     }
 

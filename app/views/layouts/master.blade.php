@@ -28,6 +28,8 @@
     {{ HTML::style('font-awesome/css/font-awesome.min.css') }}
 
             <!-- Bootstrap CSS -->
+    {{ HTML::style('css/plugins/summernote/summernote.css') }}
+    {{ HTML::style('css/plugins/summernote/summernote-bs3.css') }}
     {{ HTML::style('css/bootstrap.min.css') }}
 
     {{--<!-- Jquery UI CSS -->--}}
@@ -54,8 +56,7 @@
 
     {{ HTML::style('css/select2.min.css') }}
 
-    {{ HTML::style('css/plugins/summernote/summernote.css') }}
-    {{ HTML::style('css/plugins/summernote/summernote-bs3.css') }}
+
     {{ HTML::style('css/etincelle.css') }}
 
     @yield('stylesheets')

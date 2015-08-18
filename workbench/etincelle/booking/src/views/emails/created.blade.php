@@ -27,8 +27,12 @@
                             <td width="30%">Date</td>
                             <td>
                                 <strong>
-                                    {{date('d/m/Y H:i', strtotime($booking_item->start_at))}}
-                                    ({{ durationToHuman($booking_item->duration) }})
+                                    @if($booking_item->start_at instanceof \DateTime)
+                                        {{ $booking_item->start_at->format('d/m/Y H:i')}}
+                                    @else
+                                        {{date('d/m/Y H:i', strtotime($booking_item->start_at))}}
+                                    @endif
+                                ({{ durationToHuman($booking_item->duration) }})
                                 </strong>
                             </td>
                         </tr>

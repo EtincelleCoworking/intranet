@@ -43,6 +43,15 @@ class Ressource extends Eloquent
         'name' => 'required|min:1'
     );
 
+    public function getLabelCssAttribute()
+    {
+        return sprintf('background-color: %s; color: %s; border: 1px solid %s; margin-right: 10px; opacity: 0.75',
+            $this->booking_background_color,
+            adjustBrightness($this->booking_background_color, -128),
+            adjustBrightness($this->booking_background_color, -32)
+        );
+    }
+
     /**
      * Get list of ressources
      */

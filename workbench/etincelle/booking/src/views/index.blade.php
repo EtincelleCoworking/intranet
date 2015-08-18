@@ -11,8 +11,7 @@
 
             Légende:
             @foreach(Ressource::whereIsBookable(true)->get() as $ressource)
-
-                <div class="label" style="background-color: {{$ressource->booking_background_color}}; color: {{ adjustBrightness($ressource->booking_background_color, -128)}}; border: 1px solid {{ adjustBrightness($ressource->booking_background_color, -32)}}; margin-right: 10px; opacity: 0.75">
+                <div class="label" style="{{$ressource->labelCss}}">
                     {{$ressource->name}}
                 </div>
             @endforeach
@@ -32,6 +31,8 @@
         <div class="modal-dialog modal-lg">
             <div class="modal-content">
                 {{ Form::open(array('route' => 'booking_create', 'class' => 'form', 'id'=>'meeting-form'), array()) }}
+                {{ Form::hidden('id') }}
+                {{ Form::hidden('booking_id') }}
                 <div class="modal-header">
                     <button type="button" class="close" data-dismiss="modal">
                         <span aria-hidden="true">&times;</span>
@@ -41,44 +42,83 @@
                 </div>
                 <div class="modal-body">
                     <div class="row">
-                        {{ Form::hidden('booking_id') }}
-                        {{ Form::hidden('id') }}
-                        @if (Auth::user()->isSuperAdmin())
+                        <div class="col-xs-6">
+                            @if (Auth::user()->isSuperAdmin())
+                                <div class="col-xs-12">
+                                    {{ Form::label('title', 'Client') }}
+                                    {{ Form::select('user_id', User::Select('Sélectionnez un client'), null, array('id' => 'booking-user','class' => 'form-control')) }}
+                                </div>
+                            @endif
+
                             <div class="col-xs-12">
-                                {{ Form::label('title', 'Client') }}
-                                {{ Form::select('user_id', User::Select('Sélectionnez un client'), null, array('id' => 'booking-user','class' => 'form-control')) }}
+                                {{ Form::label('title', 'Titre') }}
+                                <p>{{ Form::text('title', null, array('class' => 'form-control')) }}</p>
                             </div>
-                        @endif
 
-                        <div class="col-xs-12">
-                            {{ Form::label('title', 'Titre') }}
-                            <p>{{ Form::text('title', null, array('class' => 'form-control')) }}</p>
+                            <div class="col-xs-12">
+                                {{ Form::label('description', 'Description') }}
+                                <p>{{ Form::textarea('description', null, array('class' => 'form-control')) }}</p>
+                            </div>
+                        </div>
+                        <div class="col-xs-6">
+                            <div class="col-xs-4">
+                                {{ Form::label('date', 'Date') }}
+                                <p>{{ Form::text('date', null, array('class' => 'form-control datePicker')) }}</p>
+                            </div>
+
+                            <div class="col-xs-4">
+                                {{ Form::label('start', 'Début') }}
+                                <p>{{ Form::select('start', Booking::selectableHours(), false, array('class' => 'form-control')) }}</p>
+                            </div>
+
+                            <div class="col-xs-4">
+                                {{ Form::label('end', 'Fin') }}
+                                <p>{{ Form::select('end', Booking::selectableHours(), false, array('class' => 'form-control')) }}</p>
+                            </div>
+                            <div class="col-xs-12">
+                                <label for="meeting-add-isprivate" style="font-weight: normal;">
+                                    <p>
+                                        {{ Form::checkbox('is_private', true, false, array('id'=> 'meeting-add-isprivate')) }}
+                                        Événement privé
+                                        <br/>
+                                    <span class="text-muted">
+                                        <small>Les événements privés ne sont visibles que par vous</small>
+                                    </span>
+                                    </p>
+                                </label>
+                            </div>
+                            <div class="col-xs-12">
+                                <label for="meeting-add-registration" style="font-weight: normal;">
+                                    <p>
+                                        {{ Form::checkbox('is_open_to_registration', true, false, array('id'=> 'meeting-add-registration')) }}
+                                        Permettre les inscriptions
+                                        <br/>
+                                    <span class="text-muted">
+                                        <small>Les autres membres pourrons s'inscrire à cet événément.</small>
+                                    </span>
+                                    </p>
+                                </label>
+                            </div>
+                            <div class="col-xs-12">
+                                {{ Form::label('rooms', 'Lieu') }}
+                                @foreach(Ressource::whereIsBookable(true)->get() as $ressource)
+                                    <p>
+                                        <span class="label" style="{{$ressource->labelCss}}">
+                                    {{ Form::checkbox('rooms[]', $ressource->id, false, array('id'=> sprintf('meeting-add-room%d', $ressource->id))) }}
+                                            &nbsp;
+                                            <label for="meeting-add-room{{$ressource->id}}"
+                                                   style="font-weight: normal;">
+                                                {{$ressource->name}}
+                                            </label>
+                                        </span>
+                                    </p>
+                                @endforeach
+                            </div>
+
+
                         </div>
 
-                        <div class="col-xs-4">
-                            {{ Form::label('date', 'Date') }}
-                            <p>{{ Form::text('date', null, array('class' => 'form-control datePicker')) }}</p>
-                        </div>
 
-                        <div class="col-xs-4">
-                            {{ Form::label('start', 'Début') }}
-                            <p>{{ Form::select('start', Booking::selectableHours(), false, array('class' => 'form-control')) }}</p>
-                        </div>
-
-                        <div class="col-xs-4">
-                            {{ Form::label('end', 'Fin') }}
-                            <p>{{ Form::select('end', Booking::selectableHours(), false, array('class' => 'form-control')) }}</p>
-                        </div>
-
-                        <div class="col-xs-12">
-                            {{ Form::label('rooms', 'Lieu') }}
-                            @foreach(Ressource::bookable() as $id => $ressource)
-                                <p>
-                                    {{ Form::checkbox('rooms[]', $id, false, array('id'=> sprintf('meeting-add-room%d', $id))) }}
-                                    <label for="meeting-add-room{{$id}}">{{$ressource}}</label>
-                                </p>
-                            @endforeach
-                        </div>
                     </div>
                 </div>
 
@@ -95,9 +135,9 @@
         <div class="modal-dialog modal-lg">
             <div class="modal-content">
                 <div class="modal-header">
-                    {{--<a href="#" class="btn btn-default pull-left col-xs-1" id="meeting-unlocker">--}}
-                        {{--<span class="fa fa-lock"></span>--}}
-                    {{--</a>--}}
+                    <div class="pull-left col-xs-1">
+                        <span class="fa fa-3x fa-lock" id="meeting-unlocker"></span>
+                    </div>
 
                     <button type="button" class="close" data-dismiss="modal">
                         <span aria-hidden="true">&times;</span>
@@ -133,6 +173,7 @@
 
                 <div class="modal-footer">
                     <a href="#" class="btn btn-danger pull-left" id="meeting-delete">Supprimer</a>
+                    <a href="#" class="btn btn-default" id="meeting-modify">Modifier</a>
 
                     <button type="button" class="btn btn-primary" data-dismiss="modal">Fermer</button>
                 </div>
@@ -188,7 +229,7 @@
     <style type="text/css">
         @foreach(Ressource::whereIsBookable(true)->get() as $ressource)
 
-.fc-event.booking-ofuscated-{{$ressource->id}} {
+.fc-event.booking-ofuscated-{{$ressource->id}}                {
             background: repeating-linear-gradient(
             135deg,
                     {{ adjustBrightness($ressource->booking_background_color, -32)}},
@@ -218,38 +259,111 @@
     {{ HTML::script('js/plugins/fullcalendar/lang-all.js') }}
 
     <script type="text/javascript">
-        function hideDeleteButton() {
-            $('#meeting-form input[name=id]').val(false);
-            $('#meeting-form input[name=booking_id]').val(false);
-            $('#meeting-delete').hide();
 
-        }
+        var Etincelle = {
+            Event: function () {
+                this.id = null;
+                this.booking_id = null;
+                this.user_id = '{{Auth::id()}}';
+                this.title = '{{Auth::user()->fullname}}';
+                this.description = '';
+                this.start = moment().add(7, 'days');
+                this.end = moment().add(7, 'days').add({{ Config::get('booking::default_meeting_duration', 1) }}, 'hours');
+                this.ressource_id = null;
+                this.is_private = true;
+                this.is_open_to_registration = false;
+            }
+        };
+
+        Etincelle.Event.prototype.populate = function (e) {
+            this.id = e.id;
+            this.booking_id = e.booking_id;
+            this.editable = e.editable;
+            this.canDelete = e.canDelete;
+            this.user_id = e.user_id;
+            this.title = e.title;
+            this.description = e.description;
+            this.start = e.start;
+            this.end = e.end;
+            this.ressource_id = e.ressource_id;
+            this.is_private = e.is_private;
+            this.is_open_to_registration = e.is_open_to_registration;
+        };
+
+        Etincelle.Event.prototype.edit = function () {
+            var self = this;
+            var $form = $('#meeting-form');
+            $form.find('input[name="id"]').val(this.id);
+            $form.find('input[name="booking_id"]').val(this.booking_id);
+            $form.find('input[name="title"]').val(this.title);
+            @if (Auth::user()->isSuperAdmin())
+                $('select[name="user_id"]').select2().select2('val', this.user_id);
+            @endif
+            $form.find('textarea[name="description"]').val(this.description);
+            $form.find('input[name="date"]').val(this.start.format('DD/MM/YYYY'));
+            $form.find('select[name="start"]').val(this.start.format('HH:mm'));
+            $form.find('select[name="end"]').val(this.end.format('HH:mm'));
+            $form.find('input[name="rooms[]"]').each(function () {
+                $(this).prop('checked', $(this).val() == self.ressource_id);
+            });
+            $form.find('input[name="is_private"]').prop('checked', this.is_private);
+            $form.find('input[name="is_open_to_registration"]').prop('checked', this.is_open_to_registration);
+
+            $('#newBookingDialog').modal('show');
+        };
+        Etincelle.Event.prototype.getLocation = function () {
+            @foreach(Ressource::whereIsBookable(true)->get() as $ressource)
+            if ({{$ressource->id}} == this.ressource_id
+            )
+            {
+                return '{{$ressource->name}}';
+            }
+            @endforeach
+            return false;
+        };
+        Etincelle.Event.prototype.show = function () {
+            var $dialog = $('#BookingDialog');
+            if (this.is_private) {
+                $dialog.find('#meeting-unlocker').prop('class', 'fa fa-2x fa-lock');
+            } else {
+                $dialog.find('#meeting-unlocker').prop('class', 'fa fa-2x fa-unlock');
+            }
+
+            $dialog.find('.modal-header .modal-title').html(this.title);
+            $dialog.find('#meeting-view-date').html(this.start.format('DD/MM/YYYY'));
+            $dialog.find('#meeting-view-hours').html(
+                    this.start.format('HH:mm')
+                    + ' - '
+                    + this.end.format('HH:mm')
+            );
+            $dialog.find('#meeting-view-location').html(this.getLocation());
+
+            if (this.canDelete) {
+                $('#meeting-delete').show();
+            } else {
+                $('#meeting-delete').hide();
+            }
+
+            $dialog.modal('show');
+        };
+
+
+        var activeEvent;
 
         $().ready(function () {
-            $('#meeting-unlocker').on({
-                mouseenter: function () {
-                    $(this).find('span').attr('class', 'fa fa-unlock');
-                },
-                mouseleave: function () {
-                    $(this).find('span').attr('class', 'fa fa-lock');
-                }
-            });
-
             $('#meeting-add')
                     .click(function () {
-                        var start = moment().add(7, 'days');
-                        var $form = $('#meeting-form');
-                        $form.find('input[name="title"]').val('{{Auth::user()->fullname}}');
-                        $form.find('input[name="date"]').val(start.format('DD/MM/YYYY'));
-                        $form.find('select[name="start"]').val(start.format('HH:00'));
-                        $form.find('select[name="end"]').val(moment().add({{ Config::get('booking::default_meeting_duration', 1) }}, 'hours').format('HH:00'));
-                        $form.find('input[name="rooms[]"]').attr('checked', false);
-
-                        $('#newBookingDialog').modal('show');
-
+                        var event = new Etincelle.Event();
+                        event.edit();
                         return false;
                     });
 
+            $('#meeting-modify')
+                    .click(function () {
+                        $('#BookingDialog').modal('hide');
+                        activeEvent.edit();
+                        return false;
+                    });
 
             $('#meeting-delete')
                     .hide()
@@ -259,8 +373,8 @@
                             url: '{{ URL::route('booking_delete_ajax') }}',
                             type: "POST",
                             data: {
-                                booking_id: $('#meeting-form input[name=booking_id]').val(),
-                                id: $('#meeting-form input[name=id]').val()
+                                booking_id: activeEvent.booking_id,
+                                id: activeEvent.id
                             },
                             success: function (data) {
                                 if (data.status == 'KO') {
@@ -291,9 +405,18 @@
                             }
                         } else {
                             for (var i = 0; i < data.events.length; i++) {
-                                $('#calendar').fullCalendar('renderEvent', data.events[i], true);
+                                var events = $('#calendar').fullCalendar('clientEvents', data.events[i].id);
+                                if (events.length > 0) {
+                                    var event = events[0];
+                                    for (k in data.events[i]) {
+                                        event[k] = data.events[i][k];
+                                    }
+                                    $('#calendar').fullCalendar('updateEvent', event);
+                                } else {
+                                    $('#calendar').fullCalendar('renderEvent', data.events[i], true);
+                                }
+                                $('#newBookingDialog').modal('hide');
                             }
-                            $('#newBookingDialog').modal('hide');
                         }
                     },
                     error: function (data) {
@@ -303,12 +426,6 @@
 
                 return false;
             });
-            /* initialize the calendar
-             -----------------------------------------------------------------*/
-            var date = new Date();
-            var d = date.getDate();
-            var m = date.getMonth();
-            var y = date.getFullYear();
 
             $('#calendar').fullCalendar({
                 header: {
@@ -316,11 +433,11 @@
                     center: 'title',
                     right: 'agendaWeek,agendaDay' // month,basicWeek,basicDay,
                 },
-                eventRender: function(event, element) {
-                    if(event.is_private){
+                eventRender: function (event, element) {
+                    if (event.is_private) {
                         element.find(".fc-time").before($("<span class=\"fa fa-lock pull-right\"></span>"));
-                    }else{
-                        //element.find(".fc-time").before($("<span class=\"fa fa-unlock pull-right\"></span>"));
+                    } else {
+//                        element.find(".fc-time").before($("<span class=\"fa fa-unlock pull-right\"></span>"));
                     }
                 },
                 editable: false,
@@ -337,48 +454,16 @@
                 eventTextColor: '#000000',
                 slotDuration: '00:30:00',
                 select: function (start, end) {
-                    var $form = $('#meeting-form');
-                    $form.find('input[name="title"]').val('{{Auth::user()->fullname}}');
-                    $form.find('input[name="date"]').val(start.format('DD/MM/YYYY'));
-                    $form.find('select[name="start"]').val(start.format('HH:mm'));
-                    $form.find('select[name="end"]').val(end.format('HH:mm'));
-                    $form.find('input[name="rooms[]"]').attr('checked', false);
-
-                    $('#newBookingDialog').modal('show');
+                    activeEvent = new Etincelle.Event();
+                    activeEvent.start = start;
+                    activeEvent.end = end;
+                    activeEvent.edit();
                     $('#calendar').fullCalendar('unselect');
-
                 },
                 eventClick: function (calEvent, jsEvent, view) {
-
-//                    alert('Event: ' + calEvent.title + ' ' + calEvent.booking_id + ' ' + calEvent.booking_item_id);
-//                    alert('Coordinates: ' + jsEvent.pageX + ',' + jsEvent.pageY);
-//                    alert('View: ' + view.name);
-
-                    // change the border color just for fun
-//                    $(this).css('border-color', 'red');
-
-                    $('#meeting-form input[name=id]').val(calEvent.id);
-                    $('#meeting-form input[name=booking_id]').val(calEvent.booking_id);
-
-                    var $dialog = $('#BookingDialog');
-                    $dialog.find('.modal-header .modal-title').html(calEvent.title);
-                    $dialog.find('#meeting-view-date').html(calEvent.start.format('DD/MM/YYYY'));
-                    $dialog.find('#meeting-view-hours').html(
-                            calEvent.start.format('HH:mm')
-                            + ' - '
-                            + calEvent.end.format('HH:mm')
-                    );
-                    $dialog.find('#meeting-view-location').html(calEvent.location);
-
-                    if (calEvent.canDelete) {
-                        $('#meeting-delete').show();
-                    } else {
-                        $('#meeting-delete').hide();
-                    }
-
-                    $dialog.modal('show');
-
-
+                    activeEvent = new Etincelle.Event();
+                    activeEvent.populate(calEvent);
+                    activeEvent.show();
                 },
                 eventSources: [
                     '{{  URL::route('booking_list_ajax') }}'
@@ -484,7 +569,8 @@
 
 
             $.fn.modal.Constructor.prototype.enforceFocus = $.noop;
-        });
+        })
+        ;
     </script>
 
 @stop
