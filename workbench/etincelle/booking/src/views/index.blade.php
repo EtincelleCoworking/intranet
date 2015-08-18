@@ -197,6 +197,16 @@
                     {{$ressource->booking_background_color}} 20px
             );
         }
+
+        .fc-event.booking-ofuscated-{{$ressource->id}}.booking-completed {
+            background: repeating-linear-gradient(
+            135deg,
+                    {{ hexColorToRgbWithTransparency(adjustBrightness($ressource->booking_background_color, -32), '0.4')}},
+                    {{hexColorToRgbWithTransparency(adjustBrightness($ressource->booking_background_color, -32), '0.4')}} 10px,
+                    {{hexColorToRgbWithTransparency($ressource->booking_background_color, '0.4')}} 10px,
+                    {{hexColorToRgbWithTransparency($ressource->booking_background_color, '0.4')}} 20px
+            );
+        }
         @endforeach
     </style>
 

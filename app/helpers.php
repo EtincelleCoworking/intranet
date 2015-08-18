@@ -103,3 +103,19 @@ function adjustBrightness($hex, $steps)
 
     return $return;
 }
+
+function hexColorToRgbWithTransparency($color, $transparency)
+{
+    $color = str_replace("#", "", $color);
+
+    if (strlen($color) == 3) {
+        $r = hexdec(substr($color, 0, 1) . substr($color, 0, 1));
+        $g = hexdec(substr($color, 1, 1) . substr($color, 1, 1));
+        $b = hexdec(substr($color, 2, 1) . substr($color, 2, 1));
+    } else {
+        $r = hexdec(substr($color, 0, 2));
+        $g = hexdec(substr($color, 2, 2));
+        $b = hexdec(substr($color, 4, 2));
+    }
+    return sprintf('rgba(%d, %d, %d, %s)', $r, $g, $b, $transparency);
+}
