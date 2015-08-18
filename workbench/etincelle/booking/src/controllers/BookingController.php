@@ -331,6 +331,16 @@ class BookingController extends Controller
                 $description = '';
                 break;
             default:
+                $filter = true;
+                if (preg_match('/^(.+)_(.+)$/', $key, $tokens)) {
+                    $key = $tokens[1];
+                    if ($tokens[2] != 'all') {
+                        App::abort(404);
+                        return false;
+                    }
+
+                    $filter = false;
+                }
                 $owner = User::where('booking_key', '=', $key)->first();
                 if (!$owner) {
                     App::abort(404);
@@ -340,9 +350,11 @@ class BookingController extends Controller
 
                 $items = BookingItem::where('start_at', '>=', date('Y-m-d'))
                     ->join('booking', 'booking_item.booking_id', '=', 'booking.id')
-                    ->join('users', 'booking.user_id', '=', 'users.id')
-                    ->where('users.booking_key', '=', $key)
-                    ->with('booking', 'ressource')->get();
+                    ->join('users', 'booking.user_id', '=', 'users.id');
+                if ($filter) {
+                    $items = $items->where('users.booking_key', '=', $key);
+                }
+                $items = $items->with('booking', 'ressource')->get();
 
                 break;
         }

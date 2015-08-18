@@ -95,6 +95,10 @@
         <div class="modal-dialog modal-lg">
             <div class="modal-content">
                 <div class="modal-header">
+                    {{--<a href="#" class="btn btn-default pull-left col-xs-1" id="meeting-unlocker">--}}
+                        {{--<span class="fa fa-lock"></span>--}}
+                    {{--</a>--}}
+
                     <button type="button" class="close" data-dismiss="modal">
                         <span aria-hidden="true">&times;</span>
                         <span class="sr-only">Close</span>
@@ -162,6 +166,10 @@
 
                     <p>Vous pouvez exporter tous les rendez-vous publiques via cette adresse:</p>
                     <pre>{{route('booking_ical', 'public')}}</pre>
+
+                    <p>Vous pouvez exporter toutes les réservations via cette adresse:</p>
+                    <pre>{{route('booking_ical', Auth::user()->booking_key.'_all')}}</pre>
+
                 </div>
             </div>
         </div>
@@ -208,6 +216,15 @@
         }
 
         $().ready(function () {
+            $('#meeting-unlocker').on({
+                mouseenter: function () {
+                    $(this).find('span').attr('class', 'fa fa-unlock');
+                },
+                mouseleave: function () {
+                    $(this).find('span').attr('class', 'fa fa-lock');
+                }
+            });
+
             $('#meeting-add')
                     .click(function () {
                         var start = moment().add(7, 'days');
