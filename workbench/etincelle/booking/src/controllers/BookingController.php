@@ -81,7 +81,9 @@ class BookingController extends Controller
         } else {
             $booking->user_id = Auth::id();
         }
-        $booking->is_private = Input::get('is_private');
+        if (Input::has('is_private')) {
+            $booking->is_private = Input::get('is_private', true);
+        }
         $booking->save();
 
         $result = array();
@@ -323,9 +325,9 @@ class BookingController extends Controller
             } else {
                 $start_at = date('d/m/Y H:i', strtotime($start_at));
             }
-            if($is_new){
+            if ($is_new) {
                 $title = 'Nouvelle réservation';
-            }else{
+            } else {
                 $title = 'Modification de réservation';
             }
 
