@@ -49,9 +49,11 @@
                 </div>
             </div>
 
-            <div class="col-lg-3">
-                @include('partials.active_subscription', array('active_subscription' => $active_subscription, 'subscription_used' => $subscription_used, 'subscription_ratio' => $subscription_ratio))
-            </div>
+            @if($active_subscription)
+                <div class="col-lg-3">
+                    @include('partials.active_subscription', array('active_subscription' => $active_subscription, 'subscription_used' => $subscription_used, 'subscription_ratio' => $subscription_ratio))
+                </div>
+            @endif
 
             <div class="col-lg-3">
                 @include('booking::partials.upcoming_events')
@@ -64,19 +66,6 @@
         </div>
     @elseif (Auth::user()->role == 'member')
         <div class="row">
-            {{--<div class="col-lg-3">--}}
-            {{--<div class="ibox">--}}
-            {{--<div class="ibox-content">--}}
-            {{--<h5 class="m-b-md">CA du mois</h5>--}}
-
-            {{--<h1 class="no-margins">--}}
-            {{--{{ number_format($totalMonth ? $totalMonth->total : 0, 0, ',', '.') }} €--}}
-            {{--</h1>--}}
-            {{--<small>&nbsp;</small>--}}
-            {{--</div>--}}
-            {{--</div>--}}
-            {{--</div>--}}
-
             <div class="col-lg-3">
                 @include('booking::partials.upcoming_events')
             </div>
@@ -85,9 +74,11 @@
                 @include('partials.next_birthday')
             </div>
 
-            <div class="col-lg-3">
-                @include('partials.active_subscription', array('active_subscription' => $active_subscription, 'subscription_used' => $subscription_used, 'subscription_ratio' => $subscription_ratio))
-            </div>
+            @if($active_subscription)
+                <div class="col-lg-3">
+                    @include('partials.active_subscription', array('active_subscription' => $active_subscription, 'subscription_used' => $subscription_used, 'subscription_ratio' => $subscription_ratio))
+                </div>
+            @endif
 
         </div>
     @endif
