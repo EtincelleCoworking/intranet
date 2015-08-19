@@ -81,9 +81,7 @@ class BookingController extends Controller
         } else {
             $booking->user_id = Auth::id();
         }
-        if (Input::has('is_private')) {
-            $booking->is_private = Input::get('is_private', true);
-        }
+        $booking->is_private = Input::get('is_private', false);
         $booking->save();
 
         $result = array();
