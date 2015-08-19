@@ -3,7 +3,7 @@
 @section('content')
     @if (Auth::user()->isSuperAdmin())
         <div class="row">
-            <div class="col-lg-4">
+            <div class="col-lg-3">
                 <div class="ibox">
                     <div class="ibox-title">
                         <h5>CA du mois</h5>
@@ -17,7 +17,7 @@
             </div>
 
             @if ($chargesMonth && $chargesMonth->total)
-                <div class="col-lg-4">
+                <div class="col-lg-3">
                     <div class="ibox">
                         <div class="ibox-title">
                             <h5>Dépenses du mois</h5>
