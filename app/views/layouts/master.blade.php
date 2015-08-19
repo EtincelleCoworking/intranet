@@ -61,6 +61,7 @@
 
     @yield('stylesheets')
     <script type="text/javascript">
+        @if(Auth::check())
         var Etincelle = {
             User: {
                 fullname: '{{Auth::user()->fullname}}',
@@ -68,6 +69,15 @@
                 profileUrl: '{{URL::route('user_profile', Auth::id())}}'
             }
         };
+        @else
+        var Etincelle = {
+            User: {
+                fullname: 'Anonyme',
+                avatarTag: '',
+                profileUrl: '#'
+            }
+        };
+        @endif
 
 
         (function(funcName, baseObj) {
