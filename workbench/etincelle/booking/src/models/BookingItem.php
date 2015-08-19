@@ -39,6 +39,11 @@ class BookingItem extends Illuminate\Database\Eloquent\Model
         return $this->belongsTo('Booking');
     }
 
+    public function members()
+    {
+        return $this->belongsToMany('User');
+    }
+
     public function scopeAll($query)
     {
         return $query;
@@ -86,6 +91,7 @@ class BookingItem extends Illuminate\Database\Eloquent\Model
             'id' => $this->id,
             'user_id' => $this->booking->user_id,
             'is_private' => (bool)$this->booking->is_private,
+            'is_open_to_registration' => (bool)$this->is_open_to_registration,
             'description' => $this->booking->content,
             'canDelete' => (bool)$canManage,
             'editable' => (bool)$canManage,

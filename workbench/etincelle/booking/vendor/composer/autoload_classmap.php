@@ -7,8 +7,10 @@ $baseDir = dirname($vendorDir);
 
 return array(
     'Booking' => $baseDir . '/src/models/Booking.php',
+    'BookingApiController' => $baseDir . '/src/controllers/BookingApiController.php',
     'BookingController' => $baseDir . '/src/controllers/BookingController.php',
     'BookingItem' => $baseDir . '/src/models/BookingItem.php',
+    'BookingItemUser' => $baseDir . '/src/models/BookingItemUser.php',
     'BookingMigration' => $baseDir . '/src/migrations/2015_08_10_104111_booking.php',
     'ColorsMigration' => $baseDir . '/src/migrations/2015_08_11_065753_colors.php',
     'Etincelle\\Booking\\BookingServiceProvider' => $baseDir . '/src/Etincelle/Booking/BookingServiceProvider.php',

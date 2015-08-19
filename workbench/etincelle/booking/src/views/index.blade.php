@@ -135,7 +135,7 @@
         <div class="modal-dialog modal-lg">
             <div class="modal-content">
                 <div class="modal-header">
-                    <div class="pull-left col-xs-1">
+                    <div class="pull-left">
                         <span class="fa fa-3x fa-lock" id="meeting-unlocker"></span>
                     </div>
 
@@ -146,34 +146,45 @@
                     <h4 class="modal-title">
                         <!-- booking title -->
                     </h4>
+
+                    <div>
+                        <i class="fa fa-calendar"></i>
+                        <span id="meeting-view-date" style="margin-right: 20px"></span>
+                        <i class="fa fa-clock-o"></i>
+                        <span id="meeting-view-hours"></span>
+                        <br/>
+                        <i class="fa fa-tag"></i>
+                        <span class="" id="meeting-view-location"></span>
+                    </div>
                 </div>
                 <div class="modal-body">
-                    <div class="row">
-                        <div class="col-xs-4">
-                            Date
-                        </div>
-                        <div class="col-xs-8" id="meeting-view-date">
+                    <div class="row" id="meeting-view-description">
+                        <div id="meeting-view-description-content">
+
                         </div>
                     </div>
-                    <div class="row">
-                        <div class="col-xs-4">
-                            Heure
-                        </div>
-                        <div class="col-xs-8" id="meeting-view-hours">
-                        </div>
-                    </div>
-                    <div class="row">
-                        <div class="col-xs-4">
-                            Lieu
-                        </div>
-                        <div class="col-xs-8" id="meeting-view-location">
+
+                    <div class="row" id="meeting-view-members">
+
+                        <div class="well well-sm">
+                            <div class="pull-right">
+                                <a href="#" class="btn btn-success" id="meeting-view-members-register">Inscription</a>
+                                <a href="#" class="btn btn-success"
+                                   id="meeting-view-members-unregister">Désincription</a>
+                            </div>
+                            <h4><span class="badge"></span> Participants</h4>
+
+                            <div class="row">
+                                <div class="col-lg-12" id="meeting-view-members-list">
+                                </div>
+                            </div>
                         </div>
                     </div>
                 </div>
 
                 <div class="modal-footer">
-                    <a href="#" class="btn btn-danger pull-left" id="meeting-delete">Supprimer</a>
-                    <a href="#" class="btn btn-default" id="meeting-modify">Modifier</a>
+                    <a href="#" class="btn btn-danger btn-outline pull-left" id="meeting-delete">Supprimer</a>
+                    <a href="#" class="btn btn-default btn-outline" id="meeting-modify">Modifier</a>
 
                     <button type="button" class="btn btn-primary" data-dismiss="modal">Fermer</button>
                 </div>
@@ -229,7 +240,7 @@
     <style type="text/css">
         @foreach(Ressource::whereIsBookable(true)->get() as $ressource)
 
-.fc-event.booking-ofuscated-{{$ressource->id}}                {
+.fc-event.booking-ofuscated-{{$ressource->id}}                      {
             background: repeating-linear-gradient(
             135deg,
                     {{ adjustBrightness($ressource->booking_background_color, -32)}},
@@ -259,7 +270,13 @@
     {{ HTML::script('js/plugins/fullcalendar/lang-all.js') }}
 
     <script type="text/javascript">
+        formatMember = function (member) {
+            return '<span id="meeting-view-members-member-' + member.id + '" class="pull-left" style="margin-right: 10px">'
+                    + '<a href="' + member.profile_url + '">'
+                    + '<img alt="' + member.fullname + '" title="' + member.fullname + '" class="img-circle img-responsive" src="' + member.avatar_url + '"/>'
+                    + '</a></span> ';
 
+        };
         var Etincelle = {
             Event: function () {
                 this.id = null;
@@ -321,12 +338,41 @@
             @endforeach
             return false;
         };
+
         Etincelle.Event.prototype.show = function () {
             var $dialog = $('#BookingDialog');
             if (this.is_private) {
                 $dialog.find('#meeting-unlocker').prop('class', 'fa fa-2x fa-lock');
             } else {
                 $dialog.find('#meeting-unlocker').prop('class', 'fa fa-2x fa-unlock');
+            }
+            if (this.is_open_to_registration) {
+                $.ajax({
+                    dataType: 'json',
+                    url: '{{ route('api_booking_members', 999999) }}'.replace('999999', activeEvent.id),
+                    type: "GET",
+                    success: function (data) {
+                        $('#meeting-view-members span').html(data.members.length);
+                        var content = '';
+                        for (var i = 0; i < data.members.length; i++) {
+                            content += formatMember(data.members[i]);
+                        }
+                        $('#meeting-view-members-list').html(content);
+                        if (data.is_member) {
+                            $('#meeting-view-members-register').hide();
+                            $('#meeting-view-members-unregister').show();
+                        } else {
+                            $('#meeting-view-members-register').show();
+                            $('#meeting-view-members-unregister').hide();
+                        }
+                        $('#meeting-view-members').show();
+                    },
+                    error: function (data) {
+                        // TODO
+                    }
+                });
+            } else {
+                $('#meeting-view-members').hide();
             }
 
             $dialog.find('.modal-header .modal-title').html(this.title);
@@ -337,11 +383,23 @@
                     + this.end.format('HH:mm')
             );
             $dialog.find('#meeting-view-location').html(this.getLocation());
+            if (this.description != '') {
+                $('#meeting-view-description-content').html(this.description);
+                $('#meeting-view-description').show();
+            } else {
+                $('#meeting-view-description').hide();
+            }
 
             if (this.canDelete) {
                 $('#meeting-delete').show();
             } else {
                 $('#meeting-delete').hide();
+            }
+
+            if (this.editable) {
+                $('#meeting-modify').show();
+            } else {
+                $('#meeting-modify').hide();
             }
 
             $dialog.modal('show');
@@ -391,6 +449,54 @@
                         });
                         return false;
                     });
+
+
+            $('#meeting-view-members-register').click(function () {
+                $.ajax({
+                    dataType: 'json',
+                    url: '{{ URL::route('api_booking_register', array('booking_item_id' => 999999, 'user_id' => Auth::id())) }}'.replace('999999', activeEvent.id),
+                    type: "GET",
+                    success: function (data) {
+                        if (data.status == 'OK') {
+                            $('#meeting-view-members-list').append(formatMember(data.member));
+                            $('#meeting-view-members h4 span').html($('#meeting-view-members-list > span').length);
+                            $('#meeting-view-members-register').hide();
+                            $('#meeting-view-members-unregister').show();
+                        } else {
+                            // error ?
+                        }
+                    },
+                    error: function (data) {
+                        // error
+                    }
+                });
+                return false;
+            });
+
+
+            $('#meeting-view-members-unregister').click(function () {
+                $.ajax({
+                    dataType: 'json',
+                    url: '{{ URL::route('api_booking_unregister', array('booking_item_id' => 999999, 'user_id' => Auth::id())) }}'.replace('999999', activeEvent.id),
+                    type: "GET",
+                    success: function (data) {
+                        if (data.status == 'OK') {
+                            $('#meeting-view-members-member-' + data.user_id).remove();
+                            $('#meeting-view-members h4 span').html($('#meeting-view-members-list > span').length);
+
+                            $('#meeting-view-members-unregister').hide();
+                            $('#meeting-view-members-register').show();
+                        } else {
+                            // error ?
+                        }
+                    },
+                    error: function (data) {
+                        // error
+                    }
+                });
+                return false;
+            });
+
 
             $('#meeting-submit').click(function () {
                 $.ajax({
