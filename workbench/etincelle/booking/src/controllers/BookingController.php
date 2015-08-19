@@ -316,7 +316,7 @@ class BookingController extends Controller
 
     protected function sendNewBookingNotification($booking, $is_new)
     {
-        Mail::send('booking::emails.created', array('booking' => $booking), function ($m) use ($booking, $is_new) {
+        Mail::send('booking::emails.created', array('booking' => $booking, 'is_new' => $is_new), function ($m) use ($booking, $is_new) {
             $start_at = $booking->items->first()->start_at;
             if ($start_at instanceof \DateTime) {
                 $start_at = $start_at->format('d/m/Y H:i');

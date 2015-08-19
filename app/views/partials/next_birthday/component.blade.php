@@ -17,7 +17,7 @@ if (empty($cacheContent)) {
                 YEAR) ASC')
             ->limit(5)->get();
     if (count($users) > 0) {
-        $cacheContent = View::make('partials.next_birthday_inner', array('users' => $users))->render();
+        $cacheContent = View::make('partials.next_birthday.inner', array('users' => $users))->render();
         Cache::put($cacheKey, $cacheContent, new \dateTime(date('Y-m-d 00:00:00', strtotime('tomorrow'))));
     }
 }

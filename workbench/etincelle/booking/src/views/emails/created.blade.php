@@ -1,20 +1,36 @@
 @extends('emails.master')
 
 @section('title')
-    Nouvelle réservation de salle
+    @if($is_new)
+        Nouvelle réservation de salle
+    @else
+        Modification de réservation de salle
+    @endif
 @stop
 
 @section('content')
     <table width="100%" cellpadding="0" cellspacing="0">
         <tr>
             <td class="content-block">
-                La réservation suivante viens d'être créée
+                @if($is_new)
+                    La réservation suivante viens d'être créée
+                @else
+                    La réservation suivante viens d'être modifiée
+                @endif
             </td>
         </tr>
         @foreach($booking->items as $booking_item)
             <tr>
                 <td class="content-block">
                     <table>
+                        <tr>
+                            <td width="30%">Titre</td>
+                            <td><strong>{{$booking->title}}</strong></td>
+                        </tr>
+                        <tr>
+                            <td width="30%">Description</td>
+                            <td>{{\Michelf\Markdown::defaultTransform($booking->content)}}</td>
+                        </tr>
                         <tr>
                             <td width="30%">Utilisateur</td>
                             <td><strong>{{$booking->user->fullname}}</strong></td>

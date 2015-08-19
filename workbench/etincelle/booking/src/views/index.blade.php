@@ -384,7 +384,7 @@
             );
             $dialog.find('#meeting-view-location').html(this.getLocation());
             if (this.description != '') {
-                $('#meeting-view-description-content').html(this.description);
+                $('#meeting-view-description-content').html(markdown.toHTML(this.description));
                 $('#meeting-view-description').show();
             } else {
                 $('#meeting-view-description').hide();

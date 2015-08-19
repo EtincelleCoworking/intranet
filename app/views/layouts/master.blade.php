@@ -511,6 +511,7 @@
 {{ HTML::script('js/jquery.equalheights.js') }}
 {{ HTML::script('js/plugins/fullcalendar/moment.min.js') }}
 {{ HTML::script('js/plugins/fullcalendar/moment_fr.js') }}
+{{ HTML::script('js/markdown.min.js') }}
 
 <script type="text/javascript">
     $.fn.datepicker.dates['fr'] = {

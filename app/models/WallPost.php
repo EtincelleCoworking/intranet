@@ -31,6 +31,10 @@ class WallPost extends \Gzero\EloquentTree\Model\Tree{
         'message' => 'required|min:1'
     );
 
+    public function getMessageFmtAttribute(){
+        return \Michelf\Markdown::defaultTransform($this->message);
+    }
+
     public function getCreatedAttribute()
     {
         $time = strtotime($this->created_at);

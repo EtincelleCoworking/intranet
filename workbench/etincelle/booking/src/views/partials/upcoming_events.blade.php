@@ -3,9 +3,10 @@
 $events = BookingItem::where('start_at', '>', date('Y-m-d H:i:s'))
         ->join('booking', 'booking_item.booking_id', '=', 'booking.id')
         ->where('booking.is_private', '=', false)
+        ->where('start_at', '<', date('Y-m-d', strtotime('+2 weeks')))
         ->with('booking', 'ressource')
         ->orderBy('start_at', 'ASC')
-        ->take(3)
+//        ->take(3)
         ->get();
 
 ?>

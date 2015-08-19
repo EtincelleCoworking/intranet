@@ -2,7 +2,12 @@
 
 @section('content')
     @if (Auth::user()->isSuperAdmin())
+
         <div class="row">
+
+            <div class="col-lg-9">
+                @include('partials.wall.component')
+            </div>
             <div class="col-lg-3">
                 <div class="ibox">
                     <div class="ibox-title">
@@ -14,10 +19,8 @@
                         <small>&nbsp;</small>
                     </div>
                 </div>
-            </div>
 
-            @if ($chargesMonth && $chargesMonth->total)
-                <div class="col-lg-3">
+                @if ($chargesMonth && $chargesMonth->total)
                     <div class="ibox">
                         <div class="ibox-title">
                             <h5>Dépenses du mois</h5>
@@ -33,10 +36,8 @@
                             @endif
                         </div>
                     </div>
-                </div>
-            @endif
+                @endif
 
-            <div class="col-lg-3">
                 <div class="ibox">
                     <div class="ibox-title">
                         <h5>Encours Clients</h5>
@@ -47,54 +48,29 @@
 
                     </div>
                 </div>
-            </div>
 
-            @if($active_subscription)
-                <div class="col-lg-3">
-                    @include('partials.active_subscription', array('active_subscription' => $active_subscription, 'subscription_used' => $subscription_used, 'subscription_ratio' => $subscription_ratio))
-                </div>
-            @endif
-
-            <div class="col-lg-3">
                 @include('booking::partials.upcoming_events')
-            </div>
-
-            <div class="col-lg-3">
-                @include('partials.next_birthday')
+                @include('partials.next_birthday.component')
             </div>
 
         </div>
     @elseif (Auth::user()->role == 'member')
         <div class="row">
-            <div class="col-lg-3">
-                @include('booking::partials.upcoming_events')
+            <div class="col-lg-9">
+                @include('partials.wall.component')
             </div>
 
             <div class="col-lg-3">
-                @include('partials.next_birthday')
-            </div>
-
-            @if($active_subscription)
-                <div class="col-lg-3">
+                @if($active_subscription)
                     @include('partials.active_subscription', array('active_subscription' => $active_subscription, 'subscription_used' => $subscription_used, 'subscription_ratio' => $subscription_ratio))
-                </div>
-            @endif
-
+                @endif
+                @include('booking::partials.upcoming_events')
+                @include('partials.next_birthday.component')
+            </div>
         </div>
     @endif
 
-    <?php
 
-
-    $isSuperAdmin = Auth::user()->isSuperAdmin();
-    $cacheKey = sprintf('wall.%d', (bool)$isSuperAdmin);
-    $wallContent = Cache::get($cacheKey);
-    if (empty($wallContent)) {
-        $wallContent = View::make('partials.wall', array('isSuperAdmin' => $isSuperAdmin))->render();
-        Cache::forever($cacheKey, $wallContent);
-    }
-    echo $wallContent;
-    ?>
 
 @stop
 
