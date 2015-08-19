@@ -36,7 +36,7 @@
                 </div>
             @endif
 
-            <div class="col-lg-4">
+            <div class="col-lg-3">
                 <div class="ibox">
                     <div class="ibox-title">
                         <h5>Encours Clients</h5>
@@ -49,8 +49,12 @@
                 </div>
             </div>
 
-            <div class="col-lg-4">
+            <div class="col-lg-3">
                 @include('partials.active_subscription', array('active_subscription' => $active_subscription, 'subscription_used' => $subscription_used, 'subscription_ratio' => $subscription_ratio))
+            </div>
+
+            <div class="col-lg-3">
+                @include('booking::partials.upcoming_events')
             </div>
 
             <div class="col-lg-3">
@@ -72,6 +76,11 @@
             {{--</div>--}}
             {{--</div>--}}
             {{--</div>--}}
+
+            <div class="col-lg-3">
+                @include('booking::partials.upcoming_events')
+            </div>
+
             <div class="col-lg-3">
                 @include('partials.next_birthday')
             </div>
