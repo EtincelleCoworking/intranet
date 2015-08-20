@@ -15,7 +15,7 @@
                         <strong>
                             <a href="{{ URL::route('user_profile', $user->id) }}">{{ $user->fullname }}</a>
                         </strong><br/>
-                        <small class="text-muted">aura alors {{ date('Y') - date('Y', strtotime($user->birthday)) + 1 }}
+                        <small class="text-muted">aura alors {{ date('Y') - date('Y', strtotime($user->birthday)) }}
                             ans
                         </small>
                         {{--<div class="actions">--}}
