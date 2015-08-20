@@ -48,7 +48,7 @@ class WallPostController extends BaseController
                 return Response::json(array('status' => 'OK',
                     'created_at' => $post->created_at->format('c'),
 //                    'created' => $post->created,
-                    'content' => nl2br($post->message),
+                    'content' => \Michelf\Markdown::defaultTransform($post->message),
                     'id' => $post->id));
             } else {
                 return Response::json(array('status' => 'KO'));

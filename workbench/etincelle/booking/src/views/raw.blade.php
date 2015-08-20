@@ -39,7 +39,7 @@
                         <div class="col-md-2 input-group-sm">{{ Form::text('filtre_end', ((Session::get('filtre_booking.end')) ? date('d/m/Y', strtotime(Session::get('filtre_booking.end'))) : date('t', date('m')).'/'.date('m/Y')), array('class' => 'form-control datePicker')) }}</div>
                         <div class="col-md-4">
                             {{ Form::submit('Filtrer', array('class' => 'btn btn-sm btn-primary')) }}
-                            <a href="{{URL::route('booking_filter_reset')}}" class="btn btn-sm btn-default">Réinitialiser</a>
+                            <a href="{{route('booking_filter_reset')}}" class="btn btn-sm btn-default">Réinitialiser</a>
                         </div>
                             </div>
                         @if (Auth::user()->isSuperAdmin())
@@ -85,7 +85,7 @@
                             @foreach($items as $item)
                                 <tr>
                                     <td>
-                                        <a href="{{ URL::route('user_modify', $item->booking->user->id) }}">{{ $item->booking->user->fullname }}</a>
+                                        <a href="{{ route('user_modify', $item->booking->user->id) }}">{{ $item->booking->user->fullname }}</a>
                                         <a href="?filtre_submitted=1&filtre_user_id={{ $item->booking->user->id }}"><i
                                                     class="fa fa-filter"></i></a>
                                     </td>
@@ -98,7 +98,7 @@
                                     <td>
                                         @if ($item->invoice_id)
                                             <a target="_blank"
-                                               href="{{ URL::route('invoice_print_pdf', $item->invoice->id) }}">{{ $item->invoice->ident }}</a>
+                                               href="{{ route('invoice_print_pdf', array('id' => $item->invoice->id)) }}">{{ $item->invoice->ident }}</a>
                                         @else
                                             @if ($item->is_free)
                                                 Offert
@@ -108,7 +108,7 @@
                                         @endif
                                     </td>
                                     <td>
-                                        <a href="{{ URL::Route('booking_delete', $item->id) }}"
+                                        <a href="{{ route('booking_delete', array('id' => $item->id)) }}"
                                            class="btn btn-xs btn-danger">Supprimer</a>
                                     </td>
                                 </tr>
