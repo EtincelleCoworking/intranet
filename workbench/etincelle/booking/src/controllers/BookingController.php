@@ -300,7 +300,7 @@ class BookingController extends Controller
         $q->with('booking.user', 'ressource', 'booking');
 
         $params = array();
-        $params['items'] = $q->paginate(15);
+        $params['items'] = $q->paginate(15, array('booking_item.*'));
         return View::make('booking::raw', $params);
     }
 
