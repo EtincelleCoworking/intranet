@@ -51,8 +51,8 @@ $messages = WallPost::where('level', 0)
     </div>
 </div>
 <p>
-    <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#wallNewMessage">Ajouter
-        un message
+    <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#wallNewMessage">
+        Ajouter un message
     </button>
 </p>
 

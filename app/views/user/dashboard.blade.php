@@ -56,7 +56,9 @@
                 </div>
 
                 @include('booking::partials.upcoming_events')
+                @include('partials.member.component')
                 @include('partials.next_birthday.component')
+
             </div>
 
         </div>
@@ -70,6 +72,7 @@
                 @if($active_subscription)
                     @include('partials.active_subscription', array('active_subscription' => $active_subscription, 'subscription_used' => $subscription_used, 'subscription_ratio' => $subscription_ratio))
                 @endif
+                @include('partials.member.component')
                 @include('booking::partials.upcoming_events')
                 @include('partials.next_birthday.component')
             </div>
