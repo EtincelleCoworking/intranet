@@ -43,6 +43,10 @@ class BookingController extends Controller
 //                ;
 //            }
         }
+        $start_at = newDateTime(Input::get('date'), Input::get('start'));
+        if(!Auth::user()->isSuperAdmin() && ($start_at->format('Y-m-d H:i:s') < (new \DateTime())->format('Y-m-d H:i:s'))){
+            $messages['start'] = 'Vous ne pouvez pas réserver une salle dans le passé';
+        }
         if (count($messages)) {
             return Response::json(array(
                 'status' => 'KO',
@@ -94,7 +98,7 @@ class BookingController extends Controller
                 $booking_item->booking_id = $booking->id;
                 $booking_item->ressource_id = $ressource_id;
             }
-            $booking_item->start_at = newDateTime(Input::get('date'), Input::get('start'));
+            $booking_item->start_at = $start_at;
             $booking_item->duration = getDuration(Input::get('start'), Input::get('end'));
             $booking_item->is_open_to_registration = Input::get('is_open_to_registration', false);
             $booking_item->save();

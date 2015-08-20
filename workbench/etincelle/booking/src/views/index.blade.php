@@ -185,6 +185,7 @@
                 <div class="modal-footer">
                     <a href="#" class="btn btn-danger btn-outline pull-left" id="meeting-delete">Supprimer</a>
                     <a href="#" class="btn btn-default btn-outline" id="meeting-modify">Modifier</a>
+                    <a href="#" class="btn btn-default btn-outline" id="meeting-duplicate">Dupliquer</a>
 
                     <button type="button" class="btn btn-primary" data-dismiss="modal">Fermer</button>
                 </div>
@@ -240,7 +241,7 @@
     <style type="text/css">
         @foreach(Ressource::whereIsBookable(true)->get() as $ressource)
 
-.fc-event.booking-ofuscated-{{$ressource->id}}                      {
+.fc-event.booking-ofuscated-{{$ressource->id}}                         {
             background: repeating-linear-gradient(
             135deg,
                     {{ adjustBrightness($ressource->booking_background_color, -32)}},
@@ -423,8 +424,21 @@
                         return false;
                     });
 
+            $('#meeting-duplicate')
+                    .click(function () {
+                        $('#BookingDialog').modal('hide');
+                        var newEvent = new Etincelle.Event();
+                        newEvent.populate(activeEvent);
+                        newEvent.id = null;
+                        newEvent.booking_id = null;
+                        newEvent.start.add(7, 'days');
+                        newEvent.end.add(7, 'days');
+                        activeEvent = newEvent;
+                        activeEvent.edit();
+                        return false;
+                    });
+
             $('#meeting-delete')
-                    .hide()
                     .click(function () {
                         $.ajax({
                             dataType: 'json',
@@ -506,9 +520,11 @@
                     data: $('#meeting-form').serialize(),
                     success: function (data) {
                         if (data.status == 'KO') {
+                            var msg = '';
                             for (field in data.messages) {
-                                alert(data.messages[field]); // field + ': ' +
+                                msg += data.messages[field] + "\n";
                             }
+                            alert(msg);
                         } else {
                             for (var i = 0; i < data.events.length; i++) {
                                 var events = $('#calendar').fullCalendar('clientEvents', data.events[i].id);
@@ -518,8 +534,10 @@
                                         event[k] = data.events[i][k];
                                     }
                                     $('#calendar').fullCalendar('updateEvent', event);
+                                    //console.log('updated ' + data.events[i].id);
                                 } else {
                                     $('#calendar').fullCalendar('renderEvent', data.events[i], true);
+                                    //console.log('added ' + data.events[i].id);
                                 }
                                 $('#newBookingDialog').modal('hide');
                             }
@@ -570,6 +588,7 @@
                     activeEvent = new Etincelle.Event();
                     activeEvent.populate(calEvent);
                     activeEvent.show();
+                    return false;
                 },
                 eventSources: [
                     '{{  URL::route('booking_list_ajax') }}'
