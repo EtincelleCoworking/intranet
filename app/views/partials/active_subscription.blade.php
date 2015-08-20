@@ -1,3 +1,7 @@
+<?php
+
+extract(Subscription::getActiveSubscriptionInfos());
+?>
 @if($active_subscription)
 <div class="ibox">
     <div class="ibox-title">
