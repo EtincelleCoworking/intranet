@@ -8,9 +8,10 @@
         </div>
         <div class="col-lg-3">
             @if (Auth::user()->isSuperAdmin())
-                @include('partials.sales.component')
+                @include('partials.sales.monthly.component')
                 @include('partials.charges.component')
                 @include('partials.pending.component')
+                @include('partials.sales.yearly.component')
             @elseif (Auth::user()->role == 'member')
                 @include('partials.active_subscription')
                 @include('partials.member.component')

@@ -34,7 +34,7 @@
                         <th>Montant HT</th>
                         @foreach ($datas as $period => $amount)
                             <td>
-                                {{ $amount }}€
+                                {{ number_format($amount, 0, ',', '.') }}€
                             </td>
                         @endforeach
                         </tbody>

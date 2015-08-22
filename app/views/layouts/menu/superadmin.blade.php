@@ -98,6 +98,9 @@
             <li{{ Request::is('stats/overview') ? ' class="active"' : '' }}>
                 <a href="{{ URL::route('stats_overview') }}">Vue d'ensemble</a>
             </li>
+            <li{{ Request::is('stats/sales_per_category') ? ' class="active"' : '' }}>
+                <a href="{{ URL::route('stats_sales_per_category') }}">Par catégorie</a>
+            </li>
             <li{{ Request::is('stats/sales') ? ' class="active"' : '' }}>
                 <a href="{{ URL::route('stats_sales', 'all') }}">Chiffre d'affaires</a>
             </li>

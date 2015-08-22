@@ -59,6 +59,19 @@ class InvoiceItem extends Eloquent
 			;
 	}
 
+	public function scopeTotal($query)
+	{
+		return $query
+			->join('invoices', function($j)
+			{
+				$j->on('invoice_id', '=', 'invoices.id')->where('type', '=', 'F');
+			})
+			->select(
+				DB::raw('SUM(amount) as total')
+			)
+			;
+	}
+
 
 	public function scopeCoworking($query)
 	{

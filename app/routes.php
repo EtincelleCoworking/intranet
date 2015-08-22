@@ -48,6 +48,7 @@ Route::group(['before' => 'member'], function() {
 
 Route::group(['before' => 'superadmin'], function() {
 	Route::get('/user/add', array('as' => 'user_add', 'uses' => 'UserController@add'));
+	Route::get('/user/login-as/{id}', array('as' => 'user_login_as', 'uses' => 'UserController@login_as'));
 	Route::post('/user/add', array('as' => 'user_add_check', 'uses' => 'UserController@add_check'));
 
     Route::get('/invoice/add/{type}', array('as' => 'invoice_add', 'uses' => 'InvoiceController@add'))->where(array('type' => '[A-Z]{1}'));
@@ -97,6 +98,7 @@ Route::group(['before' => 'superadmin'], function() {
     Route::get('/stats/customers', array('as' => 'stats_customers', 'uses' => 'StatsController@customers'));
     Route::get('/stats/charges', array('as' => 'stats_charges', 'uses' => 'StatsController@charges'));
     Route::get('/stats/subscriptions', array('as' => 'stats_subscriptions', 'uses' => 'StatsController@subscriptions'));
+    Route::get('/stats/sales_per_category', array('as' => 'stats_sales_per_category', 'uses' => 'StatsController@sales_per_category'));
 
     Route::get('/tags', array('as' => 'tag_list', 'uses' => 'TagController@liste'));
     Route::get('/tag/add', array('as' => 'tag_add', 'uses' => 'TagController@add'));

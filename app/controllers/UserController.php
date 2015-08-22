@@ -114,12 +114,14 @@ class UserController extends BaseController
                 $user->social_linkedin = Input::get('social_linkedin');
                 $user->social_facebook = Input::get('social_facebook');
                 if (Auth::user()->isSuperAdmin()) {
-                    $user->is_member = Input::get('is_member');
+                    $user->is_member = Input::get('is_member', false);
                 }
 
                 if (Input::get('birthday')) {
                     $birthday = explode('/', Input::get('birthday'));
                     $user->birthday = $birthday[2] . '-' . $birthday[1] . '-' . $birthday[0];
+                } else {
+                    $user->birthday = '';
                 }
                 if (!$user->role) {
                     $user->role = 'member';
@@ -325,5 +327,15 @@ class UserController extends BaseController
     {
         $user = User::find($id);
         return Response::json($user->organisations->lists('name', 'id'));
+    }
+
+    public function login_as($id)
+    {
+        $user = User::find($id);
+        if (!$user) {
+            App::abort(404);
+        }
+        Auth::loginUsingId($user->id);
+        return Redirect::route('dashboard')->with('mSuccess', sprintf('Vous avez été connecté en tant que %s', $user->fullname));
     }
 }

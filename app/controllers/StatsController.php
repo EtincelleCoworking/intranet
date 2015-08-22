@@ -99,4 +99,27 @@ class StatsController extends BaseController
         return View::make('stats.subscriptions', array('datas' => $datas));
     }
 
+    public function sales_per_category()
+    {
+        $colors = array();
+        $colors[] = '#a3e1d4';
+        $colors[] = '#dedede';
+        $colors[] = '#b5b8cf';
+
+        $data = array();
+        $data['Coworking'] = array('amount' => InvoiceItem::total()->coworking()->get()->first()->total, 'color' => array_shift($colors));
+        $data['Location de salle'] = array('amount' => InvoiceItem::total()->RoomRental()->get()->first()->total, 'color' => array_shift($colors));
+        $data['Autre'] = array('amount' => InvoiceItem::total()->other()->get()->first()->total, 'color' => array_shift($colors));
+
+        $total = 0;
+        foreach($data as $k => $v){
+            $total += $data[$k]['amount'];
+        }
+        foreach($data as $k => $v){
+            $data[$k]['ratio'] = sprintf('%0.2f', 100* $data[$k]['amount'] / $total);
+        }
+
+        return View::make('stats.pie', array('data' => $data, 'total' => $total));
+    }
+
 }

@@ -68,8 +68,11 @@
 
                                     </p>
                                     @if (Auth::user()->isSuperAdmin())
-                                        <a href="{{URL::route('user_modify', $user->id)}}"
-                                           class="btn btn-xs btn-default">Modifier</a>
+                                            <a href="{{URL::route('user_modify', $user->id)}}"
+                                               class="btn btn-xs btn-default">Modifier</a>
+
+                                            <a href="{{URL::route('user_login_as', $user->id)}}" title="Se connecter en tant que {{$user->fullname}}"
+                                               class="btn btn-xs btn-default"><i class="fa fa-user-secret"></i></a>
                                     @endif
 
                                 </div>
@@ -90,9 +93,9 @@
 
                                     @foreach($user->organisations as $company)
                                         @if($company->name != $user->fullname)
-                                        <br/>
-                                        <i class="fa fa-university"></i>
-                                        {{ $company->name }}
+                                            <br/>
+                                            <i class="fa fa-university"></i>
+                                            {{ $company->name }}
                                         @endif
                                     @endforeach
                                 </a>
@@ -111,7 +114,7 @@
 
 @section('javascript')
     <script type="text/javascript">
-        $(window).resize(function(){
+        $(window).resize(function () {
             $('#equalheight div').equalHeights();
         });
         $(window).resize();
