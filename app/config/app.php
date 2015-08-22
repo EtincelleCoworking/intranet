@@ -124,6 +124,7 @@ return array(
 		'Barryvdh\Debugbar\ServiceProvider',
         'Barryvdh\Snappy\ServiceProvider',
         'GuilhermeGuitte\BehatLaravel\BehatLaravelServiceProvider',
+		'Bkwld\Croppa\ServiceProvider',
 
 		'Etincelle\Booking\BookingServiceProvider',
 	),
@@ -195,6 +196,7 @@ return array(
 		'View'              => 'Illuminate\Support\Facades\View',
         'PDF'               => 'Barryvdh\Snappy\Facades\SnappyPdf',
         'Image'             => 'Barryvdh\Snappy\Facades\SnappyImage',
+		'Croppa' => 'Bkwld\Croppa\Facade',
 	),
 
 );

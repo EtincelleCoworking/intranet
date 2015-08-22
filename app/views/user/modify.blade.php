@@ -23,7 +23,7 @@
 @stop
 
 @section('content')
-    {{ Form::model($user, array('route' => array('user_modify', $user->id))) }}
+    {{ Form::model($user, array('route' => array('user_modify', $user->id), 'files' => true)) }}
     <div class="row">
         <div class="col-lg-6">
             <div class="ibox ">
@@ -35,23 +35,16 @@
                         <div class="col-lg-6">
                             {{ Form::label('firstname', 'Prénom') }}
                             <p>{{ Form::text('firstname', null, array('class' => 'form-control')) }}</p>
-                        </div>
-                        <div class="col-lg-6">
                             {{ Form::label('lastname', 'Nom') }}
                             <p>{{ Form::text('lastname', null, array('class' => 'form-control')) }}</p>
-                        </div>
-
-                    </div>
-                    <div class="row">
-                        <div class="col-lg-6">
                             {{ Form::label('birthday', 'Date de naissance') }}
                             <p>{{ Form::text('birthday', ($user->birthday == '0000-00-00')?'':date('d/m/Y', strtotime($user->birthday)), array('class' => 'form-control datePicker')) }}</p>
                         </div>
                         <div class="col-lg-6">
-
+                            <img alt="{{Auth::user()->fullname}}" class="img-circle img-responsive" src="{{Auth::user()->avatarUrl}}"/>
+                            {{Form::file('avatar')}}
                         </div>
                     </div>
-
                 </div>
             </div>
 

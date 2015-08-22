@@ -47,7 +47,8 @@ class User extends Eloquent implements UserInterface, RemindableInterface
         'email' => 'required|email|unique:users',
         'firstname' => 'required',
         'lastname' => 'required',
-        'password' => 'required|min:5'
+        'password' => 'required|min:5',
+        'avatar' => 'image'
     );
 
     /**
@@ -155,23 +156,23 @@ class User extends Eloquent implements UserInterface, RemindableInterface
 
     public function getAvatarUrlAttribute()
     {
-        return $this->getGravatarUrl(80);
+        return $this->getAvatarUrl(80);
     }
 
-    public function getGravatarUrl($size)
+    public function getAvatarUrl($size)
     {
-        //return '/img/profile_small.jpg';
-        $default = '404';
-        $default = 'mm';
-        //$default = 'identicon';
-        //$default = 'monsterid';
-        //$default = 'wavatar';
-        return "http://www.gravatar.com/avatar/" . md5(strtolower(trim($this->email))) . "?d=" . urlencode($default) . "&s=" . $size;
+        if (!empty($this->avatar)) {
+            $src_filename = sprintf('/uploads/users/%d/%s', $this->id, $this->avatar);
+            if (is_file(public_path() . $src_filename)) {
+                return Croppa::url($src_filename, $size, $size, array('resize'));
+            }
+        }
+        return "http://www.gravatar.com/avatar/" . md5(strtolower(trim($this->email))) . "?d=mm&s=" . $size;
     }
 
     public function getLargeAvatarUrlAttribute()
     {
-        return $this->getGravatarUrl(500);
+        return $this->getAvatarUrl(500);
     }
 
     /**

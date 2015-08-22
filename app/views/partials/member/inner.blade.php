@@ -12,7 +12,7 @@ $member = User::whereIsMember(true)->orderByRaw("RAND()")->first();
 
                 <div class="m-b-sm">
                     <a href="{{route('user_profile', $member->id)}}"><img alt="image" class="img-circle"
-                                                                          src="{{$member->getGravatarUrl(96)}}"></a>
+                                                                          src="{{$member->getAvatarUrl(96)}}"></a>
                 </div>
                 <p class="font-bold">{{$member->bio_short}}</p>
 

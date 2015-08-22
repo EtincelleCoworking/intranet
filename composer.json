@@ -19,7 +19,8 @@
     "gzero/eloquent-tree": "v2.0",
     "league/csv": "^7.1@dev",
     "eluceo/ical": "*",
-    "michelf/php-markdown": "^1.5"
+    "michelf/php-markdown": "^1.5",
+    "bkwld/croppa": "~4.0"
   },
   "autoload": {
     "classmap": [

@@ -32,7 +32,7 @@ class BookingApiController extends Controller
             'id' => $user->id,
             'fullname' => $user->fullname,
             'profile_url' => URL::route('user_profile', $user->id),
-            'avatar_url' => $user->getGravatarUrl(48)
+            'avatar_url' => $user->getAvatarUrl(48)
         );
     }
 
