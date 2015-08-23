@@ -41,7 +41,7 @@
                             <p>{{ Form::text('birthday', ($user->birthday == '0000-00-00')?'':date('d/m/Y', strtotime($user->birthday)), array('class' => 'form-control datePicker')) }}</p>
                         </div>
                         <div class="col-lg-6">
-                            <img alt="{{Auth::user()->fullname}}" class="img-circle img-responsive" src="{{Auth::user()->avatarUrl}}"/>
+                            <img alt="{{$user->fullname}}" class="img-circle img-responsive" src="{{$user->avatarUrl}}"/>
                             {{Form::file('avatar')}}
                         </div>
                     </div>
