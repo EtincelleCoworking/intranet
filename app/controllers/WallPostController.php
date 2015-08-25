@@ -61,8 +61,11 @@ class WallPostController extends BaseController
 
     protected function purgeCache()
     {
+        $page_count = ceil(WallPost::count() / WallPost::ITEM_PER_PAGE);
         foreach (array(0, 1) as $key) {
-            Cache::forget(sprintf('wall.%d', $key));
+            for ($page_index = 0; $page_index < $page_count; $page_index++) {
+                Cache::forget(sprintf('wall.%d.%d', $key, $page_index));
+            }
         }
 
     }
@@ -85,6 +88,19 @@ class WallPostController extends BaseController
             return Redirect::route('dashboard');
 
         }
+    }
+
+    public function page($page_index)
+    {
+        $isSuperAdmin = Auth::user()->isSuperAdmin();
+        $cacheKey = sprintf('wall.%d.%d', (bool)$isSuperAdmin, (int)$page_index);
+        $wallContent = Cache::get($cacheKey);
+        if (empty($wallContent)) {
+            $wallContent = View::make('partials.wall.page', array('isSuperAdmin' => $isSuperAdmin, 'page_index' => $page_index))->render();
+            Cache::forever($cacheKey, $wallContent);
+        }
+
+        return $wallContent;
     }
 
 }

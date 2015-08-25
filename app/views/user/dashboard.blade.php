@@ -23,4 +23,11 @@
 
 @stop
 
+@section('javascript')
+    {{ HTML::script('js/jquery.waypoints.min.js') }}
+    {{ HTML::script('js/infinite.min.js') }}
+@stop
+
+
+
 

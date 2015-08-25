@@ -1,6 +1,7 @@
 <?php
 
 class WallPost extends \Gzero\EloquentTree\Model\Tree{
+const ITEM_PER_PAGE = 5;
 
     /**
      * The database table used by the model.
