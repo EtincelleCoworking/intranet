@@ -79,7 +79,7 @@
         @foreach ($users as $user)
             <tr>
                 <td>
-                    <a href="{{ URL::route('user_edit', $user->id) }}">{{ $user->fullnameOrga }}</a>
+                    <a href="{{ URL::route('user_modify', $user->id) }}">{{ $user->fullnameOrga }}</a>
                 </td> <td>
                     <?php
                         if($user->is_member){

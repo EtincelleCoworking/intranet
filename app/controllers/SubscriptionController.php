@@ -141,7 +141,7 @@ class SubscriptionController extends BaseController
         $date2 = new \DateTime($subscription->renew_at);
         $invoice_line->subscription_from = $date->format('Y-m-d');
         $date2->modify('next month');
-        $invoice_line->subscription_to = $date->format('Y-m-d');
+        $invoice_line->subscription_to = $date2->format('Y-m-d');
         $invoice_line->subscription_hours_quota = $hours_quota;
 
         $date2->modify('-1 day');
