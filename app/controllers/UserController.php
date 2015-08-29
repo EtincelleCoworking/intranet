@@ -54,13 +54,13 @@ class UserController extends BaseController
     /**
      * List users
      */
-    public function liste()
+    public function members()
     {
         $users = User::where('is_member', true)
             ->orderBy('lastname', 'asc')
             ->get();
 
-        return View::make('user.liste', array('users' => $users));
+        return View::make('user.members', array('users' => $users));
     }
 
     /**
@@ -71,7 +71,7 @@ class UserController extends BaseController
         $user = User::find($id);
         $skills = Skill::findSkillsForUser($id);
         if (!$user) {
-            return Redirect::route('user_list')->with('mError', 'Cet utilisateur est introuvable !');
+            return Redirect::route('members')->with('mError', 'Cet utilisateur est introuvable !');
         }
 
         return View::make('user.modify', array('user' => $user, 'skills' => $skills));
@@ -84,7 +84,7 @@ class UserController extends BaseController
     {
         $user = User::find($id);
         if (!$user) {
-            return Redirect::route('user_list')->with('mError', 'Cet utilisateur est introuvable !');
+            return Redirect::route('members')->with('mError', 'Cet utilisateur est introuvable !');
         }
 
         if (!Auth::user()->isSuperAdmin() && $id <> Auth::id()) {
@@ -186,9 +186,9 @@ class UserController extends BaseController
             $user->role = 'member';
 
             if ($user->save()) {
-                return Redirect::route('user_list')->with('mSuccess', 'Cet utilisateur a bien été ajouté');
+                return Redirect::route('members')->with('mSuccess', 'Cet utilisateur a bien été ajouté');
             } else {
-                return Redirect::route('user_list')->with('mError', 'Impossible d\'ajouter cet utilisateur');
+                return Redirect::route('members')->with('mError', 'Impossible d\'ajouter cet utilisateur');
             }
         } else {
             return Redirect::route('user_add')->with('mError', 'Il y a des erreurs')->withErrors($validator->messages())->withInput();
@@ -202,7 +202,7 @@ class UserController extends BaseController
     {
         $user = User::find($id);
         if (!$user) {
-            return Redirect::route('user_list')->with('mError', 'Cet utilisateur est introuvable !');
+            return Redirect::route('members')->with('mError', 'Cet utilisateur est introuvable !');
         }
 
         return View::make('user.profile', array('user' => $user));
@@ -324,5 +324,46 @@ class UserController extends BaseController
         }
         Auth::loginUsingId($user->id);
         return Redirect::route('dashboard')->with('mSuccess', sprintf('Vous avez été connecté en tant que %s', $user->fullname));
+    }
+
+    public function liste()
+    {
+        if (Input::has('filtre_submitted')) {
+            if (Input::has('filtre_user_id')) {
+                Session::put('filtre_user.user_id', Input::get('filtre_user_id'));
+            } else {
+                Session::put('filtre_user.user_id', false);
+            }
+            if (Input::has('filtre_member')) {
+                Session::put('filtre_user.member', Input::get('filtre_member'));
+            } else {
+                Session::put('filtre_user.member', false);
+            }
+            if (Input::has('filtre_subscription')) {
+                Session::put('filtre_user.subscription', Input::get('filtre_subscription'));
+            } else {
+                Session::put('filtre_user.subscription', false);
+            }
+        }
+
+
+        $users = User::with('organisations')
+            ->orderBy('lastname', 'asc');
+        if (Session::get('filtre_user.user_id')) {
+            $users->where('users.id', '=', Session::get('filtre_user.user_id'));
+        }
+        if (Session::get('filtre_user.member')) {
+            $users->where('users.is_member', '=', true);
+        }
+        if (Session::get('filtre_user.subscription')) {
+            $users->join('invoices', 'invoices.user_id', '=', 'users.id')
+                ->join('invoices_items', 'invoices_items.invoice_id', '=', 'invoices.id')
+                ->where('subscription_from', '<>', '0000-00-00 00:00:00')
+                ->where('subscription_from', '<', date('Y-m-d'))
+                ->where('subscription_to', '>', date('Y-m-d'))
+                ->where('ressource_id', '=', Ressource::TYPE_COWORKING);
+        }
+
+        return View::make('user.liste', array('users' => $users->paginate(15, array('users.*'))));
     }
 }

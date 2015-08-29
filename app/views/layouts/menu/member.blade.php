@@ -29,7 +29,7 @@
     </li>
 
     <li{{ (Request::is('user*') ||  Request::is('profile*')) ? ' class="active"' : '' }}>
-        <a href="{{ URL::route('user_list') }}"><i class="fa fa-user"></i> <span class="nav-label">Membres</span></a>
+        <a href="{{ URL::route('members') }}"><i class="fa fa-user"></i> <span class="nav-label">Membres</span></a>
     </li>
 
     <li{{ (Request::is('booking*') ? ' class="active"' : '') }}>

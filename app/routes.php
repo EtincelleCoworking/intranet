@@ -19,13 +19,13 @@ Route::controller('password', 'RemindersController');
 
 Route::group(['before' => 'member'], function() {
     Route::get('/profile/{id}', array('as' => 'user_profile', 'uses' => 'UserController@profile'))->where(array('id' => '[0-9]+'));
-    Route::get('/users/directory', array('as' => 'user_directory', 'uses' => 'UserController@directory'));
+//    Route::get('/users/directory', array('as' => 'user_directory', 'uses' => 'UserController@directory'));
     Route::get('/profile/edit', array('as' => 'user_edit', 'uses' => 'UserController@edit'));
 //    Route::post('/profile/edit', array('as' => 'user_edit', 'uses' => 'UserController@edit_check'));
     Route::get('/user/modify/{id}', array('as' => 'user_modify', 'uses' => 'UserController@modify'))->where(array('id' => '[0-9]+'));
     Route::post('/user/modify/{id}', array('as' => 'user_modify_check', 'uses' => 'UserController@modify_check'))->where(array('id' => '[0-9]+'));
 
-	Route::get('/users', array('as' => 'user_list', 'uses' => 'UserController@liste'));
+	Route::get('/users', array('as' => 'members', 'uses' => 'UserController@members'));
 
     Route::any('/pasttimes', array('as' => 'pasttime_list', 'uses' => 'PastTimeController@liste'));
     Route::get('/pasttimes/{month}', array('as' => 'pasttime_list_month', 'uses' => 'PastTimeController@liste'))->where(array('month' => '[0-9]{2}'));
@@ -51,6 +51,9 @@ Route::group(['before' => 'superadmin'], function() {
 	Route::get('/user/add', array('as' => 'user_add', 'uses' => 'UserController@add'));
 	Route::get('/user/login-as/{id}', array('as' => 'user_login_as', 'uses' => 'UserController@login_as'));
 	Route::post('/user/add', array('as' => 'user_add_check', 'uses' => 'UserController@add_check'));
+	Route::get('/user/list', array('as' => 'user_list', 'uses' => 'UserController@liste'));
+	Route::post('/user/list', array('as' => 'user_filter', 'uses' => 'UserController@liste'));
+	Route::get('/user/reset', array('as' => 'user_filter_reset', 'uses' => 'UserController@cancelFilter'));
 
     Route::get('/invoice/add/{type}', array('as' => 'invoice_add', 'uses' => 'InvoiceController@add'))->where(array('type' => '[A-Z]{1}'));
 	Route::get('/invoice/add/{type}/{organisation}', array('as' => 'invoice_add_organisation', 'uses' => 'InvoiceController@add'))->where(array('type' => '[A-Z]{1}', 'organisation' => '[0-9]+'));
