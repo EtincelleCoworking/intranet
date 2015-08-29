@@ -99,12 +99,16 @@
 
                         $remainingDays = (strtotime($subscription['subscription_to']) - time()) / (24 * 3600);
 
-                        if ($remainingDays < 0) {
+                        if ($remainingDays < -30) {
+                            $status = 'badge badge-plain';
+                        } elseif ($remainingDays < 0) {
                             $status = 'badge badge-danger';
                         } elseif ($remainingDays < 7) {
                             $status = 'badge badge-warning';
                         } elseif ($remainingDays < 7) {
                             $status = 'badge badge-success';
+                        }else{
+                            $status = '';
                         }
                         $ratio = '';
                         $duration = 0;
