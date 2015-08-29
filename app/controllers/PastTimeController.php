@@ -189,11 +189,30 @@ class PastTimeController extends BaseController
         }
     }
 
-    public function cancelFilter(){
+    public function cancelFilter()
+    {
         Session::forget('filtre_pasttime.user_id');
         Session::forget('filtre_pasttime.start');
         Session::forget('filtre_pasttime.end');
         Session::forget('filtre_pasttime.filtre_toinvoice');
         return Redirect::route('pasttime_list');
+    }
+
+    public function linkInvoices()
+    {
+        DB::statement('UPDATE past_times
+    SET invoice_id = (
+        SELECT invoices.id
+        FROM invoices
+            JOIN invoices_items ON invoices.id = invoices_items.invoice_id
+        WHERE invoices_items.ressource_id = past_times.ressource_id
+            AND invoices.user_id = past_times.user_id
+            AND invoices.type = "F"
+            AND past_times.date_past BETWEEN invoices_items.subscription_from AND invoices_items.subscription_to
+    )
+    WHERE (invoice_id is null or invoice_id = 0)
+        AND ressource_id = 1');
+
+        return Redirect::route('pasttime_list')->with('mSuccess', 'Les temps saisis ayant des abonnements actifs ont étés associés ensembles.');
     }
 }
