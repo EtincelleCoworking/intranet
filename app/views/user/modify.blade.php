@@ -93,12 +93,14 @@
                         <div class="col-lg-6">
                             <i class="fa fa-linkedin"></i>
                             {{ Form::label('social_linkedin', 'LinkedIn') }}
+                            <small class="text-muted">ex : https://fr.linkedin.com/pub/sébastien-hordeaux/2/2b9/953</small>
                             <p>{{ Form::text('social_linkedin', null, array('class' => 'form-control')) }}</p>
                         </div>
 
                         <div class="col-lg-6">
                             <i class="fa fa-facebook"></i>
                             {{ Form::label('social_facebook', 'Facebook') }}
+                            <small class="text-muted">ex : https://www.facebook.com/EtincelleCoworking</small>
                             <p>{{ Form::text('social_facebook', null, array('class' => 'form-control')) }}</p>
                         </div>
                     </div>

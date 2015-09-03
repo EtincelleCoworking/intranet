@@ -80,7 +80,7 @@
                             <div class="col-lg-4">
                                 <p>
                                     <i class="fa fa-twitter"></i>
-                                    <a href="http://twitter.com/{{$user->twitter}}">{{ $user->twitter }}</a>
+                                    <a href="https://twitter.com/{{$user->twitter}}">{{ $user->twitter }}</a>
                                 </p>
                             </div>
                         @endif
