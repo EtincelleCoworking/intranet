@@ -11,3 +11,4 @@ composer.lock
 *.idea
 *.DS_Store
 Thumbs.db
+npm-debug.log
