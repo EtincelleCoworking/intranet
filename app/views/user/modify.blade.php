@@ -68,25 +68,25 @@
                         <div class="col-lg-6">
                             <i class="fa fa-globe"></i>
                             {{ Form::label('website', 'Site web') }}
-                            <small class="text-muted">ex: http://www.coworking-toulouse.com</small>
+                            <small class="text-muted">ex : http://www.coworking-toulouse.com</small>
                             <p>{{ Form::text('website', null, array('class' => 'form-control')) }}</p>
                         </div>
                         <div class="col-lg-6">
                             <i class="fa fa-twitter"></i>
                             {{ Form::label('twitter', 'Twitter') }}
-                            <small class="text-muted">ex: etincelle_tls</small>
+                            <small class="text-muted">ex : etincelle_tls</small>
                             <p>{{ Form::text('twitter', null, array('class' => 'form-control')) }}</p>
                         </div>
                         <div class="col-lg-6">
                             <i class="fa fa-github"></i>
                             {{ Form::label('social_github', 'GitHub') }}
-                            <small class="text-muted">ex: https://github.com/EtincelleCoworking</small>
+                            <small class="text-muted">ex : https://github.com/EtincelleCoworking</small>
                             <p>{{ Form::text('social_github', null, array('class' => 'form-control')) }}</p>
                         </div>
                         <div class="col-lg-6">
                             <i class="fa fa-instagram"></i>
                             {{ Form::label('social_instagram', 'Instagram') }}
-                            <small class="text-muted">ex: https://instagram.com/etincelle_tls/</small>
+                            <small class="text-muted">ex : https://instagram.com/etincelle_tls/</small>
                             <p>{{ Form::text('social_instagram', null, array('class' => 'form-control')) }}</p>
                         </div>
 
