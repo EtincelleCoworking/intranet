@@ -1,7 +1,6 @@
 # Intranet Etincelle Coworking
-----
+
 ## Fonctionalités
-----
 
 * Accès super-admin / Membre
 * Gestion de différents types de ressources (coworking, salle de réunion)
@@ -9,14 +8,14 @@
 * Gestion d'abonnements mensuels
 * Statistiques (Evolution du CA total, Evolution du CA par type de ressource, Evolution du nb de clients par type de ressource, Evolution des charges)
 
-Communauté
+### Communauté
 
 * Gestion d'organisations (ajouter, modifier, supprimer)
 * Gestion d'utilisateurs/membres (ajouter, modifier, supprimer)
 * Lien organisation > utilisateurs
 * Annuaire des membres
 
-Gestion financière
+### Gestion financière
 
 * Devis
 * Facture
@@ -29,29 +28,39 @@ Gestion financière
 
 
 ## Installation
-----
-##### 1) Cloner le Repository
 
-    git clone https://github.com/EtincelleCoworking/intranet.git your-folder
+### 1) Cloner le Repository
 
-##### 2) Installer les dépendances via Composer
+```sh-session
+$ git clone https://github.com/EtincelleCoworking/intranet.git your-folder
+```
 
-    cd your-folder
-    composer install
+### 2) Installer les dépendances via Composer
 
-##### 3) Configuration
-Modifier le fichier default.env.php et renommez le en .env.php
+```sh-session
+$ cd your-folder
+$ composer install
+```
 
-##### 4) Créez la base de données
+### 3) Configuration
 
-    cd your-folder
-    php artisan migrate
-    php artisan db:seed
+Modifier le fichier `default.env.php` et renommez le en `.env.php`.
 
-##### 5) Configurer le VirtualHost
+### 4) Créez la base de données
 
-##### 6) Accédez à l'interface
+```sh-session
+$ cd your-folder
+$ php artisan migrate
+$ php artisan db:seed
+```
+
+### 5) Configurer le VirtualHost
+
+### 6) Accédez à l'interface
+
 Connectez vous à l'interface http://intranet.votre-espace.com
 
-    Login : admin@mydomain.fr
-    Password : 123456
+```
+Login: admin@mydomain.fr
+Password: 123456
+```
