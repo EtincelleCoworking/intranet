@@ -28,7 +28,7 @@
         <div class="col-lg-6">
             <div class="ibox ">
                 <div class="ibox-title">
-                    <h5>Etat civil</h5>
+                    <h5>État civil</h5>
                 </div>
                 <div class="ibox-content">
                     <div class="row">
@@ -61,55 +61,49 @@
                             <p>{{ Form::text('phone', null, array('class' => 'form-control')) }}</p>
                         </div>
                         <div class="col-lg-6">
-                            <i class="fa fa-envelope"></i>
-                            {{ Form::label('email', 'Adresse email') }}
-                            <p>{{ Form::email('email', null, array('class' => 'form-control')) }}</p>
-                        </div>
-                        <div class="col-lg-6">
-                            <i class="fa fa-globe"></i>
-                            {{ Form::label('website', 'Site web') }}
-                            <small class="text-muted">ex : http://www.coworking-toulouse.com</small>
-                            <p>{{ Form::text('website', null, array('class' => 'form-control')) }}</p>
-                        </div>
-                        <div class="col-lg-6">
                             <i class="fa fa-twitter"></i>
                             {{ Form::label('twitter', 'Twitter') }}
                             <small class="text-muted">ex : etincelle_tls</small>
                             <p>{{ Form::text('twitter', null, array('class' => 'form-control')) }}</p>
                         </div>
-                        <div class="col-lg-6">
+                        <div class="col-lg-12">
+                            <i class="fa fa-envelope"></i>
+                            {{ Form::label('email', 'Adresse email') }}
+                            <p>{{ Form::email('email', null, array('class' => 'form-control')) }}</p>
+                        </div>
+                        <div class="col-lg-12">
+                            <i class="fa fa-globe"></i>
+                            {{ Form::label('website', 'Site web') }}
+                            <small class="text-muted">ex : http://www.coworking-toulouse.com</small>
+                            <p>{{ Form::text('website', null, array('class' => 'form-control')) }}</p>
+                        </div>
+                        <div class="col-lg-12">
                             <i class="fa fa-github"></i>
                             {{ Form::label('social_github', 'GitHub') }}
                             <small class="text-muted">ex : https://github.com/EtincelleCoworking</small>
                             <p>{{ Form::text('social_github', null, array('class' => 'form-control')) }}</p>
                         </div>
-                        <div class="col-lg-6">
-                            <i class="fa fa-instagram"></i>
-                            {{ Form::label('social_instagram', 'Instagram') }}
-                            <small class="text-muted">ex : https://instagram.com/etincelle_tls/</small>
-                            <p>{{ Form::text('social_instagram', null, array('class' => 'form-control')) }}</p>
-                        </div>
-
-                        <div class="col-lg-6">
+                        <div class="col-lg-12">
                             <i class="fa fa-linkedin"></i>
                             {{ Form::label('social_linkedin', 'LinkedIn') }}
                             <small class="text-muted">ex : https://fr.linkedin.com/pub/sébastien-hordeaux/2/2b9/953</small>
                             <p>{{ Form::text('social_linkedin', null, array('class' => 'form-control')) }}</p>
                         </div>
-
-                        <div class="col-lg-6">
+                        <div class="col-lg-12">
+                            <i class="fa fa-instagram"></i>
+                            {{ Form::label('social_instagram', 'Instagram') }}
+                            <small class="text-muted">ex : https://instagram.com/etincelle_tls/</small>
+                            <p>{{ Form::text('social_instagram', null, array('class' => 'form-control')) }}</p>
+                        </div>
+                        <div class="col-lg-12">
                             <i class="fa fa-facebook"></i>
                             {{ Form::label('social_facebook', 'Facebook') }}
                             <small class="text-muted">ex : https://www.facebook.com/EtincelleCoworking</small>
                             <p>{{ Form::text('social_facebook', null, array('class' => 'form-control')) }}</p>
                         </div>
                     </div>
-
-
                 </div>
             </div>
-
-
         </div>
 
         <div class="col-lg-6">
