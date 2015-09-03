@@ -4,7 +4,7 @@ $member = User::whereIsMember(true)->orderByRaw("RAND()")->first();
 @if($member)
     <div class="ibox">
         <div class="ibox-title">
-            <h5>Connaissez-vous?</h5>
+            <h5>Connaissez-vous ?</h5>
         </div>
         <div class="ibox-content text-center">
             <a href="{{route('user_profile', $member->id)}}">
