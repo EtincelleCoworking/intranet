@@ -9,7 +9,7 @@ $events = BookingItem::where('start_at', '>', date('Y-m-d H:i:s'))
         ->get();
 
 ?>
-@if($events)
+@if(count($events) > 0)
     <div class="ibox">
         <div class="ibox-title">
             <h5>Prochains rendez-vous</h5>
