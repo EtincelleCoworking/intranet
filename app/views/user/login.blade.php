@@ -6,7 +6,7 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-    <title>Etincelle Coworking - Accueil</title>
+    <title>{{ $_ENV['organisation_name'] }} - Accueil</title>
 
     <link href="css/bootstrap.min.css" rel="stylesheet">
     <link href="font-awesome/css/font-awesome.css" rel="stylesheet">
@@ -22,10 +22,10 @@
     <div class="row">
 
         <div class="col-md-6">
-            <h2 class="font-bold">Intranet Etincelle Coworking</h2>
+            <h2 class="font-bold">Intranet {{ $_ENV['organisation_name'] }}</h2>
 
             <p>Avant de pouvoir accéder aux ressources merveilleuses que nous vous avons préparés, il vous faut vous identifier avec le formulaire à droite.</p>
-            <p>Un problème pour vous connecter ? <a href="mailto:contact@coworking-toulouse.com">Contactez-nous</a></p>
+            <p>Un problème pour vous connecter ? <a href="mailto:{{ $_ENV['organisation_email'] }}">Contactez-nous</a></p>
 
 
         </div>

@@ -209,6 +209,7 @@ class PastTimeController extends BaseController
             AND invoices.user_id = past_times.user_id
             AND invoices.type = "F"
             AND past_times.date_past BETWEEN invoices_items.subscription_from AND invoices_items.subscription_to
+        LIMIT 1
     )
     WHERE (invoice_id is null or invoice_id = 0)
         AND ressource_id = 1');

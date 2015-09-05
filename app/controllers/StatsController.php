@@ -116,7 +116,7 @@ class StatsController extends BaseController
             $total += $data[$k]['amount'];
         }
         foreach($data as $k => $v){
-            $data[$k]['ratio'] = sprintf('%0.2f', 100* $data[$k]['amount'] / $total);
+            $data[$k]['ratio'] = $total?sprintf('%0.2f', 100* $data[$k]['amount'] / $total):0;
         }
 
         return View::make('stats.pie', array('data' => $data, 'total' => $total));

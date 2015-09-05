@@ -34,21 +34,13 @@ $messages = $messages->get();
                 </div>
                 <div class="social-body">
                     {{$message->messageFmt}}
-                    {{--<div class="clear"></div>--}}
-                    {{--<div class="btn-group">--}}
-                    {{--<button class="btn btn-white btn-xs"><i class="fa fa-thumbs-up"></i> Like this!</button>--}}
-                    {{--<button class="btn btn-white btn-xs"><i class="fa fa-comments"></i> Comment</button>--}}
-                    {{--<button class="btn btn-white btn-xs"><i class="fa fa-share"></i> Share</button>--}}
-                    {{--</div>--}}
-
 
                 </div>
                 <div class="social-footer">
                     {{--*/ $children = $message->children()->with('user')->get() /*--}}
                     @foreach($children as $child)
                         {{$child->render('div', function ($node) use ($isSuperAdmin){
-                            $snippet = '<div class="tree tree-level-1"><div class="social-comment row">
-                            <div class="col-lg-12">
+                            $snippet = '<div class="social-comment ">
                                 <a href="#" class="pull-left">'.$node->user->avatarTag.'</a>
                                 <div class="media-body">';
                                 if($isSuperAdmin){
@@ -56,14 +48,8 @@ $messages = $messages->get();
                                 }
                                 $snippet .= '<a href="/profile/'.$node->user->id.'">'.$node->user->fullname.'</a>
                                     <small class="text-muted" data-from-now="'.$node->created_at->format('c').'"></small>
-                                <div>'.$node->messageFmt.'</div>
+                                '.$node->messageFmt.'
 
-                                <!--
-                                <br/>
-                                <a href="#" class="small"><i class="fa fa-thumbs-up"></i> 26 Like this!</a> -
-                                -->
-                            </div>
-                            </div>
                         </div></div>';
                         return $snippet;
 

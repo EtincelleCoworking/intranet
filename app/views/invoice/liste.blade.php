@@ -228,7 +228,7 @@
 
                         // Open Checkout with further options
                         stripeHandler.open({
-                            name: 'Etincelle Coworking',
+                            name: '{{ $_ENV['organisation_name'] }}',
                             description: 'Facture {{$invoice->ident}}',
                             currency: "eur",
                             amount: {{ Invoice::TotalInvoiceWithTaxes($invoice->items) * 100 }},

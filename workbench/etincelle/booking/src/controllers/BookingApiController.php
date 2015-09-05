@@ -55,7 +55,7 @@ class BookingApiController extends Controller
             $m->from('sebastien@coworking-toulouse.com', 'Sébastien Hordeaux')
                 ->bcc('sebastien@coworking-toulouse.com', 'Sébastien Hordeaux')
                 ->to($booking_item->booking->user->email, $booking_item->booking->user->fullname)
-                ->subject(sprintf('Etincelle Coworking - Inscription - %s', $booking_item->booking->title));
+                ->subject(sprintf('%s - Inscription - %s', $_ENV['organisation_name'], $booking_item->booking->title));
         });
 
         return Response::json(array('status' => 'OK', 'member' => $this->getMember(User::find($user_id))));
@@ -79,7 +79,7 @@ class BookingApiController extends Controller
             $m->from('sebastien@coworking-toulouse.com', 'Sébastien Hordeaux')
                 ->bcc('sebastien@coworking-toulouse.com', 'Sébastien Hordeaux')
                 ->to($booking_item->booking->user->email, $booking_item->booking->user->fullname)
-                ->subject(sprintf('Etincelle Coworking - Désinscription - %s', $booking_item->booking->title));
+                ->subject(sprintf('%s - Désinscription - %s', $_ENV['organisation_name'], $booking_item->booking->title));
         });
 
 
