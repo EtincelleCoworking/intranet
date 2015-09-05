@@ -298,9 +298,10 @@ class InvoiceController extends BaseController
                                 <strong>' . $_ENV['organisation_name'] . ' ' . $_ENV['organisation_status'] . '</strong><br />
                                 ' . $_ENV['organisation_address'] . '<br />
                                 ' . $_ENV['organisation_zipcode'] . ' ' . $_ENV['organisation_city'] . '<br />
-                                ' . $_ENV['organisation_country'] . '<br />
-                                <br />
-                                SIRET : ' . $_ENV['organisation_siret'];
+                                ' . $_ENV['organisation_country'] . '<br />';
+        if (!empty($_ENV['organisation_siret'])) {
+            $html .= '<br />SIRET : ' . $_ENV['organisation_siret'];
+        }
         if (!empty($_ENV['organisation_tva'])) {
             $html .= '<br />TVA Intracommunautaire : ' . $_ENV['organisation_tva'];
         }
