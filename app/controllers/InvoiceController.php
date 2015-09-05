@@ -23,7 +23,8 @@ class InvoiceController extends BaseController
         }
     }
 
-    public function cancelFilter(){
+    public function cancelFilter()
+    {
         Session::forget('filtre_invoice.user_id');
         Session::forget('filtre_invoice.start');
         Session::forget('filtre_invoice.end');
@@ -116,7 +117,7 @@ class InvoiceController extends BaseController
      */
     public function modify($id)
     {
-            $template = 'invoice.modify';
+        $template = 'invoice.modify';
 
         $invoice = $this->dataExist($id, $template);
 
@@ -299,10 +300,14 @@ class InvoiceController extends BaseController
                                 ' . $_ENV['organisation_zipcode'] . ' ' . $_ENV['organisation_city'] . '<br />
                                 ' . $_ENV['organisation_country'] . '<br />
                                 <br />
-                                SIRET : ' . $_ENV['organisation_siret'] . '<br />
-                                TVA Intracommunautaire : ' . $_ENV['organisation_tva'] . '<br />
-                                ' . $_ENV['organisation_status'] . ' au capital de ' . $_ENV['organisation_capital'] . '
-                            </td>
+                                SIRET : ' . $_ENV['organisation_siret'];
+        if (!empty($_ENV['organisation_tva'])) {
+            $html .= '<br />TVA Intracommunautaire : ' . $_ENV['organisation_tva'];
+        }
+        if (!empty($_ENV['organisation_status']) && !empty($_ENV['organisation_capital'])) {
+            $html .= '<br />' . $_ENV['organisation_status'] . ' au capital de ' . $_ENV['organisation_capital'];
+        }
+        $html .= '</td>
                             <td stle="width:50%;" valign="top">
                                 <div style="border:1px solid #666; border-radius: 6px; -moz-border-radius: 6px; background-color: #ccc; vertical-align: middle; text-align: center; width: 205px; height: 20px; padding-top:4px; margin-left:130px;">' . (($invoice->type == 'F') ? 'Facture' : 'Devis') . ' en € n° ' . $invoice->ident . '</div>
                                 <div style="margin-top:5px; margin-left:130px; font-size:10px; text-align: right;">Le ' . date('d/m/Y', strtotime($invoice->date_invoice)) . '</div>
