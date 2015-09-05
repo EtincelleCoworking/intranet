@@ -25,7 +25,7 @@ class SubscriptionKindMigration extends Migration
 
         Schema::table('subscription', function (Blueprint $table) {
             $table->integer('subscription_kind_id')->unsigned()->nullable();
-            $table->foreign('subscription_kind_id')->references('id')->on('subscription')->onDelete('CASCADE');
+            $table->foreign('subscription_kind_id')->references('id')->on('subscription_kind')->onDelete('CASCADE');
         });
         $this->createPlan('Coworking - Abonnement 1/4 temps', 40, 60);
         $this->createPlan('Coworking - Abonnement 1/2 temps', 80, 110);
