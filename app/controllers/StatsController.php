@@ -5,10 +5,12 @@
  */
 class StatsController extends BaseController
 {
+    const LABEL_OTHERS = 'Autre';
 
-    public function overview(){
+    public function overview()
+    {
         $charts = array();
-        foreach (InvoiceItem::TotalPerMonthWithoutStakeholders()->get() as $item) {
+        foreach (InvoiceItem::TotalPerMonth()->WithoutStakeholders()->get() as $item) {
             $charts['Produits (hors associés)'][$item->period] = $item->total;
         }
 
@@ -25,7 +27,8 @@ class StatsController extends BaseController
         return View::make('stats.ca', array('charts' => $charts));
     }
 
-    public function charges(){
+    public function charges()
+    {
         $charts = array();
         foreach (ChargeItem::TotalPerMonth() as $item) {
             $charts['Charges'][$item->period] = $item->total;
@@ -41,21 +44,12 @@ class StatsController extends BaseController
     }
 
 
-
     public function sales()
     {
         $charts = array();
 
-        foreach (InvoiceItem::TotalPerMonthWithoutStakeholders()->coworking()->get() as $item) {
-            $charts['Coworking'][$item->period] = $item->total;
-        }
-
-        foreach (InvoiceItem::TotalPerMonthWithoutStakeholders()->roomRental()->get() as $item) {
-            $charts['Location de salles'][$item->period] = $item->total;
-        }
-
-        foreach (InvoiceItem::TotalPerMonthWithoutStakeholders()->other()->get() as $item) {
-            $charts['Autre'][$item->period] = $item->total;
+        foreach (InvoiceItem::TotalPerMonth()->withoutStakeholders()->byKind()->get() as $item) {
+            $charts[$item->kind?$item->kind:self::LABEL_OTHERS][$item->period] = $item->total;
         }
 
         foreach ($charts as $name => $chart) {
@@ -71,16 +65,8 @@ class StatsController extends BaseController
     {
         $charts = array();
 
-        foreach (InvoiceItem::TotalCountPerMonthWithoutStakeholders()->coworking()->get() as $item) {
-            $charts['Coworking'][$item->period] = $item->total;
-        }
-
-        foreach (InvoiceItem::TotalCountPerMonthWithoutStakeholders()->roomRental()->get() as $item) {
-            $charts['Location de salles'][$item->period] = $item->total;
-        }
-
-        foreach (InvoiceItem::TotalCountPerMonthWithoutStakeholders()->other()->get() as $item) {
-            $charts['Autre'][$item->period] = $item->total;
+        foreach (InvoiceItem::TotalCountPerMonth()->WithoutStakeholders()->byKind()->get() as $item) {
+            $charts[$item->kind?$item->kind:self::LABEL_OTHERS][$item->period] = $item->total;
         }
 
         foreach ($charts as $name => $chart) {
@@ -91,9 +77,10 @@ class StatsController extends BaseController
         return View::make('stats.ca', array('charts' => $charts));
     }
 
-    public function subscriptions(){
+    public function subscriptions()
+    {
         $datas = array();
-        foreach(Subscription::TotalPerMonth()->get() as $item){
+        foreach (Subscription::TotalPerMonth()->get() as $item) {
             $datas[$item->period] = $item->total;
         }
         return View::make('stats.subscriptions', array('datas' => $datas));
@@ -107,16 +94,16 @@ class StatsController extends BaseController
         $colors[] = '#b5b8cf';
 
         $data = array();
-        $data['Coworking'] = array('amount' => InvoiceItem::total()->coworking()->get()->first()->total, 'color' => array_shift($colors));
-        $data['Location de salle'] = array('amount' => InvoiceItem::total()->RoomRental()->get()->first()->total, 'color' => array_shift($colors));
-        $data['Autre'] = array('amount' => InvoiceItem::total()->other()->get()->first()->total, 'color' => array_shift($colors));
+        foreach (InvoiceItem::total()->byKind()->get() as $item) {
+            $data[$item->kind?$item->kind:self::LABEL_OTHERS] = array('amount' => $item->total, 'color' => array_shift($colors));
+        }
 
         $total = 0;
-        foreach($data as $k => $v){
+        foreach ($data as $k => $v) {
             $total += $data[$k]['amount'];
         }
-        foreach($data as $k => $v){
-            $data[$k]['ratio'] = $total?sprintf('%0.2f', 100* $data[$k]['amount'] / $total):0;
+        foreach ($data as $k => $v) {
+            $data[$k]['ratio'] = $total ? sprintf('%0.2f', 100 * $data[$k]['amount'] / $total) : 0;
         }
 
         return View::make('stats.pie', array('data' => $data, 'total' => $total));

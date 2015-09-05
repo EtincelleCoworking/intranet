@@ -33,7 +33,7 @@ class InvoiceItem extends Eloquent
 				DB::raw('date_format(invoices.date_payment, "%Y-%m") as days'),
 //    				DB::raw('CONCAT(YEAR(invoices.date_payment), "Q", QUARTER(invoices.date_payment)) as quarter'),
 				'vat_types.value',
-				DB::raw('SUM((amount * vat_types.value) / 100) as total')
+				DB::raw('SUM((invoices_items.amount * vat_types.value) / 100) as total')
 			)
 			->groupBy('days', 'vat_types.value')
 			->orderBy('days', 'ASC')
@@ -51,7 +51,7 @@ class InvoiceItem extends Eloquent
 			})
 			->select(
 				DB::raw('date_format(invoices.date_invoice, "%Y-%m") as period'),
-				DB::raw('SUM(amount) as total')
+				DB::raw('SUM(invoices_items.amount) as total')
 			)
 			->groupBy('period')
 			->orderBy('period', 'DESC')
@@ -67,86 +67,54 @@ class InvoiceItem extends Eloquent
 				$j->on('invoice_id', '=', 'invoices.id')->where('type', '=', 'F');
 			})
 			->select(
-				DB::raw('SUM(amount) as total')
+				DB::raw('SUM(invoices_items.amount) as total')
 			)
 			;
 	}
 
 
-	public function scopeCoworking($query)
+	public function scopeByKind($query)
 	{
 		return $query
-			->whereIn('ressource_id', array(1, 5))
-			//->get()
-			;
-	}
-
-	public function scopeRoomRental($query)
-	{
-		return $query
-			->whereIn('ressource_id', array(2, 3, 4, 8))
-			//->get()
-			;
-	}
-
-	public function scopeOther($query)
-	{
-		return $query
-			->whereNotIn('ressource_id', array(1, 2, 3, 4, 5, 8))
-			//->get()
+			->join('ressources', 'ressource_id', '=', 'ressources.id', 'left outer')
+			->join('ressource_kind', 'ressource_kind_id', '=', 'ressource_kind.id', 'left outer')
+			->groupBy('ressource_kind.name')
+			->orderBy('ressource_kind.order_index', 'desc')
+			->addSelect('ressource_kind.name as kind')
 			;
 	}
 
 
-	public function scopeTotalPerMonthWithoutStakeholders($query)
+	public function scopeTotalCountPerMonth($query)
 	{
 		return $query
 			->join('invoices', function($j)
 			{
-				$j->on('invoice_id', '=', 'invoices.id')
+				$j->on('invoices_items.invoice_id', '=', 'invoices.id')
 					->where('type', '=', 'F')
 
 				;
 			})
 			->select(
 				DB::raw('date_format(invoices.date_invoice, "%Y-%m") as period'),
-				DB::raw('SUM(amount) as total')
+				DB::raw('count(distinct(invoices.organisation_id)) as total')
 			)
-			->where(function ($query) {
-				$query->whereNotIn('organisation_id', array(1, 2))
-					->orWhereNull('organisation_id');
-			})
-
 			->groupBy('period')
 			->orderBy('period', 'DESC')
 			//->get()
 			;
 	}
 
-	public function scopeTotalCountPerMonthWithoutStakeholders($query)
+	public function scopeWithoutStakeholders($query)
 	{
 		return $query
-			->join('invoices', function($j)
-			{
-				$j->on('invoice_id', '=', 'invoices.id')
-					->where('type', '=', 'F')
-
-				;
-			})
-			->select(
-				DB::raw('date_format(invoices.date_invoice, "%Y-%m") as period'),
-				DB::raw('count(distinct(organisation_id)) as total')
-			)
+			->join('organisations', 'organisation_id', '=', 'organisations.id', 'left outer')
 			->where(function ($query) {
-				$query->whereNotIn('organisation_id', array(1, 2))
+				$query->where('organisations.is_founder', '=', false)
 					->orWhereNull('organisation_id');
 			})
-			->groupBy('period')
-			->orderBy('period', 'DESC')
-			//->get()
 			;
 	}
-
 
 	public function scopePending($query)
 	{
@@ -158,7 +126,7 @@ class InvoiceItem extends Eloquent
 				;
 			})
 			->select(
-				DB::raw('SUM(amount) as total')
+				DB::raw('SUM(invoices_items.amount) as total')
 			)
 					->where('on_hold', '=', false)
 			->whereNull('date_payment')
@@ -175,7 +143,7 @@ class InvoiceItem extends Eloquent
 				;
 			})
 			->select(
-				DB::raw('SUM(amount) as total')
+				DB::raw('SUM(invoices_items.amount) as total')
 			)
 					->where('on_hold', '=', true)
 			->whereNull('date_payment')
