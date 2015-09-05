@@ -12,7 +12,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>
         @section('meta_title')
-            Intranet Etincelle Coworking
+            Intranet {{ $_ENV['organisation_name'] }}
         @show
     </title>
 

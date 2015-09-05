@@ -6,7 +6,7 @@
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
     <title>
         @section('title')
-            Etincelle Coworking
+            {{ $_ENV['organisation_name'] }}
         @show
     </title>
     <style type="text/css">
@@ -289,7 +289,7 @@
                     <tr>
                         <td class="alert alert-good">
                             @section('title')
-                                Etincelle Coworking
+                                {{ $_ENV['organisation_name'] }}
                             @show
                         </td>
                     </tr>

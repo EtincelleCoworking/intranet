@@ -21,6 +21,7 @@ return array(
     'organisation_tva'      =>  'xxxxxx',
     'organisation_status'   =>  'SARL',
     'organisation_capital'  =>  'xxxx€',
+    'organisation_email'    =>  'contact@votre-espace.com',
 
     // SMTP pour l'envoi des emails
     'mail_driver'       =>  'smtp',

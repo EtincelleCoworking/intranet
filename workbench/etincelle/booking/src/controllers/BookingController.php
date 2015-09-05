@@ -333,10 +333,10 @@ class BookingController extends Controller
                 $title = 'Modification de réservation';
             }
 
-            $m->from('sebastien@coworking-toulouse.com', 'Sébastien Hordeaux')
-                ->bcc('sebastien@coworking-toulouse.com', 'Sébastien Hordeaux')
+            $m->from($_ENV['organisation_email'], $_ENV['organisation_name'])
+                ->bcc($_ENV['organisation_email'], $_ENV['organisation_name'])
                 ->to($booking->user->email, $booking->user->fullname)
-                ->subject(sprintf('Etincelle Coworking - %s - %s', $title, $start_at));
+                ->subject(sprintf('%s - %s - %s', $_ENV['organisation_name'], $title, $start_at));
         });
     }
 
@@ -349,20 +349,20 @@ class BookingController extends Controller
                 $update = sprintf('%s > %s', date('d/m/Y H:i', strtotime($old['start_at'])), date('d/m/Y H:i', strtotime($new['start_at'])));
             }
 
-            $m->from('sebastien@coworking-toulouse.com', 'Sébastien Hordeaux')
-                ->bcc('sebastien@coworking-toulouse.com', 'Sébastien Hordeaux')
+            $m->from($_ENV['organisation_email'], $_ENV['organisation_name'])
+                ->bcc($_ENV['organisation_email'], $_ENV['organisation_name'])
                 ->to($booking_item->booking->user->email, $booking_item->booking->user->fullname)
-                ->subject(sprintf('Etincelle Coworking - Modification de réservation - %s', $update));
+                ->subject(sprintf('%s - Modification de réservation - %s', $_ENV['organisation_name'], $update));
         });
     }
 
     protected function sendDeletedBookingNotification($booking_item, $ressource, $booking, $user)
     {
         Mail::send('booking::emails.deleted', array('booking_item' => $booking_item, 'ressource' => $ressource, 'booking' => $booking, 'user' => $user), function ($m) use ($user, $booking_item) {
-            $m->from('sebastien@coworking-toulouse.com', 'Sébastien Hordeaux')
-                ->bcc('sebastien@coworking-toulouse.com', 'Sébastien Hordeaux')
+            $m->from($_ENV['organisation_email'], $_ENV['organisation_name'])
+                ->bcc($_ENV['organisation_email'], $_ENV['organisation_name'])
                 ->to($user->email, $user->fullname)
-                ->subject(sprintf('Etincelle Coworking - Annulation de réservation - %s', date('d/m/Y H:i', strtotime($booking_item->start_at))));
+                ->subject(sprintf('%s - Annulation de réservation - %s', $_ENV['organisation_name'], date('d/m/Y H:i', strtotime($booking_item->start_at))));
         });
     }
 
