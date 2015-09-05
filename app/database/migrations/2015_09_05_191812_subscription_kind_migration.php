@@ -26,13 +26,15 @@ class SubscriptionKindMigration extends Migration
         Schema::table('subscription', function (Blueprint $table) {
             $table->integer('subscription_kind_id')->unsigned()->nullable();
             $table->foreign('subscription_kind_id')->references('id')->on('subscription')->onDelete('CASCADE');
-            $table->dropColumn('caption');
-            $table->dropColumn('amount');
         });
         $this->createPlan('Coworking - Abonnement 1/4 temps', 40, 60);
         $this->createPlan('Coworking - Abonnement 1/2 temps', 80, 110);
         $this->createPlan('Coworking - Abonnement illimité', -1, 165);
         DB::statement('UPDATE subscription SET subscription_kind_id = (SELECT id FROM subscription_kind WHERE subscription_kind.price = subscription.amount LIMIT 1)');
+        Schema::table('subscription', function (Blueprint $table) {
+            $table->dropColumn('caption');
+            $table->dropColumn('amount');
+        });
     }
 
     protected function createPlan($name, $quota, $price)
