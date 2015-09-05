@@ -58,7 +58,7 @@ class Ressource extends Eloquent
     public function scopeSelectAll($query)
     {
         $selectVals[null] = 'Aucune ressource';
-        $selectVals += $this->orderBy('order_index', 'ASC')->lists('name', 'id');
+        $selectVals += $query->orderBy('order_index', 'ASC')->lists('name', 'id');
         return $selectVals;
     }
 
@@ -71,7 +71,7 @@ class Ressource extends Eloquent
         if (!empty($emptyCaption)) {
             $selectVals[null] = $emptyCaption;
         }
-        $selectVals += $this->whereIsBookable(true)->orderBy('order_index', 'ASC')->lists('name', 'id');
+        $selectVals += $query->whereIsBookable(true)->orderBy('order_index', 'ASC')->lists('name', 'id');
         return $selectVals;
     }
 }

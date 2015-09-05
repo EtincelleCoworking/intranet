@@ -38,23 +38,13 @@
                     @endif
 
                     <div class="row">
-                        @if (Auth::user()->isSuperAdmin())
                             <div class="col-md-6">
                                 {{ Form::label('user_id', 'Client') }}
                                 <p>{{ Form::select('user_id', User::Select('Sélectionnez un client'), isset($subscription)?$subscription->user_id:null, array('id' => 'selectUserId', 'class' => 'form-control')) }}</p>
                             </div>
-                        @else
-                            {{ Form::hidden('user_id', Auth::user()->id) }}
-                        @endif
                         <div class="col-md-6">
                             {{ Form::label('organisation_id', 'Organisation') }}
                             <p>{{ Form::select('organisation_id', Organisation::Select('Sélectionnez une organisation'), isset($subscription)?$subscription->organisation_id:null, array('id' => 'selectOrganisationId', 'class' => 'form-control')) }}</p>
-                        </div>
-                    </div>
-                    <div class="row">
-                        <div class="col-md-12">
-                            {{ Form::label('caption', 'Intitulé') }}
-                            <p>{{ Form::text('caption', isset($subscription)?$subscription->caption:'', array('class' => 'form-control')) }}</p>
                         </div>
                     </div>
                     <div class="row">
@@ -67,8 +57,8 @@
                             <p>{{ Form::select('duration', array('1 month' => 'Mensuel'), isset($subscription)?$subscription->duration:'', array('class' => 'form-control')) }}</p>
                         </div>
                         <div class="col-md-4">
-                            {{ Form::label('amount', 'Montant HT') }}
-                            <p>{{ Form::text('amount', isset($subscription)?$subscription->amount:'', array('class' => 'form-control')) }}</p>
+                            {{ Form::label('subscription_kind_id', 'Type') }}
+                            <p>{{ Form::select('subscription_kind_id', SubscriptionKind::selectAll(), isset($subscription)?$subscription->subscription_kind_id:'', array('class' => 'form-control')) }}</p>
                         </div>
                     </div>
 

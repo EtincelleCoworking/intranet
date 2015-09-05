@@ -21,13 +21,11 @@ class SubscriptionController extends BaseController
     protected function populate($subscription)
     {
         $date_explode = explode('/', Input::get('renew_at'));
-
         $subscription->user_id = Input::get('user_id');
         $subscription->organisation_id = Input::get('organisation_id');
-        $subscription->caption = Input::get('caption');
+        $subscription->subscription_kind_id = Input::get('subscription_kind_id');
         $subscription->renew_at = $date_explode[2] . '-' . $date_explode[1] . '-' . $date_explode[0];
         $subscription->duration = Input::get('duration');
-        $subscription->amount = Input::get('amount');
     }
 
     /**
@@ -101,24 +99,6 @@ class SubscriptionController extends BaseController
     {
         $subscription = $this->dataExist($id);
 
-        // TODO créer des ressources spécifiques avec en option le volume horaire associé à chacune des formules?
-        // implique aussi probablement de rajouter une notion de catégorie pour distinguer location de salle et coworking
-        $hours_quota = 0;
-        switch ($subscription->amount) {
-            case 60:
-                $hours_quota = 40;
-                break;
-            case 110:
-                $hours_quota = 80;
-                break;
-            case 165:
-                $hours_quota = -1;
-                break;
-            default:
-                return Redirect::route('subscription_list')->with('mError', 'Impossible de renouveler cet abonnement, montant inconnu (60, 110, 165)');
-        }
-
-
         $invoice = new Invoice();
         $invoice->type = 'F';
         $invoice->user_id = $subscription->user_id;
@@ -136,21 +116,21 @@ class SubscriptionController extends BaseController
         $invoice_line = new InvoiceItem();
         $invoice_line->invoice_id = $invoice->id;
         $invoice_line->ressource_id = Ressource::TYPE_COWORKING;
-        $invoice_line->amount = $subscription->amount;
+        $invoice_line->amount = $subscription->kind->price;
         $date = new \DateTime($subscription->renew_at);
         $date2 = new \DateTime($subscription->renew_at);
         $invoice_line->subscription_from = $date->format('Y-m-d');
         $date2->modify('next month');
         $invoice_line->subscription_to = $date2->format('Y-m-d');
-        $invoice_line->subscription_hours_quota = $hours_quota;
+        $invoice_line->subscription_hours_quota = $subscription->kind->hours_quota;
 
         // update invoices_items set subscription_to = date_add(subscription_from, interval 1 MONTH) where subscription_from <> '0000-00-00 00:00:00'
 
 
         $date2->modify('-1 day');
-        $invoice_line->text = sprintf("%s\nDu %s au %s", $subscription->caption,
+        $invoice_line->text = sprintf("%s - %s\nDu %s au %s", $subscription->kind->name, $subscription->user->fullname,
             $date->format('d/m/Y'), $date2->format('d/m/Y'));
-        $invoice_line->vat_types_id = 1; // TODO aller chercher celui à 20% de TVA
+        $invoice_line->vat_types_id = VatType::whereValue(20)->first()->id;
         $invoice_line->ressource_id = Ressource::TYPE_COWORKING;
         $invoice_line->save();
         $invoice_line->order_index = 1;

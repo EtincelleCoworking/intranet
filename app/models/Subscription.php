@@ -20,19 +20,20 @@ class Subscription extends Eloquent
         return $this->belongsTo('Organisation');
     }
 
+    public function kind()
+    {
+        return $this->belongsTo('SubscriptionKind', 'subscription_kind_id');
+    }
+
     /**
      * Rules
      */
-    public static $rules = array(
-        'amount' => 'required|min:1'
-    );
+    public static $rules = array();
 
     /**
      * Rules Add
      */
-    public static $rulesAdd = array(
-        'amount' => 'required|min:1'
-    );
+    public static $rulesAdd = array();
 
     public function getDaysBeforeRenewAttribute()
     {
@@ -47,17 +48,23 @@ class Subscription extends Eloquent
 
     }
 
+    public function getCaptionAttribute()
+    {
+        return sprintf('%s - %s', $this->kind->name, $this->user->fullname);
+
+    }
+
 
     public function scopeTotalPerMonth($query)
     {
         return $query
+            ->join('subscription_kind', 'subscription_kind_id', '=', 'subscription_kind.id')
             ->select(
                 DB::raw('date_format(renew_at, "%Y-%m") as period'),
-                DB::raw('SUM(amount) as total')
+                DB::raw('SUM(subscription_kind.price) as total')
             )
             ->groupBy('period')
-            ->orderBy('period', 'ASC')//->get()
-            ;
+            ->orderBy('period', 'ASC');
     }
 
     public static function getActiveSubscriptionInfos()
