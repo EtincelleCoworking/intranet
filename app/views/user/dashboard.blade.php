@@ -16,6 +16,7 @@
                 @include('partials.active_subscription')
                 @include('partials.member.component')
             @endif
+            @include('booking::partials.ressource_booking_status')
             @include('booking::partials.upcoming_events')
             @include('partials.next_birthday.component')
         </div>
