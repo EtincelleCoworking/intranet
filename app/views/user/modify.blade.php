@@ -41,7 +41,8 @@
                             <p>{{ Form::text('birthday', ($user->birthday == '0000-00-00')?'':date('d/m/Y', strtotime($user->birthday)), array('class' => 'form-control datePicker')) }}</p>
                         </div>
                         <div class="col-lg-6">
-                            <img alt="{{$user->fullname}}" class="img-circle img-responsive" src="{{$user->avatarUrl}}"/>
+                            <img alt="{{$user->fullname}}" class="img-circle img-responsive"
+                                 src="{{$user->avatarUrl}}"/>
                             {{Form::file('avatar')}}
                         </div>
                     </div>
@@ -86,7 +87,8 @@
                         <div class="col-lg-12">
                             <i class="fa fa-linkedin"></i>
                             {{ Form::label('social_linkedin', 'LinkedIn') }}
-                            <small class="text-muted">ex : https://fr.linkedin.com/pub/sébastien-hordeaux/2/2b9/953</small>
+                            <small class="text-muted">ex : https://fr.linkedin.com/pub/sébastien-hordeaux/2/2b9/953
+                            </small>
                             <p>{{ Form::text('social_linkedin', null, array('class' => 'form-control')) }}</p>
                         </div>
                         <div class="col-lg-12">
@@ -118,26 +120,26 @@
                     <p>{{Form::textarea('bio_long', null, array('class' => 'form-control')) }}</p>
                 </div>
             </div>
-            @if(Auth::user()->isSuperAdmin())
-                <div class="ibox ">
-                    <div class="ibox-title">
-                        <h5>Configuration</h5>
-                    </div>
-                    <div class="ibox-content">
+            <div class="ibox ">
+                <div class="ibox-title">
+                    <h5>Sécurité</h5>
+                </div>
+                <div class="ibox-content">
 
-                        <div class="row">
-                            <div class="col-lg-6">
-                                {{ Form::label('password', 'Mot de passe') }}
-                                <p>{{ Form::password('password', array('class' => 'form-control')) }}</p>
-                            </div>
+                    <div class="row">
+                        <div class="col-lg-6">
+                            {{ Form::label('password', 'Mot de passe') }}
+                            <p>{{ Form::password('password', array('class' => 'form-control')) }}</p>
+                        </div>
+                        @if(Auth::user()->isSuperAdmin())
                             <div class="col-lg-6">
                                 {{ Form::checkbox('is_member', true) }}
                                 {{ Form::label('is_member', 'Membre') }}
                             </div>
-                        </div>
+                        @endif
                     </div>
                 </div>
-            @endif
+            </div>
         </div>
 
     </div>
