@@ -111,19 +111,15 @@ ORDER BY current_booking_item.start_at ASC
                                 <br/>
                                 @if($room['current_event'])
                                     <small>
-                                        Occupé jusqu'à {{ date('H:i', strtotime($room['current_event']['end_at'])) }}
+                                        Occupé jusqu'à {{ date('H:i', strtotime($room['current_event']['end_at'])) }}@if($room['next_event']), puis occupé
+                                            à {{ date('H:i', strtotime($room['next_event']['start_at'])) }}
+                                        @endif
                                     </small>
-                                    @if($room['next_event'])
-                                        <small>
-                                            - Occupé à {{ date('H:i', strtotime($room['next_event']['start_at'])) }}
-                                        </small>
-                                    @else
-                                    @endif
                                 @else
                                     @if($room['next_event'])
                                         <small>
                                             Occupé à {{ date('H:i', strtotime($room['next_event']['start_at'])) }}
-                                            pour {{durationToHuman($room['next_event']['duration'])}}
+                                            jusqu'à {{date('H:i', strtotime($room['next_event']['end_at']))}}
                                         </small>
                                     @else
                                         <small class="text-muted">
