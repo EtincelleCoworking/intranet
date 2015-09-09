@@ -80,6 +80,20 @@ function durationToHuman($minutes)
     return $result;
 }
 
+function durationToHumanShort($minutes)
+{
+    $hours = floor($minutes / 60);
+    $minutes = $minutes % 60;
+    if ($hours) {
+        return $hours . 'h';
+    }
+
+    if ($minutes) {
+        return $minutes . 'min';
+    }
+    return false;
+}
+
 function adjustBrightness($hex, $steps)
 {
     // Steps should be between -255 and 255. Negative = darker, positive = lighter
