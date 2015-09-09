@@ -123,7 +123,7 @@ ORDER BY current_booking_item.start_at ASC
                                     @if($room['next_event'])
                                         <small>
                                             Occupé à {{ date('H:i', strtotime($room['next_event']['start_at'])) }}
-                                            ({{durationToHuman($room['next_event']['duration'])}})
+                                            pour {{durationToHuman($room['next_event']['duration'])}}
                                         </small>
                                     @else
                                         <small class="text-muted">

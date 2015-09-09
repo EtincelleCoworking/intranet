@@ -14,7 +14,9 @@
                 <h2 class="font-bold">
                     {{ number_format($pending['total'], 0, ',', '.') }}€
                 </h2>
-                <small>+ {{ number_format($on_hold['total'], 0, ',', '.') }}€ en compte</small>
+                @if($on_hold['total']>0)
+                    <small>+ {{ number_format($on_hold['total'], 0, ',', '.') }}€ en compte</small>
+                @endif
             </div>
         </div>
     </div>
