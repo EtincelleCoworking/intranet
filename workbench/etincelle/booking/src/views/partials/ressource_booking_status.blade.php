@@ -83,7 +83,7 @@ ORDER BY current_booking_item.start_at ASC
 }
 
 ?>
-@if(count($rooms) > 0)
+@if(count($rooms) > 1)
     <div class="ibox">
         <div class="ibox-title">
             <h5>Besoin d'un espace de réunion?</h5>
@@ -115,14 +115,14 @@ ORDER BY current_booking_item.start_at ASC
                                     </small>
                                     @if($room['next_event'])
                                         <small>
-                                            - Prochain: {{ date('H:i', strtotime($room['next_event']['start_at'])) }}
+                                            - Occupé à {{ date('H:i', strtotime($room['next_event']['start_at'])) }}
                                         </small>
                                     @else
                                     @endif
                                 @else
                                     @if($room['next_event'])
                                         <small>
-                                            Prochain: {{ date('H:i', strtotime($room['next_event']['start_at'])) }}
+                                            Occupé à {{ date('H:i', strtotime($room['next_event']['start_at'])) }}
                                             ({{durationToHuman($room['next_event']['duration'])}})
                                         </small>
                                     @else
