@@ -35,16 +35,16 @@ if (count($rooms) == 0) {
 '));
 
     foreach ($results as $item) {
-        $duration = round((strtotime($item->start_at) - time()) / 60);
+        $delay = round((strtotime($item->start_at) - time()) / 60);
         $rooms[$item->id]['next_event'] = array(
                 'start_at' => $item->start_at,
                 'end_at' => $item->end_at,
                 'user_id' => $item->user_id,
                 'is_private' => $item->is_private,
                 'duration' => $item->duration,
-                'delay' => durationToHumanShort($duration)
+            //'delay' => durationToHumanShort($delay)
         );
-        if ($duration < 30) {
+        if ($delay < 30) {
             $rooms[$item->id]['next_event']['duration_kind'] = 'label-warning';
         } else {
             $rooms[$item->id]['next_event']['duration_kind'] = 'label-primary';
@@ -90,47 +90,52 @@ ORDER BY current_booking_item.start_at ASC
         </div>
         <div class="ibox-content">
             <div class="media-body">
-                <table class="table table-hover no-margins">
-                    @foreach($rooms as $room)
-                        <tr>
-                            <td>
-                                @if($room['current_event'])
-                                    <span class="label label-danger">KO</span>
-                                @else
-                                    @if($room['next_event'])
-                                        <span class="label {{$room['next_event']['duration_kind']}}">
+                <a href="{{ URL::route('booking') }}">
+                    <table class="table table-hover no-margins">
+                        @foreach($rooms as $room)
+                            <tr>
+                                <td>
+                                    @if($room['current_event'])
+                                        <span class="label label-danger">KO</span>
+                                    @else
+                                        @if($room['next_event'])
+                                            <span class="label {{$room['next_event']['duration_kind']}}">
                                         OK
                                     </span>
-                                    @else
-                                        <div class="label label-primary">OK</div>
-                                    @endif
-                                @endif
-                            </td>
-                            <td>
-                                {{ $room['name'] }}
-                                <br/>
-                                @if($room['current_event'])
-                                    <small>
-                                        Occupé jusqu'à {{ date('H:i', strtotime($room['current_event']['end_at'])) }}@if($room['next_event']), puis occupé
-                                            à {{ date('H:i', strtotime($room['next_event']['start_at'])) }}
+                                        @else
+                                            <div class="label label-primary">OK</div>
                                         @endif
-                                    </small>
-                                @else
-                                    @if($room['next_event'])
+                                    @endif
+                                </td>
+                                <td>
+                                <span style="color: #676a6c">{{ $room['name'] }}
+                                    <br/>
+                                    @if($room['current_event'])
                                         <small>
-                                            Occupé de {{ date('H:i', strtotime($room['next_event']['start_at'])) }}
-                                            à {{date('H:i', strtotime($room['next_event']['end_at']))}}
+                                            Occupé
+                                            jusqu'à {{ date('H:i', strtotime($room['current_event']['end_at'])) }}@if($room['next_event'])
+                                                , puis occupé
+                                                à {{ date('H:i', strtotime($room['next_event']['start_at'])) }}
+                                            @endif
                                         </small>
                                     @else
-                                        <small class="text-muted">
-                                            Pas de réservation aujourd'hui
-                                        </small>
+                                        @if($room['next_event'])
+                                            <small>
+                                                Occupé de {{ date('H:i', strtotime($room['next_event']['start_at'])) }}
+                                                à {{date('H:i', strtotime($room['next_event']['end_at']))}}
+                                            </small>
+                                        @else
+                                            <small class="text-muted">
+                                                Pas de réservation aujourd'hui
+                                            </small>
+                                        @endif
                                     @endif
-                                @endif
-                            </td>
-                        </tr>
-                    @endforeach
-                </table>
+                                </span>
+                                </td>
+                            </tr>
+                        @endforeach
+                    </table>
+                </a>
             </div>
         </div>
     </div>
