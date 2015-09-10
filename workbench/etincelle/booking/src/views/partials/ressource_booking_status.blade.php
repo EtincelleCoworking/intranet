@@ -91,6 +91,7 @@ GROUP BY ressources.id
 }
 
 ?>
+
 @if(count($rooms) > 1)
     <div class="ibox">
         <div class="ibox-title">
@@ -120,11 +121,12 @@ GROUP BY ressources.id
                                     <br/>
                                     @if($room['current_event'])
                                         <small>
-                                            Occupé
-                                            jusqu'à {{ date('H:i', strtotime($room['current_event']['end_at'])) }}@if($room['next_event'])
-                                                , puis occupé
-                                                à {{ date('H:i', strtotime($room['next_event']['start_at'])) }}
-                                            @endif
+                                            <?php
+                                            printf('Occupé jusqu\'à %s', date('H:i', strtotime($room['current_event']['end_at'])));
+                                            if($room['next_event']){
+                                                printf(', occupé à %s', date('H:i', strtotime($room['next_event']['start_at'])));
+                                            }
+                                            ?>
                                         </small>
                                     @else
                                         @if($room['next_event'])
@@ -134,7 +136,7 @@ GROUP BY ressources.id
                                             </small>
                                         @else
                                             <small class="text-muted">
-                                                Pas de réservation aujourd'hui
+                                                Pas de réservation
                                             </small>
                                         @endif
                                     @endif
