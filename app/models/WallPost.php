@@ -33,7 +33,9 @@ const ITEM_PER_PAGE = 5;
     );
 
     public function getMessageFmtAttribute(){
-        return \Michelf\Markdown::defaultTransform($this->message);
+        $result = \Michelf\Markdown::defaultTransform($this->message);
+        $result = preg_replace('/<img/', '<img class="img-responsive"', $result);
+        return $result;
     }
 
     public function getCreatedAttribute()

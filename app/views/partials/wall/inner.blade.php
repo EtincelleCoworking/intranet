@@ -87,6 +87,7 @@
                     message: $formTextarea.val()
                 },
                 success: function (data) {
+                    data.content = data.content.replace('/<img/', '<img class="img-responsive"');
                     var snippet = '<div class="tree tree-level-1"><div class="tree tree-level-1">'
                             + '<div class="social-comment"><a href="' + Etincelle.User.profileUrl + '" class="pull-left">' + Etincelle.User.avatarTag + '</a>'
                             + '<div class="media-body">'
