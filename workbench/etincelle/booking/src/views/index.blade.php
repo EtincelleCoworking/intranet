@@ -6,18 +6,20 @@
 
 @section('breadcrumb')
     <div class="row wrapper border-bottom white-bg page-heading">
-        <div class="col-sm-8">
+        <div class="col-sm-10">
             <h2>Réservations</h2>
 
-            Légende:
-            @foreach(Ressource::whereIsBookable(true)->get() as $ressource)
-                <div class="label" style="{{$ressource->labelCss}}">
-                    {{$ressource->name}}
-                </div>
-            @endforeach
-
+            <form id="ressource_filter" action="#" autocomplete="off">
+                Légende:
+                @foreach(Ressource::whereIsBookable(true)->get() as $ressource)
+                    <div class="label" style="{{$ressource->labelCss}}">
+                        <input type="checkbox" name="filter_ressource_{{$ressource->id}}" id="filter_ressource_{{$ressource->id}}" value="{{$ressource->id}}" checked="checked"/>
+                        <label for="filter_ressource_{{$ressource->id}}" style="font-weight: 600;">{{$ressource->name}}</label>
+                    </div>
+                @endforeach
+            </form>
         </div>
-        <div class="col-sm-4">
+        <div class="col-sm-2">
             <div class="title-action">
                 <a href="#" class="btn btn-primary" id="meeting-add">Nouvelle réservation</a>
             </div>
@@ -241,7 +243,7 @@
     <style type="text/css">
         @foreach(Ressource::whereIsBookable(true)->get() as $ressource)
 
-.fc-event.booking-ofuscated-{{$ressource->id}}                         {
+.fc-event.booking-ofuscated-{{$ressource->id}}                          {
             background: repeating-linear-gradient(
             135deg,
                     {{ adjustBrightness($ressource->booking_background_color, -32)}},
@@ -694,6 +696,15 @@
 
 
             $.fn.modal.Constructor.prototype.enforceFocus = $.noop;
+
+
+            $('#ressource_filter input[type=checkbox]').on('click', function(){
+                if($(this).is(':checked')){
+                    $('.booking-' + $(this).val()).show();
+                }else{
+                    $('.booking-' + $(this).val()).hide();
+                }
+            })
         })
         ;
     </script>

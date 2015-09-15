@@ -66,12 +66,14 @@ class BookingItem extends Illuminate\Database\Eloquent\Model
         $canManage = $user->isSuperAdmin() ||
             (($this->booking->user_id == $user->id) && ($start2->format('Y-m-d') >= date('Y-m-d')));
 
+        $className = sprintf('booking-%d', $this->ressource_id);
+
         $ofuscated_title = $this->booking->title;
         if ($this->booking->is_private && !$user->isSuperAdmin() && ($this->booking->user_id != $user->id)) {
             $ofuscated_title = 'Réservé';
-            $className = sprintf('booking-ofuscated-%d', $this->ressource_id);
+            $className .= sprintf(' booking-ofuscated-%d', $this->ressource_id);
         } else {
-            $className = 'booking';
+            $className .= ' booking';
         }
         $backgroundColor = $this->ressource->booking_background_color;
         $borderColor = adjustBrightness($this->ressource->booking_background_color, -32);
