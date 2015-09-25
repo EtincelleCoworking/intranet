@@ -5,7 +5,7 @@ $cacheKey = 'member';
 $boxContent = Cache::get($cacheKey);
 if (empty($boxContent)) {
     $boxContent = View::make('partials.member.inner')->render();
-    Cache::remember($cacheKey, $boxContent, 60);
+    Cache::put($cacheKey, $boxContent, 60);
 }
 echo $boxContent;
 ?>
