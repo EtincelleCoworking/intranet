@@ -2,7 +2,7 @@
     <li class="nav-header">
         <div class="dropdown profile-element">
             <span>
-                <img alt="{{Auth::user()->fullname}}" class="img-circle img-responsive" src="{{Auth::user()->getAvatarUrl(48)}}"/>
+                <a href="{{URL::Route('user_profile', Auth::user()->id)}}"><img alt="{{Auth::user()->fullname}}" class="img-circle img-responsive" src="{{Auth::user()->getAvatarUrl(48)}}"/></a>
             </span>
             <a data-toggle="dropdown" class="dropdown-toggle" href="#">
                 <span class="clear"> <span class="block m-t-xs">

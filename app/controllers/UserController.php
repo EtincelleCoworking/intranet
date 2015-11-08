@@ -255,7 +255,7 @@ class UserController extends BaseController
         }
         $cell1->addTextBreak();
         if ($user->phone) {
-            $cell1->addText(htmlspecialchars(sprintf('Tél: %s', $user->phone)), 'defaultText', array('align' => 'right'));
+            $cell1->addText(htmlspecialchars(sprintf('Tél: %s', $user->phoneFmt)), 'defaultText', array('align' => 'right'));
         }
         $cell1->addText(htmlspecialchars(sprintf('Email: %s', $user->email)), 'defaultText', array('align' => 'right'));
         if ($user->website) {
@@ -263,7 +263,11 @@ class UserController extends BaseController
         }
 
         $cell2 = $table->addCell(\PhpOffice\PhpWord\Shared\Converter::cmToTwip(5));
-        $cell2->addImage($user->getAvatarUrl(800), array('width' => \PhpOffice\PhpWord\Shared\Converter::cmToPixel(5)));
+        $image_url = $user->largeAvatarUrl;
+        if (false === strpos($image_url, 'http')) {
+            $image_url = public_path() . $image_url;
+        }
+        $cell2->addImage($image_url, array('width' => \PhpOffice\PhpWord\Shared\Converter::cmToPixel(5)));
 
         $filename = sprintf('%s.docx', Str::slug($user->fullname));
 
