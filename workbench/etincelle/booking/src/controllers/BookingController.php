@@ -429,4 +429,11 @@ class BookingController extends Controller
         $response->header('Content-Disposition', 'attachment; filename="cal.ics"');
         return $response;
     }
+
+    public function export(){
+        $response = Response::make($vCalendar->render());
+        $response->header('Content-Type', 'text/calendar; charset=utf-8');
+        $response->header('Content-Disposition', 'attachment; filename="cal.ics"');
+        return $response;
+    }
 }

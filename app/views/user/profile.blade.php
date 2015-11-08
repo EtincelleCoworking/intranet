@@ -13,8 +13,19 @@
         </div>
         <div class="col-sm-4">
             <div class="title-action">
-                @if ((Auth::user()->isSuperAdmin()) or (Auth::user()->id == $user->id))
-                    <a href="{{ URL::route('user_modify', $user->id) }}" class="btn btn-success pull-right">Modifier</a>
+                @if (Auth::user()->isSuperAdmin())
+                <a href="{{ URL::route('user_modify', $user->id) }}" class="btn btn-primary">Modifier</a>
+
+                    <a href="{{URL::route('user_login_as', $user->id)}}" title="Se connecter en tant que {{$user->fullname}}"
+                       class="btn btn-default"><i class="fa fa-user-secret"></i></a>
+
+                    <a href="{{URL::route('user_export_profile', $user->id)}}" title="Exporter la fiche {{$user->fullname}}"
+                       class="btn btn-default"><i class="fa fa-download"></i></a>
+                @elseif (Auth::user()->id == $user->id)
+                    <a href="{{ URL::route('user_modify', $user->id) }}" class="btn btn-primary">Modifier</a>
+
+                    <a href="{{URL::route('user_export_profile', $user->id)}}" title="Exporter la fiche {{$user->fullname}}"
+                       class="btn btn-default"><i class="fa fa-download"></i></a>
                 @endif
             </div>
         </div>

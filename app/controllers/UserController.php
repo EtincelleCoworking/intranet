@@ -209,6 +209,78 @@ class UserController extends BaseController
     }
 
     /**
+     *
+     */
+    public function exportMemberProfile($id)
+    {
+        $user = User::find($id);
+        if (!$user) {
+            return Redirect::route('members')->with('mError', 'Cet utilisateur est introuvable !');
+        }
+
+        $phpWord = new \PhpOffice\PhpWord\PhpWord();
+        $phpWord->addTitleStyle(1, array('name' => 'Tahoma', 'size' => 30, 'bold' => true), array('align' => 'center', 'spaceBefore' => true,
+            'spaceAfter' => true));
+        $phpWord->addTitleStyle(2, array('name' => 'Tahoma', 'size' => 14, 'color' => '666666', 'bold' => true), array('align' => 'center', 'spaceBefore' => true,
+            'spaceAfter' => true));
+        $phpWord->addFontStyle(
+            'defaultText',
+            array(
+                'name' => 'Tahoma',
+                'size' => 12,
+                'spaceBefore' => true,
+                'spaceAfter' => true
+            )
+        );
+
+
+        $section = $phpWord->addSection(array(
+            'marginTop' => \PhpOffice\PhpWord\Shared\Converter::cmToTwip(1),
+            'marginLeft' => \PhpOffice\PhpWord\Shared\Converter::cmToTwip(1),
+            'marginRight' => \PhpOffice\PhpWord\Shared\Converter::cmToTwip(1),
+        ));
+        $textrun = $section->addTextRun('Heading1');
+        $textrun->addText($user->fullname);
+        $section->addTextBreak();
+
+        $textrun = $section->addTextRun('Heading2');
+        $textrun->addText(htmlspecialchars($user->bio_short));
+        $section->addTextBreak();
+
+        $table = $section->addTable();
+        $table->addRow();
+        $cell1 = $table->addCell(\PhpOffice\PhpWord\Shared\Converter::cmToTwip(14));
+        foreach (explode("\n", htmlspecialchars($user->bio_long)) as $line) {
+            $cell1->addText($line, 'defaultText');
+        }
+        $cell1->addTextBreak();
+        if ($user->phone) {
+            $cell1->addText(htmlspecialchars(sprintf('Tél: %s', $user->phone)), 'defaultText', array('align' => 'right'));
+        }
+        $cell1->addText(htmlspecialchars(sprintf('Email: %s', $user->email)), 'defaultText', array('align' => 'right'));
+        if ($user->website) {
+            $cell1->addText(htmlspecialchars($user->website), 'defaultText', array('align' => 'right'));
+        }
+
+        $cell2 = $table->addCell(\PhpOffice\PhpWord\Shared\Converter::cmToTwip(5));
+        $cell2->addImage($user->getAvatarUrl(800), array('width' => \PhpOffice\PhpWord\Shared\Converter::cmToPixel(5)));
+
+        $filename = sprintf('%d.docx', $user->id);
+
+        $objWriter = \PhpOffice\PhpWord\IOFactory::createWriter($phpWord, 'Word2007');
+        $objWriter->save($filename);
+        $content = file_get_contents($filename);
+        unlink($filename);
+        $headers = array(
+            "Content-Description" => "File Transfer",
+            "Content-Transfer-Encoding" => "binary",
+            "Content-type" => "application/vnd.openxmlformats-officedocument.wordprocessingml.document",
+            "Content-Disposition" => "attachment; filename=" . $filename
+        );
+        return Response::make($content, 200, $headers);
+    }
+
+    /**
      * Edit profile
      */
     public function edit()

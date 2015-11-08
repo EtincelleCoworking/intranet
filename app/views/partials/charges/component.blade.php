@@ -2,8 +2,11 @@
     <?php
     $chargesMonth = DB::table('charges_items')->join('charges', function ($join) {
         $join->on('charges_items.charge_id', '=', 'charges.id')
+                ->where(DB::raw('YEAR(charges.date_charge)'), '=', date('Y'))
+                ->where(DB::raw('YEAR(charges.deadline)'), '=', date('Y'))
                 ->where(DB::raw('MONTH(charges.date_charge)'), '=', date('n'))
-                ->where(DB::raw('MONTH(charges.deadline)'), '=', date('n'));
+                ->where(DB::raw('MONTH(charges.deadline)'), '=', date('n'))
+        ;
     })->join('vat_types', function ($join) {
         $join->on('charges_items.vat_types_id', '=', 'vat_types.id');
     })->select(DB::raw('SUM(amount) as total, SUM(((amount * vat_types.value) / 100)) as mtva'))->first();

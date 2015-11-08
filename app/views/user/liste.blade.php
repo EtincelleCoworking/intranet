@@ -149,6 +149,8 @@
                        class="btn btn-xs btn-primary">Voir</a>
                     <a href="{{ URL::route('user_modify', $user->id) }}"
                        class="btn btn-xs btn-default">Modifier</a>
+                    <a href="{{URL::route('user_login_as', $user->id)}}" title="Se connecter en tant que {{$user->fullname}}"
+                       class="btn btn-xs btn-default"><i class="fa fa-user-secret"></i></a>
                 </td>
             </tr>
         @endforeach
@@ -159,4 +161,14 @@
         </tr>
         </tfoot>
     </table>
+@stop
+
+@section('javascript')
+
+    <script type="text/javascript">
+        $().ready(function () {
+
+            $('#filter-client').select2();
+        });
+    </script>
 @stop

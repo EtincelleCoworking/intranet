@@ -25,6 +25,9 @@ Route::group(['before' => 'member'], function() {
     Route::get('/user/modify/{id}', array('as' => 'user_modify', 'uses' => 'UserController@modify'))->where(array('id' => '[0-9]+'));
     Route::post('/user/modify/{id}', array('as' => 'user_modify_check', 'uses' => 'UserController@modify_check'))->where(array('id' => '[0-9]+'));
 
+    Route::get('/user/export-profile/{id}', array('as' => 'user_export_profile', 'uses' => 'UserController@exportMemberProfile'))->where(array('id' => '[0-9]+'));
+
+
 	Route::get('/users', array('as' => 'members', 'uses' => 'UserController@members'));
 
     Route::any('/pasttimes', array('as' => 'pasttime_list', 'uses' => 'PastTimeController@liste'));

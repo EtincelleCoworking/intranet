@@ -20,7 +20,8 @@
     "league/csv": "^7.1@dev",
     "eluceo/ical": "*",
     "michelf/php-markdown": "^1.5",
-    "bkwld/croppa": "~4.0"
+    "bkwld/croppa": "~4.0",
+    "phpoffice/phpword": "dev-master"
   },
   "autoload": {
     "classmap": [
