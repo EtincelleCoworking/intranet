@@ -263,9 +263,9 @@ class UserController extends BaseController
         }
 
         $cell2 = $table->addCell(\PhpOffice\PhpWord\Shared\Converter::cmToTwip(5));
-        $cell2->addImage($user->getAvatarUrl(800), array('width' => \PhpOffice\PhpWord\Shared\Converter::cmToPixel(5)));
+        $cell2->addImage($image_url, array('width' => \PhpOffice\PhpWord\Shared\Converter::cmToPixel(5)));
 
-        $filename = sprintf('%d.docx', $user->id);
+        $filename = sprintf('%s.docx', Str::slug($user->fullname));
 
         $objWriter = \PhpOffice\PhpWord\IOFactory::createWriter($phpWord, 'Word2007');
         $objWriter->save($filename);

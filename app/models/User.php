@@ -164,7 +164,9 @@ class User extends Eloquent implements UserInterface, RemindableInterface
         if (!empty($this->avatar)) {
             $src_filename = sprintf('/uploads/users/%d/%s', $this->id, $this->avatar);
             if (is_file(public_path() . $src_filename)) {
-                return Croppa::url($src_filename, $size, $size, array('resize'));
+                $result = Croppa::url($src_filename, $size, $size, array('resize'));
+                $result = preg_replace('!\?.+!', '', $result);
+                return $result;
             }
         }
         return "http://www.gravatar.com/avatar/" . md5(strtolower(trim($this->email))) . "?d=mm&s=" . $size;
@@ -256,16 +258,18 @@ class User extends Eloquent implements UserInterface, RemindableInterface
         return ($this->role == 'superadmin');
     }
 
-    public function getLastSubscription(){
+    public function getLastSubscription()
+    {
         return InvoiceItem::join('invoices', 'invoice_id', '=', 'invoices.id')
             ->where('subscription_from', '<>', '0000-00-00 00:00:00')
-            ->where('invoices.user_id',$this->id)
+            ->where('invoices.user_id', $this->id)
             ->orderBy('subscription_to', 'DESC')
             ->select('subscription_from', 'subscription_to', 'subscription_hours_quota', 'invoice_id')
             ->first();
     }
 
-    public function getCoworkingTimeSpent($from, $to){
+    public function getCoworkingTimeSpent($from, $to)
+    {
         return PastTime::where('user_id', $this->id)
             ->whereBetween('date_past', array($from, $to))
             ->where('ressource_id', Ressource::TYPE_COWORKING)
