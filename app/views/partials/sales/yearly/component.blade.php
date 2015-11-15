@@ -14,13 +14,12 @@
                 <i class="fa fa-money fa-5x"></i>
             </div>
             <div class="col-xs-8 text-right">
-                <span> CA (hors en compte)</span>
+                <span> CA<small> (hors en compte)</small></span>
 
                 <h2 class="font-bold">
-                    {{ number_format($sales ? $sales->total : 0, 0, ',', '.') }} €
+                    {{ number_format($sales ? $sales->total : 0, 0, ',', '.') }}&nbsp;€
                 </h2>
-                <small>en
-                    moyenne {{  number_format(31 * 24 * 3600 * $sales->total / (strtotime('now') - Config::get('etincelle.activity_started')), 0, ',', '.') }}
+                <small> {{  number_format(31 * 24 * 3600 * $sales->total / (strtotime('now') - Config::get('etincelle.activity_started')), 0, ',', '.') }}
                     € /mois
                 </small>
             </div>
