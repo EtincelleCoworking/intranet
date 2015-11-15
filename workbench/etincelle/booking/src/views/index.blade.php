@@ -4,20 +4,26 @@
     Réservations
 @stop
 
+<?php $ressources = Ressource::whereIsBookable(true)->get(); ?>
+
 @section('breadcrumb')
     <div class="row wrapper border-bottom white-bg page-heading">
         <div class="col-sm-10">
             <h2>Réservations</h2>
-
-            <form id="ressource_filter" action="#" autocomplete="off">
-                Légende:
-                @foreach(Ressource::whereIsBookable(true)->get() as $ressource)
-                    <div class="label" style="{{$ressource->labelCss}}">
-                        <input type="checkbox" name="filter_ressource_{{$ressource->id}}" id="filter_ressource_{{$ressource->id}}" value="{{$ressource->id}}" checked="checked"/>
-                        <label for="filter_ressource_{{$ressource->id}}" style="font-weight: 600;">{{$ressource->name}}</label>
-                    </div>
-                @endforeach
-            </form>
+            @if(count($ressources)>1)
+                <form id="ressource_filter" action="#" autocomplete="off">
+                    Légende:
+                    @foreach($ressources as $ressource)
+                        <div class="label" style="{{$ressource->labelCss}}">
+                            <input type="checkbox" name="filter_ressource_{{$ressource->id}}"
+                                   id="filter_ressource_{{$ressource->id}}" value="{{$ressource->id}}"
+                                   checked="checked"/>
+                            <label for="filter_ressource_{{$ressource->id}}"
+                                   style="font-weight: 600;">{{$ressource->name}}</label>
+                        </div>
+                    @endforeach
+                </form>
+            @endif
         </div>
         <div class="col-sm-2">
             <div class="title-action">
@@ -80,7 +86,7 @@
                             <div class="col-xs-12">
                                 <label for="meeting-add-isprivate" style="font-weight: normal;">
                                     <p>
-                                        {{ Form::checkbox('is_private', true, false, array('id'=> 'meeting-add-isprivate')) }}
+                                        {{ Form::checkbox('is_private', true, count($ressources)>1, array('id'=> 'meeting-add-isprivate')) }}
                                         Événement privé
                                         <br/>
                                     <span class="text-muted">
@@ -101,10 +107,11 @@
                                     </p>
                                 </label>
                             </div>
-                            <div class="col-xs-12">
-                                {{ Form::label('rooms', 'Lieu') }}
-                                @foreach(Ressource::whereIsBookable(true)->get() as $ressource)
-                                    <p>
+                            @if(count($ressources)>1)
+                                <div class="col-xs-12">
+                                    {{ Form::label('rooms', 'Lieu') }}
+                                    @foreach($ressources as $ressource)
+                                        <p>
                                         <span class="label" style="{{$ressource->labelCss}}">
                                     {{ Form::checkbox('rooms[]', $ressource->id, false, array('id'=> sprintf('meeting-add-room%d', $ressource->id))) }}
                                             &nbsp;
@@ -113,9 +120,14 @@
                                                 {{$ressource->name}}
                                             </label>
                                         </span>
-                                    </p>
+                                        </p>
+                                    @endforeach
+                                </div>
+                            @else
+                                @foreach($ressources as $ressource)
+                                    {{ Form::hidden('rooms[]', $ressource->id) }}
                                 @endforeach
-                            </div>
+                            @endif
 
 
                         </div>
@@ -243,7 +255,7 @@
     <style type="text/css">
         @foreach(Ressource::whereIsBookable(true)->get() as $ressource)
 
-.fc-event.booking-ofuscated-{{$ressource->id}}                          {
+.fc-event.booking-ofuscated-{{$ressource->id}}                            {
             background: repeating-linear-gradient(
             135deg,
                     {{ adjustBrightness($ressource->booking_background_color, -32)}},
@@ -698,10 +710,10 @@
             $.fn.modal.Constructor.prototype.enforceFocus = $.noop;
 
 
-            $('#ressource_filter input[type=checkbox]').on('click', function(){
-                if($(this).is(':checked')){
+            $('#ressource_filter input[type=checkbox]').on('click', function () {
+                if ($(this).is(':checked')) {
                     $('.booking-' + $(this).val()).show();
-                }else{
+                } else {
                     $('.booking-' + $(this).val()).hide();
                 }
             })

@@ -95,15 +95,16 @@ GROUP BY ressources.id
 @if(count($rooms) > 1)
     <div class="ibox">
         <div class="ibox-title">
-            <h5>Besoin d'un espace de réunion?</h5>
+            <h5>Espaces de réunion</h5>
         </div>
         <div class="ibox-content">
             <div class="media-body">
                 <a href="{{ URL::route('booking') }}">
                     <table class="table table-hover no-margins">
-                        @foreach($rooms as $room)
+<?php $is_first = true; ?>
+                        @foreach($rooms as $room_index => $room)
                             <tr>
-                                <td>
+                                <td @if($is_first)  class="no-borders" @endif>
                                     @if($room['current_event'])
                                         <span class="label label-danger">KO</span>
                                     @else
@@ -116,7 +117,7 @@ GROUP BY ressources.id
                                         @endif
                                     @endif
                                 </td>
-                                <td>
+                                <td @if($is_first) class="no-borders" @endif>
                                 <span style="color: #676a6c">{{ $room['name'] }}
                                     <br/>
                                     @if($room['current_event'])
@@ -143,6 +144,7 @@ GROUP BY ressources.id
                                 </span>
                                 </td>
                             </tr>
+                                            <?php $is_first = false; ?>
                         @endforeach
                     </table>
                 </a>
