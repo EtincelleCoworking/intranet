@@ -264,7 +264,8 @@ class UserController extends BaseController
 
         $cell2 = $table->addCell(\PhpOffice\PhpWord\Shared\Converter::cmToTwip(5));
         $image_url = $user->largeAvatarUrl;
-        if (false === strpos($image_url, 'http')) {
+        $image_url = preg_replace('!^(.+)\?.+$!', '$1', $image_url);
+	if (false === strpos($image_url, 'http')) {
             $image_url = public_path() . $image_url;
         }
         $cell2->addImage($image_url, array('width' => \PhpOffice\PhpWord\Shared\Converter::cmToPixel(5)));
