@@ -10,6 +10,9 @@ class UserController extends BaseController
      */
     public function login()
     {
+        if(Auth::id()){
+            return Redirect::route('dashboard');
+        }
         return View::make('user.login');
     }
 

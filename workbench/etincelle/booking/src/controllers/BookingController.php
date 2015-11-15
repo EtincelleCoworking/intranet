@@ -123,6 +123,7 @@ class BookingController extends Controller
         foreach ($bookings as $booking) {
             //var_dump($booking->items()->count());
             foreach ($booking->items()->get() as $booking_item) {
+                /** @var BookingItem $booking_item */
                 $result[] = $booking_item->toJsonEvent();
 
             }

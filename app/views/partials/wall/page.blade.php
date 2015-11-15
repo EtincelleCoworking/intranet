@@ -91,5 +91,6 @@ $messages = $messages->get();
 
     @endforeach
 
-    <a href="{{route('wall_page', array('page_index' => $page_index+1))}}" class="infinite-more-link hide">Voir la suite</a>
+    <a href="{{route('wall_page', array('page_index' => $page_index+1))}}" class="infinite-more-link hide">Voir la
+        suite</a>
 @endif

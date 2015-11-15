@@ -1,0 +1,3 @@
+<?php
+
+Event::subscribe('UserEventHandler');

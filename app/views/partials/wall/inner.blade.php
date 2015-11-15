@@ -57,11 +57,34 @@
         });
     }
 
+    function hideOldWallItems(){
+        // dismiss all old items
+        $('.social-avatar').each(function () {
+            if ($(this).find('small').attr('data-from-now') < Etincelle.User.last_login) {
+                $(this).addClass('text-muted');
+                $(this).next().addClass('text-muted');
+            }
+        });
+
+        $('.social-footer > .tree-level-1').each(function () {
+            if ($(this).find('small').attr('data-from-now') < Etincelle.User.last_login) {
+                $(this).addClass('text-muted');
+            }
+        });
+    }
+
     docReady(function () {
 
         var infinite = new Waypoint.Infinite({
-            element: $('.infinite-container')[0]
-        })
+            element: $('.infinite-container')[0],
+            onAfterPageLoad: function ($items){
+                hideOldWallItems();
+            }
+        });
+
+        hideOldWallItems();
+
+
 
 //        $('.summernote').summernote({focus: true});
 //        $('#post_message_summernote').code($('input[name=message]').val());

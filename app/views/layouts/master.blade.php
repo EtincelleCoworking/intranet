@@ -66,7 +66,8 @@
             User: {
                 fullname: '{{Auth::user()->fullname}}',
                 avatarTag: '{{Auth::user()->avatarTag}}',
-                profileUrl: '{{URL::route('user_profile', Auth::id())}}'
+                profileUrl: '{{URL::route('user_profile', Auth::id())}}',
+                last_login: '{{ (new DateTime(Auth::user()->last_login_at))->format('c') }}'
             }
         };
         @else
@@ -74,7 +75,8 @@
             User: {
                 fullname: 'Anonyme',
                 avatarTag: '',
-                profileUrl: '#'
+                profileUrl: '#',
+                last_login: 0
             }
         };
         @endif
