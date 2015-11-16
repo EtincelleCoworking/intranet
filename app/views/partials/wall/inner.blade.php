@@ -59,18 +59,18 @@
 
     function hideOldWallItems(){
         // dismiss all old items
-        $('.social-avatar').each(function () {
-            if ($(this).find('small').attr('data-from-now') < Etincelle.User.last_login) {
-                $(this).addClass('text-muted');
-                $(this).next().addClass('text-muted');
-            }
-        });
-
-        $('.social-footer > .tree-level-1').each(function () {
-            if ($(this).find('small').attr('data-from-now') < Etincelle.User.last_login) {
-                $(this).addClass('text-muted');
-            }
-        });
+//        $('.social-avatar').each(function () {
+//            if ($(this).find('small').attr('data-from-now') < Etincelle.User.last_login) {
+//                $(this).addClass('text-muted');
+//                $(this).next().addClass('text-muted');
+//            }
+//        });
+//
+//        $('.social-footer > .tree-level-1').each(function () {
+//            if ($(this).find('small').attr('data-from-now') < Etincelle.User.last_login) {
+//                $(this).addClass('text-muted');
+//            }
+//        });
     }
 
     docReady(function () {
