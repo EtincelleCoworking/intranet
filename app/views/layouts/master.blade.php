@@ -56,6 +56,8 @@
 
     {{ HTML::style('css/select2.min.css') }}
 
+    {{ HTML::style('css/plugins/toastr/toastr.min.css') }}
+
 
     {{ HTML::style('css/etincelle.css') }}
 
@@ -514,6 +516,7 @@
 {{ HTML::script('js/plugins/fullcalendar/moment.min.js') }}
 {{ HTML::script('js/plugins/fullcalendar/moment_fr.js') }}
 {{ HTML::script('js/markdown.min.js') }}
+{{ HTML::script('js/plugins/toastr/toastr.min.js') }}
 
 <script type="text/javascript">
     $.fn.datepicker.dates['fr'] = {

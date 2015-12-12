@@ -198,6 +198,7 @@
 
                 <div class="modal-footer">
                     <a href="#" class="btn btn-danger btn-outline pull-left" id="meeting-delete">Supprimer</a>
+                    <a href="#" class="btn btn-default btn-outline" id="meeting-log-time">Comptabiliser</a>
                     <a href="#" class="btn btn-default btn-outline" id="meeting-modify">Modifier</a>
                     <a href="#" class="btn btn-default btn-outline" id="meeting-duplicate">Dupliquer</a>
 
@@ -294,6 +295,7 @@
         };
         var Etincelle = {
             Event: function () {
+                this.event = null;
                 this.id = null;
                 this.booking_id = null;
                 this.user_id = '{{Auth::id()}}';
@@ -303,11 +305,13 @@
                 this.end = moment().add(7, 'days').add({{ Config::get('booking::default_meeting_duration', 1) }}, 'hours');
                 this.ressource_id = null;
                 this.is_private = true;
+                this.is_accounted = false;
                 this.is_open_to_registration = false;
             }
         };
 
         Etincelle.Event.prototype.populate = function (e) {
+            this.event = e;
             this.id = e.id;
             this.booking_id = e.booking_id;
             this.editable = e.editable;
@@ -319,6 +323,7 @@
             this.end = e.end;
             this.ressource_id = e.ressource_id;
             this.is_private = e.is_private;
+            this.is_accounted = e.is_accounted;
             this.is_open_to_registration = e.is_open_to_registration;
         };
 
@@ -417,8 +422,14 @@
                 $('#meeting-modify').hide();
             }
 
+            @if (Auth::user()->isSuperAdmin())
+                $('#meeting-log-time').show();
+            @else
+                $('#meeting-log-time').hide();
+            @endif
+
             $dialog.modal('show');
-        };
+        }
 
 
         var activeEvent;
@@ -472,6 +483,33 @@
                             },
                             error: function (data) {
                                 // afficher un message générique?
+                                $('#BookingDialog').modal('hide');
+                            }
+                        });
+                        return false;
+                    });
+
+
+            $('#meeting-log-time')
+                    .click(function () {
+                        $.ajax({
+                            dataType: 'json',
+                            url: '{{ URL::route('booking_log_time_ajax', array('booking_item_id' => 999999)) }}'.replace('999999', activeEvent.id),
+                            type: "GET",
+                            success: function (data) {
+                                if (data.status == 'KO') {
+                                    toastr.error(data.message);
+                                } else {
+                                    toastr.success(data.message);
+                                    //activeEvent.is_accounted = true;
+                                    activeEvent.event.is_accounted = true;
+                                    $('#calendar').fullCalendar('updateEvent', activeEvent.event);
+                                    $('#BookingDialog').modal('hide');
+                                }
+                            },
+                            error: function (data) {
+                                // afficher un message générique?
+                                toastr.error('Erreur inconnue');
                                 $('#BookingDialog').modal('hide');
                             }
                         });
@@ -573,7 +611,16 @@
                 },
                 eventRender: function (event, element) {
                     if (event.is_private) {
-                        element.find(".fc-time").before($("<span class=\"fa fa-lock pull-right\"></span>"));
+                        element.find(".fc-time")
+                                .before($("<span class=\"fa fa-lock pull-right\"></span>"))
+                        ;
+                    } else {
+//                        element.find(".fc-time").before($("<span class=\"fa fa-unlock pull-right\"></span>"));
+                    }
+                    if (event.is_accounted) {
+                        element.find(".fc-time")
+                                .before($("<span class=\"fa fa-check-circle pull-right\"></span>"))
+                        ;
                     } else {
 //                        element.find(".fc-time").before($("<span class=\"fa fa-unlock pull-right\"></span>"));
                     }
@@ -716,7 +763,23 @@
                 } else {
                     $('.booking-' + $(this).val()).hide();
                 }
-            })
+            });
+
+            toastr.options = {
+                "closeButton": true,
+                "debug": false,
+                "progressBar": true,
+                "positionClass": "toast-top-right",
+                "onclick": null,
+                "showDuration": "400",
+                "hideDuration": "1000",
+                "timeOut": "7000",
+                "extendedTimeOut": "1000",
+                "showEasing": "swing",
+                "hideEasing": "linear",
+                "showMethod": "fadeIn",
+                "hideMethod": "fadeOut"
+            }
         })
         ;
     </script>

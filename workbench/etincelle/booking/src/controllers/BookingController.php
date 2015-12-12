@@ -44,7 +44,7 @@ class BookingController extends Controller
 //            }
         }
         $start_at = newDateTime(Input::get('date'), Input::get('start'));
-        if(!Auth::user()->isSuperAdmin() && ($start_at->format('Y-m-d H:i:s') < (new \DateTime())->format('Y-m-d H:i:s'))){
+        if (!Auth::user()->isSuperAdmin() && ($start_at->format('Y-m-d H:i:s') < (new \DateTime())->format('Y-m-d H:i:s'))) {
             $messages['start'] = 'Vous ne pouvez pas réserver une salle dans le passé';
         }
         if (count($messages)) {
@@ -234,6 +234,41 @@ class BookingController extends Controller
 
         return Redirect::route('booking_list')->with('mSuccess', 'La réservation a été supprimée');
     }
+
+    public function logTimeAjax($id)
+    {
+        $booking_item = BookingItem::find($id);
+        if (!$booking_item) {
+            return Response::json(array('status' => 'KO',
+                'message' => 'La réservation est inconnue'));
+        }
+
+        $time = new PastTime();
+        $time->user_id = $booking_item->booking->user_id;
+        $time->ressource_id = $booking_item->ressource_id;
+        $time->date_past = date('Y-m-d', strtotime($booking_item->start_at));
+        $time->time_start = $booking_item->start_at;
+        $time->time_end = date('Y-m-d H:i:s', strtotime($booking_item->start_at) + $booking_item->duration * 60);
+
+        $existing = PastTime::query()
+                ->where('user_id', $time->user_id)
+                ->where('ressource_id', $time->ressource_id)
+                ->where('date_past', $time->date_past)
+                ->where('time_start', $time->time_start)
+                ->where('time_end', $time->time_end)
+                ->count() > 0;
+
+        if ($existing) {
+            return Response::json(array('status' => 'KO',
+                'message' => sprintf('Un enregistrement similaire à %s est déjà présent', $booking_item->booking->title)));
+        }
+        $time->save();
+
+        return Response::json(array('status' => 'OK',
+            'message' => sprintf('La réunion %s a été comptabilisée', $booking_item->booking->title),
+            'event' => $booking_item->toJsonEvent()));
+    }
+
 
     public function raw()
     {
