@@ -12,7 +12,8 @@
         <div class="col-sm-8">
             <div class="title-action">
                 @if(Auth::user()->isSuperAdmin())
-                <a href="{{ URL::route('pasttime_link_invoices') }}" class="btn btn-default">Associer aux factures</a>
+                    <a href="{{ URL::route('pasttime_link_invoices') }}" class="btn btn-default">Associer aux
+                        factures</a>
                 @endif
                 <a href="{{ URL::route('pasttime_add') }}" class="btn btn-primary">Ajouter</a>
             </div>
@@ -116,7 +117,7 @@
     @if(count($times)==0)
         <p>Aucune donnée.</p>
     @else
-
+        {{ Form::open(array('route' => array('pasttime_invoice'))) }}
 
 
         <div class="row">
@@ -129,6 +130,9 @@
                             <table class="table table-striped">
                                 <thead>
                                 <tr>
+                                    @if (Auth::user()->isSuperAdmin())
+                                        <th>{{ Form::checkbox('checkall', false, false, array('id' => 'checkall')) }}</th>
+                                    @endif
                                     <th>Date</th>
                                     @if (Auth::user()->isSuperAdmin())
                                         <th>Utilisateur</th>
@@ -144,6 +148,10 @@
                                 <tbody>
                                 @foreach ($times as $time)
                                     <tr @if ((Auth::user()->isSuperAdmin()) and ($time->invoice_id or $time->is_free)) class="text-muted" @endif >
+                                        @if (Auth::user()->isSuperAdmin())
+                                            <th>{{ Form::checkbox('items[]', $time->id, false, array('class' => 'check')) }}</th>
+                                        @endif
+
                                         <td>{{ date('d/m/Y', strtotime($time->date_past)) }}</td>
                                         @if (Auth::user()->isSuperAdmin())
                                             <td>
@@ -189,11 +197,16 @@
                                 </tbody>
                             </table>
                             {{ $times->links() }}
+                            @if (Auth::user()->isSuperAdmin())
+                                <input type="submit" class="btn btn-default pull-right" value="Facturer"/>
+                            @endif
                         </div>
                     </div>
                 </div>
             </div>
         </div>
+
+        {{ Form::close() }}
     @endif
 @stop
 
@@ -202,6 +215,13 @@
         $().ready(function () {
             $('.datePicker').datepicker();
             $('#filter-client').select2();
+
+            $('#checkall').click(function () {
+                $('input.check').prop('checked', $(this).prop('checked'));
+            });
+
+
+
         });
     </script>
 @stop

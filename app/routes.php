@@ -125,6 +125,7 @@ Route::group(['before' => 'superadmin'], function() {
 
     Route::get('/pasttime/delete/{id}', array('as' => 'pasttime_delete', 'uses' => 'PastTimeController@delete'))->where(array('id' => '[0-9]+'));
     Route::get('/pasttime/link-invoices', array('as' => 'pasttime_link_invoices', 'uses' => 'PastTimeController@linkInvoices'));
+    Route::post('/pasttime/invoice', array('as' => 'pasttime_invoice', 'uses' => 'PastTimeController@invoice'));
 
 
     Route::get('/subscriptions', array('as' => 'subscription_list', 'uses' => 'SubscriptionController@liste'));

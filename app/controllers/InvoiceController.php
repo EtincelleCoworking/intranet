@@ -533,4 +533,5 @@ class InvoiceController extends BaseController
             // The card has been declined
         }
     }
+
 }

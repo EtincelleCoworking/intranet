@@ -217,4 +217,74 @@ class PastTimeController extends BaseController
 
         return Redirect::route('pasttime_list')->with('mSuccess', 'Les temps saisis ayant des abonnements actifs ont étés associés ensembles.');
     }
+
+    public function invoice()
+    {
+        $items = PastTime::query()
+            ->whereIn('id', Input::get('items'))
+            ->where('invoice_id', 0)
+            ->orderBy('ressource_id', 'ASC')
+            ->orderBy('time_start', 'ASC')
+            ->get();
+
+        $lines = array();
+        $ressources = array();
+        $users = array();
+        $user = null;
+        foreach ($items as $item) {
+            $ressources[$item->ressource_id] = $item->ressource()->getResults();
+            $lines[$item->ressource_id][] = $item;
+            $users[$item->user_id] = true;
+            if (null == $user) {
+                /** @var User $user */
+                $user = $item->user()->getResults();
+            }
+        }
+
+        if (count($users) > 1) {
+            return Redirect::route('pasttime_list')->with('mError', 'Impossible de générer la facture pour plusieurs utilisateurs à la fois');
+        }
+
+        if (count($users) == 0) {
+            return Redirect::route('pasttime_list');
+        }
+
+        $organisation = $user->organisations->first();
+
+        $invoice = new Invoice();
+        $invoice->user_id = $user->id;
+        $invoice->created_at = new \DateTime();
+        $invoice->organisation_id = $organisation->id;
+        $invoice->type = 'F';
+        $invoice->days = date('Ym');
+        $invoice->number = $invoice->next_invoice_number($invoice->type, $invoice->days);
+        $invoice->address = $organisation->fulladdress;
+        $invoice->date_invoice = new \DateTime();
+        $invoice->deadline = new \DateTime(date('Y-m-d', strtotime('+1 month')));
+        $invoice->save();
+        $vat = VatType::where('value', 20)->first();
+
+        $orderIndex = 0;
+        foreach ($lines as $ressource_id => $line) {
+            $ressource = $ressources[$ressource_id];
+            $invoice_line = new InvoiceItem();
+            $invoice_line->invoice_id = $invoice->id;
+            $invoice_line->text = $ressource->name;
+            $invoice_line->amount = 0;
+            $invoice_line->order_index = $orderIndex++;
+            foreach ($line as $item) {
+                $invoice_line->text .= sprintf("\n - %s de %s à %s", date('d/m/Y', strtotime($item->time_start)), date('H:i', strtotime($item->time_start)), date('H:i', strtotime($item->time_end)));
+                $invoice_line->amount += min(7, (strtotime($item->time_end) - strtotime($item->time_start)) / 3600) * $ressource->amount;
+
+                $item->invoice_id = $invoice->id;
+                $item->save();
+            }
+            $invoice_line->vat_types_id = $vat->id;
+            $invoice_line->ressource_id = $item->ressource_id;
+            $invoice_line->save();
+
+        }
+
+        return Redirect::route('invoice_modify', $invoice->id)->with('mSuccess', 'La facture a bien été générée');
+    }
 }
