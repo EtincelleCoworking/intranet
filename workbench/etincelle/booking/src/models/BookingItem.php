@@ -92,7 +92,7 @@ class BookingItem extends Illuminate\Database\Eloquent\Model
             $time->ressource_id = $this->ressource_id;
             $time->date_past = $this->start_at;
             $time->time_start = $this->start_at;
-            $time->time_end = $this->start_at;
+            $time->time_end = clone $this->start_at;
 		$time->time_end->add(new DateInterval('PT' . $this->duration . 'M'));
 
             $is_accounted = PastTime::query()
