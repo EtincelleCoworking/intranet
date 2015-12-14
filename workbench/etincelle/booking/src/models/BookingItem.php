@@ -90,9 +90,10 @@ class BookingItem extends Illuminate\Database\Eloquent\Model
             $time = new PastTime();
             $time->user_id = $this->booking->user_id;
             $time->ressource_id = $this->ressource_id;
-            $time->date_past = date('Y-m-d', strtotime($this->start_at));
+            $time->date_past = $this->start_at;
             $time->time_start = $this->start_at;
-            $time->time_end = date('Y-m-d H:i:s', strtotime($this->start_at) + $this->duration * 60);
+            $time->time_end = $this->start_at;
+		$time->time_end->add(new DateInterval('PT' . $this->duration . 'M'));
 
             $is_accounted = PastTime::query()
                     ->where('user_id', $time->user_id)
