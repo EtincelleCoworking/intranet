@@ -9,8 +9,8 @@ class UserEventHandler
      */
     public function onUserLogin($user)
     {
-        $user->last_login_at = new DateTime();
-        $user->save();
+//        $user->last_login_at = new DateTime();
+//        $user->save();
     }
 
     /**
