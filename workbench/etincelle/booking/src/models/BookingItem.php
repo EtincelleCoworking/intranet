@@ -86,14 +86,13 @@ class BookingItem extends Illuminate\Database\Eloquent\Model
             $className .= ' booking-completed';
         }
 
-        if($user->isSuperAdmin()){
+        if ($user->isSuperAdmin()) {
             $time = new PastTime();
             $time->user_id = $this->booking->user_id;
             $time->ressource_id = $this->ressource_id;
             $time->date_past = $this->start_at;
             $time->time_start = $this->start_at;
-            $time->time_end = clone $this->start_at;
-		$time->time_end->add(new DateInterval('PT' . $this->duration . 'M'));
+            $time->time_end = strtotime(sprintf('+ %d minutes', $this->duration), is_object($this->start_at) ? $this->start_at->getTimestamp() : strtotime($this->start_at));
 
             $is_accounted = PastTime::query()
                     ->where('user_id', $time->user_id)
@@ -102,7 +101,7 @@ class BookingItem extends Illuminate\Database\Eloquent\Model
                     ->where('time_start', $time->time_start)
                     ->where('time_end', $time->time_end)
                     ->count() > 0;
-        }else{
+        } else {
             $is_accounted = false;
         }
 

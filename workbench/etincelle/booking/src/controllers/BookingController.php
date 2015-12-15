@@ -108,7 +108,11 @@ class BookingController extends Controller
         foreach ($booking_items as $booking_item) {
             $booking_item->delete();
         }
-        $this->sendNewBookingNotification($booking, $is_new);
+        try {
+            $this->sendNewBookingNotification($booking, $is_new);
+        } catch (\Exception $e) {
+
+        }
         return Response::json(array('status' => 'OK', 'events' => $result));
     }
 
@@ -177,7 +181,11 @@ class BookingController extends Controller
             BookingItem::destroy($booking_item_id);
         }
 
-        $this->sendDeletedBookingNotification($booking_item, $ressource, $booking, $user);
+        try {
+            $this->sendDeletedBookingNotification($booking_item, $ressource, $booking, $user);
+        } catch (\Exception $e) {
+
+        }
 
         if (Request::ajax()) {
             return Response::json(array('status' => 'OK', 'id' => $booking_item_id));
@@ -204,8 +212,11 @@ class BookingController extends Controller
             'start_at' => $booking_item->start_at,
             'duration' => $booking_item->duration
         );
+        try {
+            $this->sendUpdatedBookingNotification($booking_item, $old, $new);
+        } catch (\Exception $e) {
 
-        $this->sendUpdatedBookingNotification($booking_item, $old, $new);
+        }
 
         return Response::json(array('status' => 'OK',
             'id' => $booking_item_id,
