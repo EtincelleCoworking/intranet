@@ -63,24 +63,24 @@
 
     @yield('stylesheets')
     <script type="text/javascript">
-        @if(Auth::check())
+                @if(Auth::check())
         var Etincelle = {
-            User: {
-                fullname: '{{Auth::user()->fullname}}',
-                avatarTag: '{{Auth::user()->avatarTag}}',
-                profileUrl: '{{URL::route('user_profile', Auth::id())}}',
-                last_login: '{{ (new DateTime(Auth::user()->last_login_at))->format('c') }}'
-            }
-        };
-        @else
+                    User: {
+                        fullname: '{{Auth::user()->fullname| e('js')}}',
+                        avatarTag: '{{Auth::user()->avatarTag}}',
+                        profileUrl: '{{URL::route('user_profile', Auth::id())}}',
+                        last_login: '{{ (new DateTime(Auth::user()->last_login_at))->format('c') }}'
+                    }
+                };
+                @else
         var Etincelle = {
-            User: {
-                fullname: 'Anonyme',
-                avatarTag: '',
-                profileUrl: '#',
-                last_login: 0
-            }
-        };
+                    User: {
+                        fullname: 'Anonyme',
+                        avatarTag: '',
+                        profileUrl: '#',
+                        last_login: 0
+                    }
+                };
         @endif
 
 
