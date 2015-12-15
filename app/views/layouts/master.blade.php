@@ -66,7 +66,7 @@
                 @if(Auth::check())
         var Etincelle = {
                     User: {
-                        fullname: '{{Auth::user()->fullname| e('js')}}',
+                        fullname: '{{str_replace("'", "\\'", Auth::user()->fullname)}}',
                         avatarTag: '{{Auth::user()->avatarTag}}',
                         profileUrl: '{{URL::route('user_profile', Auth::id())}}',
                         last_login: '{{ (new DateTime(Auth::user()->last_login_at))->format('c') }}'
