@@ -5,6 +5,9 @@
  */
 class PastTimeController extends BaseController
 {
+    const COWORKING_HALF_DAY_PRICING = 10;
+    const COWORKING_HALF_DAY_MAX_DURATION = 5;
+
     /**
      * Verify if exist
      */
@@ -269,15 +272,31 @@ class PastTimeController extends BaseController
             $ressource = $ressources[$ressource_id];
             $invoice_line = new InvoiceItem();
             $invoice_line->invoice_id = $invoice->id;
-            $invoice_line->text = $ressource->name;
             $invoice_line->amount = 0;
             $invoice_line->order_index = $orderIndex++;
-            foreach ($line as $item) {
-                $invoice_line->text .= sprintf("\n - %s de %s à %s", date('d/m/Y', strtotime($item->time_start)), date('H:i', strtotime($item->time_start)), date('H:i', strtotime($item->time_end)));
-                $invoice_line->amount += min(7, (strtotime($item->time_end) - strtotime($item->time_start)) / 3600) * $ressource->amount;
+            if ($ressource_id == Ressource::TYPE_COWORKING) {
+                $invoice_line->text = 'Coworking';
+                $sum_duration = 0;
+                foreach ($line as $item) {
+                    $duration = ceil(((strtotime($item->time_end) - strtotime($item->time_start)) / 3600)  / self::COWORKING_HALF_DAY_MAX_DURATION);
+                    $sum_duration += $duration;
+                    $invoice_line->text .= sprintf("\n - %s de %s à %s (%s demi journée%s)", date('d/m/Y', strtotime($item->time_start)),
+                        date('H:i', strtotime($item->time_start)), date('H:i', strtotime($item->time_end)), $duration, ($duration > 1)?'s':'');
+                    $invoice_line->amount += $duration * (self::COWORKING_HALF_DAY_PRICING / 1.2);
 
-                $item->invoice_id = $invoice->id;
-                $item->save();
+                    $item->invoice_id = $invoice->id;
+                    $item->save();
+                }
+                $invoice_line->text .= sprintf("\nTotal : %s demi journée%s", $sum_duration, ($sum_duration > 1)?'s':'');
+            } else {
+                $invoice_line->text = sprintf('Location d\'espace de réunion - %s', $ressource->name);
+                foreach ($line as $item) {
+                    $invoice_line->text .= sprintf("\n - %s de %s à %s", date('d/m/Y', strtotime($item->time_start)), date('H:i', strtotime($item->time_start)), date('H:i', strtotime($item->time_end)));
+                    $invoice_line->amount += min(7, (strtotime($item->time_end) - strtotime($item->time_start)) / 3600) * $ressource->amount;
+
+                    $item->invoice_id = $invoice->id;
+                    $item->save();
+                }
             }
             $invoice_line->vat_types_id = $vat->id;
             $invoice_line->ressource_id = $item->ressource_id;
