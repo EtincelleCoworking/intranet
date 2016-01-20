@@ -139,10 +139,12 @@
                                         <td>
                                             @if (!$invoice->sent_at)
                                                 @if (Auth::user()->isSuperAdmin())
+                                                    @if (!$invoice->date_payment)
                                                     <a href="{{ URL::route('invoice_send', $invoice->id) }}"
                                                        class="btn btn-xs btn-default btn-outline">
                                                         Envoyer
                                                     </a>
+                                                @endif
                                                 @endif
                                             @else
                                                 {{ date('d/m/y', strtotime($invoice->sent_at)) }}
