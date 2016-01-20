@@ -82,8 +82,8 @@
                                     <th>Créée le</th>
                                     <th>Client</th>
                                     <th>Echéance</th>
-                                    <th>Montant HT</th>
-                                    <th>Montant TTC</th>
+                                    <th>Envoyée le</th>
+                                    <th>Montant</th>
                                     <th>Actions</th>
                                 </tr>
                                 </thead>
@@ -95,7 +95,7 @@
                                             @endif
                                             >
                                         <td>{{ $invoice->ident }}</td>
-                                        <td>{{ date('d/m/Y', strtotime($invoice->date_invoice)) }}</td>
+                                        <td>{{ date('d/m/y', strtotime($invoice->date_invoice)) }}</td>
                                         <td>
                                             @if ($invoice->organisation)
                                                 @if (Auth::user()->isSuperAdmin())
@@ -120,26 +120,43 @@
                                                 @else
                                                     @if ($invoice->daysDeadline > 7)
                                                         <span class="badge badge-success">
-                                    {{ date('d/m/Y', strtotime($invoice->deadline)) }}
+                                    {{ date('d/m', strtotime($invoice->deadline)) }}
                                 </span>
                                                     @elseif ($invoice->daysDeadline <= 7 && $invoice->daysDeadline != -1)
                                                         <span class="badge badge-warning">
-                                    {{ date('d/m/Y', strtotime($invoice->deadline)) }}
+                                    {{ date('d/m', strtotime($invoice->deadline)) }}
                                 </span>
                                                     @else
                                                         <span class="badge badge-danger">
-                                   {{ date('d/m/Y', strtotime($invoice->deadline)) }}
+                                   {{ date('d/m', strtotime($invoice->deadline)) }}
                                 </span>
                                                     @endif
                                                 @endif
                                             @else
-                                                Payée le {{ date('d/m/Y', strtotime($invoice->date_payment)) }}
+                                                Payée le {{ date('d/m/y', strtotime($invoice->date_payment)) }}
                                             @endif
                                         </td>
-                                        <td style="text-align:right">
-                                            {{ Invoice::TotalInvoice($invoice->items) }}€
+                                        <td>
+                                            @if (!$invoice->sent_at)
+                                                @if (Auth::user()->isSuperAdmin())
+                                                    <a href="{{ URL::route('invoice_send', $invoice->id) }}"
+                                                       class="btn btn-xs btn-default btn-outline">
+                                                        Envoyer
+                                                    </a>
+                                                @endif
+                                            @else
+                                                {{ date('d/m/y', strtotime($invoice->sent_at)) }}
+
+                                                @if($invoice->reminder3_at)
+                                                    <span class="badge badge-danger">3</span>
+                                                @elseif($invoice->reminder2_at)
+                                                    <span class="badge badge-danger">2</span>
+                                                @elseif($invoice->reminder1_at)
+                                                    <span class="badge badge-warning">1</span>
+                                                    @endif
+                                            @endif
                                         </td>
-                                        <td style="text-align:right">
+                                        <td style="text-align:right" title=" {{ Invoice::TotalInvoice($invoice->items) }}€ HT">
                                             {{ Invoice::TotalInvoiceWithTaxes($invoice->items) }}€
                                         </td>
                                         <td>
