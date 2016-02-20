@@ -99,7 +99,11 @@ class AccountingExportCommand extends Command
                                             $row[] = 'Coworking - Forfait 80h';
                                             break;
                                         default:
-                                            if ($item->amount == 75) {
+                                            if (in_array($item->amount, array(220, 165, 200, 250))) {
+                                                $row[] = 'Coworking - Illimité';
+                                            } elseif ($item->amount == 300) {
+                                                $row[] = 'Coworking - Poste fixe';
+                                            } elseif ($item->amount == 75) {
                                                 $row[] = 'Coworking - 10 demi journées';
                                             } else {
                                                 $row[] = 'Coworking - Détail';
