@@ -3,7 +3,8 @@
     $sales = DB::table('invoices_items')->join('invoices', function ($join) {
         $join->on('invoices_items.invoice_id', '=', 'invoices.id')
                 ->where('invoices.type', '=', 'F')
-                ->where('invoices.on_hold', '=', false);
+                ->where('invoices.on_hold', '=', false)
+                ->where('invoices.date_invoice', '>', Config::get('etincelle.activity_started'));
     })->select(DB::raw('SUM(amount) as total'))->first();
 
     ?>
