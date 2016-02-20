@@ -6,6 +6,7 @@
 class Ressource extends Eloquent
 {
     const TYPE_COWORKING = 1;
+    const TYPE_EXCEPTIONNAL = 12;
     /**
      * The database table used by the model.
      *

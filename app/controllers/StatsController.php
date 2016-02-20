@@ -89,12 +89,13 @@ class StatsController extends BaseController
     public function sales_per_category()
     {
         $colors = array();
-        $colors[] = '#a3e1d4';
-        $colors[] = '#dedede';
-        $colors[] = '#b5b8cf';
+        $colors[] = '#3f2860';
+        $colors[] = '#90c5a9';
+        $colors[] = '#7a9a95';
+        $colors[] = '#ef6d3b';
 
         $data = array();
-        foreach (InvoiceItem::total()->byKind()->get() as $item) {
+        foreach (InvoiceItem::withoutExceptionnals()->total()->byKind()->get() as $item) {
             $data[$item->kind?$item->kind:self::LABEL_OTHERS] = array('amount' => $item->total, 'color' => array_shift($colors));
         }
 

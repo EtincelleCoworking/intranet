@@ -116,6 +116,11 @@ class InvoiceItem extends Eloquent
 			;
 	}
 
+	public function scopeWithoutExceptionnals($query)
+	{
+		return $query->where('ressource_id', '<>', Ressource::TYPE_EXCEPTIONNAL);
+	}
+
 	public function scopePending($query)
 	{
 		return $query
