@@ -45,6 +45,7 @@ class AccountingExportCommand extends Command
 
                 $sheet->appendRow(array(
                     'No Facture',
+                    'Date Facture',
                     'No Client',
                     'Nom Client',
                     'Site',
@@ -64,6 +65,7 @@ class AccountingExportCommand extends Command
                             $row = array();
 
                             $row[] = $invoice->ident;
+                            $row[] = date('d/m/Y', strtotime($invoice->date_invoice));
                             $row[] = sprintf('%06d', $invoice->organisation_id);
                             if ($name = preg_replace('/\n.+/', '', $invoice->address)) {
                                 $row[] = $name;
