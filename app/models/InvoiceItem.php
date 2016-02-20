@@ -167,6 +167,14 @@ class InvoiceItem extends Eloquent
 	}
 
 	/**
+	 * Relation BelongsTo (Invoices_Items belongs to Ressource)
+	 */
+	public function ressource()
+	{
+		return $this->belongsTo('Ressource', 'ressource_id');
+	}
+
+	/**
 	 * Rules Add
 	 */
 	public static $rulesAdd = array(

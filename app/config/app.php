@@ -127,6 +127,7 @@ return array(
 		'Bkwld\Croppa\ServiceProvider',
 
 		'Etincelle\Booking\BookingServiceProvider',
+		'Maatwebsite\Excel\ExcelServiceProvider',
 	),
 
 	/*
@@ -197,6 +198,7 @@ return array(
         'PDF'               => 'Barryvdh\Snappy\Facades\SnappyPdf',
         'Image'             => 'Barryvdh\Snappy\Facades\SnappyImage',
 		'Croppa' => 'Bkwld\Croppa\Facade',
+		'Excel' => 'Maatwebsite\Excel\Facades\Excel',
 	),
 
 );

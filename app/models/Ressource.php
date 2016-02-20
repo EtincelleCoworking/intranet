@@ -30,6 +30,15 @@ class Ressource extends Eloquent
     }
 
     /**
+     * Relation BelongsTo (Invoices_Items belongs to Ressource)
+     */
+    public function kind()
+    {
+        return $this->belongsTo('RessourceKind', 'ressource_kind_id');
+    }
+
+
+    /**
      * Rules
      */
     public static $rules = array(

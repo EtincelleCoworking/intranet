@@ -11,3 +11,5 @@
 |
 */
 Artisan::add(new ImportUsersFromSkeddaCommand);
+Artisan::add(new WordpressSyncCommand);
+Artisan::add(new AccountingExportCommand);

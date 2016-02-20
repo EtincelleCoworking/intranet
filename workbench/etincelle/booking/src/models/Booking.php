@@ -36,14 +36,27 @@ class Booking extends Illuminate\Database\Eloquent\Model
 
     public function items()
     {
-        return $this->hasMany('BookingItem')
-            //->orderBy('start_at', 'ASC')
+        return $this->hasMany('BookingItem')//->orderBy('start_at', 'ASC')
             ;
     }
 
     public function scopeAll($query)
     {
         return $query;
+    }
+
+    public function scopeFuture($query)
+    {
+        return $query
+            ->join('booking_item', function ($j) {
+                $j->on('booking_id', '=', 'booking.id');
+            })
+            ->where('booking_item.start_at', '>=', date('Y-m-d'))
+            ->where('booking.is_private', '=', false)
+            ->select('booking.*')
+            ->orderBy('booking_item.start_at', 'ASC')
+            ->distinct()
+            ->get();
     }
 
     static public function selectableHours()
@@ -58,5 +71,11 @@ class Booking extends Illuminate\Database\Eloquent\Model
             }
         }
         return $result;
+    }
+
+    public function __construct(array $attributes = array())
+    {
+        $this->is_private = Config::get('booking::default_is_private', true);
+        parent::__construct($attributes);
     }
 }
