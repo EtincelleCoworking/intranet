@@ -4,7 +4,7 @@
         $join->on('invoices_items.invoice_id', '=', 'invoices.id')
                 ->where('invoices.type', '=', 'F')
                 ->where('invoices.on_hold', '=', false)
-                ->where('invoices.date_invoice', '>', Config::get('etincelle.activity_started'));
+                ->where('invoices.date_invoice', '>=', date('Y-m-d', Config::get('etincelle.activity_started')));
     })->select(DB::raw('SUM(amount) as total'))->first();
 
     ?>
