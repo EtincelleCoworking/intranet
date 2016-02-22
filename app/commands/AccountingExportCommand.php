@@ -148,7 +148,7 @@ class AccountingExportCommand extends Command
                     'Total virement',
                 ));
 
-                Stripe::setApiKey("sk_live_qGpkjeWcrIHjCafX0VYzVqca");
+                Stripe::setApiKey($_ENV['stripe_sk']);
                 do {
                     $params = array('limit' => 100);
                     $params['created']['gt'] = mktime(0, 0, 0, 1, 1, 2015);
@@ -158,16 +158,13 @@ class AccountingExportCommand extends Command
                     $Transfers = Transfer::all($params);
                     foreach ($Transfers->data as $Transfer) {
                         $items = BalanceTransaction::all(array('limit' => 100, 'transfer' => $Transfer->id, 'type' => 'charge'));
-                        //print_r($items);exit;
                         foreach ($items->data as $item) {
                             $this->output->write('.');
-                            //print_r($item);exit;
                             $row = array();
                             $row[] = $Transfer->id;
                             $row[] = date('d/m/Y', $item->available_on);
                             $row[] = $item->description;
                             $row[] = $item->amount / 100;
-                            //print_r($reversal);
                             $row[] = $item->fee / 100;
                             $row[] = $item->net / 100;
                             $sheet->appendRow($row);
