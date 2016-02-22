@@ -1,6 +1,9 @@
 <?php
 
 use Illuminate\Console\Command;
+use Stripe\BalanceTransaction;
+use Stripe\Stripe;
+use Stripe\Transfer;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Input\InputArgument;
 
@@ -39,7 +42,7 @@ class AccountingExportCommand extends Command
     public function fire()
     {
         $export_infos = Excel::create($this->argument('filename') . '-' . date('Y-m-d'), function ($excel) {
-            $excel->sheet('Etincelle Coworking', function ($sheet) {
+            $excel->sheet('Ventes', function ($sheet) {
                 $sheet->freezeFirstRow();
                 $sheet->setAutoSize(true);
 
@@ -129,6 +132,50 @@ class AccountingExportCommand extends Command
                     }
                 }
 
+
+            });
+            $excel->sheet('Stripe', function ($sheet) {
+                $sheet->freezeFirstRow();
+                $sheet->setAutoSize(true);
+
+                $sheet->appendRow(array(
+                    'Transaction',
+                    'Date',
+                    'Facture',
+                    'Montant',
+                    'Commission',
+                    'Solde',
+                    'Total virement',
+                ));
+
+                Stripe::setApiKey("sk_live_qGpkjeWcrIHjCafX0VYzVqca");
+                do {
+                    $params = array('limit' => 100);
+                    $params['created']['gt'] = mktime(0, 0, 0, 1, 1, 2015);
+                    if (isset($item)) {
+                        $params['starting_after'] = $item->id;
+                    }
+                    $Transfers = Transfer::all($params);
+                    foreach ($Transfers->data as $Transfer) {
+                        $items = BalanceTransaction::all(array('limit' => 100, 'transfer' => $Transfer->id, 'type' => 'charge'));
+                        //print_r($items);exit;
+                        foreach ($items->data as $item) {
+                            $this->output->write('.');
+                            //print_r($item);exit;
+                            $row = array();
+                            $row[] = $Transfer->id;
+                            $row[] = date('d/m/Y', $item->available_on);
+                            $row[] = $item->description;
+                            $row[] = $item->amount / 100;
+                            //print_r($reversal);
+                            $row[] = $item->fee / 100;
+                            $row[] = $item->net / 100;
+                            $sheet->appendRow($row);
+                        }
+                        $sheet->appendRow(array('', '', '', '', '', '', $Transfer->amount / 100));
+                        $this->output->writeln('');
+                    }
+                } while ($Transfers->has_more);
 
             });
         })->store('xls', false, true);
