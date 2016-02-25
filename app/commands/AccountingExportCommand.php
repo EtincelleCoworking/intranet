@@ -41,6 +41,93 @@ class AccountingExportCommand extends Command
      */
     public function fire()
     {
+        $export_infos = Excel::create($this->argument('filename') . '-sales-' . date('Y-m-d'), function ($excel) {
+            $excel->sheet('Ventes', function ($sheet) {
+
+//                $sheet->appendRow(array(
+//                    'Client',
+//                    'Date Facture',
+//                    'Code Comptable',
+//                    'Client',
+//                    'Facture',
+//                    'Description',
+//                    '',
+//                    '',
+//                ));
+//
+                foreach (Invoice::InvoiceOnly()->orderBy('days', 'asc')->orderBy('number', 'asc')->get() as $invoice) {
+
+                    foreach ($invoice->items as $item) {
+                        if ($item->amount <> 0) {
+                            //region libellé
+                            $row2 = array();
+                            if ($invoice->organisation) {
+                                $row2[] = trim($invoice->organisation->name);
+                            } else {
+                                $row2[] = trim(preg_replace('/\n.*/', '', $invoice->address));
+                            }
+//                            $row2[] = 'Wilson';
+                            try {
+                                $row2[] = $item->ressource->kind->name;
+                            } catch (\Exception $e) {
+                                try {
+                                    $row2[] = $item->ressource->name;
+                                } catch (\Exception $e) {
+                                    $row2[] = '';
+                                }
+                            }
+//                            $row2[] = trim(preg_replace('/\n/', ' ', $item->text));
+                            $row2 = preg_replace('/\n/', '', implode(' // ', $row2));
+                            //endregion
+
+                            //region Line 1: Client
+                            $row = array();
+                            $row[] = 'VTE';
+                            $row[] = date('d/m/Y', strtotime($invoice->date_invoice));
+                            $row[] = '411000';
+                            $row[] = sprintf('9%06d', $invoice->organisation_id);
+                            $row[] = $invoice->ident;
+                            $row[] = $row2;
+                            $row[] = sprintf('%0.2f', $item->amount * (1 + ($item->vat->value) / 100));
+                            $row[] = '';
+                            $sheet->appendRow($row);
+                            //endregion
+                            //region Line 2: TVA
+                            if ($item->vat->value) {
+                                $row = array();
+                                $row[] = 'VTE';
+                                $row[] = date('d/m/Y', strtotime($invoice->date_invoice));
+                                $row[] = '445710';
+                                $row[] = '';
+                                $row[] = $invoice->ident;
+                                $row[] = $row2;
+                                $row[] = '';
+                                $row[] = sprintf('%0.2f', $item->amount * ($item->vat->value) / 100);
+                                $sheet->appendRow($row);
+                            }
+                            //endregion
+                            //region Line 3: Produit
+                            $row = array();
+                            $row[] = 'VTE';
+                            $row[] = date('d/m/Y', strtotime($invoice->date_invoice));
+                            $row[] = $this->getAccountingCode($item);
+                            $row[] = '';
+                            $row[] = $invoice->ident;
+                            $row[] = $row2;
+                            $row[] = '';
+                            $row[] = sprintf('%0.2f', $item->amount);
+                            $sheet->appendRow($row);
+                            //endregion
+                        }
+                    }
+                }
+
+
+            });
+
+        })->store('csv', false, true);
+        $this->output->writeln(sprintf('Le fichier %s a été créé', $export_infos['full']));
+
         $export_infos = Excel::create($this->argument('filename') . '-' . date('Y-m-d'), function ($excel) {
             $excel->sheet('Ventes', function ($sheet) {
                 $sheet->freezeFirstRow();
@@ -204,6 +291,90 @@ class AccountingExportCommand extends Command
             array('from', null, InputOption::VALUE_OPTIONAL, 'Date de début de l\'export comptable.', null),
             array('to', null, InputOption::VALUE_OPTIONAL, 'Date de fin de l\'export comptable.', null),
         );
+    }
+
+    private function getAccountingCode($item)
+    {
+        if ($item->ressource_id == Ressource::TYPE_COWORKING) {
+            switch ($item->subscription_hours_quota) {
+                case -1:
+                    if (in_array($item->amount, array(220, 165, 200, 250))) {
+                        return '706150';
+                        //$row[] = 'Coworking - Illimité';
+                    } elseif ($item->amount == 300) {
+                        return '706160';
+                        //$row[] = 'Coworking - Poste fixe';
+                    } else {
+                        return '706150';
+                        //$row[] = sprintf('Coworking - illimité (%0.2f€)', $item->amount);
+                    }
+                    break;
+                case 40:
+                    return '706130';
+                    //$row[] = 'Coworking - Forfait 40h';
+                    break;
+                case 80:
+                    return '706140';
+                    //$row[] = 'Coworking - Forfait 80h';
+                    break;
+                default:
+                    if (in_array($item->amount, array(220, 165, 200, 250))) {
+                        return '706150';
+                        //$row[] = 'Coworking - Illimité';
+                    } elseif ($item->amount == 300) {
+                        return '706160';
+                        //$row[] = 'Coworking - Poste fixe';
+                    } elseif ($item->amount == 75) {
+                        return '706110';
+                        //$row[] = 'Coworking - 10 demi journées';
+                    } else {
+                        return '706120';
+                        //$row[] = 'Coworking - Détail';
+                    }
+            }
+        } else {
+            switch ($item->ressource_id) {
+                case 4: // Salle conférence
+                    return '708130';
+                // 708230 Carmes
+                // 708330 Montauban
+                case 3: // Salle de réunion 10-12
+                    return '708140';
+                // 708240 Carmes
+                // 708340 Montauban
+                case 8: // Salon
+                    return '708160';
+                // 708260 Carmes
+                // 708360 Montauban
+                case 2: // Salle de réunion 4-6
+                    return '708150';
+                // 708250 Carmes
+                // 708350 Montauban
+                case 6: // Traiteur
+                    return '707110';
+                // 707120 Carmes
+                // 707130 Montauban
+
+                case 9: // Domiciliation
+                    return '708110';
+                // 708210 Carmes
+                // 708310 Montauban
+                case 7: // Formation
+                    return '708120';
+                // 708220 Carmes
+                // 708320 Montauban
+                case 12: // Ulule & co
+                    return '708810';
+                case 11: // Salle de réunion 6 personnes (Carmes)
+                    return '708250';
+                case 13: // Salle de réunion 6 personnes (Montauban)
+                    return '708350';
+                case 14: // Salle de conférence (Carmes)
+                    return '708230';
+            }
+
+            return $item->ressource->name;
+        }
     }
 
 }
