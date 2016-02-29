@@ -8,7 +8,7 @@
     <table width="100%" cellpadding="0" cellspacing="0">
         <tr>
             <td class="content-block">
-                La réservation suivante viens d'être modifiée
+                La réservation suivante vient d'être modifiée
             </td>
         </tr>
         <tr>

@@ -13,9 +13,9 @@
         <tr>
             <td class="content-block">
                 @if($is_new)
-                    La réservation suivante viens d'être créée
+                    La réservation suivante vient d'être créée
                 @else
-                    La réservation suivante viens d'être modifiée
+                    La réservation suivante vient d'être modifiée
                 @endif
             </td>
         </tr>
