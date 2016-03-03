@@ -85,8 +85,8 @@ class AccountingExportCommand extends Command
                             $row[] = 'VTE';
                             $row[] = date('d/m/Y', strtotime($invoice->date_invoice));
                             $row[] = '411000';
-                            $row[] = sprintf('9%06d', $invoice->organisation_id);
-                            $row[] = $invoice->ident;
+                            $row[] = sprintf('9%05d', $invoice->organisation_id);
+                            $row[] = str_replace('-', '', $invoice->ident);
                             $row[] = $row2;
                             $row[] = sprintf('%0.2f', $item->amount * (1 + ($item->vat->value) / 100));
                             $row[] = '';
