@@ -37,16 +37,17 @@ class InvoiceController extends BaseController
         if (Input::has('filtre_submitted')) {
             if (Input::has('filtre_organisation_id')) {
                 Session::put('filtre_invoice.organisation_id', Input::get('filtre_organisation_id'));
+            } else {
+                Session::forget('filtre_invoice.organisation_id');
             }
             if (Input::has('filtre_user_id')) {
                 Session::put('filtre_invoice.user_id', Input::get('filtre_user_id'));
+            } else {
+                Session::forget('filtre_invoice.user_id');
             }
             if (Input::has('filtre_start')) {
                 $date_start_explode = explode('/', Input::get('filtre_start'));
                 Session::put('filtre_invoice.start', $date_start_explode[2] . '-' . $date_start_explode[1] . '-' . $date_start_explode[0]);
-                if (!Input::has('filtre_user_id')) {
-                    Session::forget('filtre_invoice.user_id');
-                }
             }
             if (Input::has('filtre_end')) {
                 $date_end_explode = explode('/', Input::get('filtre_end'));
@@ -173,9 +174,9 @@ class InvoiceController extends BaseController
             $invoice->on_hold = Input::get('on_hold');
 
             if ($invoice->save()) {
-                $feedback_message ='La facture a bien été modifiée';
-                if(!$invoice->sent_at){
-                    $feedback_message.= sprintf('<p><a href="%s" class="btn btn-success">Envoyer</a></p>', route('invoice_send', array('invoice_id' => $invoice->id)));
+                $feedback_message = 'La facture a bien été modifiée';
+                if (!$invoice->sent_at) {
+                    $feedback_message .= sprintf('<p><a href="%s" class="btn btn-success">Envoyer</a></p>', route('invoice_send', array('invoice_id' => $invoice->id)));
                 }
                 return Redirect::route('invoice_list', $invoice->id)->with('mSuccess', $feedback_message);
             } else {
@@ -347,14 +348,14 @@ class InvoiceController extends BaseController
         }
     }
 
-    public function send($invoice_id){
+    public function send($invoice_id)
+    {
 
         /** @var Invoice $invoice */
         $invoice = $this->dataExist($invoice_id, 'invoice_list');
 
 
-        Mail::send('emails.invoice', array('invoice' => $invoice), function($message) use ($invoice)
-        {
+        Mail::send('emails.invoice', array('invoice' => $invoice), function ($message) use ($invoice) {
             $message->from('sebastien@coworking-toulouse.com', 'Sébastien Hordeaux')
                 ->bcc('sebastien@coworking-toulouse.com', 'Sébastien Hordeaux');
 
