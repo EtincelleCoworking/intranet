@@ -33,25 +33,30 @@
                     {{--</div>--}}
                 </div>
                 <div class="ibox-content">
-                    <div class="row">
 
                         {{ Form::open(array('route' => array('invoice_list'))) }}
                         {{ Form::hidden('filtre_submitted', 1) }}
                         @if (Auth::user()->isSuperAdmin())
-                            <div class="col-md-4">
+                    <div class="row">
+                            <div class="col-md-6">
+                                {{ Form::select('filtre_organisation_id', Organisation::Select('Sélectionnez une société'), Session::get('filtre_invoice.organisation_id') ? Session::get('filtre_invoice.organisation_id') : null, array('id' => 'filter-organisation','class' => 'form-control')) }}
+                            </div>
+                            <div class="col-md-6">
                                 {{ Form::select('filtre_user_id', User::Select('Sélectionnez un client'), Session::get('filtre_invoice.user_id') ? Session::get('filtre_invoice.user_id') : null, array('id' => 'filter-client','class' => 'form-control')) }}
                             </div>
                         @else
                             {{ Form::hidden('filtre_user_id', Auth::user()->id) }}
                         @endif
+                    </div>
+                    <div class="row">
 
-                        <div class="col-md-2 input-group-sm">{{ Form::text('filtre_start', Session::get('filtre_invoice.start') ? date('d/m/Y', strtotime(Session::get('filtre_invoice.start'))) : date('01/12/2014'), array('class' => 'form-control datePicker')) }}</div>
-                        <div class="col-md-2 input-group-sm">{{ Form::text('filtre_end', ((Session::get('filtre_invoice.end')) ? date('d/m/Y', strtotime(Session::get('filtre_invoice.end'))) : date('t', date('m')).'/'.date('m/Y')), array('class' => 'form-control datePicker')) }}</div>
-                        <div class="col-md-2 input-group-sm">
+                        <div class="col-md-3 input-group-sm">{{ Form::text('filtre_start', Session::get('filtre_invoice.start') ? date('d/m/Y', strtotime(Session::get('filtre_invoice.start'))) : date('01/12/2014'), array('class' => 'form-control datePicker')) }}</div>
+                        <div class="col-md-3 input-group-sm">{{ Form::text('filtre_end', ((Session::get('filtre_invoice.end')) ? date('d/m/Y', strtotime(Session::get('filtre_invoice.end'))) : date('t', date('m')).'/'.date('m/Y')), array('class' => 'form-control datePicker')) }}</div>
+                        <div class="col-md-3 input-group-sm">
                             {{ Form::checkbox('filtre_unpaid', true, Session::has('filtre_invoice.filtre_unpaid') ? Session::get('filtre_invoice.filtre_unpaid') : false) }}
                             Impayé
                         </div>
-                        <div class="col-md-2">
+                        <div class="col-md-3">
                             {{ Form::submit('Filtrer', array('class' => 'btn btn-sm btn-primary')) }}
                             <a href="{{URL::route('invoice_filter_reset')}}" class="btn btn-sm btn-default">Réinitialiser</a>
                         </div>
@@ -265,6 +270,7 @@
 
             $('.datePicker').datepicker();
             $('#filter-client').select2();
+            $('#filter-organisation').select2();
         });
     </script>
 @stop

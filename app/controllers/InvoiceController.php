@@ -35,6 +35,9 @@ class InvoiceController extends BaseController
     public function invoiceList()
     {
         if (Input::has('filtre_submitted')) {
+            if (Input::has('filtre_organisation_id')) {
+                Session::put('filtre_invoice.organisation_id', Input::get('filtre_organisation_id'));
+            }
             if (Input::has('filtre_user_id')) {
                 Session::put('filtre_invoice.user_id', Input::get('filtre_user_id'));
             }
@@ -87,6 +90,10 @@ class InvoiceController extends BaseController
             if (Session::has('filtre_invoice.user_id')) {
                 $recapFilter = Session::get('filtre_invoice.user_id');
                 $q->whereUserId($recapFilter);
+            }
+            if (Session::has('filtre_invoice.organisation_id')) {
+                $recapFilter = Session::get('filtre_invoice.organisation_id');
+                $q->whereOrganisationId($recapFilter);
             }
         }
 
