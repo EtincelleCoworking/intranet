@@ -60,6 +60,7 @@ class UserController extends BaseController
     public function members()
     {
         $users = User::where('is_member', true)
+            ->where('default_location_id', '=', Auth::user()->default_location_id)
             ->orderBy('lastname', 'asc')
             ->get();
 
@@ -118,6 +119,7 @@ class UserController extends BaseController
                 $user->social_facebook = Input::get('social_facebook');
                 if (Auth::user()->isSuperAdmin()) {
                     $user->is_member = Input::get('is_member', false);
+                    $user->default_location_id = Input::get('default_location_id');
                 }
 
                 if (Input::get('birthday')) {
@@ -455,4 +457,13 @@ class UserController extends BaseController
         return Redirect::back();
 
     }
+
+    public function cancelFilter()
+    {
+        Session::forget('filtre_user.user_id');
+        Session::forget('filtre_user.subscription');
+        Session::forget('filtre_user.member');
+        return Redirect::route('user_list');
+    }
 }
+

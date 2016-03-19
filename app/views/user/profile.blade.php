@@ -79,6 +79,12 @@
                 </div>
                 <div class="ibox-content">
                     <div class="row">
+                        @if($user->phoneFmt)
+                            <div class="col-lg-4">
+                            <i class="fa fa-phone"></i>
+                            {{ $user->phoneFmt }}
+                            </div>
+                        @endif
                         <div class="col-lg-4">
                             <p><i class="fa fa-envelope"></i> {{ HTML::mailto($user->email) }}</p>
                         </div>

@@ -10,7 +10,7 @@ class ApiController extends BaseController
         $location = Location::where('slug', '=', $location_slug)
             ->where('key', '=', $key)
             ->firstOrFail();
-        
+
         LocationIp::where('id', '=', $location->id)->delete();
 
         $locationIp = new LocationIp();
@@ -18,6 +18,9 @@ class ApiController extends BaseController
         $locationIp->name = $_SERVER['REMOTE_ADDR'];
         $locationIp->save();
 
-        return new Response('OK');
+        if (Request::ajax()) {
+            return new Response('OK');
+        }
+        return Redirect::route('dashboard');
     }
 }

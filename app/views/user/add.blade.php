@@ -132,6 +132,10 @@
                             <p>{{ Form::password('password', array('class' => 'form-control')) }}</p>
                         </div>
                         <div class="col-lg-6">
+                            {{ Form::label('default_location_id', 'Espace habituel') }}
+                            {{ Form::select('default_location_id', Location::SelectAll(false), $user->default_location_id, array('class' => 'form-control')) }}
+                        </div>
+                        <div class="col-lg-6">
                             {{ Form::checkbox('is_member', true) }}
                             {{ Form::label('is_member', 'Membre') }}
                         </div>

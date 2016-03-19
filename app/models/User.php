@@ -287,4 +287,9 @@ class User extends Eloquent implements UserInterface, RemindableInterface
             })
             ->first();
     }
+
+    public function location()
+    {
+        return $this->belongsTo('Location', 'default_location_id');
+    }
 }

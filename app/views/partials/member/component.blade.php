@@ -1,7 +1,7 @@
 <?php
 
 
-$cacheKey = 'member';
+$cacheKey = 'member:'.Auth::user()->default_location_id;
 $boxContent = Cache::get($cacheKey);
 if (empty($boxContent)) {
     $boxContent = View::make('partials.member.inner')->render();

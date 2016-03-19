@@ -68,13 +68,15 @@
 
                                     </p>
                                     @if (Auth::user()->isSuperAdmin())
-                                            <a href="{{URL::route('user_modify', $user->id)}}"
-                                               class="btn btn-xs btn-default"><i class="fa fa-edit"></i></a>
+                                        <a href="{{URL::route('user_modify', $user->id)}}"
+                                           class="btn btn-xs btn-default"><i class="fa fa-edit"></i></a>
 
-                                        <a href="{{URL::route('user_login_as', $user->id)}}" title="Se connecter en tant que {{$user->fullname}}"
+                                        <a href="{{URL::route('user_login_as', $user->id)}}"
+                                           title="Se connecter en tant que {{$user->fullname}}"
                                            class="btn btn-xs btn-default"><i class="fa fa-user-secret"></i></a>
 
-                                        <a href="{{URL::route('user_export_profile', $user->id)}}" title="Exporter la fiche {{$user->fullname}}"
+                                        <a href="{{URL::route('user_export_profile', $user->id)}}"
+                                           title="Exporter la fiche {{$user->fullname}}"
                                            class="btn btn-xs btn-default"><i class="fa fa-download"></i></a>
                                     @endif
 

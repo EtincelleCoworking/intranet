@@ -52,7 +52,7 @@
                             {{ Form::checkbox('filtre_subscription', true, Session::has('filtre_user.subscription') ? Session::get('filtre_user.subscription') : false) }}
                             Souscription active
                         </div>
-                        <div class="col-md-2">
+                        <div class="col-md-4">
                             {{ Form::submit('Filtrer', array('class' => 'btn btn-sm btn-primary')) }}
                             <a href="{{URL::route('user_filter_reset')}}"
                                class="btn btn-sm btn-default">Réinitialiser</a>

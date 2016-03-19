@@ -9,12 +9,14 @@
 
     ?>
 
-    <div class="widget style1 navy-bg">
+    <div class="widget style2 navy-bg">
         <div class="row">
-            <div class="col-xs-4">
-                <i class="fa fa-money fa-5x"></i>
-            </div>
-            <div class="col-xs-8 text-right">
+            {{--
+                        <div class="col-xs-4">
+                            <i class="fa fa-money fa-5x"></i>
+                        </div>
+                        --}}
+            <div class="{{--col-xs-8--}} text-center">
                 <span> CA<small> (hors en compte)</small></span>
 
                 <h2 class="font-bold">

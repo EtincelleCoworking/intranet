@@ -15,16 +15,19 @@
 
     ?>
 
-    <div class="widget style1 navy-bg">
+    <div class="widget style2 blue-bg">
         <div class="row">
+{{--
             <div class="col-xs-4">
                 <i class="fa fa-money fa-5x"></i>
             </div>
-            <div class="col-xs-8 text-right">
+--}}
+            <div class="{{-- col-xs-8 --}}text-center">
                 <span> CA du mois </span>
 
                 <h2 class="font-bold">
-                    {{ number_format($totalMonth ? $totalMonth->total : 0, 0, ',', '.') }} €</h2>
+                    {{ number_format($totalMonth ? $totalMonth->total : 0, 0, ',', '.') }}&nbsp;€</h2>
+                <small>&nbsp;</small>
             </div>
         </div>
     </div>

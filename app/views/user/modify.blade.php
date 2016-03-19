@@ -129,9 +129,13 @@
                     <div class="row">
                         <div class="col-lg-6">
                             {{ Form::label('password', 'Mot de passe') }}
-                            <p>{{ Form::password('password', array('class' => 'form-control')) }}</p>
+                            {{ Form::password('password', array('class' => 'form-control')) }}
                         </div>
                         @if(Auth::user()->isSuperAdmin())
+                            <div class="col-lg-6">
+                                {{ Form::label('default_location_id', 'Espace habituel') }}
+                                {{ Form::select('default_location_id', Location::SelectAll(false), $user->default_location_id, array('class' => 'form-control')) }}
+                            </div>
                             <div class="col-lg-6">
                                 {{ Form::checkbox('is_member', true) }}
                                 {{ Form::label('is_member', 'Membre') }}

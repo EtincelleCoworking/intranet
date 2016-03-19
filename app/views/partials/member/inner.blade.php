@@ -1,5 +1,7 @@
 <?php
-$member = User::whereIsMember(true)->orderByRaw("RAND()")->first();
+$member = User::whereIsMember(true)
+        ->where('default_location_id', '=', Auth::user()->default_location_id)
+        ->orderByRaw("RAND()")->first();
 ?>
 @if($member)
     <div class="ibox">
