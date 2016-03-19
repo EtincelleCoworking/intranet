@@ -16,13 +16,10 @@ class UpdateLocationMigration extends Migration {
 		Schema::table('locations', function (Blueprint $table) {
             $table->string('slug', 255)->nullable();
             $table->unique('slug');
-            $table->string('key', 16)->nullable();
-            $table->unique('key');
 		});
 
 		foreach(Location::all() as $location){
 			$location->slug = Str::Slug((string)$location);
-			$location->key = Str::quickRandom();
 			$location->save();
 		}
 		//
