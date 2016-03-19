@@ -84,4 +84,13 @@ class Ressource extends Eloquent
         $selectVals += $query->whereIsBookable(true)->orderBy('order_index', 'ASC')->lists('name', 'id');
         return $selectVals;
     }
+
+    /**
+     * Relation BelongsTo (Invoices_Items belongs to Ressource)
+     */
+    public function location()
+    {
+        return $this->belongsTo('Location', 'location_id');
+    }
+
 }

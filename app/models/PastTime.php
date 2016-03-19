@@ -99,4 +99,17 @@ class PastTime extends Eloquent
         'invoice_id' => 'exists:invoices,id',
         'ressource_id' => 'required|exists:ressources,id'
     );
+
+    public function location()
+    {
+        return $this->belongsTo('Location', 'location_id');
+    }
+
+    public function getCurrentDuration(){
+        $from = strtotime($this->time_start);
+        $to = $this->time_end?strtotime($this->time_end):time();
+        $hours = date('H', $to) - date('H', $from);
+        $minuts = date('i', $to) - date('i', $from);
+        return sprintf('%02d:%02d', $hours, $minuts);
+    }
 }

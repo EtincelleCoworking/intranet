@@ -7,6 +7,7 @@
             @include('partials.wall.component')
         </div>
         <div class="col-lg-3">
+            @include('partials.checkin.component')
             @if (Auth::user()->isSuperAdmin())
                 @include('partials.sales.monthly.component')
                 @include('partials.charges.component')

@@ -22,7 +22,7 @@ class RessourceController extends BaseController
      */
     public function liste()
     {
-        $ressources = Ressource::orderBy('order_index', 'ASC')->paginate(15);
+        $ressources = Ressource::orderBy('location_id', 'ASC')->orderBy('order_index', 'ASC')->paginate(15);
         $getLast = Ressource::orderBy('order_index', 'DESC')->first();
         if ($getLast) {
             $last = $getLast->order_index;
@@ -61,6 +61,7 @@ class RessourceController extends BaseController
             $ressource->amount = Input::get('amount');
             $ressource->is_bookable = Input::get('is_bookable');
             $ressource->booking_background_color = Input::get('booking_background_color');
+            $ressource->location_id = Input::get('location_id');
 
             if ($ressource->save()) {
                 return Redirect::route('ressource_modify', $ressource->id)->with('mSuccess', 'La ressource a bien été ajoutée');
@@ -95,7 +96,9 @@ class RessourceController extends BaseController
             $ressource->order_index = Input::get('order_index');
             $ressource->amount = Input::get('amount');
             $ressource->is_bookable = Input::get('is_bookable');
-            $ressource->booking_background_color = Input::get('booking_background_color');
+            $ressource->booking_background_color = Input::get('booking_background_color');            $ressource->location_id = Input::get('location_id');
+            $ressource->location_id = Input::get('location_id');
+
             if ($ressource->save()) {
                 return Redirect::route('ressource_list')->with('mSuccess', 'Cette ressource a bien été modifiée');
             } else {

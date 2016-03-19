@@ -4,7 +4,9 @@
     Réservations
 @stop
 
-<?php $ressources = Ressource::whereIsBookable(true)->get(); ?>
+<?php $ressources = Ressource::whereIsBookable(true)
+        ->where('location_id', '=', Auth::user()->default_location_id)
+        ->get(); ?>
 
 @section('breadcrumb')
     <div class="row wrapper border-bottom white-bg page-heading">
@@ -26,9 +28,11 @@
             @endif
         </div>
         <div class="col-sm-2">
+            @if(count($ressources)>0)
             <div class="title-action">
                 <a href="#" class="btn btn-primary" id="meeting-add">Nouvelle réservation</a>
             </div>
+            @endif
         </div>
 
     </div>
@@ -210,7 +214,7 @@
     </div>
 
 
-
+    @if(count($ressources)>0)
 
     <div class="row">
         <div class="col-lg-12">
@@ -243,6 +247,18 @@
         </div>
 
     </div>
+    @else
+        <div class="row">
+            <div class="col-lg-12">
+                <div class="ibox">
+                    <div class="ibox-content">
+                        <p>Aucune ressource à louer sur cet espace.</p>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    @endif
 @stop
 
 
@@ -254,7 +270,7 @@
     {{ HTML::style('css/plugins/fullcalendar/fullcalendar.print.css', array('media'=> 'print')) }}
 
     <style type="text/css">
-        @foreach(Ressource::whereIsBookable(true)->get() as $ressource)
+        @foreach($ressources as $ressource)
 
 .fc-event.booking-ofuscated-{{$ressource->id}}                            {
             background: repeating-linear-gradient(
@@ -349,7 +365,7 @@
             $('#newBookingDialog').modal('show');
         };
         Etincelle.Event.prototype.getLocation = function () {
-            @foreach(Ressource::whereIsBookable(true)->get() as $ressource)
+            @foreach($ressources as $ressource)
             if ({{$ressource->id}} == this.ressource_id
             )
             {

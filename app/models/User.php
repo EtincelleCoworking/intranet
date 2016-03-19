@@ -276,4 +276,15 @@ class User extends Eloquent implements UserInterface, RemindableInterface
             ->select(DB::raw('sum((TIME_TO_SEC(past_times.time_end) - TIME_TO_SEC(past_times.time_start)) / 60) as amount'))
             ->first()->amount;
     }
+    public function getActiveTimesheet(){
+        return PastTime::where('user_id', $this->id)
+            ->where('date_past', date('Y-m-d'))
+            ->where('ressource_id', Ressource::TYPE_COWORKING)
+            ->where(function($query)
+            {
+                $query->whereNull('time_end')
+                    ->orWhereRaw('time_end < time_start');
+            })
+            ->first();
+    }
 }

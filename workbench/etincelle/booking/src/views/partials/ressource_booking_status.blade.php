@@ -1,6 +1,6 @@
 <?php
 
-$cacheKey = 'ressource_booking_status';
+$cacheKey = 'ressource_booking_status:'.Auth::user()->default_location_id;
 //Cache::forget($cacheKey);
 
 // TODO améliorer le cache
@@ -16,7 +16,7 @@ $cacheKey = 'ressource_booking_status';
 $rooms = Cache::get($cacheKey, array());
 if (count($rooms) == 0) {
 
-    $results = DB::select(DB::raw('SELECT id, name FROM ressources WHERE is_bookable = true ORDER BY order_index'));
+    $results = DB::select(DB::raw(sprintf('SELECT id, name FROM ressources WHERE is_bookable = true AND location_id = %d ORDER BY order_index', Auth::user()->default_location_id)));
 
     $rooms = array();
     foreach ($results as $item) {
@@ -92,7 +92,7 @@ GROUP BY ressources.id
 
 ?>
 
-@if(count($rooms) > 1)
+@if(count($rooms) > 0)
     <div class="ibox">
         <div class="ibox-title">
             <h5>Espaces de réunion</h5>

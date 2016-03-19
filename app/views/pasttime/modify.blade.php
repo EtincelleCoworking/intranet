@@ -41,13 +41,23 @@
                             <p>{{ Form::select('ressource_id', Ressource::SelectAll('Sélectionnez une ressource', $time->ressource_id), null, array('class' => 'form-control')) }}</p>
                         </div>
                     </div>
+                    <div class="row">
+                        <div class="col-md-6">
+                            {{ Form::label('location_id', 'Site') }}
+                            <p>{{ Form::select('location_id', Location::selectAll(), $time->location_id, array('class' => 'form-control')) }}</p>
+                        </div>
+                        <div class="col-md-6">
+                            {{ Form::label('comment', 'Commentaire') }}
+                            <p>{{ Form::text('comment', null, array('class' => 'form-control')) }}</p>
+                        </div>
+                    </div>
                     @if (Auth::user()->isSuperAdmin())
                         <div class="row">
-                            <div class="col-md-5">
+                            <div class="col-md-6">
                                 {{ Form::label('user_id', 'Client') }}
                                 <p>{{ Form::select('user_id', User::Select('Sélectionnez un client'), $time->user_id, array('class' => 'form-control', 'id' => 'userSelector')) }}</p>
                             </div>
-                            <div class="col-md-5">
+                            <div class="col-md-4">
                                 {{ Form::label('invoice_id', 'Facture') }}
                                 <p>{{ Form::select('invoice_id', Invoice::Select('Sélectionnez une facture', $time->user_id), $time->invoice_id, array('class' => 'form-control')) }}</p>
                             </div>
@@ -61,15 +71,9 @@
                     @else
                         {{ Form::hidden('user_id', Auth::user()->id) }}
                     @endif
-                    <div class="row">
-                        <div class="col-md-12">
-                            {{ Form::label('comment', 'Commentaire') }}
-                            <p>{{ Form::text('comment', null, array('class' => 'form-control')) }}</p>
-                        </div>
-                    </div>
                     <div class="hr-line-dashed"></div>
                     <div class="form-group">
-                        {{ Form::submit('Enregistrer', array('class' => 'btn btn-success')) }}
+                        {{ Form::submit('Enregistrer', array('class' => 'btn btn-primary')) }}
                         <a href="{{ URL::route('pasttime_list') }}" class="btn btn-white">Annuler</a>
                     </div>
                     {{ Form::close() }}

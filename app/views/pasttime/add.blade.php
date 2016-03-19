@@ -34,18 +34,28 @@
                             <p>{{ Form::text('time_end', null, array('class' => 'form-control timePicker')) }}</p>
                         </div>
 
-                        <div class="col-md-4">
+                        <div class="col-md-6">
                             {{ Form::label('ressource_id', 'Ressource') }}
-                            <p>{{ Form::select('ressource_id', Ressource::SelectAll('Sélectionnez une ressource'), null, array('class' => 'form-control')) }}</p>
+                            <p>{{ Form::select('ressource_id', Ressource::SelectAll('Sélectionnez une ressource'), Ressource::TYPE_COWORKING, array('class' => 'form-control')) }}</p>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-6">
+                            {{ Form::label('location_id', 'Site') }}
+                            <p>{{ Form::select('location_id', Location::selectAll(), Auth::user()->default_location_id, array('class' => 'form-control')) }}</p>
+                        </div>
+                        <div class="col-md-6">
+                            {{ Form::label('comment', 'Commentaire') }}
+                            <p>{{ Form::text('comment', null, array('class' => 'form-control')) }}</p>
                         </div>
                     </div>
                     @if (Auth::user()->isSuperAdmin())
                         <div class="row">
-                            <div class="col-md-5">
+                            <div class="col-md-6">
                                 {{ Form::label('user_id', 'Client') }}
-                                <p>{{ Form::select('user_id', User::Select('Sélectionnez un client'), null, array('class' => 'form-control', 'id' => 'userSelector')) }}</p>
+                                <p>{{ Form::select('user_id', User::Select('Sélectionnez un client'), Auth::id(), array('class' => 'form-control', 'id' => 'userSelector')) }}</p>
                             </div>
-                            <div class="col-md-5">
+                            <div class="col-md-4">
                                 {{ Form::label('invoice_id', 'Facture') }}
                                 <p>{{ Form::select('invoice_id', Invoice::Select('Sélectionnez une facture'), null, array('class' => 'form-control')) }}</p>
                             </div>
@@ -59,15 +69,9 @@
                     @else
                         {{ Form::hidden('user_id', Auth::user()->id) }}
                     @endif
-                    <div class="row">
-                        <div class="col-md-12">
-                            {{ Form::label('comment', 'Commentaire') }}
-                            <p>{{ Form::text('comment', null, array('class' => 'form-control')) }}</p>
-                        </div>
-                    </div>
                     <div class="hr-line-dashed"></div>
                     <div class="form-group">
-                        {{ Form::submit('Enregistrer', array('class' => 'btn btn-success')) }}
+                        {{ Form::submit('Enregistrer', array('class' => 'btn btn-primary')) }}
                         <a href="{{ URL::route('pasttime_list') }}" class="btn btn-white">Annuler</a>
                     </div>
                     {{ Form::close() }}

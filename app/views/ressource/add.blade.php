@@ -22,6 +22,10 @@
                     {{ Form::open(array('route' => 'ressource_add')) }}
                     <div class="row">
                         <div class="col-md-6">
+                            {{ Form::label('location', 'Site') }}
+                            <p>{{ Form::select('location_id', Location::SelectAll(), null, array('class' => 'form-control')) }}</p>
+                        </div>
+                        <div class="col-md-6">
                             {{ Form::label('name', 'Nom de la ressource') }}
                             <p>{{ Form::text('name', null, array('class' => 'form-control')) }}</p>
                         </div>

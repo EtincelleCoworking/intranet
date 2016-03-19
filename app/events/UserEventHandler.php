@@ -11,6 +11,17 @@ class UserEventHandler
     {
 //        $user->last_login_at = new DateTime();
 //        $user->save();
+
+        // define active location
+        //var_dump($_SERVER['REMOTE_ADDR']);
+        $ip = LocationIp::where('name', '=', $_SERVER['REMOTE_ADDR'])->first();
+        if ($ip) {
+            $user->default_location_id = $ip->location->id;
+            $user->save();
+        }
+        //var_dump($ip);
+//        var_dump((string)$ip->location);
+//        exit;
     }
 
     /**

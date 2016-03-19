@@ -12,6 +12,8 @@
 */
 Route::get('/', array('as' => 'dashboard', 'uses' => 'UserController@dashboard'));
 
+Route::get('/api/1.0/location/{location_slug}/{key}', array('as' => 'api_location_update', 'uses' => 'ApiController@updateLocationIp'));
+
 Route::get('/login', array('as' => 'user_login', 'uses' => 'UserController@login'));
 Route::post('/login_check', array('before' => 'csrf', 'as' => 'user_login_check', 'uses' => 'UserController@login_check'));
 Route::get('/logout', array('as' => 'user_logout', 'uses' => 'UserController@logout'));
@@ -26,6 +28,8 @@ Route::group(['before' => 'member'], function() {
     Route::post('/user/modify/{id}', array('as' => 'user_modify_check', 'uses' => 'UserController@modify_check'))->where(array('id' => '[0-9]+'));
 
     Route::get('/user/export-profile/{id}', array('as' => 'user_export_profile', 'uses' => 'UserController@exportMemberProfile'))->where(array('id' => '[0-9]+'));
+
+    Route::get('/user/change-location', array('as' => 'user_change_location', 'uses' => 'UserController@ChangeLocation'));
 
 
 	Route::get('/users', array('as' => 'members', 'uses' => 'UserController@members'));
@@ -48,6 +52,10 @@ Route::group(['before' => 'member'], function() {
     Route::post('/wall/add', array('as' => 'wall_add_check', 'uses' => 'WallPostController@add_check'));
     Route::post('/wall/reply', array('as' => 'wall_reply', 'uses' => 'WallPostController@reply'));
     Route::get('/wall/page/{page_index}', array('as' => 'wall_page', 'uses' => 'WallPostController@page'));
+
+    Route::get('/checkin/start', array('as' => 'checkin_start', 'uses' => 'CheckinController@start'));
+    Route::get('/checkin/stop', array('as' => 'checkin_stop', 'uses' => 'CheckinController@stop'));
+    Route::get('/checkin/status', array('as' => 'checkin_status', 'uses' => 'CheckinController@status'));
 });
 
 Route::group(['before' => 'superadmin'], function() {

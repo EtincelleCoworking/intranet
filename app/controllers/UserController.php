@@ -446,4 +446,13 @@ class UserController extends BaseController
 
         return View::make('user.liste', array('users' => $users->paginate(15, array('users.*'))));
     }
+
+    public function ChangeLocation(){
+        $user = Auth::user();
+        $user->default_location_id =Input::get('location_id');
+        $user->save();
+
+        return Redirect::back();
+
+    }
 }

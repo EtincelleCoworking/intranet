@@ -133,6 +133,7 @@
                                     @if (Auth::user()->isSuperAdmin())
                                         <th>{{ Form::checkbox('checkall', false, false, array('id' => 'checkall')) }}</th>
                                     @endif
+                                    <th>Site</th>
                                     <th>Date</th>
                                     @if (Auth::user()->isSuperAdmin())
                                         <th>Utilisateur</th>
@@ -149,8 +150,13 @@
                                 @foreach ($times as $time)
                                     <tr @if ((Auth::user()->isSuperAdmin()) and ($time->invoice_id or $time->is_free)) class="text-muted" @endif >
                                         @if (Auth::user()->isSuperAdmin())
-                                            <th>{{ Form::checkbox('items[]', $time->id, false, array('class' => 'check')) }}</th>
+                                            <th>
+                                                @if(!$time->invoice_id)
+                                                    {{ Form::checkbox('items[]', $time->id, false, array('class' => 'check')) }}
+                                                @endif
+                                            </th>
                                         @endif
+                                        <td>{{ $time->location }}</td>
 
                                         <td>{{ date('d/m/Y', strtotime($time->date_past)) }}</td>
                                         @if (Auth::user()->isSuperAdmin())
@@ -162,7 +168,7 @@
                                         @endif
                                         <td>{{ $time->ressource->name }}</td>
                                         <td>{{ date('H:i', strtotime($time->time_start)) }}</td>
-                                        <td>{{ date('H:i', strtotime($time->time_end)) }}</td>
+                                        <td>{{ $time->time_end?date('H:i', strtotime($time->time_end)):'-' }}</td>
                                         <td>
                                             {{ $time->past_time }}
                                             @if ($time->comment)
@@ -219,7 +225,6 @@
             $('#checkall').click(function () {
                 $('input.check').prop('checked', $(this).prop('checked'));
             });
-
 
 
         });

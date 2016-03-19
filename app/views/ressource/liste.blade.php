@@ -11,7 +11,7 @@
         </div>
         <div class="col-sm-8">
                 <div class="title-action">
-                    <a href="{{ URL::route('ressource_add') }}" class="btn btn-default">Ajouter une ressource</a>
+                    <a href="{{ URL::route('ressource_add') }}" class="btn btn-primary">Ajouter une ressource</a>
                 </div>
         </div>
     </div>
@@ -25,6 +25,7 @@
                     <table class="table table-striped table-hover">
                         <thead>
                         <tr>
+                            <th>Site</th>
                             <th>Nom</th>
                             <th>Réservable</th>
                             <th>Prix horaire HT</th>
@@ -35,6 +36,15 @@
                         <tbody>
                         @foreach ($ressources as $n => $ressource)
                             <tr>
+                                <td>
+                                    <?php if($ressource->location){
+                                        echo $ressource->location;
+                                    }else{
+                                        echo '-';
+
+                                    }
+                                            ?>
+                                </td>
                                 <td>
                                     <a href="{{ URL::route('ressource_modify', $ressource->id) }}">{{ $ressource->name }}</a>
                                 </td>

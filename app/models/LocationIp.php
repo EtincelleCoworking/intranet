@@ -1,0 +1,35 @@
+<?php
+
+/**
+ * Location Entity
+ */
+class LocationIp extends Eloquent
+{
+    protected $table = 'locations_ips';
+    /**
+     * Rules
+     */
+    public static $rules = array(
+        'name' => 'required|min:1'
+    );
+
+    /**
+     * Rules Add
+     */
+    public static $rulesAdd = array(
+        'name' => 'required|min:1|unique:LocationIp'
+    );
+
+    public function __toString()
+    {
+        return $this->name;
+    }
+
+    /**
+     * Relation BelongsTo (Invoices_Items belongs to Ressource)
+     */
+    public function location()
+    {
+        return $this->belongsTo('Location', 'id');
+    }
+}

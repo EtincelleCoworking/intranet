@@ -195,7 +195,7 @@ class Invoice extends Eloquent
             $query = $query->where('user_id', $user_id);
         }
         $query = $query->orderBy('days', 'desc')->orderBy('number', 'desc')->where('type', 'F');
-        $selectVals += $query->get()->lists('caption', 'id');
+        $selectVals += $query->with('user')->get()->lists('caption', 'id');
         return $selectVals;
     }
 

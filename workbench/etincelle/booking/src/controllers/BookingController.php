@@ -28,20 +28,21 @@ class BookingController extends Controller
         if (empty($rooms)) {
             $messages['rooms'] = 'La salle doit être renseignée';
         } else {
-//            $start = newDateTime(Input::get('date'), Input::get('start'));
-//            $end = newDateTime(Input::get('date'), Input::get('start'));
-//            $end->modify(sprintf('+%d hours', getDuration(Input::get('start'), Input::get('end'))));
-//
-//            foreach (Input::get('rooms') as $ressource_id) {
-//                'SELECT count(*) FROM booking_item WHERE
-//                  start_at < :start AND DATE_ADD()
-//
-//'
-//            BookingItem::whereRessourceId($ressource_id)
-//                ->where('start_at', '<', $start->format('Y-m-d H:i:s'))
-//                ->where('start_at', '<', $start->format('Y-m-d H:i:s'))
-//                ;
-//            }
+            //if (!Auth::user()->isSuperAdmin()) {
+            $start = newDateTime(Input::get('date'), Input::get('start'));
+            $end = newDateTime(Input::get('date'), Input::get('end'));
+            $duration = getDuration(Input::get('start'), Input::get('end'));
+
+            $items = BookingItem::where('start_at', '<', $end->format('Y-m-d H:i:s'))
+                ->where(DB::raw(sprintf('DATE_ADD(start_at, INTERVAL %d MINUTE)', $duration)), '>', $start->format('Y-m-d H:i:s'))
+                ->whereIn('ressource_id', Input::get('rooms'))->get();
+            foreach ($items as $conflict) {
+                if (!isset($messages['start'])) {
+                    $messages['start'] = '';
+                }
+                $messages['start'] .= sprintf('La salle %s est déjà réservée sur ce créneau' . "\n", $conflict->ressource->name);
+            }
+            //          }
         }
         $start_at = newDateTime(Input::get('date'), Input::get('start'));
         if (!Auth::user()->isSuperAdmin() && ($start_at->format('Y-m-d H:i:s') < (new \DateTime())->format('Y-m-d H:i:s'))) {
@@ -121,8 +122,11 @@ class BookingController extends Controller
     {
         $result = array();
         $bookings = Booking::whereHas('items', function ($query) {
-            $query->whereBetween('start_at', array(Input::get('start'), Input::get('end')));
-        })->with('items')->get();
+            $query->whereBetween('start_at', array(Input::get('start'), Input::get('end')))
+                ->join('ressources', 'booking_item.ressource_id', '=', 'ressources.id')
+                ->where('ressources.location_id', '=', Auth::user()->default_location_id);
+        })
+            ->with('items')->get();
 
         foreach ($bookings as $booking) {
             //var_dump($booking->items()->count());
