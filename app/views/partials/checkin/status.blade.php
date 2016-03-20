@@ -1,7 +1,7 @@
 <?php
 
-$cacheKey = 'ressource_checkin_status';
-Cache::forget($cacheKey);
+$cacheKey = 'checkin_status';
+//Cache::forget($cacheKey);
 
 $items = Cache::get($cacheKey, array());
 if (count($items) == 0) {

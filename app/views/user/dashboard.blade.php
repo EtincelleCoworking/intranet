@@ -8,10 +8,10 @@
                 @include('partials.sales.monthly.component')
             </div>
             <div class="col-lg-2">
-                @include('partials.sales.yearly.component')
+                @include('partials.pending.component')
             </div>
             <div class="col-lg-2">
-                @include('partials.pending.component')
+                @include('partials.sales.yearly.component')
             </div>
             <div class="col-lg-2">
                 @include('partials.charges.component')
@@ -25,12 +25,13 @@
 
     <div class="row">
         <div class="col-lg-9">
+                @include('partials.checkin.availability')
             @include('partials.wall.component')
         </div>
         <div class="col-lg-3">
+            @include('partials.checkin.component')
             @if (Auth::user()->isSuperAdmin())
             @elseif (Auth::user()->role == 'member')
-                @include('partials.checkin.component')
                 @include('partials.active_subscription')
                 @include('partials.member.component')
             @endif

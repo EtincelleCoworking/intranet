@@ -142,7 +142,11 @@ class User extends Eloquent implements UserInterface, RemindableInterface
 
     public function getAvatarTagAttribute()
     {
-        return sprintf('<img alt="" class="img-circle m-t-xs" src="%s">', $this->avatarUrl);
+        return sprintf('<img alt="%s" class="img-circle m-t-xs" src="%s" title="%s">',
+            $this->fullname,
+            $this->avatarUrl,
+            $this->fullnameOrga
+    );
 
 
     }

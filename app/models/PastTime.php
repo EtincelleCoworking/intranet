@@ -1,7 +1,8 @@
 <?php
+
 /**
-* Past Time Entity
-*/
+ * Past Time Entity
+ */
 class PastTime extends Eloquent
 {
     /**
@@ -14,15 +15,15 @@ class PastTime extends Eloquent
     public function scopeRecap($query, $user, $start, $end, $ressource_id = null, $to_invoice = true)
     {
         $query->select(
-                        'ressources.name',
-                        DB::raw('HOUR(SEC_TO_TIME(SUM(TIME_TO_SEC(past_times.time_end) - TIME_TO_SEC(past_times.time_start)))) AS hours'),
-                        DB::raw('MINUTE(SEC_TO_TIME(SUM(TIME_TO_SEC(past_times.time_end) - TIME_TO_SEC(past_times.time_start)))) AS minutes'),
-                        DB::raw('ressources.amount * (HOUR(SEC_TO_TIME(SUM(TIME_TO_SEC(past_times.time_end) - TIME_TO_SEC(past_times.time_start)))) + MINUTE(SEC_TO_TIME(SUM(TIME_TO_SEC(past_times.time_end) - TIME_TO_SEC(past_times.time_start)))) / 60) AS amount')
-                    )
-                    ->join('ressources', 'ressource_id', '=', 'ressources.id')
-                    ->whereBetween('date_past', array($start, $end))
-                    ->groupBy('ressource_id');
-        if($to_invoice){
+            'ressources.name',
+            DB::raw('HOUR(SEC_TO_TIME(SUM(TIME_TO_SEC(past_times.time_end) - TIME_TO_SEC(past_times.time_start)))) AS hours'),
+            DB::raw('MINUTE(SEC_TO_TIME(SUM(TIME_TO_SEC(past_times.time_end) - TIME_TO_SEC(past_times.time_start)))) AS minutes'),
+            DB::raw('ressources.amount * (HOUR(SEC_TO_TIME(SUM(TIME_TO_SEC(past_times.time_end) - TIME_TO_SEC(past_times.time_start)))) + MINUTE(SEC_TO_TIME(SUM(TIME_TO_SEC(past_times.time_end) - TIME_TO_SEC(past_times.time_start)))) / 60) AS amount')
+        )
+            ->join('ressources', 'ressource_id', '=', 'ressources.id')
+            ->whereBetween('date_past', array($start, $end))
+            ->groupBy('ressource_id');
+        if ($to_invoice) {
             $query->whereInvoiceId(0);
             $query->whereIsFree(0);
         }
@@ -75,12 +76,14 @@ class PastTime extends Eloquent
                 if ($diff->d) {
                     $diff->h = ($diff->d * 24);
                 }
-                $retour = $diff->h.Lang::choice('messages.times_hours', $diff->h);
+                $retour = $diff->h . Lang::choice('messages.times_hours', $diff->h);
             }
 
             if ($diff->i) {
-                if ($retour) { $retour .= ' '; }
-                $retour .= $diff->i.Lang::choice('messages.times_minutes', $diff->i);
+                if ($retour) {
+                    $retour .= ' ';
+                }
+                $retour .= $diff->i . Lang::choice('messages.times_minutes', $diff->i);
             }
             return $retour;
         } else {
@@ -105,11 +108,12 @@ class PastTime extends Eloquent
         return $this->belongsTo('Location', 'location_id');
     }
 
-    public function getCurrentDuration(){
+    public function getCurrentDuration()
+    {
         $from = strtotime($this->time_start);
-        $to = $this->time_end?strtotime($this->time_end):time();
-        $hours = date('H', $to) - date('H', $from);
-        $minuts = date('i', $to) - date('i', $from);
-        return sprintf('%02d:%02d', $hours, $minuts);
+        $to = $this->time_end ? strtotime($this->time_end) : time();
+        $duration = floor(($to - $from) / 60);
+        $hours = floor($duration / 60);
+        return sprintf('%02d:%02d', $hours, $duration - $hours * 60);
     }
 }

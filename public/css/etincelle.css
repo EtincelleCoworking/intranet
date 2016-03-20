@@ -7,3 +7,10 @@
             /*#777777 20px*/
     /*);*/
 /*}*/
+
+
+#checkin-availability img {
+    border: 1px solid #e7eaec;
+    height: 32px;
+    width: 32px;
+}
