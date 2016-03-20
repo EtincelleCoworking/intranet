@@ -109,7 +109,7 @@ class User extends Eloquent implements UserInterface, RemindableInterface
             $organisation .= $orga->name;
         }
         $result = $this->firstname . ' ' . $this->lastname;
-        if ($organisation) {
+        if (!empty($organisation) && ($result != $organisation)) {
             $result .= ' (' . $organisation . ')';
         }
         return $result;

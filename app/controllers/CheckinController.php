@@ -4,10 +4,12 @@ use Illuminate\Http\Response;
 
 class CheckinController extends BaseController
 {
+    const CACHE_KEY = 'checkin_availability';
+
     public function start()
     {
         $timesheet = Auth::user()->getActiveTimesheet();
-        if($timesheet){
+        if ($timesheet) {
             return Redirect::route('dashboard')->with('mError', 'Une session est déjà commencée');
         }
 
@@ -26,21 +28,23 @@ class CheckinController extends BaseController
     public function stop()
     {
         $timesheet = Auth::user()->getActiveTimesheet();
-        if(!$timesheet){
+        if (!$timesheet) {
             return Redirect::route('dashboard')->with('mError', 'Aucune session n\'a commencée');
         }
 
         $timesheet->time_end = new DateTime(date('Y-m-d H:i:00', ceil(time() / 300) * 300));
         $timesheet->save();
 
-        return Redirect::route('pasttime_modify', $timesheet->id);
+        return Redirect::route('dashboard')->with('mSuccess', 'Le compteur a été arrêté');
+
+        //return Redirect::route('pasttime_modify', $timesheet->id);
     }
 
 
     public function status()
     {
         $timesheet = Auth::user()->getActiveTimesheet();
-        if(!$timesheet){
+        if (!$timesheet) {
             App::abort(404);
         }
 
