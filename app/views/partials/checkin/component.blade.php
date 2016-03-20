@@ -32,10 +32,7 @@
         <h5>Temps passé</h5>
     </div>
     <div class="ibox-content">
-        <a href="{{route('checkin_start')}}" class="btn btn-primary pull-right"><i class="fa fa-play"></i></a>
-        <h1 class="no-margins">
-            -
-        </h1>
+        <a href="{{route('checkin_start')}}" class="btn btn-primary">Je commence <i class="fa fa-play"></i></a>
     </div>
 </div>
 

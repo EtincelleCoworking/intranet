@@ -20,8 +20,8 @@
                 @include('partials.checkin.status')
             </div>
         </div>
-    @endif
     <div class="hr-line-dashed"></div>
+    @endif
 
     <div class="row">
         <div class="col-lg-9">
