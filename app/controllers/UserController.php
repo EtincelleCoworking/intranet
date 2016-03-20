@@ -62,6 +62,7 @@ class UserController extends BaseController
         $users = User::where('is_member', true)
             ->where('default_location_id', '=', Auth::user()->default_location_id)
             ->orderBy('lastname', 'asc')
+            ->with('organisations')
             ->get();
 
         return View::make('user.members', array('users' => $users));

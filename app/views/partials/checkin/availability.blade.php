@@ -41,6 +41,9 @@ WHERE past_times.date_past = CURDATE() AND time_end IS NULL'));
 
 @if(count($items) > 0)
     <div class="ibox" id="checkin-availability">
+        <div class="ibox-title">
+            <h5>Membres présents</h5>
+        </div>
         <div class="ibox-content">
             <div class="media-body">
                 <div>
