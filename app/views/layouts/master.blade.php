@@ -291,7 +291,7 @@
 
                     --}}
 
-                    <li>
+                    <li class="col-lg-8 col-md-8 col-sm-8 col-xs-8">
                         <form class="form-inline" role="form" style="margin-top: 8px" action="{{ URL::route('user_change_location') }}">
                             <div class="form-group">
                                 <label for="location">Espace: </label>
