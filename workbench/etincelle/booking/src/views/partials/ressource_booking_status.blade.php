@@ -26,7 +26,7 @@ if (count($rooms) == 0) {
                 'next_event' => null
         );
     }
-    $results = DB::select(DB::raw(sprintf('
+    $results = DB::select(DB::raw('
     SELECT
         ressources.id,
         MIN(next_booking_item.start_at) AS start_at,
@@ -39,10 +39,10 @@ if (count($rooms) == 0) {
       LEFT OUTER JOIN booking next_booking ON next_booking_item.booking_id = next_booking.id
     WHERE
       ressources.is_bookable = true
-      AND ressources.location_id = %d
+      AND ressources.location_id = '.Auth::user()->default_location_id.'
       AND next_booking_item.start_at BETWEEN DATE_FORMAT(NOW(), "%Y-%m-%d %H:%i:00") AND DATE_FORMAT(NOW(),"%Y-%m-%d 23:59:59")
     GROUP BY ressources.id
-', Auth::user()->default_location_id)));
+'));
 
     foreach ($results as $item) {
         $delay = round((strtotime($item->start_at) - time()) / 60);
@@ -61,7 +61,7 @@ if (count($rooms) == 0) {
         }
     }
 
-    $results = DB::select(DB::raw(sprintf('
+    $results = DB::select(DB::raw('
 SELECT
     ressources.id,
     MIN(current_booking_item.start_at) AS start_at,
@@ -73,11 +73,11 @@ FROM ressources
   JOIN booking current_booking ON current_booking_item.booking_id = current_booking.id
 WHERE
   ressources.is_bookable = true
-  AND ressources.location_id = %d
+  AND ressources.location_id = '.Auth::user()->default_location_id.'
   AND NOW() > current_booking_item.start_at
   AND DATE_ADD(current_booking_item.start_at, INTERVAL current_booking_item.duration MINUTE) > NOW()
 GROUP BY ressources.id
-', Auth::user()->default_location_id)));
+'));
 
     foreach ($results as $item) {
         $rooms[$item->id]['current_event'] = array(
