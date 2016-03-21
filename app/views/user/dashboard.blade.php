@@ -4,30 +4,30 @@
 
     @if (Auth::user()->isSuperAdmin())
         <div class="row">
-            <div class="col-lg-2 col-md-2 col-sm-2 col-xs-3">
+            <div class="col-lg-2 col-md-4 col-sm-4 col-xs-4">
                 @include('partials.sales.monthly.component')
             </div>
-            <div class="col-lg-2 col-md-2 col-sm-2 col-xs-3">
+            <div class="col-lg-2 col-md-4 col-sm-4 col-xs-4">
                 @include('partials.pending.component')
             </div>
-            <div class="col-lg-2 col-md-2 col-sm-2 col-xs-3">
+            <div class="col-lg-2 col-md-4 col-sm-4 col-xs-4">
                 @include('partials.sales.yearly.component')
             </div>
-            <div class="col-lg-2 col-md-2 col-sm-2 col-xs-3">
+            <div class="col-lg-2 col-md-4 hidden-sm hidden-xs">
                 @include('partials.charges.component')
             </div>
-            <div class="col-lg-4 col-md-4 col-sm-4 hidden-xs">
+            <div class="col-lg-4 col-md-12 col-sm-12 hidden-xs">
                 @include('partials.checkin.status')
             </div>
         </div>
     @endif
 
     <div class="row">
-        <div class="col-lg-9 col-md-9 col-sm-9 col-xs-8">
+        <div class="col-lg-9 col-md-8 col-sm-6 col-xs-8">
                 @include('partials.checkin.availability')
             @include('partials.wall.component')
         </div>
-        <div class="col-lg-3 col-md-3 col-sm-3 col-xs-4">
+        <div class="col-lg-3 col-md-4 col-sm-6 col-xs-4">
             @include('partials.checkin.component')
             @if (Auth::user()->isSuperAdmin())
             @elseif (Auth::user()->role == 'member')

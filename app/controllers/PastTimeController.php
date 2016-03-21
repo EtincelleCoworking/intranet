@@ -84,8 +84,8 @@ class PastTimeController extends BaseController
                 $q->whereUserId($recapFilter);
             }
         } else {
-            $recapFilter = Auth::user()->id;
-            $q->whereUserId(Auth::user()->id);
+            $recapFilter = Auth::id();
+            $q->whereUserId(Auth::id());
         }
         $recap = PastTime::Recap($recapFilter, $date_filtre_start, $date_filtre_end);
         $pending_invoice_amount = 0;
@@ -94,7 +94,7 @@ class PastTimeController extends BaseController
         }
 
         $params = array();
-        $params['times'] = $q->orderBy('date_past', 'DESC')->paginate(15);
+        $params['times'] = $q->orderBy('date_past', 'DESC')->with('location', 'location.city')->paginate(15);
         $params['recap'] = $recap;
         $params['pending_invoice_amount'] = $pending_invoice_amount;
 
