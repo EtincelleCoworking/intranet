@@ -284,10 +284,11 @@ class User extends Eloquent implements UserInterface, RemindableInterface
         return PastTime::where('user_id', $this->id)
             ->where('date_past', date('Y-m-d'))
             ->where('ressource_id', Ressource::TYPE_COWORKING)
+            ->whereRaw('time_start < NOW()')
             ->where(function($query)
             {
                 $query->whereNull('time_end')
-                    ->orWhereRaw('time_end < time_start');
+                    ->orWhereRaw('time_end > NOW()');
             })
             ->first();
     }
