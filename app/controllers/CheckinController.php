@@ -4,7 +4,8 @@ use Illuminate\Http\Response;
 
 class CheckinController extends BaseController
 {
-    const CACHE_KEY = 'checkin_availability';
+    const CACHE_KEY_AVAILABILITY = 'checkin_availability';
+    const CACHE_KEY_STATUS = 'checkin_status';
 
     public function start()
     {

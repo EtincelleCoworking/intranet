@@ -1,9 +1,6 @@
 <?php
 
-$cacheKey = 'checkin_status';
-//Cache::forget($cacheKey);
-
-$items = Cache::get($cacheKey, array());
+$items = Cache::get(CheckinController::CACHE_KEY_STATUS, array());
 if (count($items) == 0) {
 
     $results = DB::select(DB::raw('SELECT locations.id, locations.slug, locations.key, (TIME_TO_SEC(TIMEDIFF(now(), locations_ips.created_at))/3600) < 2 as is_fresh, concat(cities.name, " > ", locations.name) as name, locations_ips.name as ip FROM locations join cities on locations.city_id = cities.id left outer join locations_ips on locations.id = locations_ips.id ORDER BY locations.name ASC, locations_ips.name ASC'));
@@ -17,7 +14,7 @@ if (count($items) == 0) {
                 'ip' => $result->ip);
     }
 
-    Cache::put($cacheKey, $items, 5);
+    Cache::put(CheckinController::CACHE_KEY_STATUS, $items, 5);
 }
 
 ?>

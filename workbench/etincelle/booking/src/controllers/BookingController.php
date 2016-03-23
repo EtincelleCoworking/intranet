@@ -14,6 +14,7 @@ class BookingController extends Controller
 
     public function create()
     {
+        $id = Input::get('id');
         $messages = array();
         if (!preg_match('#^[0-9]{2}/[0-9]{2}/[0-9]{4}$#', Input::get('date'))) {
             $messages['date'] = 'La date doit être renseignée';
@@ -35,7 +36,9 @@ class BookingController extends Controller
 
             $items = BookingItem::where('start_at', '<', $end->format('Y-m-d H:i:s'))
                 ->where(DB::raw(sprintf('DATE_ADD(start_at, INTERVAL %d MINUTE)', $duration)), '>', $start->format('Y-m-d H:i:s'))
-                ->whereIn('ressource_id', Input::get('rooms'))->get();
+                ->whereIn('ressource_id', Input::get('rooms'))
+                ->where('id', '!=', $id)
+                ->get();
             foreach ($items as $conflict) {
                 if (!isset($messages['start'])) {
                     $messages['start'] = '';
@@ -56,7 +59,6 @@ class BookingController extends Controller
 
         }
 
-        $id = Input::get('id');
         $booking_items = array();
         if ($id) {
             $booking_item = BookingItem::whereId($id)->with('booking')->first();
