@@ -1,6 +1,6 @@
 <?php
 
-$items = Cache::get(CheckinController::CACHE_KEY, array());
+$items = Cache::get(CheckinController::CACHE_KEY_AVAILABILITY, array());
 if (count($items) == 0) {
 
     $results = DB::select(DB::raw('SELECT locations.id, locations.coworking_capacity, concat(cities.name, " > ", locations.name) as name
@@ -34,7 +34,7 @@ WHERE past_times.date_past = CURDATE() AND time_end IS NULL'));
     }
 
 
-    Cache::put(CheckinController::CACHE_KEY, $items, 60);
+    Cache::put(CheckinController::CACHE_KEY_AVAILABILITY, $items, 60);
 }
 
 ?>
