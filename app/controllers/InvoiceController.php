@@ -254,7 +254,7 @@ class InvoiceController extends BaseController
         $invoice->number = Invoice::next_invoice_number('F', $invoice->days);
         $invoice->date_invoice = new DateTime();
 
-        $date = new DateTime($invoice->date_invoice);
+        $date = clone $invoice->date_invoice;
         $date->modify('+1 month');
         $invoice->deadline = $date->format('Y-m-d');
 

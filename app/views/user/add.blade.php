@@ -133,7 +133,7 @@
                         </div>
                         <div class="col-lg-6">
                             {{ Form::label('default_location_id', 'Espace habituel') }}
-                            {{ Form::select('default_location_id', Location::SelectAll(false), $user->default_location_id, array('class' => 'form-control')) }}
+                            {{ Form::select('default_location_id', Location::SelectAll(false), Auth::user()->default_location_id, array('class' => 'form-control')) }}
                         </div>
                         <div class="col-lg-6">
                             {{ Form::checkbox('is_member', true) }}
