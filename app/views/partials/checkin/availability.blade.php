@@ -18,7 +18,9 @@ ORDER BY cities.name ASC, locations.name ASC'));
 
     $results = DB::select(DB::raw('SELECT past_times.location_id, past_times.user_id
 FROM past_times
-WHERE past_times.date_past = CURDATE() AND time_end IS NULL'));
+WHERE past_times.date_past = CURDATE()
+  AND ressource_id = '.Ressource::TYPE_COWORKING.'
+  AND ((time_end IS NULL) OR (time_end > NOW()))'));
     $users = array();
     foreach ($results as $result) {
         $items[$result->location_id]['members'][$result->user_id] = false;

@@ -220,6 +220,13 @@ class PastTimeController extends BaseController
     WHERE (invoice_id is null or invoice_id = 0)
         AND ressource_id = 1');
 
+        DB::statement('UPDATE past_times
+    SET is_free = true
+    WHERE (invoice_id is null or invoice_id = 0)
+        AND ressource_id = 1
+        AND user_id in (SELECT id FROM users WHERE role = "superadmin")
+        ');
+
         return Redirect::route('pasttime_list')->with('mSuccess', 'Les temps saisis ayant des abonnements actifs ont étés associés ensembles.');
     }
 
