@@ -29,23 +29,23 @@ class BookingController extends Controller
         if (empty($rooms)) {
             $messages['rooms'] = 'La salle doit être renseignée';
         } else {
-            //if (!Auth::user()->isSuperAdmin()) {
-            $start = newDateTime(Input::get('date'), Input::get('start'));
-            $end = newDateTime(Input::get('date'), Input::get('end'));
-            $duration = getDuration(Input::get('start'), Input::get('end'));
+            if (!Auth::user()->isSuperAdmin()) {
+                $start = newDateTime(Input::get('date'), Input::get('start'));
+                $end = newDateTime(Input::get('date'), Input::get('end'));
+                $duration = getDuration(Input::get('start'), Input::get('end'));
 
-            $items = BookingItem::where('start_at', '<', $end->format('Y-m-d H:i:s'))
-                ->where(DB::raw('DATE_ADD(start_at, INTERVAL duration MINUTE)'), '>', $start->format('Y-m-d H:i:s'))
-                ->whereIn('ressource_id', Input::get('rooms'))
-                ->where('id', '!=', $id)
-                ->get();
-            foreach ($items as $conflict) {
-                if (!isset($messages['start'])) {
-                    $messages['start'] = '';
+                $items = BookingItem::where('start_at', '<', $end->format('Y-m-d H:i:s'))
+                    ->where(DB::raw('DATE_ADD(start_at, INTERVAL duration MINUTE)'), '>', $start->format('Y-m-d H:i:s'))
+                    ->whereIn('ressource_id', Input::get('rooms'))
+                    ->where('id', '!=', $id)
+                    ->get();
+                foreach ($items as $conflict) {
+                    if (!isset($messages['start'])) {
+                        $messages['start'] = '';
+                    }
+                    $messages['start'] .= sprintf('La salle %s est déjà réservée sur ce créneau' . "\n", $conflict->ressource->name);
                 }
-                $messages['start'] .= sprintf('La salle %s est déjà réservée sur ce créneau' . "\n", $conflict->ressource->name);
             }
-            //          }
         }
         $start_at = newDateTime(Input::get('date'), Input::get('start'));
         if (!Auth::user()->isSuperAdmin() && ($start_at->format('Y-m-d H:i:s') < (new \DateTime())->format('Y-m-d H:i:s'))) {
@@ -263,6 +263,7 @@ class BookingController extends Controller
         $time = new PastTime();
         $time->user_id = $booking_item->booking->user_id;
         $time->ressource_id = $booking_item->ressource_id;
+        $time->location_id = $booking_item->ressource->location_id;
         $time->date_past = date('Y-m-d', strtotime($booking_item->start_at));
         $time->time_start = $booking_item->start_at;
         $time->time_end = date('Y-m-d H:i:s', strtotime($booking_item->start_at) + $booking_item->duration * 60);
