@@ -35,7 +35,7 @@ class BookingController extends Controller
             $duration = getDuration(Input::get('start'), Input::get('end'));
 
             $items = BookingItem::where('start_at', '<', $end->format('Y-m-d H:i:s'))
-                ->where(DB::raw(sprintf('DATE_ADD(start_at, INTERVAL %d MINUTE)', $duration)), '>', $start->format('Y-m-d H:i:s'))
+                ->where(DB::raw('DATE_ADD(start_at, INTERVAL duration MINUTE)'), '>', $start->format('Y-m-d H:i:s'))
                 ->whereIn('ressource_id', Input::get('rooms'))
                 ->where('id', '!=', $id)
                 ->get();

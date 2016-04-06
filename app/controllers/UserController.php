@@ -47,7 +47,8 @@ class UserController extends BaseController
      */
     public function dashboard()
     {
-        if (!Auth::user()) {
+        if (Auth::guest()) {
+            Auth::logout();
             return Redirect::route('user_login');
         }
 

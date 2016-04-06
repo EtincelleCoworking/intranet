@@ -33,7 +33,7 @@ class CheckinController extends BaseController
             return Redirect::route('dashboard')->with('mError', 'Aucune session n\'a commencée');
         }
 
-        $timesheet->time_end = new DateTime(date('Y-m-d H:i:00', ceil(time() / 300) * 300));
+        $timesheet->time_end = new DateTime(date('Y-m-d H:i:00', floor(time() / 300) * 300));
         $timesheet->save();
 
         return Redirect::route('dashboard')->with('mSuccess', 'Le compteur a été arrêté');
