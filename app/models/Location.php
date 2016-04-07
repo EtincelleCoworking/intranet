@@ -31,6 +31,7 @@ class Location extends Eloquent
         $selectVals += $query
             ->join('cities', 'cities.id', '=', 'locations.city_id')
             ->select(array('locations.id', DB::raw('concat(cities.name, \' > \', locations.name) as _name')))
+            ->where('enabled', '=', true)
             ->orderBy('cities.name', 'ASC')
             ->orderBy('locations.name', 'ASC')
             ->lists('_name', 'id');
