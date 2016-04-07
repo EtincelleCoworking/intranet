@@ -41,8 +41,9 @@ WHERE past_times.date_past = CURDATE()
 }
 
 ?>
-
+<?php unset($items['']);  ?>
 @if(count($items) > 0)
+
     <div class="ibox" id="checkin-availability">
         <div class="ibox-title">
             <h5>Membres présents</h5>
