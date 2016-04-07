@@ -9,7 +9,7 @@ if (empty($cacheContent)) {
                 INTERVAL YEAR(CURDATE())-YEAR(birthday)
                          + IF(DAYOFYEAR(CURDATE()) > DAYOFYEAR(birthday),1,0)
                 YEAR)
-            BETWEEN CURDATE() AND DATE_ADD(CURDATE(), INTERVAL 60 DAY)')
+            BETWEEN DATE_SUB(CONCAT(CURDATE(), \' 00:00:00\'), INTERVAL 1 DAY) AND DATE_ADD(CURDATE(), INTERVAL 60 DAY)')
             ->whereIsMember(true)
             ->orderByRaw('DATE_ADD(birthday,
                 INTERVAL YEAR(CURDATE())-YEAR(birthday)
