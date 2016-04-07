@@ -7,6 +7,8 @@
                 ->where('invoices.date_invoice', '>=', date('Y-m-d', Config::get('etincelle.activity_started')));
     })->select(DB::raw('SUM(amount) as total'))->first();
 
+    // CA par année:
+    // select date_format(invoices.date_invoice, '%Y') as y, sum(invoices_items.amount) as sales from invoices join invoices_items on invoices.id = invoices_items.invoice_id where invoices.type = 'F' group by y order by y asc
     ?>
 
     <div class="widget style2 navy-bg">
