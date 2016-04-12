@@ -47,7 +47,7 @@ class BirthdayPostCommand extends Command
         }
         $count = 0;
         /** @var User $user */
-        foreach (User::where('birthday', 'like', date('%-m-d'))->get() as $user) {
+        foreach (User::where('birthday', 'like', date('%-m-d'))->where('is_member', '=', true)->get() as $user) {
             $post = new WallPost();
             $post->setAsRoot();
             $post->user_id = $author->id;
@@ -77,7 +77,7 @@ class BirthdayPostCommand extends Command
         $message .= "\n\n";
         $message .= sprintf('![](%s "Happy Birthday")', $this->getGifUrl());
         $message .= "\n\n";
-        $message .= sprintf('(Image au hasard, Powered By [Giphy](http://giphy.com/)', $this->getGifUrl());
+        $message .= sprintf('(Image au hasard, Powered By [Giphy](http://giphy.com/))', $this->getGifUrl());
         return $message;
     }
 
