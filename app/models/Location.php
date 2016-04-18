@@ -30,7 +30,7 @@ class Location extends Eloquent
         }
         $selectVals += $query
             ->join('cities', 'cities.id', '=', 'locations.city_id')
-            ->select(array('locations.id', DB::raw('concat(cities.name, \' > \', locations.name) as _name')))
+            ->select(array('locations.id', DB::raw('concat(cities.name, \' > \', IF(locations.name IS NULL, \'\', locations.name)) as _name')))
             ->where('enabled', '=', true)
             ->orderBy('cities.name', 'ASC')
             ->orderBy('locations.name', 'ASC')
@@ -48,7 +48,7 @@ class Location extends Eloquent
 
     public function getFullNameAttribute()
     {
-        if (sprintf('%s > %s', $this->city->name, $this->name) != sprintf('%s > ', $this->city->name)) {
+        if ($this->name) {
             return sprintf('%s > %s', $this->city->name, $this->name);
         }
         return $this->city->name;
