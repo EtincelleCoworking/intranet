@@ -3,14 +3,14 @@
 $items = Cache::get(CheckinController::CACHE_KEY_STATUS, array());
 if (count($items) == 0) {
 
-    $results = DB::select(DB::raw('SELECT locations.id, locations.slug, locations.key, (TIME_TO_SEC(TIMEDIFF(now(), locations_ips.created_at))/3600) < 2 as is_fresh, concat(cities.name, " > ", locations.name) as name, locations_ips.name as ip FROM locations join cities on locations.city_id = cities.id left outer join locations_ips on locations.id = locations_ips.id ORDER BY locations.name ASC, locations_ips.name ASC'));
+    $results = DB::select(DB::raw('SELECT locations.id, locations.slug, locations.key, (TIME_TO_SEC(TIMEDIFF(now(), locations_ips.created_at))/3600) < 2 as is_fresh, concat(cities.name, " > ", IF(locations.name IS NULL, "", locations.name)) as name, locations_ips.name as ip FROM locations join cities on locations.city_id = cities.id left outer join locations_ips on locations.id = locations_ips.id ORDER BY locations.name ASC, locations_ips.name ASC'));
     $items = array();
     foreach ($results as $result) {
         $items[] = array(
                 'is_fresh' => $result->is_fresh,
                 'slug' => $result->slug,
                 'key' => $result->key,
-                'name' => $result->name,
+                'name' => trim($result->name, ' > '),
                 'ip' => $result->ip);
     }
 
@@ -32,7 +32,7 @@ if (count($items) == 0) {
                                    class="btn btn-default btn-xs">
                                     <i class="fa fa-magnet"></i>
                                 </a>
-                                <span style="color: #676a6c">{{ trim($item['name'], ' > ') }}</span>
+                                <span style="color: #676a6c">{{ $item['name'] }}</span>
 
                             </td>
                             <td @if($is_first) class="no-borders" @endif>
