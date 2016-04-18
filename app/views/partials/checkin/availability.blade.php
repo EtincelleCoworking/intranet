@@ -3,7 +3,7 @@
 $items = Cache::get(CheckinController::CACHE_KEY_AVAILABILITY, array());
 if (count($items) == 0) {
 
-    $results = DB::select(DB::raw('SELECT locations.id, locations.coworking_capacity, concat(cities.name, " > ", locations.name) as name
+    $results = DB::select(DB::raw('SELECT locations.id, locations.coworking_capacity, concat(cities.name, " > ", IF(locations.name IS NULL, "", locations.name)) as name
 FROM locations
 JOIN cities on locations.city_id = cities.id
 WHERE locations.enabled = 1
@@ -11,7 +11,7 @@ ORDER BY cities.name ASC, locations.name ASC'));
     $items = array();
     foreach ($results as $result) {
         $items[$result->id] = array(
-                'name' => $result->name,
+                'name' => trim($result->name, ' > '),
                 'members' => array(),
                 'capacity' => $result->coworking_capacity
         );
@@ -53,7 +53,7 @@ WHERE past_times.date_past = CURDATE()
                 <div>
                     @foreach($items as $index => $item)
                         <div>
-                            <span>{{ trim($item['name'], ' > ') }}</span>
+                            <span>{{ $item['name'] }}</span>
                             <small class="pull-right">{{ count($item['members']) }} / {{ $item['capacity'] }}</small>
                         </div>
                         <?php $ratio = min(100, 100 * count($item['members']) / $item['capacity']); ?>
