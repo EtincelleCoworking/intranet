@@ -48,7 +48,7 @@ class Location extends Eloquent
 
     public function getFullNameAttribute()
     {
-        if ($this->name) {
+        if (sprintf('%s > %s', $this->city->name, $this->name) != sprintf('%s > ', $this->city->name)) {
             return sprintf('%s > %s', $this->city->name, $this->name);
         }
         return $this->city->name;
