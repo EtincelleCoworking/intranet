@@ -61,6 +61,20 @@
                             </div>
                         </div>
 
+                        <div class="row">
+                            <div class="col-md-4">
+                                {{ Form::checkbox('is_domiciliation', null, array('class' => '')) }}
+                                {{ Form::label('is_domiciliation', 'Domiciliation') }}
+                            </div>
+                            <div class="col-md-4">
+                                {{ Form::label('accountant_id', 'Comptabilité') }}
+                                <p>{{ Form::select('accountant_id', User::SelectInOrganisation($organisation->id), null, array('class' => 'form-control')) }}</p>
+                            </div>
+                            <div class="col-md-4">
+                            </div>
+                        </div>
+
+
                         <div class="hr-line-dashed"></div>
                         <div class="form-group">
                             {{ Form::submit('Enregistrer', array('class' => 'btn btn-success')) }}

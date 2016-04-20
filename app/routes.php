@@ -88,6 +88,7 @@ Route::group(['before' => 'superadmin'], function() {
     Route::get('/ressource/down/{id}', array('as' => 'ressource_order_down', 'uses' => 'RessourceController@order_down'));
 
 	Route::get('/organisations', array('as' => 'organisation_list', 'uses' => 'OrganisationController@liste'));
+	Route::post('/organisations', array('as' => 'organisation_list', 'uses' => 'OrganisationController@liste'));
 	Route::get('/organisation/add', array('as' => 'organisation_add', 'uses' => 'OrganisationController@add'));
 	Route::post('/organisation/add', array('as' => 'organisation_add_check', 'uses' => 'OrganisationController@add_check'));
 	Route::get('/organisation/modify/{id}', array('as' => 'organisation_modify', 'uses' => 'OrganisationController@modify'))->where(array('id' => '[0-9]+'));
@@ -95,6 +96,9 @@ Route::group(['before' => 'superadmin'], function() {
     Route::post('/organisation/{id}/add/user', array('as' => 'organisation_add_user', 'uses' => 'OrganisationController@add_user'))->where(array('id' => '[0-9]+'));
 	Route::post('/organisation/user/add/{id}', array('as' => 'organisation_user_add', 'uses' => 'OrganisationController@user_add'))->where(array('id' => '[0-9]+'));
 	Route::get('/organisation/{organisation}/delete/user/{id}', array('as' => 'organisation_delete_user', 'uses' => 'OrganisationController@delete_user'))->where(array('organisation' => '[0-9]+', 'id' => '[0-9]+'));
+
+    Route::get('/domiciliation', array('as' => 'domiciliation_list', 'uses' => 'DomiciliationController@liste'));
+    Route::get('/domiciliation/{id}/renew', array('as' => 'domiciliation_renew', 'uses' => 'DomiciliationController@renew'));
 
     Route::get('/countries', array('as' => 'country_list', 'uses' => 'CountryController@liste'));
     Route::get('/country/add', array('as' => 'country_add', 'uses' => 'CountryController@add'));

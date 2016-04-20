@@ -1,10 +1,11 @@
 <?php
+
 /**
-* Organisation Controller
-*/
+ * Organisation Controller
+ */
 class OrganisationController extends BaseController
 {
-	/**
+    /**
      * Verify if exist
      */
     private function dataExist($id)
@@ -17,35 +18,50 @@ class OrganisationController extends BaseController
         }
     }
 
-	/**
-	 * List organisations
-	 */
-	public function liste()
-	{
-		$organisations = Organisation::paginate(15);
+    /**
+     * List organisations
+     */
+    public function liste()
+    {
+        if (Input::has('filtre_submitted')) {
+            if (Input::has('filtre_organisation_id') && Input::get('filtre_organisation_id')) {
+                Session::put('filtre_organisation.organisation_id', Input::get('filtre_organisation_id'));
+            } else {
+                Session::forget('filtre_organisation.organisation_id');
+            }
+        }
+        $q = Organisation::orderBy('name', 'ASC');
+        if (Session::has('filtre_organisation.organisation_id')) {
+            $recapFilter = Session::get('filtre_organisation.organisation_id');
+            if ($recapFilter) {
+                $q->whereId($recapFilter);
+            }
+        }
 
-		return View::make('organisation.liste', array('organisations' => $organisations));
-	}
+        $organisations = $q->paginate(15);
 
-	/**
-	 * Modify organisation
-	 */
-	public function modify($id)
-	{
-		$organisation = $this->dataExist($id);
+        return View::make('organisation.liste', array('organisations' => $organisations));
+    }
 
-		return View::make('organisation.modify', array('organisation' => $organisation));
-	}
+    /**
+     * Modify organisation
+     */
+    public function modify($id)
+    {
+        $organisation = $this->dataExist($id);
 
-	/**
-	 * Modify organisation (form)
-	 */
-	public function modify_check($id)
-	{
-		$organisation = $this->dataExist($id);
+        return View::make('organisation.modify', array('organisation' => $organisation));
+    }
 
-		$validator = Validator::make(Input::all(), Organisation::$rules);
-		if (!$validator->fails()) {
+    /**
+     * Modify organisation (form)
+     */
+    public function modify_check($id)
+    {
+        $organisation = $this->dataExist($id);
+
+        $validator = Validator::make(Input::all(), Organisation::$rules);
+        if (!$validator->fails()) {
             $organisation->name = Input::get('name');
             $organisation->address = Input::get('address');
             $organisation->zipcode = Input::get('zipcode');
@@ -53,70 +69,76 @@ class OrganisationController extends BaseController
             $organisation->country_id = Input::get('country_id');
             $organisation->tva_number = Input::get('tva_number');
             $organisation->code_purchase = Input::get('code_purchase');
-			$organisation->code_sale = Input::get('code_sale');
+            $organisation->code_sale = Input::get('code_sale');
+            $organisation->is_domiciliation = Input::get('is_domiciliation') == 'on';
+            if (Input::get('accountant_id')) {
+                $organisation->accountant_id = Input::get('accountant_id');
+            } else {
+                $organisation->accountant_id = null;
+            }
 
-			if ($organisation->save()) {
-				return Redirect::route('organisation_modify', $organisation->id)->with('mSuccess', 'Cet organisme a bien été modifié');
-			} else {
-				return Redirect::route('organisation_modify', $organisation->id)->with('mError', 'Impossible de modifier cet organisme')->withInput();
-			}
-		} else {
-			return Redirect::route('organisation_modify', $organisation->id)->with('mError', 'Il y a des erreurs')->withErrors($validator->messages())->withInput();
-		}
-	}
+            if ($organisation->save()) {
+                return Redirect::route('organisation_modify', $organisation->id)->with('mSuccess', 'Cet organisme a bien été modifié');
+            } else {
+                return Redirect::route('organisation_modify', $organisation->id)->with('mError', 'Impossible de modifier cet organisme')->withInput();
+            }
+        } else {
+            return Redirect::route('organisation_modify', $organisation->id)->with('mError', 'Il y a des erreurs')->withErrors($validator->messages())->withInput();
+        }
+    }
 
-	/**
-	 * Add organisation
-	 */
-	public function add()
-	{
-		return View::make('organisation.add');
-	}
+    /**
+     * Add organisation
+     */
+    public function add()
+    {
+        return View::make('organisation.add');
+    }
 
-	/**
-	 * Add Organisation check
-	 */
-	public function add_check()
-	{
-		$validator = Validator::make(Input::all(), Organisation::$rulesAdd);
-		if (!$validator->fails()) {
-			$organisation = new Organisation(Input::all());
+    /**
+     * Add Organisation check
+     */
+    public function add_check()
+    {
+        $validator = Validator::make(Input::all(), Organisation::$rulesAdd);
+        if (!$validator->fails()) {
+            $organisation = new Organisation(Input::all());
 
-			if ($organisation->save()) {
-				return Redirect::route('organisation_modify', $organisation->id)->with('mSuccess', 'L\'organisme a bien été ajouté');
-			} else {
-				return Redirect::route('organisation_add')->with('mError', 'Impossible de créer cet organisme')->withInput();
-			}
-		} else {
-			return Redirect::route('organisation_add')->with('mError', 'Il y a des erreurs')->withErrors($validator->messages())->withInput();
-		}
-	}
+            if ($organisation->save()) {
+                return Redirect::route('organisation_modify', $organisation->id)->with('mSuccess', 'L\'organisme a bien été ajouté');
+            } else {
+                return Redirect::route('organisation_add')->with('mError', 'Impossible de créer cet organisme')->withInput();
+            }
+        } else {
+            return Redirect::route('organisation_add')->with('mError', 'Il y a des erreurs')->withErrors($validator->messages())->withInput();
+        }
+    }
 
-	/**
-	 * Add user
-	 */
-	public function add_user($id)
-	{
-		$organisation = $this->dataExist($id);
+    /**
+     * Add user
+     */
+    public function add_user($id)
+    {
+        $organisation = $this->dataExist($id);
 
-		if (Input::get('user_id')) {
-			if (!is_array(OrganisationUser::where('user_id', Input::get('user_id'))->where('organisation_id', $organisation->id)->get())) {
-				$add = new OrganisationUser;
-				$add->user_id = Input::get('user_id');
-				$add->organisation_id = $organisation->id;
+        if (Input::get('user_id')) {
+            if (!is_array(OrganisationUser::where('user_id', Input::get('user_id'))->where('organisation_id', $organisation->id)->get())) {
+                $add = new OrganisationUser;
+                $add->user_id = Input::get('user_id');
+                $add->organisation_id = $organisation->id;
 
-				if ($add->save()) {
-					return Redirect::route('organisation_modify', $organisation->id)->with('mSuccess', 'Cet utilisateur a bien été associé à la société');
-				} else {
-					return Redirect::route('organisation_modify', $organisation->id)->with('mError', 'Il y a des erreurs')->withErrors('Impossible d\'associer cet utilisateur à cette société')->withInput();
-				}
-			} else {
-				return Redirect::route('organisation_modify', $organisation->id)->with('mError', 'Il y a des erreurs')->withErrors('Cet utilisateur est déjà associé à cette société')->withInput();
-			}
-		} else {
-			return Redirect::route('organisation_modify', $organisation->id)->with('mError', 'Il y a des erreurs')->withErrors('Merci de renseigner un utilisateur')->withInput();
-		}
-	}
+                if ($add->save()) {
+                    return Redirect::route('organisation_modify', $organisation->id)->with('mSuccess', 'Cet utilisateur a bien été associé à la société');
+                } else {
+                    return Redirect::route('organisation_modify', $organisation->id)->with('mError', 'Il y a des erreurs')->withErrors('Impossible d\'associer cet utilisateur à cette société')->withInput();
+                }
+            } else {
+                return Redirect::route('organisation_modify', $organisation->id)->with('mError', 'Il y a des erreurs')->withErrors('Cet utilisateur est déjà associé à cette société')->withInput();
+            }
+        } else {
+            return Redirect::route('organisation_modify', $organisation->id)->with('mError', 'Il y a des erreurs')->withErrors('Merci de renseigner un utilisateur')->withInput();
+        }
+    }
 
     /**
      * User add
@@ -142,17 +164,17 @@ class OrganisationController extends BaseController
         }
     }
 
-	/**
-	 * Delete user
-	 */
-	public function delete_user($organisation, $id)
-	{
-		if (OrganisationUser::where('organisation_id', $organisation)->where('user_id', $id)->delete()) {
-			return Redirect::route('organisation_modify', $organisation)->with('mSuccess', 'Cet utilisateur a bien été retiré de cette société');
-		} else {
-			return Redirect::route('organisation_modify', $organisation)->with('mError', 'Impossible de retirer cet utilisateur');
-		}
-	}
+    /**
+     * Delete user
+     */
+    public function delete_user($organisation, $id)
+    {
+        if (OrganisationUser::where('organisation_id', $organisation)->where('user_id', $id)->delete()) {
+            return Redirect::route('organisation_modify', $organisation)->with('mSuccess', 'Cet utilisateur a bien été retiré de cette société');
+        } else {
+            return Redirect::route('organisation_modify', $organisation)->with('mError', 'Impossible de retirer cet utilisateur');
+        }
+    }
 
     /**
      * Get infos from an organisation (JSON)
@@ -169,7 +191,7 @@ class OrganisationController extends BaseController
     public function json_list()
     {
         if (strlen(Input::get('term')) >= 2) {
-            $list = Organisation::where('name', 'LIKE', '%'.Input::get('term').'%')->lists('name', 'id');
+            $list = Organisation::where('name', 'LIKE', '%' . Input::get('term') . '%')->lists('name', 'id');
         } else {
             $list = array();
         }

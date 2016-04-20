@@ -59,6 +59,17 @@
                             </div>
                         </div>
 
+                        <div class="row">
+                            <div class="col-md-4">
+                                {{ Form::label('is_domiciliation', 'Domiciliation') }}
+                                <p>{{ Form::checkbox('is_domiciliation', null, array('class' => 'form-control')) }}</p>
+                            </div>
+                            <div class="col-md-4">
+                            </div>
+                            <div class="col-md-4">
+                            </div>
+                        </div>
+
                         <div class="hr-line-dashed"></div>
                         <div class="form-group">
                             {{ Form::submit('Enregistrer', array('class' => 'btn btn-success')) }}

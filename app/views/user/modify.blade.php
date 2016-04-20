@@ -189,7 +189,7 @@
                                 </tbody>
                                 <tfoot>
                                 <tr>
-                                    <td> {{ Form::select('organisation_id', Organisation::SelectNotInOrganisation($user->id, 'Sélectionnez une organisation'), null, array('class' => 'form-control')) }}</td>
+                                    <td> {{ Form::select('organisation_id', Organisation::SelectNotInOrganisation($user->id, 'Sélectionnez une organisation'), null, array('class' => 'form-control', 'id'=> 'organisation_selector')) }}</td>
                                     <td>{{ Form::submit('Ajouter', array('class' => 'btn btn-info')) }}</td>
                                 </tr>
                                 </tfoot>
@@ -280,6 +280,6 @@
     <script type="text/javascript">
         $().ready(function () {
             $('.datePicker').datepicker();
-        });
+            $('#organisation_selector').select2();        });
     </script>
 @stop

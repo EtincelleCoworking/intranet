@@ -33,6 +33,11 @@ class Organisation extends Eloquent
         return $this->belongsTo('Country');
     }
 
+    public function accountant()
+    {
+        return $this->belongsTo('User');
+    }
+
     /**
      * Organisation has many invoices
      */
@@ -95,5 +100,10 @@ class Organisation extends Eloquent
         $selectVals[''] = $title;
         $selectVals += $this->orderBy('name', 'ASC')->get()->lists('name', 'id');
         return $selectVals;
+    }
+
+    public function scopeDomiciliation($query)
+    {
+        return $query->where('is_domiciliation', 1);
     }
 }
