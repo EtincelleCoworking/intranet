@@ -105,6 +105,11 @@
         </div>
     </div>
 @stop
-@section('content')
 
+@section('javascript')
+    <script type="text/javascript">
+        $().ready(function () {
+            $('#filter-organisation').select2();
+        });
+    </script>
 @stop
