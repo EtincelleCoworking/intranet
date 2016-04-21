@@ -89,7 +89,7 @@
                                     <td>
                                         @if($organisation->domiciliation_kind)
                                             <a href="{{ URL::route('domiciliation_renew', $organisation->id) }}"
-                                            class="btn btn-xs btn-default">Renouveler</a>
+                                               class="btn btn-xs btn-default">Renouveler</a>
                                             {{ $organisation->domiciliation_kind }}
                                         @else
                                             -
@@ -106,6 +106,7 @@
                                                 <br/>
                                                 <small>(échéance: <?php
                                                     $start_at = strtotime($organisation->domiciliation_start_at);
+                                                    $end_at = strtotime('+1 months', $end_at); // 1 mois de préavis
                                                     $end_at = $start_at;
                                                     while ($end_at < time()) {
                                                         $end_at = strtotime('+3 months', $end_at);

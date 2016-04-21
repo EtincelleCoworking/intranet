@@ -350,16 +350,25 @@ class InvoiceController extends BaseController
 
     public function send($invoice_id)
     {
-
         /** @var Invoice $invoice */
         $invoice = $this->dataExist($invoice_id, 'invoice_list');
 
-
-        Mail::send('emails.invoice', array('invoice' => $invoice), function ($message) use ($invoice) {
+        $target_user = null;
+        if ($invoice->user) {
+            $target_user = $invoice->user;
+        }
+        if ($invoice->organisation && $invoice->organisation->accountant) {
+            $target_user = $invoice->organisation->accountant;
+        }
+        if(!$target_user){
+            return Redirect::route('invoice_list')
+                ->with('mError', sprintf('Aucun utilisateur trouvé pour envoyer la facture %s par email', $invoice->ident));
+        }
+        Mail::send('emails.invoice', array('invoice' => $invoice), function ($message) use ($invoice, $target_user) {
             $message->from('sebastien@coworking-toulouse.com', 'Sébastien Hordeaux')
                 ->bcc('sebastien@coworking-toulouse.com', 'Sébastien Hordeaux');
 
-            $message->to($invoice->user->email, $invoice->user->fullname);
+            $message->to($target_user->email, $target_user->fullname);
 
             $message->subject(sprintf('Etincelle Coworking - Facture %s', $invoice->ident));
 
@@ -369,7 +378,7 @@ class InvoiceController extends BaseController
                 sprintf('%s.pdf', $invoice->ident), array('mime' => 'application/pdf'));
         });
 
-        $to = htmlentities(sprintf('%s <%s>', $invoice->user->fullname, $invoice->user->email));
+        $to = htmlentities(sprintf('%s <%s>', $target_user->fullname, $target_user->email));
 
         $invoice_comment = new InvoiceComment();
         $invoice_comment->invoice_id = $invoice->id;
