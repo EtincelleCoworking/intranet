@@ -211,9 +211,6 @@ class SubscriptionController extends BaseController
             $invoice_line->subscription_hours_quota = $subscription->kind->hours_quota;
             $invoice_line->subscription_user_id = $subscription->user_id;
 
-            // update invoices_items set subscription_to = date_add(subscription_from, interval 1 MONTH) where subscription_from <> '0000-00-00 00:00:00'
-
-
             $date2->modify('-1 day');
             $invoice_line->text = sprintf("%s - %s\nDu %s au %s", $subscription->kind->name, $subscription->user->fullname,
                 $date->format('d/m/Y'), $date2->format('d/m/Y'));

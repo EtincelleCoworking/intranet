@@ -153,7 +153,7 @@
                                     <tr @if ((Auth::user()->isSuperAdmin()) and ($time->invoice_id or $time->is_free)) class="text-muted" @endif >
                                         @if (Auth::user()->isSuperAdmin())
                                             <th>
-                                                @if(!$time->invoice_id)
+                                                @if(!($time->invoice_id or $time->is_free))
                                                     {{ Form::checkbox('items[]', $time->id, false, array('class' => 'check')) }}
                                                 @endif
                                             </th>
