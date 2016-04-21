@@ -106,8 +106,8 @@
                                                 <br/>
                                                 <small>(échéance: <?php
                                                     $start_at = strtotime($organisation->domiciliation_start_at);
-                                                    $end_at = strtotime('+1 months', $end_at); // 1 mois de préavis
                                                     $end_at = $start_at;
+                                                    $end_at = strtotime('+1 months', $end_at); // 1 mois de préavis
                                                     while ($end_at < time()) {
                                                         $end_at = strtotime('+3 months', $end_at);
                                                     }
