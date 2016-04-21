@@ -22,6 +22,7 @@ class PastTime extends Eloquent
         )
             ->join('ressources', 'ressource_id', '=', 'ressources.id')
             ->whereBetween('date_past', array($start, $end))
+            ->whereNotNull('past_times.time_end')
             ->groupBy('ressource_id');
         if ($to_invoice) {
             $query->whereInvoiceId(0);

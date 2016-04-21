@@ -29,34 +29,21 @@
         </div>
     @else
 
+
         <div class="row">
             <div class="col-lg-12">
                 <div class="ibox float-e-margins">
-                    <div class="ibox-title">
-                        <h5></h5>
-                        {{--
-                        <div class="ibox-tools">
-                            <a class="collapse-link">
-                                <i class="fa fa-chevron-up"></i>
-                            </a>
-                            <a class="dropdown-toggle" data-toggle="dropdown" href="#">
-                                <i class="fa fa-wrench"></i>
-                            </a>
-                            <ul class="dropdown-menu dropdown-user">
-                                <li><a href="#">Config option 1</a>
-                                </li>
-                                <li><a href="#">Config option 2</a>
-                                </li>
-                            </ul>
-                            <a class="close-link">
-                                <i class="fa fa-times"></i>
-                            </a>
+                    @if(count($companies)>0)
+                        <div class="ibox-title">
+                            Renouveler les sociétés:
+                            @foreach($companies as $company_id => $company_data)
+                                <a href="{{ URL::route('subscription_renew_company', $company_id) }}"
+                                   class="btn btn-xs btn-primary">{{$company_data['name']}}
+                                    ({{$company_data['count']}})</a>
+                            @endforeach
                         </div>
-                        --}}
-                    </div>
+                    @endif
                     <div class="ibox-content">
-
-
                         <table class="table table-striped table-hover">
                             <thead>
                             <tr>

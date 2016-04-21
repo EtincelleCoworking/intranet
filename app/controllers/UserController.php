@@ -440,8 +440,7 @@ class UserController extends BaseController
             $users->where('users.is_member', '=', true);
         }
         if (Session::get('filtre_user.subscription')) {
-            $users->join('invoices', 'invoices.user_id', '=', 'users.id')
-                ->join('invoices_items', 'invoices_items.invoice_id', '=', 'invoices.id')
+            $users->join('invoices_items', 'invoices_items.subscription_user_id', '=', 'users.id')
                 ->where('subscription_from', '<>', '0000-00-00 00:00:00')
                 ->where('subscription_from', '<', date('Y-m-d'))
                 ->where('subscription_to', '>', date('Y-m-d'))

@@ -70,6 +70,7 @@
 
         <div class="row">
             <div class="@if($active_subscription) col-lg-8 @else  col-lg-12 @endif">
+            @if(count($recap))
                 <div class="ibox">
                     <div class="ibox-title">
                         <h5>En attente de facturation {{ number_format($pending_invoice_amount, 0, ',', '.') }}€
@@ -105,6 +106,7 @@
                         </div>
                     </div>
                 </div>
+            @endif
             </div>
             @if($active_subscription)
                 <div class="col-lg-4">

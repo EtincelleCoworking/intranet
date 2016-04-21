@@ -24,11 +24,11 @@
 
     <div class="row">
         <div class="col-lg-9 col-md-8 col-sm-6 col-xs-8">
-                @include('partials.checkin.availability')
             @include('partials.wall.component')
         </div>
         <div class="col-lg-3 col-md-4 col-sm-6 col-xs-4">
             @include('partials.checkin.component')
+            @include('partials.checkin.availability')
             @if (Auth::user()->isSuperAdmin())
             @elseif (Auth::user()->role == 'member')
                 @include('partials.active_subscription')

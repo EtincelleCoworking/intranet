@@ -211,7 +211,7 @@ class PastTimeController extends BaseController
         FROM invoices
             JOIN invoices_items ON invoices.id = invoices_items.invoice_id
         WHERE invoices_items.ressource_id = past_times.ressource_id
-            AND invoices.user_id = past_times.user_id
+            AND invoices_items.subscription_user_id = past_times.user_id
             AND invoices.type = "F"
             AND past_times.date_past BETWEEN invoices_items.subscription_from AND invoices_items.subscription_to
             AND past_times.invoice_id = 0

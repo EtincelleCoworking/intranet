@@ -264,9 +264,8 @@ class User extends Eloquent implements UserInterface, RemindableInterface
 
     public function getLastSubscription()
     {
-        return InvoiceItem::join('invoices', 'invoice_id', '=', 'invoices.id')
-            ->where('subscription_from', '<>', '0000-00-00 00:00:00')
-            ->where('invoices.user_id', $this->id)
+        return InvoiceItem::where('subscription_from', '<>', '0000-00-00 00:00:00')
+            ->where('subscription_user_id', $this->id)
             ->orderBy('subscription_to', 'DESC')
             ->select('subscription_from', 'subscription_to', 'subscription_hours_quota', 'invoice_id')
             ->first();

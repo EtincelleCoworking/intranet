@@ -71,12 +71,13 @@ class Subscription extends Eloquent
     {
         $params = array();
         $active_subscription = InvoiceItem::where('ressource_id', Ressource::TYPE_COWORKING)
-            ->where('invoices.user_id', Auth::user()->id)
+            ->where('invoices_items.subscription_user_id', Auth::user()->id)
             ->where('subscription_from', '<', date('Y-m-d'))
             ->where('subscription_to', '>', date('Y-m-d'))
             ->join('invoices', function ($j) {
                 $j->on('invoice_id', '=', 'invoices.id')->where('type', '=', 'F');
             })
+
             ->first();
 
         $params['active_subscription'] = $active_subscription;
