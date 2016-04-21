@@ -2,13 +2,6 @@
 
 class DomiciliationController extends BaseController
 {
-    public function liste()
-    {
-        $companies = Organisation::Domiciliation()->paginate(15);
-
-        return View::make('domiciliation.liste', array('companies' => $companies));
-    }
-
     public function renew($id)
     {
         $organisation = Organisation::find($id);

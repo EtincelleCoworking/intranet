@@ -29,7 +29,13 @@ class OrganisationController extends BaseController
             } else {
                 Session::forget('filtre_organisation.organisation_id');
             }
+            if (Input::has('filtre_domiciliation') && Input::get('filtre_domiciliation')) {
+                Session::put('filtre_organisation.domiciliation', Input::get('filtre_domiciliation'));
+            } else {
+                Session::forget('filtre_organisation.domiciliation');
+            }
         }
+
         $q = Organisation::orderBy('name', 'ASC');
         if (Session::has('filtre_organisation.organisation_id')) {
             $recapFilter = Session::get('filtre_organisation.organisation_id');
@@ -37,10 +43,20 @@ class OrganisationController extends BaseController
                 $q->whereId($recapFilter);
             }
         }
+        if (Session::has('filtre_organisation.domiciliation')) {
+            $q->where('domiciliation_kind_id', '>', '0');
+        }
 
-        $organisations = $q->paginate(15);
+        $organisations = $q->with('domiciliation_kind')->paginate(15);
 
         return View::make('organisation.liste', array('organisations' => $organisations));
+    }
+
+    public function cancelFilter(){
+        Session::forget('filtre_organisation.organisation_id');
+        Session::forget('filtre_organisation.domiciliation');
+        return Redirect::route('organisation_list');
+
     }
 
     /**
@@ -70,7 +86,9 @@ class OrganisationController extends BaseController
             $organisation->tva_number = Input::get('tva_number');
             $organisation->code_purchase = Input::get('code_purchase');
             $organisation->code_sale = Input::get('code_sale');
-            $organisation->is_domiciliation = Input::get('is_domiciliation') == 'on';
+            $organisation->domiciliation_kind_id = Input::get('domiciliation_kind_id', null);
+            $organisation->domiciliation_start_at = $this->normalizeDate(Input::get('domiciliation_start_at'));
+            $organisation->domiciliation_end_at = $this->normalizeDate(Input::get('domiciliation_end_at', null));
             if (Input::get('accountant_id')) {
                 $organisation->accountant_id = Input::get('accountant_id');
             } else {
@@ -85,6 +103,15 @@ class OrganisationController extends BaseController
         } else {
             return Redirect::route('organisation_modify', $organisation->id)->with('mError', 'Il y a des erreurs')->withErrors($validator->messages())->withInput();
         }
+    }
+
+    private function normalizeDate($value)
+    {
+        if ($value) {
+            $data = explode('/', $value);
+            return $data[2] . '-' . $data[1] . '-' . $data[0];
+        }
+        return null;
     }
 
     /**

@@ -39,12 +39,16 @@
                     {{ Form::open(array('route' => array('organisation_list'))) }}
                     {{ Form::hidden('filtre_submitted', 1) }}
                     <div class="row">
-                        <div class="col-md-9">
+                        <div class="col-md-6">
                             {{ Form::select('filtre_organisation_id', Organisation::Select('Sélectionnez une société'), Session::get('filtre_organisation.organisation_id') ? Session::get('filtre_organisation.organisation_id') : null, array('id' => 'filter-organisation','class' => 'form-control')) }}
                         </div>
                         <div class="col-md-3">
+                            {{ Form::checkbox('filtre_domiciliation', null, Session::get('filtre_organisation.domiciliation') ? Session::get('filtre_organisation.domiciliation') : null, array('id' => 'filter-domiciliation')) }}
+                            Domiciliation
+                        </div>
+                        <div class="col-md-3">
                             {{ Form::submit('Filtrer', array('class' => 'btn btn-sm btn-primary')) }}
-                            <a href="{{URL::route('invoice_filter_reset')}}" class="btn btn-sm btn-default">Réinitialiser</a>
+                            <a href="{{URL::route('organisation_filter_reset')}}" class="btn btn-sm btn-default">Réinitialiser</a>
                         </div>
                     </div>
                     {{ Form::close() }}
@@ -64,6 +68,7 @@
                                 <th>Nom</th>
                                 <th>Facturation</th>
                                 <th>Domiciliation</th>
+                                <th>Période</th>
                                 <th>Actions</th>
                             </tr>
                             </thead>
@@ -81,7 +86,36 @@
                                             -
                                         @endif
                                     </td>
-                                    <td>{{ $organisation->is_domiciliation?'Oui':'-' }}</td>
+                                    <td>
+                                        @if($organisation->domiciliation_kind)
+                                            <a href="{{ URL::route('domiciliation_renew', $organisation->id) }}"
+                                            class="btn btn-xs btn-default">Renouveler</a>
+                                            {{ $organisation->domiciliation_kind }}
+                                        @else
+                                            -
+                                        @endif
+                                    </td>
+                                    <td>
+                                        @if($organisation->domiciliation_start_at)
+                                            @if($organisation->domiciliation_end_at)
+                                                {{ date('d/m/Y', strtotime($organisation->domiciliation_start_at)) }} au
+                                                {{ date('d/m/Y', strtotime($organisation->domiciliation_end_at)) }}
+                                            @else
+                                                Depuis
+                                                le {{ date('d/m/Y', strtotime($organisation->domiciliation_start_at)) }}
+                                                <br/>
+                                                <small>(échéance: <?php
+                                                    $start_at = strtotime($organisation->domiciliation_start_at);
+                                                    $end_at = $start_at;
+                                                    while ($end_at < time()) {
+                                                        $end_at = strtotime('+3 months', $end_at);
+                                                    }
+
+                                                    ?>{{ date('d/m/Y', $end_at) }})
+                                                </small>
+                                            @endif
+                                        @endif
+                                    </td>
                                     <td>
                                         <a href="{{ URL::route('organisation_modify', $organisation->id) }}"" class="btn
                                         btn-xs btn-default">Modifier</a>
@@ -110,6 +144,7 @@
     <script type="text/javascript">
         $().ready(function () {
             $('#filter-organisation').select2();
+            $('#filter-domiciliation').select2();
         });
     </script>
 @stop
