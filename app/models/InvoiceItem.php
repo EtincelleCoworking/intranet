@@ -97,7 +97,7 @@ class InvoiceItem extends Eloquent
 			})
 			->select(
 				DB::raw('date_format(invoices.date_invoice, "%Y-%m") as period'),
-				DB::raw('count(distinct(invoices.organisation_id)) as total')
+				DB::raw('count(distinct(invoices_items.subscription_user_id)) as total')
 			)
 			->groupBy('period')
 			->orderBy('period', 'DESC')

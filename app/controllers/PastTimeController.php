@@ -309,6 +309,8 @@ class PastTimeController extends BaseController
             }
             $invoice_line->vat_types_id = $vat->id;
             $invoice_line->ressource_id = $item->ressource_id;
+            $invoice_line->subscription_user_id = $invoice->user_id;
+
             $invoice_line->save();
 
         }
