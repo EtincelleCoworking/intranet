@@ -139,8 +139,11 @@ class StatsController extends BaseController
 
     public function members()
     {
-        $items = DB::select(DB::raw(sprintf('SELECT ii.subscription_user_id, i.days
-          FROM invoices i JOIN invoices_items ii ON i.id = ii.invoice_id WHERE ii.ressource_id = %d AND ii.subscription_user_id IS NOT NULL ORDER BY i.days DESC', Ressource::TYPE_COWORKING)));
+        $items = DB::select(DB::raw(sprintf('SELECT ii.subscription_user_id, if(ii.subscription_from = "0000-00-00 00:00:00", i.days, date_format(ii.subscription_from, "%%Y%%m")) as days
+          FROM invoices i JOIN invoices_items ii ON i.id = ii.invoice_id 
+          WHERE i.type = "F" AND ii.ressource_id = %d 
+            AND ii.subscription_user_id IS NOT NULL 
+            ORDER BY days DESC, i.organisation_id ASC', Ressource::TYPE_COWORKING)));
         $results = array();
         $users = array();
         foreach ($items as $item) {
