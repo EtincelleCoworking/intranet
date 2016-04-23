@@ -143,7 +143,8 @@ class StatsController extends BaseController
           FROM invoices i JOIN invoices_items ii ON i.id = ii.invoice_id 
           WHERE i.type = "F" AND ii.ressource_id = %d 
             AND ii.subscription_user_id IS NOT NULL 
-            ORDER BY days DESC, i.organisation_id ASC', Ressource::TYPE_COWORKING)));
+            AND ii.subscription_from <= "%s 23:59:59"
+            ORDER BY days DESC, i.organisation_id ASC', Ressource::TYPE_COWORKING, date('Y-m-t'))));
         $results = array();
         $users = array();
         foreach ($items as $item) {
