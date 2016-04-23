@@ -154,6 +154,19 @@ class StatsController extends BaseController
             $results[$item->days][$item->subscription_user_id] = '';
             $users[$item->subscription_user_id] = true;
         }
+        $items = DB::select(DB::raw(sprintf('SELECT distinct(pt.user_id) FROM past_times pt
+          JOIN users u ON u.id = pt.user_id
+          WHERE pt.ressource_id = %d 
+            AND u.role <> "superadmin"
+            AND pt.date_past BETWEEN "%s" AND "%s"', Ressource::TYPE_COWORKING, date('Y-m-01'), date('Y-m-t'))));
+        $period = date('Ym');
+        foreach ($items as $item) {
+            if (!isset($results[$period])) {
+                $results[$period] = array();
+            }
+            $results[$period][$item->user_id] = '';
+            $users[$item->user_id] = true;
+        }
         $users_instances = User::whereIn('id', array_keys($users))->get();
         foreach ($users_instances as $user) {
             $users[$user->id] = $user;
