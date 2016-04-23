@@ -119,6 +119,7 @@ Route::group(['before' => 'superadmin'], function() {
     Route::get('/stats/charges', array('as' => 'stats_charges', 'uses' => 'StatsController@charges'));
     Route::get('/stats/subscriptions', array('as' => 'stats_subscriptions', 'uses' => 'StatsController@subscriptions'));
     Route::get('/stats/sales_per_category', array('as' => 'stats_sales_per_category', 'uses' => 'StatsController@sales_per_category'));
+    Route::get('/stats/members', array('as' => 'stats_members', 'uses' => 'StatsController@members'));
 
     Route::get('/tags', array('as' => 'tag_list', 'uses' => 'TagController@liste'));
     Route::get('/tag/add', array('as' => 'tag_add', 'uses' => 'TagController@add'));

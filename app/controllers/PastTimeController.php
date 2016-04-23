@@ -205,6 +205,7 @@ class PastTimeController extends BaseController
 
     public function linkInvoices()
     {
+        // TODO ne pas associer de facture pour les quotas dépassés
         DB::statement('UPDATE past_times
     SET invoice_id = (
         SELECT invoices.id

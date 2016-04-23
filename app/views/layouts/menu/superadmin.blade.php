@@ -104,6 +104,9 @@
             <li{{ Request::is('stats/sales_per_category') ? ' class="active"' : '' }}>
                 <a href="{{ URL::route('stats_sales_per_category') }}">Par catégorie</a>
             </li>
+            <li{{ Request::is('stats/members') ? ' class="active"' : '' }}>
+                <a href="{{ URL::route('stats_members') }}">Membres</a>
+            </li>
             <li{{ Request::is('stats/sales') ? ' class="active"' : '' }}>
                 <a href="{{ URL::route('stats_sales', 'all') }}">Chiffre d'affaires</a>
             </li>
