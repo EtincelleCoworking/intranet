@@ -6,6 +6,7 @@ $events = BookingItem::where('start_at', '>', date('Y-m-d H:i:s'))
         ->where('start_at', '<', date('Y-m-d', strtotime('+2 weeks')))
         ->with('booking', 'ressource')
         ->orderBy('start_at', 'ASC')
+        ->select('booking_item.id', 'booking.title', 'booking_item.start_at')
         ->get();
 
 ?>
@@ -16,12 +17,12 @@ $events = BookingItem::where('start_at', '>', date('Y-m-d H:i:s'))
         </div>
         <div class="ibox-content">
             <div class="feed-activity-list">
-                @foreach($events as $booking_item)
+                @foreach($events as $event)
                     <div class="feed-element">
                         <div class="media-body ">
-                            <small class="pull-right text-navy">{{date('d/m H:i', strtotime($booking_item->start_at))}}</small>
+                            <small class="pull-right text-navy">{{date('d/m H:i', strtotime($event->start_at))}}</small>
                             <strong>
-                                <a href="{{route('booking')}}">{{ $booking_item->booking->title }}</a>
+                                <a href="{{route('booking_item_show', array('id' => $event->id))}}">{{ $event->title }}</a>
                             </strong><br/>
                             {{--<small class="text-muted">X participants</small>--}}
                             {{--<div class="actions pull-right">--}}

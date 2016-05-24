@@ -57,8 +57,10 @@ class BookingApiController extends Controller
                 ->to($booking_item->booking->user->email, $booking_item->booking->user->fullname)
                 ->subject(sprintf('%s - Inscription - %s', $_ENV['organisation_name'], $booking_item->booking->title));
         });
-
-        return Response::json(array('status' => 'OK', 'member' => $this->getMember(User::find($user_id))));
+        if (Request::ajax()) {
+            return Response::json(array('status' => 'OK', 'member' => $this->getMember(User::find($user_id))));
+        }
+        return Redirect::route('booking_item_show', array('id' => $booking_item_id));
     }
 
     public function unregister($booking_item_id, $user_id = null)
@@ -82,7 +84,9 @@ class BookingApiController extends Controller
                 ->subject(sprintf('%s - Désinscription - %s', $_ENV['organisation_name'], $booking_item->booking->title));
         });
 
-
-        return Response::json(array('status' => 'OK', 'user_id' => $user_id));
+        if (Request::ajax()) {
+            return Response::json(array('status' => 'OK', 'user_id' => $user_id));
+        }
+        return Redirect::route('booking_item_show', array('id' => $booking_item_id));
     }
 }

@@ -86,7 +86,7 @@ class OrganisationController extends BaseController
             $organisation->tva_number = Input::get('tva_number');
             $organisation->code_purchase = Input::get('code_purchase');
             $organisation->code_sale = Input::get('code_sale');
-            $organisation->domiciliation_kind_id = Input::get('domiciliation_kind_id', null);
+            $organisation->domiciliation_kind_id = Input::get('domiciliation_kind_id', null)?Input::get('domiciliation_kind_id', null):null;
             $organisation->domiciliation_start_at = $this->normalizeDate(Input::get('domiciliation_start_at'));
             $organisation->domiciliation_end_at = $this->normalizeDate(Input::get('domiciliation_end_at', null));
             if (Input::get('accountant_id')) {

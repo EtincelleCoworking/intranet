@@ -490,4 +490,13 @@ class BookingController extends Controller
 //        $response->header('Content-Disposition', 'attachment; filename="cal.ics"');
 //        return $response;
 //    }
+
+    public function show($id)
+    {
+        $item = BookingItem::with('members')->find($id);
+        if (!$item) {
+            App::abort(404);
+        }
+        return View::make('booking::show', array('booking_item' => $item));
+    }
 }

@@ -43,15 +43,16 @@
                         </div>
 
 
-
                         <div class="row">
                             <div class="col-md-4">
-                                {{ Form::label('code_purchase', 'Code achat') }}
-                                <p>{{ Form::text('code_purchase', null, array('class' => 'form-control')) }}</p>
+                                {{--{{ Form::label('accountant_id', 'Contact facturation') }}--}}
+                                {{--<p>{{ Form::select('accountant_id', User::SelectInOrganisation($organisation->id, ''), null, array('class' => 'form-control')) }}</p>--}}
+                                {{--{{ Form::label('code_purchase', 'Code achat') }}--}}
+                                {{--<p>{{ Form::text('code_purchase', null, array('class' => 'form-control')) }}</p>--}}
                             </div>
                             <div class="col-md-4">
-                                {{ Form::label('code_sale', 'Code vente') }}
-                                <p>{{ Form::text('code_sale', null, array('class' => 'form-control')) }}</p>
+                                {{--{{ Form::label('code_sale', 'Code vente') }}--}}
+                                {{--<p>{{ Form::text('code_sale', null, array('class' => 'form-control')) }}</p>--}}
                             </div>
                             <div class="col-md-4">
                                 {{ Form::label('tva_number', 'TVA') }}
@@ -61,12 +62,16 @@
 
                         <div class="row">
                             <div class="col-md-4">
-                                {{ Form::label('is_domiciliation', 'Domiciliation') }}
-                                <p>{{ Form::checkbox('is_domiciliation', null, array('class' => 'form-control')) }}</p>
+                                {{ Form::label('domiciliation_kind_id', 'Domiciliation') }}
+                                <p>{{ Form::select('domiciliation_kind_id', DomiciliationKind::select(), null, array('class' => 'form-control')) }}</p>
                             </div>
                             <div class="col-md-4">
+                                {{ Form::label('domiciliation_start_at', 'Début') }}
+                                <p>{{ Form::text('domiciliation_start_at', null, array('class' => 'form-control datePicker')) }}</p>
                             </div>
                             <div class="col-md-4">
+                                {{ Form::label('domiciliation_end_at', 'Fin') }}
+                                <p>{{ Form::text('domiciliation_end_at', null, array('class' => 'form-control datePicker')) }}</p>
                             </div>
                         </div>
 

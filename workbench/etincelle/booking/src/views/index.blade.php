@@ -364,6 +364,12 @@
 
             $('#newBookingDialog').modal('show');
         };
+
+        Etincelle.Event.prototype.getViewLink = function () {
+            return '{{ route('booking_item_show', 999999) }}'.replace('999999', this.id);
+        };
+
+
         Etincelle.Event.prototype.getLocation = function () {
             @foreach($ressources as $ressource)
             if ({{$ressource->id}} == this.ressource_id
@@ -411,7 +417,7 @@
                 $('#meeting-view-members').hide();
             }
 
-            $dialog.find('.modal-header .modal-title').html(this.title);
+            $dialog.find('.modal-header .modal-title').html('<a href="' + this.getViewLink() + '">' + this.title+'</a>');
             $dialog.find('#meeting-view-date').html(this.start.format('DD/MM/YYYY'));
             $dialog.find('#meeting-view-hours').html(
                     this.start.format('HH:mm')

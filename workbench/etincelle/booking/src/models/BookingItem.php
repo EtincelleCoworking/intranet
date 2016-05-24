@@ -41,12 +41,22 @@ class BookingItem extends Illuminate\Database\Eloquent\Model
 
     public function members()
     {
-        return $this->belongsToMany('User');
+        return $this->belongsToMany('User', 'booking_item_user', 'booking_item_id', 'users_id');
     }
 
     public function scopeAll($query)
     {
         return $query;
+    }
+
+    public function isMember($user_id)
+    {
+        foreach ($this->members as $member) {
+            if ($user_id == $member->id) {
+                return true;
+            }
+        }
+        return false;
     }
 
     public function toJsonEvent()
