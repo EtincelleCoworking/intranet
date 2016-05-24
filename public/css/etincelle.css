@@ -14,3 +14,7 @@
     height: 32px;
     width: 32px;
 }
+
+.media-body img {
+    width: auto !important;
+}
