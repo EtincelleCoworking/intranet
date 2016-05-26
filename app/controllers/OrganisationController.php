@@ -130,6 +130,7 @@ class OrganisationController extends BaseController
         $validator = Validator::make(Input::all(), Organisation::$rulesAdd);
         if (!$validator->fails()) {
             $organisation = new Organisation(Input::all());
+            $organisation->domiciliation_kind_id = Input::get('domiciliation_kind_id', null)?Input::get('domiciliation_kind_id', null):null;
 
             if ($organisation->save()) {
                 return Redirect::route('organisation_modify', $organisation->id)->with('mSuccess', 'L\'organisme a bien été ajouté');
