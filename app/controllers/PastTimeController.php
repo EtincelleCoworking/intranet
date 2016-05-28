@@ -33,26 +33,33 @@ class PastTimeController extends BaseController
 //            Session::put('filtre_pasttime.year', Input::get('filtre_year'));
 //        }
         if (Input::has('filtre_submitted')) {
-            if (Input::has('filtre_user_id')) {
-                Session::put('filtre_pasttime.user_id', Input::get('filtre_user_id'));
-            }
-            if (Input::has('filtre_start')) {
-                $date_start_explode = explode('/', Input::get('filtre_start'));
-                Session::put('filtre_pasttime.start', $date_start_explode[2] . '-' . $date_start_explode[1] . '-' . $date_start_explode[0]);
-                if (!Input::has('filtre_user_id')) {
-                    Session::forget('filtre_pasttime.user_id');
+            if (Input::has('toinvoice')) {
+                Session::put('filtre_pasttime.filtre_toinvoice', true);
+                Session::forget('filtre_pasttime.user_id');
+                Session::put('filtre_pasttime.start', '2014-12-01');
+                Session::put('filtre_pasttime.end', date('Y-12-31'));
+            } else {
+                if (Input::has('filtre_user_id')) {
+                    Session::put('filtre_pasttime.user_id', Input::get('filtre_user_id'));
                 }
-            }
-            if (Input::has('filtre_end')) {
-                $date_end_explode = explode('/', Input::get('filtre_end'));
-                Session::put('filtre_pasttime.end', $date_end_explode[2] . '-' . $date_end_explode[1] . '-' . $date_end_explode[0]);
-            } else {
-                Session::put('filtre_pasttime.end', date('Y-m-d'));
-            }
-            if (Input::has('filtre_toinvoice')) {
-                Session::put('filtre_pasttime.filtre_toinvoice', Input::get('filtre_toinvoice'));
-            } else {
-                Session::put('filtre_pasttime.filtre_toinvoice', false);
+                if (Input::has('filtre_start')) {
+                    $date_start_explode = explode('/', Input::get('filtre_start'));
+                    Session::put('filtre_pasttime.start', $date_start_explode[2] . '-' . $date_start_explode[1] . '-' . $date_start_explode[0]);
+                    if (!Input::has('filtre_user_id')) {
+                        Session::forget('filtre_pasttime.user_id');
+                    }
+                }
+                if (Input::has('filtre_end')) {
+                    $date_end_explode = explode('/', Input::get('filtre_end'));
+                    Session::put('filtre_pasttime.end', $date_end_explode[2] . '-' . $date_end_explode[1] . '-' . $date_end_explode[0]);
+                } else {
+                    Session::put('filtre_pasttime.end', date('Y-m-d'));
+                }
+                if (Input::has('filtre_toinvoice')) {
+                    Session::put('filtre_pasttime.filtre_toinvoice', Input::get('filtre_toinvoice'));
+                } else {
+                    Session::put('filtre_pasttime.filtre_toinvoice', false);
+                }
             }
         }
         if (Session::has('filtre_pasttime.start')) {
@@ -243,29 +250,34 @@ class PastTimeController extends BaseController
         $lines = array();
         $ressources = array();
         $users = array();
+        $organisations = array();
         $user = null;
         foreach ($items as $item) {
             $ressources[$item->ressource_id] = $item->ressource()->getResults();
             $lines[$item->ressource_id][] = $item;
             $users[$item->user_id] = true;
-            if (null == $user) {
-                /** @var User $user */
-                $user = $item->user()->getResults();
-            }
+            $user = $item->user()->getResults();
+            $organisation = $user->organisations->first();
+            $organisations[$organisation->id] = $organisation;
         }
 
-        if (count($users) > 1) {
-            return Redirect::route('pasttime_list')->with('mError', 'Impossible de générer la facture pour plusieurs utilisateurs à la fois');
+        if (count($organisations) > 1) {
+            return Redirect::route('pasttime_list')->with('mError', 'Impossible de générer la facture pour plusieurs sociétés à la fois');
         }
 
         if (count($users) == 0) {
             return Redirect::route('pasttime_list');
         }
 
-        $organisation = $user->organisations->first();
+        /** @var Organisation $organisation */
+        $organisation = array_pop($organisations);
 
         $invoice = new Invoice();
-        $invoice->user_id = $user->id;
+        if ($organisation->accountant_id) {
+            $invoice->user_id = $organisation->accountant_id;
+        } else {
+            $invoice->user_id = $user->id;
+        }
         $invoice->created_at = new \DateTime();
         $invoice->organisation_id = $organisation->id;
         $invoice->type = 'F';
@@ -288,16 +300,19 @@ class PastTimeController extends BaseController
                 $invoice_line->text = 'Coworking';
                 $sum_duration = 0;
                 foreach ($line as $item) {
-                    $duration = ceil(((strtotime($item->time_end) - strtotime($item->time_start)) / 3600)  / self::COWORKING_HALF_DAY_MAX_DURATION);
+                    $duration = ceil(((strtotime($item->time_end) - strtotime($item->time_start)) / 3600) / self::COWORKING_HALF_DAY_MAX_DURATION);
                     $sum_duration += $duration;
                     $invoice_line->text .= sprintf("\n - %s de %s à %s (%s demi journée%s)", date('d/m/Y', strtotime($item->time_start)),
-                        date('H:i', strtotime($item->time_start)), date('H:i', strtotime($item->time_end)), $duration, ($duration > 1)?'s':'');
+                        date('H:i', strtotime($item->time_start)), date('H:i', strtotime($item->time_end)), $duration, ($duration > 1) ? 's' : '');
+                    if (count($users) > 1) {
+                        $invoice_line->text .= ' - ' . $item->user()->getResults()->fullname;
+                    }
                     $invoice_line->amount += $duration * (self::COWORKING_HALF_DAY_PRICING / 1.2);
 
                     $item->invoice_id = $invoice->id;
                     $item->save();
                 }
-                $invoice_line->text .= sprintf("\nTotal : %s demi journée%s", $sum_duration, ($sum_duration > 1)?'s':'');
+                $invoice_line->text .= sprintf("\nTotal : %s demi journée%s", $sum_duration, ($sum_duration > 1) ? 's' : '');
             } else {
                 $invoice_line->text = sprintf('Location d\'espace de réunion - %s', $ressource->name);
                 foreach ($line as $item) {

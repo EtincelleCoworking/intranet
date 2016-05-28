@@ -56,6 +56,7 @@
                         <div class="col-md-2">
                             {{ Form::submit('Filtrer', array('class' => 'btn btn-sm btn-primary')) }}
                             <a href="{{URL::route('pasttime_filter_reset')}}" class="btn btn-sm btn-default">Réinitialiser</a>
+                            {{ Form::submit('A facturer', array('class' => 'btn btn-sm btn-primary', 'name'=>'toinvoice')) }}
                         </div>
                         {{ Form::close() }}
                     </div>
