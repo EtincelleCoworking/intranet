@@ -223,7 +223,7 @@
                                 </tr>
                                 </thead>
                                 <tbody>
-                                @foreach ($user->invoices as $invoice)
+                                @foreach (Invoice::invoicesDesc($user) as $invoice)
                                     <tr>
                                         <td>{{ $invoice->ident }}</td>
                                         <td>{{ $invoice->created_at->format('d/m/Y') }}</td>

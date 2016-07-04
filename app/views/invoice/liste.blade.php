@@ -34,20 +34,20 @@
                 </div>
                 <div class="ibox-content">
 
-                        {{ Form::open(array('route' => array('invoice_list'))) }}
-                        {{ Form::hidden('filtre_submitted', 1) }}
-                        @if (Auth::user()->isSuperAdmin())
-                    <div class="row">
+                    {{ Form::open(array('route' => array('invoice_list'))) }}
+                    {{ Form::hidden('filtre_submitted', 1) }}
+                    @if (Auth::user()->isSuperAdmin())
+                        <div class="row">
                             <div class="col-md-6">
                                 {{ Form::select('filtre_organisation_id', Organisation::Select('Sélectionnez une société'), Session::get('filtre_invoice.organisation_id') ? Session::get('filtre_invoice.organisation_id') : null, array('id' => 'filter-organisation','class' => 'form-control')) }}
                             </div>
                             <div class="col-md-6">
                                 {{ Form::select('filtre_user_id', User::Select('Sélectionnez un client'), Session::get('filtre_invoice.user_id') ? Session::get('filtre_invoice.user_id') : null, array('id' => 'filter-client','class' => 'form-control')) }}
                             </div>
-                        @else
-                            {{ Form::hidden('filtre_user_id', Auth::user()->id) }}
-                        @endif
-                    </div>
+                        </div>
+                    @else
+                        {{ Form::hidden('filtre_user_id', Auth::user()->id) }}
+                    @endif
                     <div class="row">
 
                         <div class="col-md-3 input-group-sm">{{ Form::text('filtre_start', Session::get('filtre_invoice.start') ? date('d/m/Y', strtotime(Session::get('filtre_invoice.start'))) : date('01/12/2014'), array('class' => 'form-control datePicker')) }}</div>
@@ -60,8 +60,8 @@
                             {{ Form::submit('Filtrer', array('class' => 'btn btn-sm btn-primary')) }}
                             <a href="{{URL::route('invoice_filter_reset')}}" class="btn btn-sm btn-default">Réinitialiser</a>
                         </div>
-                        {{ Form::close() }}
                     </div>
+                    {{ Form::close() }}
                 </div>
             </div>
         </div>
@@ -98,7 +98,7 @@
                                             @if($invoice->date_payment)
                                             class="text-muted"
                                             @endif
-                                            >
+                                    >
                                         <td>{{ $invoice->ident }}</td>
                                         <td>{{ date('d/m/y', strtotime($invoice->date_invoice)) }}</td>
                                         <td>
@@ -145,11 +145,11 @@
                                             @if (!$invoice->sent_at)
                                                 @if (Auth::user()->isSuperAdmin())
                                                     @if (!$invoice->date_payment)
-                                                    <a href="{{ URL::route('invoice_send', $invoice->id) }}"
-                                                       class="btn btn-xs btn-default btn-outline">
-                                                        Envoyer
-                                                    </a>
-                                                @endif
+                                                        <a href="{{ URL::route('invoice_send', $invoice->id) }}"
+                                                           class="btn btn-xs btn-default btn-outline">
+                                                            Envoyer
+                                                        </a>
+                                                    @endif
                                                 @endif
                                             @else
                                                 {{ date('d/m/y', strtotime($invoice->sent_at)) }}
@@ -160,10 +160,11 @@
                                                     <span class="badge badge-danger">2</span>
                                                 @elseif($invoice->reminder1_at)
                                                     <span class="badge badge-warning">1</span>
-                                                    @endif
+                                                @endif
                                             @endif
                                         </td>
-                                        <td style="text-align:right" title=" {{ Invoice::TotalInvoice($invoice->items) }}€ HT">
+                                        <td style="text-align:right"
+                                            title=" {{ Invoice::TotalInvoice($invoice->items) }}€ HT">
                                             {{ Invoice::TotalInvoiceWithTaxes($invoice->items) }}€
                                         </td>
                                         <td>
@@ -188,7 +189,7 @@
                                                             value="Payer par CB"
                                                             class="btn btn-xs btn-default btn-outline"
                                                             id="stripe{{$invoice->id}}"
-                                                            />
+                                                    />
 
                                                 </form>
                                             @else
@@ -246,21 +247,21 @@
 
     $('#stripe{{$invoice->id}}').on('click', function (e) {
 
-                        e.preventDefault();
+                e.preventDefault();
 
-                        stripeForm = $(this).parent('form');
+                stripeForm = $(this).parent('form');
 
-                        // Open Checkout with further options
-                        stripeHandler.open({
-                            name: '{{ $_ENV['organisation_name'] }}',
-                            description: 'Facture {{$invoice->ident}}',
-                            currency: "eur",
-                            amount: {{ Invoice::TotalInvoiceWithTaxes($invoice->items) * 100 }},
-                            panelLabel: 'Payer \{\{amount\}\}',
-                            email: '{{$invoice->user?$invoice->user->email:''}}',
-                            allowRememberMe: false
-                        });
-                    });
+                // Open Checkout with further options
+                stripeHandler.open({
+                    name: '{{ $_ENV['organisation_name'] }}',
+                    description: 'Facture {{$invoice->ident}}',
+                    currency: "eur",
+                    amount: {{ Invoice::TotalInvoiceWithTaxes($invoice->items) * 100 }},
+                    panelLabel: 'Payer \{\{amount\}\}',
+                    email: '{{$invoice->user?$invoice->user->email:''}}',
+                    allowRememberMe: false
+                });
+            });
             @endforeach
 
             // Close Checkout on page navigation

@@ -35,31 +35,32 @@
                     {{--</div>--}}
                 </div>
                 <div class="ibox-content">
+                    {{ Form::open(array('route' => array('pasttime_list'))) }}
+                    {{ Form::hidden('filtre_submitted', 1) }}
                     <div class="row">
-                        {{ Form::open(array('route' => array('pasttime_list'))) }}
-                        {{ Form::hidden('filtre_submitted', 1) }}
                         @if (Auth::user()->isSuperAdmin())
-                            <div class="col-md-4">
+                            <div class="col-md-4 col-lg-4">
                                 {{ Form::select('filtre_user_id', User::Select('Sélectionnez un client'), Session::get('filtre_pasttime.user_id') ? Session::get('filtre_pasttime.user_id') : null, array('id' => 'filter-client','class' => 'form-control')) }}
                             </div>
                         @else
                             {{ Form::hidden('filtre_user_id', Auth::user()->id) }}
                         @endif
 
-                        <div class="col-md-2 input-group-sm">{{ Form::text('filtre_start', Session::get('filtre_pasttime.start') ? date('d/m/Y', strtotime(Session::get('filtre_pasttime.start'))) : date('01/m/Y'), array('class' => 'form-control datePicker')) }}</div>
-                        <div class="col-md-2 input-group-sm">{{ Form::text('filtre_end', ((Session::get('filtre_pasttime.end')) ? date('d/m/Y', strtotime(Session::get('filtre_pasttime.end'))) : date('t', date('m')).'/'.date('m/Y')), array('class' => 'form-control datePicker')) }}</div>
-                        <div class="col-md-2 input-group-sm">
+                        <div class="col-md-2 col-lg-2 input-group-sm">{{ Form::text('filtre_start', Session::get('filtre_pasttime.start') ? date('d/m/Y', strtotime(Session::get('filtre_pasttime.start'))) : date('01/m/Y'), array('class' => 'form-control datePicker')) }}</div>
+                        <div class="col-md-2 col-lg-2 input-group-sm">{{ Form::text('filtre_end', ((Session::get('filtre_pasttime.end')) ? date('d/m/Y', strtotime(Session::get('filtre_pasttime.end'))) : date('t', date('m')).'/'.date('m/Y')), array('class' => 'form-control datePicker')) }}</div>
+                        <div class="col-md-2 col-lg-2 input-group-sm">
                             {{ Form::checkbox('filtre_toinvoice', true, Session::has('filtre_pasttime.toinvoice') ? Session::get('filtre_pasttime.toinvoice') : false) }}
                             A facturer
-
                         </div>
-                        <div class="col-md-2">
+                        <div class="col-md-2 col-lg-2">
                             {{ Form::submit('Filtrer', array('class' => 'btn btn-sm btn-primary')) }}
                             <a href="{{URL::route('pasttime_filter_reset')}}" class="btn btn-sm btn-default">Réinitialiser</a>
-                            {{ Form::submit('A facturer', array('class' => 'btn btn-sm btn-primary', 'name'=>'toinvoice')) }}
+                            @if (Auth::user()->isSuperAdmin())
+                                {{ Form::submit('A facturer', array('class' => 'btn btn-sm btn-primary', 'name'=>'toinvoice')) }}
+                            @endif
                         </div>
-                        {{ Form::close() }}
                     </div>
+                    {{ Form::close() }}
                 </div>
             </div>
         </div>
@@ -71,43 +72,43 @@
 
         <div class="row">
             <div class="@if($active_subscription) col-lg-8 @else  col-lg-12 @endif">
-            @if(count($recap))
-                <div class="ibox">
-                    <div class="ibox-title">
-                        <h5>En attente de facturation {{ number_format($pending_invoice_amount, 0, ',', '.') }}€
-                            HT</h5>
-                    </div>
-                    <div class="ibox-content">
-                        <div class="row">
-                            @foreach ($recap as $r)
-                                <div class="col-md-3">
-                                    <div class="panel panel-default">
-                                        <div class="panel-heading">
-                                            <h4 class="panel-title">{{ $r->name }}</h4>
-                                        </div>
-                                        <div class="panel-body">
-                                            <div>
-                                                @if ($r->hours)
-                                                    {{ $r->hours }} h
-                                                @endif
-                                                @if ($r->minutes)
-                                                    {{ $r->minutes }} min
-                                                @endif
+                @if(count($recap))
+                    <div class="ibox">
+                        <div class="ibox-title">
+                            <h5>En attente de facturation {{ number_format($pending_invoice_amount, 0, ',', '.') }}€
+                                HT</h5>
+                        </div>
+                        <div class="ibox-content">
+                            <div class="row">
+                                @foreach ($recap as $r)
+                                    <div class="col-md-3">
+                                        <div class="panel panel-default">
+                                            <div class="panel-heading">
+                                                <h4 class="panel-title">{{ $r->name }}</h4>
                                             </div>
-                                            <div>
-                                                @if ($r->amount > 0)
-                                                    {{ number_format($r->amount, 0, ',', '.') }}€ HT
-                                                    / {{ number_format($r->amount * 1.2, 0, ',', '.') }}€ TTC
-                                                @endif
+                                            <div class="panel-body">
+                                                <div>
+                                                    @if ($r->hours)
+                                                        {{ $r->hours }} h
+                                                    @endif
+                                                    @if ($r->minutes)
+                                                        {{ $r->minutes }} min
+                                                    @endif
+                                                </div>
+                                                <div>
+                                                    @if ($r->amount > 0)
+                                                        {{ number_format($r->amount, 0, ',', '.') }}€ HT
+                                                        / {{ number_format($r->amount * 1.2, 0, ',', '.') }}€ TTC
+                                                    @endif
+                                                </div>
                                             </div>
                                         </div>
                                     </div>
-                                </div>
-                            @endforeach
+                                @endforeach
+                            </div>
                         </div>
                     </div>
-                </div>
-            @endif
+                @endif
             </div>
             @if($active_subscription)
                 <div class="col-lg-4">

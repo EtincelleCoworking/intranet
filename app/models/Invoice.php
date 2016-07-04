@@ -27,6 +27,10 @@ class Invoice extends Eloquent
         }
     }
 
+    public function scopeInvoicesDesc($query, $user){
+        return $query->where('user_id', $user->id)->orderBy('created_at', 'DESC')->get();
+    }
+
     public function scopeQuoteCanceled($query)
     {
         return $query->whereNotNull('date_canceled');
