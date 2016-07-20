@@ -70,7 +70,8 @@
         <tr>
             <th class="col-md-5">Nom</th>
             <th class="col-md-1">Membre</th>
-            <th class="col-md-2">Abonnement</th>
+            <th class="col-md-1">Abonnement</th>
+            <th class="col-md-1">Slack</th>
             <th class="col-md-2">Temps passé</th>
             <th class="col-md-2">Actions</th>
         </tr>
@@ -92,7 +93,7 @@
                 <td>
                     <?php
                     $subscription = $user->getLastSubscription();
-
+                    $duration = 0;
                     if (!$subscription) {
                         printf('-');
                     } else {
@@ -126,6 +127,14 @@
 
                     ?>
                 </td>
+                <td><?php
+                    if($user->slack_invite_sent_at){
+                        echo date('d/m/Y', strtotime($user->slack_invite_sent_at));
+                    }else{
+                        printf('<a href="%s" class="btn btn-xs btn-primary slack-invite">Inviter</a>',  URL::route('user_invite_slack', $user->id));
+                    }
+                    ?>
+                </td>
                 <td>
                     <?php
                     if ($subscription) {
@@ -144,6 +153,7 @@
                     }
                     ?>
                 </td>
+
                 <td>
                     <a href="{{ URL::route('user_profile', $user->id) }}"
                        class="btn btn-xs btn-primary">Voir</a>
@@ -169,6 +179,18 @@
         $().ready(function () {
 
             $('#filter-client').select2();
+
+            $('.slack-invite').on('click', function(){
+                var link = $(this);
+                $.ajax({
+                    url: link.attr('href')
+                }).done(function (data) {
+                    link.replaceWith(data);
+                }).error(function (data) {
+
+                });
+                return false;
+            });
         });
     </script>
 @stop

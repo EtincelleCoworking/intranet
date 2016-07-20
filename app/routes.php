@@ -65,6 +65,7 @@ Route::group(['before' => 'superadmin'], function() {
 	Route::get('/user/list', array('as' => 'user_list', 'uses' => 'UserController@liste'));
 	Route::post('/user/list', array('as' => 'user_filter', 'uses' => 'UserController@liste'));
 	Route::get('/user/reset', array('as' => 'user_filter_reset', 'uses' => 'UserController@cancelFilter'));
+	Route::get('/user/slack/{id}', array('as' => 'user_invite_slack', 'uses' => 'UserController@slackInvite'));
 
     Route::get('/invoice/add/{type}', array('as' => 'invoice_add', 'uses' => 'InvoiceController@add'))->where(array('type' => '[A-Z]{1}'));
 	Route::get('/invoice/add/{type}/{organisation}', array('as' => 'invoice_add_organisation', 'uses' => 'InvoiceController@add'))->where(array('type' => '[A-Z]{1}', 'organisation' => '[0-9]+'));

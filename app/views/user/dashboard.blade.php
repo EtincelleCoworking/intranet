@@ -28,6 +28,7 @@
         </div>
         <div class="col-lg-3 col-md-4 col-sm-6 col-xs-4">
             @include('partials.checkin.component')
+            @include('partials.slack')
             @include('partials.checkin.availability')
             @if (Auth::user()->isSuperAdmin())
             @elseif (Auth::user()->role == 'member')

@@ -10,7 +10,7 @@ class UserController extends BaseController
      */
     public function login()
     {
-        if(Auth::id()){
+        if (Auth::id()) {
             return Redirect::route('dashboard');
         }
         return View::make('user.login');
@@ -272,7 +272,7 @@ class UserController extends BaseController
         $cell2 = $table->addCell(\PhpOffice\PhpWord\Shared\Converter::cmToTwip(5));
         $image_url = $user->largeAvatarUrl;
         $image_url = preg_replace('!^(.+)\?.+$!', '$1', $image_url);
-	if (false === strpos($image_url, 'http')) {
+        if (false === strpos($image_url, 'http')) {
             $image_url = public_path() . $image_url;
         }
         $cell2->addImage($image_url, array('width' => \PhpOffice\PhpWord\Shared\Converter::cmToPixel(5)));
@@ -450,9 +450,10 @@ class UserController extends BaseController
         return View::make('user.liste', array('users' => $users->paginate(15, array('users.*'))));
     }
 
-    public function ChangeLocation(){
+    public function ChangeLocation()
+    {
         $user = Auth::user();
-        $user->default_location_id =Input::get('location_id');
+        $user->default_location_id = Input::get('location_id');
         $user->save();
 
         return Redirect::back();
@@ -465,6 +466,45 @@ class UserController extends BaseController
         Session::forget('filtre_user.subscription');
         Session::forget('filtre_user.member');
         return Redirect::route('user_list');
+    }
+
+    public function slackInvite($id)
+    {
+        $user = User::find($id);
+        if (!$user) {
+            App::abort(404);
+        }
+
+
+        $fields = array(
+            'email' => $user->email,
+            'token' => 'xoxp-4172730377-4172730395-60754014374-a8773445c5',
+            'set_active' => 'true'
+        );
+        $fields_string = '';
+        foreach ($fields as $key => $value) {
+            $fields_string .= $key . '=' . $value . '&';
+        }
+        rtrim($fields_string, '&');
+        $ch = curl_init();
+        curl_setopt($ch, CURLOPT_URL, 'https://etincelle-coworking.slack.com/api/users.admin.invite');
+        curl_setopt($ch, CURLOPT_USERAGENT, 'Mozilla/5.0 (Windows NT 6.1) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/41.0.2228.0 Safari/537.36');
+        curl_setopt($ch, CURLOPT_HEADER, 0);
+        curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+        curl_setopt($ch, CURLOPT_POST, count($fields));
+        curl_setopt($ch, CURLOPT_POSTFIELDS, $fields_string);
+        curl_setopt($ch, CURLOPT_TIMEOUT, 10);
+        $output = curl_exec($ch);
+        $httpcode = curl_getinfo($ch, CURLINFO_HTTP_CODE);
+        curl_close($ch);
+
+        if ($httpcode == 200) {
+            $user->slack_invite_sent_at = new \DateTime();
+            $user->save();
+            return $user->slack_invite_sent_at->format('d/m/Y');
+        }
+        throw new Exception('An error has occured: ' . $output);
+
     }
 }
 

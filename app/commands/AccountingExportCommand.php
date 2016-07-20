@@ -239,8 +239,8 @@ class AccountingExportCommand extends Command
                 do {
                     $params = array('limit' => 100);
                     $params['created']['gt'] = mktime(0, 0, 0, 1, 1, 2015);
-                    if (isset($item)) {
-                        $params['starting_after'] = $item->id;
+                    if (isset($Transfer)) {
+                        $params['starting_after'] = $Transfer->id;
                     }
                     $Transfers = Transfer::all($params);
                     foreach ($Transfers->data as $Transfer) {
