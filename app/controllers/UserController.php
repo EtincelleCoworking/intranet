@@ -478,9 +478,10 @@ class UserController extends BaseController
 
         $fields = array(
             'email' => $user->email,
-            'token' => 'xoxp-4172730377-4172730395-60754014374-a8773445c5',
+            'token' => $_ENV['slack_token'],
             'set_active' => 'true'
         );
+
         $fields_string = '';
         foreach ($fields as $key => $value) {
             $fields_string .= $key . '=' . $value . '&';
