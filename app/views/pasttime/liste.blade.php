@@ -172,7 +172,12 @@
                                         @endif
                                         <td>{{ $time->ressource->name }}</td>
                                         <td>{{ date('H:i', strtotime($time->time_start)) }}</td>
-                                        <td>{{ $time->time_end?date('H:i', strtotime($time->time_end)):'-' }}</td>
+                                        <td>
+                                            {{ $time->time_end?date('H:i', strtotime($time->time_end)):'-' }}
+                                            @if($time->auto_updated)
+                                            <span class="badge" title="Mis à jour automatiquement via la détection WIFI">A</span>
+                                            @endif
+                                        </td>
                                         <td>
                                             {{ $time->past_time }}
                                             @if ($time->comment)

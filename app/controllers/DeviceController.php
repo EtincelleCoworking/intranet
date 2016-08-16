@@ -1,7 +1,8 @@
 <?php
+
 /**
-* Country Controller
-*/
+ * Country Controller
+ */
 class DeviceController extends BaseController
 {
     /**
@@ -47,7 +48,7 @@ class DeviceController extends BaseController
         $validator = Validator::make(Input::all(), Country::$rules);
         if (!$validator->fails()) {
             $device->user_id = Input::get('user_id');
-            $device->mac = Input::get('mac');
+            $device->mac = strtolower(Input::get('mac'));
             $device->name = Input::get('name');
 
             if ($device->save()) {
@@ -76,6 +77,7 @@ class DeviceController extends BaseController
         $validator = Validator::make(Input::all(), Country::$rulesAdd);
         if (!$validator->fails()) {
             $device = new Device(Input::all());
+            $device->mac = strtolower($device->mac);
 
             if ($device->save()) {
                 return Redirect::route('device_list', $device->id)->with('mSuccess', 'Le périphérique a bien été modifié');

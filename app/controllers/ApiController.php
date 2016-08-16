@@ -83,6 +83,7 @@ class ApiController extends BaseController
                     $timeslot->time_start = date('Y-m-d H:i:s', $this->floorTime($item['lastSeen']));
                 }
                 $timeslot->time_end = date('Y-m-d H:i:s', $this->ceilTime($item['lastSeen']) + 10 * 60);
+                $timeslot->auto_updated = true;
                 $timeslot->save();
             }
         }
