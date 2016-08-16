@@ -56,3 +56,12 @@
         </div>
     </div>
 @stop
+
+
+@section('javascript')
+    <script type="text/javascript">
+        $().ready(function () {
+            $('#selectUserId').select2();
+        });
+    </script>
+@stop
