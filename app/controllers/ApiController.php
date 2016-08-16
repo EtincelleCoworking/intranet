@@ -2,6 +2,7 @@
 
 use Illuminate\Http\Response;
 use Illuminate\Support\Facades\Input;
+use Illuminate\Support\Facades\Request;
 
 class ApiController extends BaseController
 {
@@ -22,5 +23,15 @@ class ApiController extends BaseController
             return new Response('OK');
         }
         return Redirect::route('dashboard');
+    }
+
+    public function offix(Request $request, $location_slug, $key)
+    {
+        $location = Location::where('slug', '=', $location_slug)
+            ->where('key', '=', $key)
+            ->firstOrFail();
+
+        $json = json_decode(Request::getContent());
+        return new Response(sprintf('%s - %s', (string)$location, json_encode($json)));
     }
 }
