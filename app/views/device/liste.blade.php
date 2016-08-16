@@ -40,6 +40,7 @@
                                     <td>{{ $device->name }}</td>
                                     <td>
                                         <a href="{{ URL::route('device_modify', $device->id) }}" class="btn btn-default btn-xs btn-outline">Modifier</a>
+                                        <a href="{{ URL::route('device_delete', $device->id) }}" class="btn btn-danger btn-xs btn-outline">Supprimer</a>
                                     </td>
                                 </tr>
                             @endforeach

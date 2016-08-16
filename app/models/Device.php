@@ -27,6 +27,9 @@ class Device extends Eloquent
         'mac' => 'required|min:1'
     );
 
+    protected $fillable = array('mac', 'user_id', 'name');
+
+
     /**
      * Relation BelongsTo (Invoices belongs to User)
      */

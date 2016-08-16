@@ -86,4 +86,16 @@ class DeviceController extends BaseController
             return Redirect::route('device_add')->with('mError', 'Il y a des erreurs')->withErrors($validator->messages())->withInput();
         }
     }
+
+    /**
+     * Delete a charge
+     */
+    public function delete($id)
+    {
+        if (Device::destroy($id)) {
+            return Redirect::route('device_list', 'all')->with('mSuccess', 'Le périphérique a bien été supprimé');
+        } else {
+            return Redirect::route('device_list', 'all')->with('mError', 'Impossible de supprimer ce périphérique');
+        }
+    }
 }
