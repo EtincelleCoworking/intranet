@@ -14,6 +14,7 @@ Route::get('/', array('as' => 'dashboard', 'uses' => 'UserController@dashboard')
 
 Route::get('/api/1.0/location/{location_slug}/{key}', array('as' => 'api_location_update', 'uses' => 'ApiController@updateLocationIp'));
 Route::post('/api/1.0/offix/{location_slug}/{key}', array('as' => 'api_offix', 'uses' => 'ApiController@offix'));
+Route::get('/api/1.0/offix', array('as' => 'api_offix', 'uses' => 'ApiController@offix2'));
 
 Route::get('/login', array('as' => 'user_login', 'uses' => 'UserController@login'));
 Route::post('/login_check', array('before' => 'csrf', 'as' => 'user_login_check', 'uses' => 'UserController@login_check'));
@@ -107,6 +108,12 @@ Route::group(['before' => 'superadmin'], function() {
     Route::post('/country/add', array('as' => 'country_add_check', 'uses' => 'CountryController@add_check'));
     Route::get('/country/modify/{id}', array('as' => 'country_modify', 'uses' => 'CountryController@modify'))->where(array('id' => '[0-9]+'));
     Route::post('/country/modify/{id}', array('as' => 'country_modify_check', 'uses' => 'CountryController@modify_check'))->where(array('id' => '[0-9]+'));
+
+    Route::get('/devices', array('as' => 'device_list', 'uses' => 'DeviceController@liste'));
+    Route::get('/device/add', array('as' => 'device_add', 'uses' => 'DeviceController@add'));
+    Route::post('/device/add', array('as' => 'device_add_check', 'uses' => 'DeviceController@add_check'));
+    Route::get('/device/modify/{id}', array('as' => 'device_modify', 'uses' => 'DeviceController@modify'))->where(array('id' => '[0-9]+'));
+    Route::post('/device/modify/{id}', array('as' => 'device_modify_check', 'uses' => 'DeviceController@modify_check'))->where(array('id' => '[0-9]+'));
 
     Route::get('/vats', array('as' => 'vat_list', 'uses' => 'VatTypeController@liste'));
     Route::get('/vat/add', array('as' => 'vat_add', 'uses' => 'VatTypeController@add'));

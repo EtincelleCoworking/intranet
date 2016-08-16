@@ -1,0 +1,58 @@
+@extends('layouts.master')
+
+@section('meta_title')
+    Liste des pays
+@stop
+
+@section('breadcrumb')
+    <div class="row wrapper border-bottom white-bg page-heading">
+        <div class="col-sm-4">
+            <h2>Liste des périphériques</h2>
+        </div>
+        <div class="col-sm-8">
+            <div class="title-action">
+                <a href="{{ URL::route('device_add') }}" class="btn btn-default">Ajouter un périphérique</a>
+            </div>
+        </div>
+    </div>
+@stop
+
+@section('content')
+    <div class="row">
+        <div class="col-lg-12">
+            <div class="ibox ">
+                <div class="ibox-content">
+                    <div class="row">
+                        <table class="table table-striped table-hover">
+                            <thead>
+                            <tr>
+                                <th>Membre</th>
+                                <th>Mac</th>
+                                <th>Nom</th>
+                                <th>Actions</th>
+                            </tr>
+                            </thead>
+                            <tbody>
+                            @foreach ($devices as $device)
+                                <tr>
+                                    <td><a href="{{ URL::route('user_modify', $device->user->id) }}">{{ $device->user->fullname }}</a></td>
+                                    <td>{{ $device->mac }}</td>
+                                    <td>{{ $device->name }}</td>
+                                    <td>
+                                        <a href="{{ URL::route('device_modify', $device->id) }}" class="btn btn-default btn-xs btn-outline">Modifier</a>
+                                    </td>
+                                </tr>
+                            @endforeach
+                            </tbody>
+                            <tfoot>
+                            <tr>
+                                <td colspan="4">{{ $devices->links() }}</td>
+                            </tr>
+                            </tfoot>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+@stop
