@@ -35,12 +35,6 @@ class ApiController extends BaseController
         return ceil(strtotime($value) / (5 * 60)) * 5 * 60;
     }
 
-    public function offix2()
-    {
-        $item = array('lastSeen' => date('2016-08-16T14:22:34.224Z'));
-        $result = $this->ceilTime($item['lastSeen']);
-        return new Response(sprintf('%s - %s', date('Y-m-d H:i:s', strtotime($item['lastSeen'])), date('Y-m-d H:i:s', $result)));
-    }
 
     public function offix($location_slug, $key)
     {
@@ -69,7 +63,7 @@ class ApiController extends BaseController
                     ->where('date_past', '=', date('Y-m-d', strtotime($item['lastSeen'])))
                     ->where('time_start', '<', date('Y-m-d H:i:s', strtotime($item['lastSeen'])))
                     ->where(function ($query) use ($item) {
-                        $query->where('time_end', '>', date('Y-m-d H:i:s', strtotime('-15 minutes', strtotime($item['lastSeen']))))
+                        $query->where('time_end', '>', date('Y-m-d H:i:s', strtotime('-60 minutes', strtotime($item['lastSeen']))))
                             ->orWhereNull('time_end');
                     })
                     ->orderBy('time_start', 'DESC')
@@ -82,7 +76,7 @@ class ApiController extends BaseController
                     $timeslot->date_past = date('Y-m-d');
                     $timeslot->time_start = date('Y-m-d H:i:s', $this->floorTime($item['lastSeen']));
                 }
-                $timeslot->time_end = date('Y-m-d H:i:s', $this->ceilTime($item['lastSeen']) + 10 * 60);
+                $timeslot->time_end = date('Y-m-d H:i:s', $this->ceilTime($item['lastSeen']) + 55 * 60);
                 $timeslot->auto_updated = true;
                 $timeslot->save();
             }
