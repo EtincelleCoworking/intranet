@@ -59,6 +59,7 @@ class BirthdayPostCommand extends Command
         }
         if ($count) {
             $this->info(sprintf('%d anniversaire%s', $count, ($count > 1) ? 's' : ''));
+            WallPost::purgeCache();
         } else {
             $this->info('Aucun anniversaire aujourd\'hui');
         }
