@@ -68,8 +68,10 @@
     <table class="table table-striped table-hover">
         <thead>
         <tr>
-            <th class="col-md-5">Nom</th>
+            <th class="col-md-3">Nom</th>
             <th class="col-md-1">Membre</th>
+            <th class="col-md-1">Genre</th>
+            <th class="col-md-1">Date de naissance</th>
             <th class="col-md-1">Abonnement</th>
             <th class="col-md-1">Slack</th>
             <th class="col-md-2">Temps passé</th>
@@ -81,14 +83,38 @@
             <tr>
                 <td>
                     <a href="{{ URL::route('user_modify', $user->id) }}">{{ $user->fullnameOrga }}</a>
-                </td> <td>
+                </td>
+                <td>
                     <?php
-                        if($user->is_member){
-                            echo 'Oui';
-                        }else{
+                    if ($user->is_member) {
+                        echo 'Oui';
+                    } else {
+                        echo '-';
+                    }
+                    ?>
+                </td>
+                <td>
+                    <?php
+                    switch ($user->gender) {
+                        case 'F':
+                            echo '<i class="fa fa-female"></i>';
+                            break;
+                        case 'M':
+                            echo '<i class="fa fa-male"></i>';
+                            break;
+                        default:
                             echo '-';
-                        }
-                        ?>
+                    }
+                    ?>
+                </td>
+                <td>
+                    <?php
+                    if ($user->birthday && $user->birthday != '0000-00-00') {
+                        echo date('d/m/Y', strtotime($user->birthday));
+                    } else {
+                        echo '-';
+                    }
+                    ?>
                 </td>
                 <td>
                     <?php
@@ -108,7 +134,7 @@
                             $status = 'badge badge-warning';
                         } elseif ($remainingDays < 7) {
                             $status = 'badge badge-success';
-                        }else{
+                        } else {
                             $status = '';
                         }
                         $ratio = '';
@@ -128,10 +154,10 @@
                     ?>
                 </td>
                 <td><?php
-                    if($user->slack_invite_sent_at){
+                    if ($user->slack_invite_sent_at) {
                         echo date('d/m/Y', strtotime($user->slack_invite_sent_at));
-                    }else{
-                        printf('<a href="%s" class="btn btn-xs btn-primary slack-invite">Inviter</a>',  URL::route('user_invite_slack', $user->id));
+                    } else {
+                        printf('<a href="%s" class="btn btn-xs btn-primary slack-invite">Inviter</a>', URL::route('user_invite_slack', $user->id));
                     }
                     ?>
                 </td>
@@ -159,7 +185,8 @@
                        class="btn btn-xs btn-primary">Voir</a>
                     <a href="{{ URL::route('user_modify', $user->id) }}"
                        class="btn btn-xs btn-default">Modifier</a>
-                    <a href="{{URL::route('user_login_as', $user->id)}}" title="Se connecter en tant que {{$user->fullname}}"
+                    <a href="{{URL::route('user_login_as', $user->id)}}"
+                       title="Se connecter en tant que {{$user->fullname}}"
                        class="btn btn-xs btn-default"><i class="fa fa-user-secret"></i></a>
                 </td>
             </tr>
@@ -167,7 +194,7 @@
         </tbody>
         <tfoot>
         <tr>
-            <td colspan="5">{{ $users->links() }}</td>
+            <td colspan="7">{{ $users->links() }}</td>
         </tr>
         </tfoot>
     </table>
@@ -180,7 +207,7 @@
 
             $('#filter-client').select2();
 
-            $('.slack-invite').on('click', function(){
+            $('.slack-invite').on('click', function () {
                 var link = $(this);
                 $.ajax({
                     url: link.attr('href')

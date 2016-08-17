@@ -37,7 +37,8 @@
                             <p>{{ Form::text('birthday', null, array('class' => 'form-control datePicker')) }}</p>
                         </div>
                         <div class="col-lg-6">
-
+                            {{ Form::label('gender', 'Genre') }}
+                            {{ Form::select('gender', User::getGenders(), Auth::user()->gender, array('class' => 'form-control')) }}
                         </div>
                     </div>
 

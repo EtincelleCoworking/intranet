@@ -106,7 +106,8 @@ class ApiController extends BaseController
             $result[$user->id]['shouldBroadcast'] = true;
             $result[$user->id]['username'] = $user->email;
         }
-        $mongoCode = 'db.users.remove‌​({});'."\n";
+        $mongoCode = 'use offix;'."\n";
+        $mongoCode .= 'db.users.remove‌​({});'."\n";
         foreach($result as $user){
             $mongoCode .= sprintf('db.users.insert(%s);', json_encode($user))."\n";
         }

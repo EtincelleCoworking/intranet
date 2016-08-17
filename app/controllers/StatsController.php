@@ -196,4 +196,52 @@ class StatsController extends BaseController
         return View::make('stats.members', array('items' => $items));
     }
 
+    public function age()
+    {
+        $items = DB::select(DB::raw('SELECT gender, count(*) as cnt FROM users WHERE is_member = true AND gender IS NOT NULL GROUP BY gender'));
+        $result1 = array();
+        $total = 0;
+        foreach ($items as $item) {
+            $result1[$item->gender] = $item->cnt;
+            $total += $item->cnt;
+        }
+        foreach ($result1 as $gender => $value) {
+            $result1[$gender] = round(100 * $value / $total);
+        }
+
+        $items = DB::select(DB::raw('SELECT gender, TIMESTAMPDIFF(YEAR, birthday, CURDATE()) AS age, count(*) as cnt FROM users WHERE is_member = true AND birthday != "0000-00-00" AND gender IS NOT NULL GROUP BY gender, age ORDER BY gender ASC, age ASC'));
+        $result2 = array();
+        $maxAge = 0;
+        $max = 0;
+        $min = 1000;
+        foreach ($items as $item) {
+            $result2[$item->age][$item->gender] = $item->cnt;
+            if ($maxAge < $item->age) {
+                $maxAge = $item->age;
+            }
+            if ($max < $item->cnt) {
+                $max = $item->cnt;
+            }
+            if ($min > $item->age) {
+                $min = $item->age;
+            }
+        }
+        for ($i = $min; $i <= $maxAge; $i++) {
+            if (isset($result2[$i])) {
+                foreach (array('M', 'F') as $gender) {
+                    if (!isset($result2[$i][$gender])) {
+                        $result2[$i][$gender] = array('value' => 0, 'percent' => 0);
+                    } else {
+                        $result2[$i][$gender] = array('value' => $result2[$i][$gender], 'percent' => round(100 * $result2[$i][$gender] / $max));
+                    }
+                }
+            }else{
+                $result2[$i]['M'] = array('value' => 0, 'percent' => 0);
+                $result2[$i]['F'] = array('value' => 0, 'percent' => 0);
+            }
+            ksort($result2);
+        }
+        //var_dump($result2);        exit;
+        return View::make('stats.age', array('gender' => $result1, 'age' => $result2));
+    }
 }

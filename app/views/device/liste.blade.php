@@ -1,7 +1,7 @@
 @extends('layouts.master')
 
 @section('meta_title')
-    Liste des pays
+    Liste des périphériques
 @stop
 
 @section('breadcrumb')

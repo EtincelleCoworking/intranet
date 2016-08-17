@@ -23,7 +23,7 @@ class DeviceController extends BaseController
      */
     public function liste()
     {
-        $devices = Device::paginate(15);
+        $devices = Device::join('users', 'users.id', '=', 'devices.user_id')->orderBy('lastname', 'ASC')->paginate(15);
 
         return View::make('device.liste', array('devices' => $devices));
     }

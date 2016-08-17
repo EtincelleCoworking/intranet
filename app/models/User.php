@@ -296,4 +296,12 @@ class User extends Eloquent implements UserInterface, RemindableInterface
     {
         return $this->belongsTo('Location', 'default_location_id');
     }
+
+    public static function getGenders(){
+        return array(
+            'M' => 'Homme',
+            'F' => 'Femme',
+            null => 'Inconnu'
+        );
+    }
 }

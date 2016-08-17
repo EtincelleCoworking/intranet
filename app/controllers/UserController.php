@@ -109,6 +109,9 @@ class UserController extends BaseController
                 if (Input::get('password')) {
                     $user->password = Hash::make(Input::get('password'));
                 }
+                if (Input::get('gender')) {
+                    $user->gender = Input::get('gender');
+                }
                 $user->bio_short = Input::get('bio_short');
                 $user->bio_long = Input::get('bio_long');
                 $user->twitter = Input::get('twitter');
