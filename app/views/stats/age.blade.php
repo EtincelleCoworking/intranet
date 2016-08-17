@@ -16,7 +16,22 @@
 @section('content')
 
     <style type="text/css">
-        .progress{margin-bottom: 0;}
+        .progress{
+            margin-bottom: 0;
+        }
+        .demography  .progress{
+            height: 7px;
+        }
+
+        .demography .table > thead > tr > th,
+        .demography .table > tbody > tr > th,
+        .demography .table > tfoot > tr > th,
+        .demography .table > thead > tr > td,
+        .demography .table > tbody > tr > td,
+        .demography.table > tfoot > tr > td{
+            padding: 2px;
+        }
+
     </style>
 
     <div class="row">
@@ -57,7 +72,7 @@
                 <div class="ibox-title">
                     <h5>Age des membres (Moyenne: {{$average}})</h5>
                 </div>
-                <div class="ibox-content">
+                <div class="ibox-content demography">
                     <table class="table table-condensed">
                         <tr>
                             <th class="text-right">
@@ -76,21 +91,20 @@
                                             <div class="progress-bar pull-right" role="progressbar" aria-valuenow="0"
                                                  aria-valuemin="0"
                                                  aria-valuemax="100"
-                                                 style="min-width: 2em; width: {{$data['M']['percent']}}%;">
-                                                {{$data['M']['value']}}
+                                                 style="min-width: 2em; width: {{$data['M']['percent']}}%;" title="{{$data['M']['value']}}">
+
                                             </div>
                                         </div>
                                     @endif
                                 </td>
-                                <td align="center" width="10%">{{$a}}</td>
+                                <td align="center" width="10%" style="font-size: 5px">{{$a}}</td>
                                 <td width="45%">
                                     @if($data['F']['value'])
                                         <div class="progress">
                                             <div class="progress-bar" role="progressbar" aria-valuenow="0"
                                                  aria-valuemin="0"
                                                  aria-valuemax="100"
-                                                 style="min-width: 2em; width: {{$data['F']['percent']}}%;">
-                                                {{$data['F']['value']}}
+                                                 style="min-width: 2em; width: {{$data['F']['percent']}}%;" title="{{$data['F']['value']}}">
                                             </div>
                                         </div>
                                     @endif
