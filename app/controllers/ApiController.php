@@ -36,7 +36,7 @@ class ApiController extends BaseController
     }
 
 
-    public function offix($location_slug, $key)
+    public function offixUpload($location_slug, $key)
     {
         $location = Location::where('slug', '=', $location_slug)
             ->where('key', '=', $key)
@@ -83,5 +83,33 @@ class ApiController extends BaseController
         }
 
         return new Response('OK');
+    }
+
+    public function offixDownload($secure_key)
+    {
+        if($secure_key != $_ENV['key_secure']){
+            return new Response('Access denied', 403);
+        }
+        $result = array();
+        foreach (Device::with('user')->orderBy('user_id', 'ASC')->get() as $device) {
+
+            /** @var User $user */
+            $user = $device->user;
+            $result[$user->id]['isAdmin'] = $user->role == 'superadmin';
+            $result[$user->id]['lastSeen'] = null;
+            if (!isset($result[$user->id]['macAddresses'])) {
+                $result[$user->id]['macAddresses'] = array();
+            }
+            $result[$user->id]['macAddresses'][] = $device->mac;
+            $result[$user->id]['password'] = '$2a$10$C.6rBMZm4viJ2q.ia1xbZudXb4PMPvfnfE3GsXQH4DwZc62nbNpT2';
+            $result[$user->id]['realName'] = $user->fullname;
+            $result[$user->id]['shouldBroadcast'] = true;
+            $result[$user->id]['username'] = $user->email;
+        }
+        $mongoCode = 'db.users.remove‌​({});'."\n";
+        foreach($result as $user){
+            $mongoCode .= sprintf('db.users.insert(%s);', json_encode($user))."\n";
+        }
+        return new Response($mongoCode);
     }
 }
