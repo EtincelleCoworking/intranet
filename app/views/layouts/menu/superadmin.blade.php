@@ -122,6 +122,9 @@
             <li{{ Request::is('stats/charges') ? ' class="active"' : '' }}>
                 <a href="{{ URL::route('stats_charges') }}">Dépenses</a>
             </li>
+            <li{{ Request::is('stats/age') ? ' class="active"' : '' }}>
+                <a href="{{ URL::route('stats_age') }}">Démographie</a>
+            </li>
         </ul>
     </li>
 

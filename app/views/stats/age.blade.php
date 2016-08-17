@@ -55,7 +55,7 @@
 
             <div class="ibox float-e-margins">
                 <div class="ibox-title">
-                    <h5>Age des membres</h5>
+                    <h5>Age des membres (Moyenne: {{$average}})</h5>
                 </div>
                 <div class="ibox-content">
                     <table class="table table-condensed">

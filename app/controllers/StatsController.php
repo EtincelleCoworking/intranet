@@ -214,6 +214,8 @@ class StatsController extends BaseController
         $maxAge = 0;
         $max = 0;
         $min = 1000;
+        $total_age = 0;
+        $total_count = 0;
         foreach ($items as $item) {
             $result2[$item->age][$item->gender] = $item->cnt;
             if ($maxAge < $item->age) {
@@ -225,6 +227,8 @@ class StatsController extends BaseController
             if ($min > $item->age) {
                 $min = $item->age;
             }
+            $total_age += $item->age;
+            $total_count++;
         }
         for ($i = $min; $i <= $maxAge; $i++) {
             if (isset($result2[$i])) {
@@ -235,13 +239,13 @@ class StatsController extends BaseController
                         $result2[$i][$gender] = array('value' => $result2[$i][$gender], 'percent' => round(100 * $result2[$i][$gender] / $max));
                     }
                 }
-            }else{
+            } else {
                 $result2[$i]['M'] = array('value' => 0, 'percent' => 0);
                 $result2[$i]['F'] = array('value' => 0, 'percent' => 0);
             }
             ksort($result2);
         }
         //var_dump($result2);        exit;
-        return View::make('stats.age', array('gender' => $result1, 'age' => $result2));
+        return View::make('stats.age', array('gender' => $result1, 'age' => $result2, 'average' => round($total_age / $total_count, 2)));
     }
 }
