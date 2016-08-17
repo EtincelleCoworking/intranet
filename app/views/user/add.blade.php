@@ -38,7 +38,7 @@
                         </div>
                         <div class="col-lg-6">
                             {{ Form::label('gender', 'Genre') }}
-                            {{ Form::select('gender', User::getGenders(), Auth::user()->gender, array('class' => 'form-control')) }}
+                            {{ Form::select('gender', User::getGenders(), null, array('class' => 'form-control')) }}
                         </div>
                     </div>
 

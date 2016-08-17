@@ -70,7 +70,7 @@
         <tr>
             <th class="col-md-3">Nom</th>
             <th class="col-md-1">Membre</th>
-            <th class="col-md-1">Genre</th>
+            <th class="col-md-1">Périphériques</th>
             <th class="col-md-1">Date de naissance</th>
             <th class="col-md-1">Abonnement</th>
             <th class="col-md-1">Slack</th>
@@ -82,6 +82,18 @@
         @foreach ($users as $user)
             <tr>
                 <td>
+                    <?php
+                    switch ($user->gender) {
+                        case 'F':
+                            echo '<i class="fa fa-female"></i>';
+                            break;
+                        case 'M':
+                            echo '<i class="fa fa-male"></i>';
+                            break;
+                        default:
+                            echo '<i class="fa fa-question"></i>';
+                    }
+                    ?>
                     <a href="{{ URL::route('user_modify', $user->id) }}">{{ $user->fullnameOrga }}</a>
                 </td>
                 <td>
@@ -95,16 +107,23 @@
                 </td>
                 <td>
                     <?php
-                    switch ($user->gender) {
-                        case 'F':
-                            echo '<i class="fa fa-female"></i>';
-                            break;
-                        case 'M':
-                            echo '<i class="fa fa-male"></i>';
-                            break;
-                        default:
-                            echo '-';
+                    $active_device = false;
+                    foreach ($user->devices as $device) {
+                        if ($device->last_seen_at && (strtotime($device->last_seen_at) > strtotime('-1 month'))) {
+                            $active_device++;
+                        }
                     }
+
+                    if ($active_device) {
+                        printf('<span class="badge badge-success">%d / %d</span>', $active_device, count($user->devices));
+                    } else {
+                        if (count($user->devices)) {
+                            printf('<span class="badge badge-warning">%d / %d</span>', $active_device, count($user->devices));
+                        } else {
+                            printf('<span class="badge badge-danger">0</span>');
+                        }
+                    }
+
                     ?>
                 </td>
                 <td>

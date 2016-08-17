@@ -40,7 +40,7 @@
                             {{ Form::label('birthday', 'Date de naissance') }}
                             <p>{{ Form::text('birthday', ($user->birthday == '0000-00-00')?'':date('d/m/Y', strtotime($user->birthday)), array('class' => 'form-control datePicker')) }}</p>
                                 {{ Form::label('gender', 'Genre') }}
-                            <p>{{ Form::select('gender', User::getGenders(), Auth::user()->gender, array('class' => 'form-control')) }}</p>
+                            <p>{{ Form::select('gender', User::getGenders(), $user->gender, array('class' => 'form-control')) }}</p>
                         </div>
                         <div class="col-lg-6">
                             <img alt="{{$user->fullname}}" class="img-circle img-responsive"

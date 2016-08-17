@@ -435,6 +435,7 @@ class UserController extends BaseController
 
 
         $users = User::with('organisations')
+            ->with('devices')
             ->orderBy('lastname', 'asc');
         if (Session::get('filtre_user.user_id')) {
             $users->where('users.id', '=', Session::get('filtre_user.user_id'));

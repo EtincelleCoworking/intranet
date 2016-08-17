@@ -79,6 +79,9 @@ class ApiController extends BaseController
                 $timeslot->time_end = date('Y-m-d H:i:s', $this->ceilTime($item['lastSeen']) + 55 * 60);
                 $timeslot->auto_updated = true;
                 $timeslot->save();
+
+                $device->last_seen_at = date('Y-m-d H:i:s', strtotime($item['lastSeen']));
+                $device->save();
             }
         }
 

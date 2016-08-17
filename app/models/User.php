@@ -60,6 +60,14 @@ class User extends Eloquent implements UserInterface, RemindableInterface
     }
 
     /**
+     * Relation One To Many (User has many Invoices)
+     */
+    public function devices()
+    {
+        return $this->hasMany('Device');
+    }
+
+    /**
      * Relation Belongs To Many (User has many Organisations)
      */
     public function organisations()
