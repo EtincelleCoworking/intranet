@@ -81,7 +81,7 @@ class ApiController extends BaseController
                 $timeslot->save();
 
                 $device_seen = DeviceSeen::where('device_id', '=', $device->id)
-                    ->where('last_seen_at', '=', date('Y-m-d', strtotime($item['lastSeen'])))
+                    ->where('last_seen_at', '=', date('Y-m-d H:i:s', strtotime($item['lastSeen'])))
                     ->first();
                 if (!$device_seen) {
                     $device_seen = new DeviceSeen();
