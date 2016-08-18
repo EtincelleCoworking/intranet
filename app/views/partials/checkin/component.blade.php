@@ -1,5 +1,7 @@
 <?php
 $timesheet = Auth::user()->getActiveTimesheet();
+//var_dump($timesheet);
+
 if($timesheet){
 if(!$timesheet->time_end){
 ?>
@@ -30,6 +32,21 @@ if(!$timesheet->time_end){
     });
 </script>
 
+<?php
+}else{
+?>
+<div class="ibox">
+    <div class="ibox-title">
+        <h5>Temps passé</h5>
+    </div>
+    <div class="ibox-content">
+        <h1 class="no-margins" id="checkin-status">
+            <?php
+            echo $timesheet->getCurrentDuration();
+            ?>
+        </h1>
+    </div>
+</div>
 <?php
 }}else{ ?>
 <div class="ibox">

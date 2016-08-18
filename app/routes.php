@@ -43,6 +43,9 @@ Route::group(['before' => 'member'], function() {
     Route::get('/pasttime/modify/{id}', array('as' => 'pasttime_modify', 'uses' => 'PastTimeController@modify'))->where(array('id' => '[0-9]+'));
     Route::post('/pasttime/modify/{id}', array('as' => 'pasttime_modify_check', 'uses' => 'PastTimeController@modify_check'))->where(array('id' => '[0-9]+'));
     Route::get('/pasttime/reset-filter', array('as' => 'pasttime_filter_reset', 'uses' => 'PastTimeController@cancelFilter'));
+    Route::get('/pasttime/confirm/{id}', array('as' => 'pasttime_confirm', 'uses' => 'PastTimeController@confirm'));
+    Route::post('/pasttime/confirm-multiple', array('as' => 'pasttime_confirm_multiple', 'uses' => 'PastTimeController@confirmMultiple'));
+    Route::post('/pasttime/global-action', array('as' => 'pasttime_global_action', 'uses' => 'PastTimeController@globalAction'));
 
     Route::get('/invoices', array('as' => 'invoice_list', 'uses' => 'InvoiceController@invoiceList'));
     Route::get('/invoices/reset-filter', array('as' => 'invoice_filter_reset', 'uses' => 'InvoiceController@cancelFilter'));

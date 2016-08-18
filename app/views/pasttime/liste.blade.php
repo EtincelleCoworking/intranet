@@ -121,7 +121,7 @@
     @if(count($times)==0)
         <p>Aucune donnée.</p>
     @else
-        {{ Form::open(array('route' => array('pasttime_invoice'))) }}
+        {{ Form::open(array('route' => array('pasttime_global_action'))) }}
 
 
         <div class="row">
@@ -134,9 +134,7 @@
                             <table class="table table-striped">
                                 <thead>
                                 <tr>
-                                    @if (Auth::user()->isSuperAdmin())
-                                        <th>{{ Form::checkbox('checkall', false, false, array('id' => 'checkall')) }}</th>
-                                    @endif
+                                    <th>{{ Form::checkbox('checkall', false, false, array('id' => 'checkall')) }}</th>
                                     <th>Site</th>
                                     <th>Date</th>
                                     @if (Auth::user()->isSuperAdmin())
@@ -146,6 +144,7 @@
                                     <th>Arrivé</th>
                                     <th>Départ</th>
                                     <th>Total</th>
+                                    <th>Confirmation</th>
                                     <th>Facture</th>
                                     <th>Actions</th>
                                 </tr>
@@ -153,13 +152,11 @@
                                 <tbody>
                                 @foreach ($times as $time)
                                     <tr @if ((Auth::user()->isSuperAdmin()) and ($time->invoice_id or $time->is_free)) class="text-muted" @endif >
-                                        @if (Auth::user()->isSuperAdmin())
                                             <th>
                                                 @if(!($time->invoice_id or $time->is_free))
                                                     {{ Form::checkbox('items[]', $time->id, false, array('class' => 'check')) }}
                                                 @endif
                                             </th>
-                                        @endif
                                         <td>{{ $time->location }}</td>
 
                                         <td>{{ date('d/m/Y', strtotime($time->date_past)) }}</td>
@@ -175,7 +172,8 @@
                                         <td>
                                             {{ $time->time_end?date('H:i', strtotime($time->time_end)):'-' }}
                                             @if($time->auto_updated)
-                                            <span class="badge" title="Mis à jour automatiquement via la détection WIFI">A</span>
+                                                <span class="badge"
+                                                      title="Mis à jour automatiquement via la détection WIFI">A</span>
                                             @endif
                                         </td>
                                         <td>
@@ -184,6 +182,14 @@
                                                 <span data-toggle="tooltip" data-placement="left"
                                                       title="{{ $time->comment }}"><i
                                                             class="fa fa-question-circle"></i></span>
+                                            @endif
+                                        </td>
+                                        <td>
+                                            @if($time->confirmed)
+                                                <i class="fa fa-check"></i>
+                                            @else
+                                                <a href="{{ URL::route('pasttime_confirm', $time->id) }}"
+                                                   class="ajax btn btn-xs btn-primary">Confirmer</a>
                                             @endif
                                         </td>
                                         <td>
@@ -210,11 +216,13 @@
                                     </tr>
                                 @endforeach
                                 </tbody>
+
                             </table>
                             {{ $times->links() }}
                             @if (Auth::user()->isSuperAdmin())
-                                <input type="submit" class="btn btn-default pull-right" value="Facturer"/>
+                                <input type="submit" class="btn btn-default pull-right" name="invoice" value="Facturer"/>
                             @endif
+                            <input type="submit" class="btn btn-default pull-right" name="confirm" value="Confirmer"/>
                         </div>
                     </div>
                 </div>
@@ -233,6 +241,16 @@
 
             $('#checkall').click(function () {
                 $('input.check').prop('checked', $(this).prop('checked'));
+            });
+
+            $('.ajax').click(function (){
+                $.ajax({
+                    url: $(this).attr('href'),
+                    context: $(this)
+                }).done(function (data) {
+                    $(this).parent().html(data);
+                });
+                return false;
             });
 
 

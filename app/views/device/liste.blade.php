@@ -41,7 +41,7 @@
                                     <td>{{ $device->name }}</td>
                                     <td>
                                         @if($device->last_seen_at)
-                                            {{ date('d/m', strtotime($device->last_seen_at)) }}
+                                            {{ date('d/m/Y H:i', strtotime($device->last_seen_at)) }}
                                         @else
                                             -
                                         @endif
@@ -55,7 +55,7 @@
                             </tbody>
                             <tfoot>
                             <tr>
-                                <td colspan="4">{{ $devices->links() }}</td>
+                                <td colspan="5">{{ $devices->links() }}</td>
                             </tr>
                             </tfoot>
                         </table>

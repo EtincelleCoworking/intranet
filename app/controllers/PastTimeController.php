@@ -333,4 +333,43 @@ class PastTimeController extends BaseController
 
         return Redirect::route('invoice_modify', $invoice->id)->with('mSuccess', 'La facture a bien été générée');
     }
+
+    public function confirm($id)
+    {
+        $time = $this->dataExist($id);
+        $time->confirmed = true;
+        $time->save();
+
+        if (Request::ajax()) {
+            return Response::make('<i class="fa fa-check"></i>', 200);
+        }
+        return Redirect::route('pasttime_list')->with('mSuccess', 'Cette entrée a été confirmée');
+    }
+
+    public function confirmMultiple()
+    {
+        if (count(Input::get('items')) == 0) {
+            return Redirect::route('pasttime_list');
+        }
+        $items = PastTime::query()
+            ->whereIn('id', Input::get('items'))
+            ->get();
+
+        foreach ($items as $item) {
+            $item->confirmed = true;
+            $item->save();
+        }
+
+        return Redirect::route('pasttime_list')->with('mSuccess', 'Ces entrées ont étés confirmées');
+    }
+
+    public function globalAction()
+    {
+        if (Input::has('invoice')) {
+            return $this->invoice();
+        }
+        if (Input::has('confirm')) {
+            return $this->confirmMultiple();
+        }
+    }
 }
