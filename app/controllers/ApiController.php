@@ -80,7 +80,12 @@ class ApiController extends BaseController
                 $timeslot->auto_updated = true;
                 $timeslot->save();
 
-                $device->last_seen_at = date('Y-m-d H:i:s', strtotime($item['lastSeen']));
+                $device_seen = new DeviceSeen();
+                $device_seen->device_id = $device->id;
+                $device_seen->last_seen_at = date('Y-m-d H:i:s', strtotime($item['lastSeen']));
+                $device_seen->save();
+
+                $device->last_seen_at = $device_seen->last_seen_at;
                 $device->save();
             }
         }
