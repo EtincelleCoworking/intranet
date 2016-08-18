@@ -80,10 +80,15 @@ class ApiController extends BaseController
                 $timeslot->auto_updated = true;
                 $timeslot->save();
 
-                $device_seen = new DeviceSeen();
-                $device_seen->device_id = $device->id;
-                $device_seen->last_seen_at = date('Y-m-d H:i:s', strtotime($item['lastSeen']));
-                $device_seen->save();
+                $device_seen = DeviceSeen::where('device_id', '=', $device->id)
+                    ->where('last_seen_at', '=', date('Y-m-d', strtotime($item['lastSeen'])))
+                    ->first();
+                if (!$device_seen) {
+                    $device_seen = new DeviceSeen();
+                    $device_seen->device_id = $device->id;
+                    $device_seen->last_seen_at = date('Y-m-d H:i:s', strtotime($item['lastSeen']));
+                    $device_seen->save();
+                }
 
                 $device->last_seen_at = $device_seen->last_seen_at;
                 $device->save();
@@ -95,7 +100,7 @@ class ApiController extends BaseController
 
     public function offixDownload($secure_key)
     {
-        if($secure_key != $_ENV['key_secure']){
+        if ($secure_key != $_ENV['key_secure']) {
             return new Response('Access denied', 403);
         }
         $result = array();
@@ -114,9 +119,9 @@ class ApiController extends BaseController
             $result[$user->id]['shouldBroadcast'] = true;
             $result[$user->id]['username'] = $user->email;
         }
-        $mongoCode = 'db.users.remove‌​({});'."\n";
-        foreach($result as $user){
-            $mongoCode .= sprintf('db.users.insert(%s);', json_encode($user))."\n";
+        $mongoCode = 'db.users.remove‌​({});' . "\n";
+        foreach ($result as $user) {
+            $mongoCode .= sprintf('db.users.insert(%s);', json_encode($user)) . "\n";
         }
         return new Response($mongoCode);
     }

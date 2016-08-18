@@ -12,6 +12,7 @@ class DeviceSeen extends Eloquent
      */
     protected $table = 'devices_seen';
 
+    public $timestamps = false;
 
     /**
      * Rules
