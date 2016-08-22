@@ -38,7 +38,7 @@
                                 <tr>
                                     <td>
                                         @if($device->user)
-                                            <a href="{{ URL::route('user_modify', $device->user->id) }}">{{ $device->user->fullname }}</a>
+                                            <a href="{{ URL::route('user_modify', array('id' => $device->user->id)) }}">{{ $device->user->fullname }}</a>
                                         @else
                                             -
                                         @endif
@@ -53,9 +53,9 @@
                                         @endif
                                     </td>
                                     <td>
-                                        <a href="{{ URL::route('device_modify', $device->id) }}"
+                                        <a href="{{ URL::route('device_modify', array('id' => $device->id)) }}"
                                            class="btn btn-default btn-xs btn-outline">Modifier</a>
-                                        <a href="{{ URL::route('device_delete', $device->id) }}"
+                                        <a href="{{ URL::route('device_delete', array('id' => $device->id)) }}"
                                            class="btn btn-danger btn-xs btn-outline">Supprimer</a>
                                     </td>
                                 </tr>
