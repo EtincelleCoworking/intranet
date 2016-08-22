@@ -46,17 +46,18 @@ class ApiController extends BaseController
         $macs = array();
         foreach ($json as $item) {
             if ($item['lastSeen'] > date('Y-m-d')) {
-                $macs[] = $item['mac'];
+                $macs[] = strtolower($item['mac']);
             }
         }
         //var_dump($macs);
         $devices = array();
-        foreach (Device::whereIn('mac', $macs)->whereNotNull('user_id')->get() as $device) {
+        foreach (Device::whereIn('mac', $macs)->get() as $device) {
             $devices[$device->mac] = $device;
         }
         // var_dump(array_keys($devices));
 
         foreach ($json as $item) {
+            $item['mac'] = strtolower($item['mac']);
             if (!isset($devices[$item['mac']])) {
                 if (isset($item['name'])) {
                     // Create the device because it is connected to the WIFI
@@ -84,7 +85,7 @@ class ApiController extends BaseController
                 $triggerUserShown = !$timeslot;
                 if (!$timeslot) {
                     $timeslot = new PastTime();
-                    $timeslot->user_id = $device->user_id;
+                    $timeslot->user_id = $device->user_id?$device->user_id:0;
                     $timeslot->ressource_id = Ressource::TYPE_COWORKING;
                     $timeslot->location_id = $location->id;
                     $timeslot->date_past = date('Y-m-d');
