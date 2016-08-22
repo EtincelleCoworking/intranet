@@ -38,10 +38,11 @@
                                 <tr>
                                     <td>
                                         @if($device->user)
-                                        <a href="{{ URL::route('user_modify', $device->user->id) }}">{{ $device->user->fullname }}</a></td>
-                                    @else
-                                        -
-                                    @endif
+                                            <a href="{{ URL::route('user_modify', $device->user->id) }}">{{ $device->user->fullname }}</a>
+                                        @else
+                                            -
+                                        @endif
+                                    </td>
                                     <td>{{ $device->mac }}</td>
                                     <td>{{ $device->name }}</td>
                                     <td>
@@ -52,8 +53,10 @@
                                         @endif
                                     </td>
                                     <td>
-                                        <a href="{{ URL::route('device_modify', $device->id) }}" class="btn btn-default btn-xs btn-outline">Modifier</a>
-                                        <a href="{{ URL::route('device_delete', $device->id) }}" class="btn btn-danger btn-xs btn-outline">Supprimer</a>
+                                        <a href="{{ URL::route('device_modify', $device->id) }}"
+                                           class="btn btn-default btn-xs btn-outline">Modifier</a>
+                                        <a href="{{ URL::route('device_delete', $device->id) }}"
+                                           class="btn btn-danger btn-xs btn-outline">Supprimer</a>
                                     </td>
                                 </tr>
                             @endforeach
