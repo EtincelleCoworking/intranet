@@ -81,6 +81,7 @@ class ApiController extends BaseController
                         ->orderBy('time_start', 'DESC')
                         ->first();
                 }
+                $triggerUserShown = !$timeslot;
                 if (!$timeslot) {
                     $timeslot = new PastTime();
                     $timeslot->user_id = $device->user_id;
@@ -88,12 +89,15 @@ class ApiController extends BaseController
                     $timeslot->location_id = $location->id;
                     $timeslot->date_past = date('Y-m-d');
                     $timeslot->time_start = date('Y-m-d H:i:s', $this->floorTime($item['lastSeen']));
-                    Event::fire('user.shown', array($timeslot, $location));
                 }
                 $timeslot->device_id = $device->id;
                 $timeslot->time_end = date('Y-m-d H:i:s', $this->ceilTime($item['lastSeen']) + 10 * 60);
                 //$timeslot->auto_updated = true;
                 $timeslot->save();
+
+                if ($triggerUserShown) {
+                    Event::fire('user.shown', array($timeslot, $location));
+                }
 
                 $device_seen = DeviceSeen::where('device_id', '=', $device->id)
                     ->where('last_seen_at', '=', date('Y-m-d H:i:s', strtotime($item['lastSeen'])))
