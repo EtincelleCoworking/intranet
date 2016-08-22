@@ -20,6 +20,7 @@ ORDER BY cities.name ASC, locations.name ASC'));
     $results = DB::select(DB::raw('SELECT past_times.location_id, past_times.user_id
 FROM past_times
 WHERE past_times.date_past = CURDATE()
+  AND past_times.user_id > 0
   AND ressource_id = ' . Ressource::TYPE_COWORKING . '
   AND time_start < NOW()
   AND ((time_end IS NULL) OR (time_end > NOW()))'));
