@@ -36,7 +36,9 @@
                             </thead>
                             <tbody>
                             @foreach ($devices as $device)
-                                <tr>
+                                <tr @if(!$device->tracking_enabled)
+                                    class="text-muted"
+                                @endif>
                                     <td>
                                         @if($device->tracking_enabled)
                                             <a href="{{URL::route('device_disable', $device->id)}}"><i class="fa fa-check"></i></a>
