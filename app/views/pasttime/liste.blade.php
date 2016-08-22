@@ -171,7 +171,7 @@
                                         <td>{{ date('H:i', strtotime($time->time_start)) }}</td>
                                         <td>
                                             {{ $time->time_end?date('H:i', strtotime($time->time_end)):'-' }}
-                                            @if($time->auto_updated)
+                                            @if($time->device_id)
                                                 <span class="badge"
                                                       title="Mis à jour automatiquement via la détection WIFI">A</span>
                                             @endif

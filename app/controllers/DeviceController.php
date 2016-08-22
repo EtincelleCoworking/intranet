@@ -47,11 +47,16 @@ class DeviceController extends BaseController
 
         $validator = Validator::make(Input::all(), Country::$rules);
         if (!$validator->fails()) {
+            $update_previous_timeslots = !$device->user_id;
             $device->user_id = Input::get('user_id');
             $device->mac = strtolower(Input::get('mac'));
             $device->name = Input::get('name');
 
             if ($device->save()) {
+                if ($update_previous_timeslots) {
+                    DB::table('past_times')->where('device_id', '=', $device->id)->where('user_id', '=', 0)->update(array('user_id' => $device->user_id));
+                }
+
                 return Redirect::route('device_list', $device->id)->with('mSuccess', 'Ce périphérique a bien été modifié');
             } else {
                 return Redirect::route('device_modify', $device->id)->with('mError', 'Impossible de modifier ce périphérique')->withInput();

@@ -25,10 +25,10 @@
     <div class="row">
         <div class="col-lg-9 col-md-8 col-sm-6 col-xs-8">
             <?php
-            $items = DB::select(DB::raw('SELECT count(*) as cnt FROM past_times WHERE auto_updated = true AND confirmed IS NULL AND is_free = 0 AND invoice_id = 0 AND user_id = ' . Auth::id()));
+            $items = DB::select(DB::raw('SELECT count(*) as cnt FROM past_times WHERE date_past < CURRENT_DATE() AND device_id IS NOT NULL AND confirmed IS NULL AND is_free = 0 AND invoice_id = 0 AND user_id = ' . Auth::id()));
             if ($items[0]->cnt) {
                 echo '<div class="alert alert-warning" role="alert">';
-                printf('<p>Vous avez actuellement %d plage%s horaire%s qui ont été détectées automatiquement et que vous n\'avez pas confirmées</p>', $items[0]->cnt, ($items[0]->cnt > 1) ? 's' : '', ($items[0]->cnt > 1) ? 's' : '');
+                printf('<p>Vous avez actuellement %d plage horaire qui ont été détectées automatiquement et que vous n\'avez pas confirmées</p>', $items[0]->cnt);
                 printf('<p><a href="%s" class="btn btn-warning">Confirmez les maintenant</a></p>', route('pasttime_list'));
                 echo '</div>';
             }

@@ -89,6 +89,8 @@ class PastTimeController extends BaseController
             if (Session::has('filtre_pasttime.user_id')) {
                 $recapFilter = Session::get('filtre_pasttime.user_id');
                 $q->whereUserId($recapFilter);
+            }else{
+                $q->where('user_id', '>', 0);
             }
         } else {
             $recapFilter = Auth::id();

@@ -57,17 +57,30 @@ class ApiController extends BaseController
         // var_dump(array_keys($devices));
 
         foreach ($json as $item) {
+            if (!isset($devices[$item['mac']])) {
+                if (isset($item['name'])) {
+                    // Create the device because it is connected to the WIFI
+                    $device = new Device();
+                    $device->mac = $item['mac'];
+                    $device->name = $item['name'];
+                    $device->save();
+                    $devices[$item['mac']] = $device;
+                }
+            }
             if (isset($devices[$item['mac']])) {
                 $device = $devices[$item['mac']];
-                $timeslot = PastTime::where('user_id', '=', $device->user_id)
-                    ->where('date_past', '=', date('Y-m-d', strtotime($item['lastSeen'])))
-                    ->where('time_start', '<', date('Y-m-d H:i:s', strtotime($item['lastSeen'])))
-                    ->where(function ($query) use ($item) {
-                        $query->where('time_end', '>', date('Y-m-d H:i:s', strtotime('-60 minutes', strtotime($item['lastSeen']))))
-                            ->orWhereNull('time_end');
-                    })
-                    ->orderBy('time_start', 'DESC')
-                    ->first();
+                $timeslot = null;
+                if ($device->user_id) {
+                    $timeslot = PastTime::where('user_id', '=', $device->user_id)
+                        ->where('date_past', '=', date('Y-m-d', strtotime($item['lastSeen'])))
+                        ->where('time_start', '<', date('Y-m-d H:i:s', strtotime($item['lastSeen'])))
+                        ->where(function ($query) use ($item) {
+                            $query->where('time_end', '>', date('Y-m-d H:i:s', strtotime('-60 minutes', strtotime($item['lastSeen']))))
+                                ->orWhereNull('time_end');
+                        })
+                        ->orderBy('time_start', 'DESC')
+                        ->first();
+                }
                 if (!$timeslot) {
                     $timeslot = new PastTime();
                     $timeslot->user_id = $device->user_id;
@@ -75,9 +88,11 @@ class ApiController extends BaseController
                     $timeslot->location_id = $location->id;
                     $timeslot->date_past = date('Y-m-d');
                     $timeslot->time_start = date('Y-m-d H:i:s', $this->floorTime($item['lastSeen']));
+                    Event::fire('user.shown', array($timeslot));
                 }
-                $timeslot->time_end = date('Y-m-d H:i:s', $this->ceilTime($item['lastSeen']) + 55 * 60);
-                $timeslot->auto_updated = true;
+                $timeslot->device_id = $device->id;
+                $timeslot->time_end = date('Y-m-d H:i:s', $this->ceilTime($item['lastSeen']) + 10 * 60);
+                //$timeslot->auto_updated = true;
                 $timeslot->save();
 
                 $device_seen = DeviceSeen::where('device_id', '=', $device->id)
@@ -91,6 +106,9 @@ class ApiController extends BaseController
                 }
 
                 $device->last_seen_at = $device_seen->last_seen_at;
+                if (isset($item['name'])) {
+                    $device->name = $item['name'];
+                }
                 $device->save();
             }
         }

@@ -1,5 +1,6 @@
 <?php
 
+use GuzzleHttp\Client;
 /**
  * UserController Class
  */
