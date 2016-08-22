@@ -70,47 +70,48 @@ class ApiController extends BaseController
             }
             if (isset($devices[$item['mac']])) {
                 $device = $devices[$item['mac']];
-                $timeslot = null;
-                if ($device->user_id) {
-                    $timeslot = PastTime::where('user_id', '=', $device->user_id)
-                        ->where('date_past', '=', date('Y-m-d', strtotime($item['lastSeen'])))
-                        ->where('time_start', '<', date('Y-m-d H:i:s', strtotime($item['lastSeen'])))
-                        ->where(function ($query) use ($item) {
-                            $query->where('time_end', '>', date('Y-m-d H:i:s', strtotime('-60 minutes', strtotime($item['lastSeen']))))
-                                ->orWhereNull('time_end');
-                        })
-                        ->orderBy('time_start', 'DESC')
+                if ($device->tracking_enabled) {
+                    $timeslot = null;
+                    if ($device->user_id) {
+                        $timeslot = PastTime::where('user_id', '=', $device->user_id)
+                            ->where('date_past', '=', date('Y-m-d', strtotime($item['lastSeen'])))
+                            ->where('time_start', '<', date('Y-m-d H:i:s', strtotime($item['lastSeen'])))
+                            ->where(function ($query) use ($item) {
+                                $query->where('time_end', '>', date('Y-m-d H:i:s', strtotime('-60 minutes', strtotime($item['lastSeen']))))
+                                    ->orWhereNull('time_end');
+                            })
+                            ->orderBy('time_start', 'DESC')
+                            ->first();
+                    }
+                    $triggerUserShown = !$timeslot;
+                    if (!$timeslot) {
+                        $timeslot = new PastTime();
+                        $timeslot->user_id = $device->user_id ? $device->user_id : 0;
+                        $timeslot->ressource_id = Ressource::TYPE_COWORKING;
+                        $timeslot->location_id = $location->id;
+                        $timeslot->date_past = date('Y-m-d');
+                        $timeslot->time_start = date('Y-m-d H:i:s', $this->floorTime($item['lastSeen']));
+                    }
+                    $timeslot->device_id = $device->id;
+                    $timeslot->time_end = date('Y-m-d H:i:s', $this->ceilTime($item['lastSeen']) + 10 * 60);
+                    //$timeslot->auto_updated = true;
+                    $timeslot->save();
+
+                    if ($triggerUserShown) {
+                        Event::fire('user.shown', array($timeslot, $location));
+                    }
+
+                    $device_seen = DeviceSeen::where('device_id', '=', $device->id)
+                        ->where('last_seen_at', '=', date('Y-m-d H:i:s', strtotime($item['lastSeen'])))
                         ->first();
+                    if (!$device_seen) {
+                        $device_seen = new DeviceSeen();
+                        $device_seen->device_id = $device->id;
+                        $device_seen->last_seen_at = date('Y-m-d H:i:s', strtotime($item['lastSeen']));
+                        $device_seen->save();
+                    }
                 }
-                $triggerUserShown = !$timeslot;
-                if (!$timeslot) {
-                    $timeslot = new PastTime();
-                    $timeslot->user_id = $device->user_id?$device->user_id:0;
-                    $timeslot->ressource_id = Ressource::TYPE_COWORKING;
-                    $timeslot->location_id = $location->id;
-                    $timeslot->date_past = date('Y-m-d');
-                    $timeslot->time_start = date('Y-m-d H:i:s', $this->floorTime($item['lastSeen']));
-                }
-                $timeslot->device_id = $device->id;
-                $timeslot->time_end = date('Y-m-d H:i:s', $this->ceilTime($item['lastSeen']) + 10 * 60);
-                //$timeslot->auto_updated = true;
-                $timeslot->save();
-
-                if ($triggerUserShown) {
-                    Event::fire('user.shown', array($timeslot, $location));
-                }
-
-                $device_seen = DeviceSeen::where('device_id', '=', $device->id)
-                    ->where('last_seen_at', '=', date('Y-m-d H:i:s', strtotime($item['lastSeen'])))
-                    ->first();
-                if (!$device_seen) {
-                    $device_seen = new DeviceSeen();
-                    $device_seen->device_id = $device->id;
-                    $device_seen->last_seen_at = date('Y-m-d H:i:s', strtotime($item['lastSeen']));
-                    $device_seen->save();
-                }
-
-                $device->last_seen_at = $device_seen->last_seen_at;
+                $device->last_seen_at = date('Y-m-d H:i:s', strtotime($item['lastSeen']));
                 if (isset($item['name'])) {
                     $device->name = $item['name'];
                 }

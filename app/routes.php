@@ -118,6 +118,8 @@ Route::group(['before' => 'superadmin'], function() {
     Route::get('/device/modify/{id}', array('as' => 'device_modify', 'uses' => 'DeviceController@modify'))->where(array('id' => '[0-9]+'));
     Route::post('/device/modify/{id}', array('as' => 'device_modify_check', 'uses' => 'DeviceController@modify_check'))->where(array('id' => '[0-9]+'));
     Route::get('/device/delete/{id}', array('as' => 'device_delete', 'uses' => 'DeviceController@delete'))->where(array('id' => '[0-9]+'));
+    Route::get('/device/enable/{id}', array('as' => 'device_enable', 'uses' => 'DeviceController@enableTracking'))->where(array('id' => '[0-9]+'));
+    Route::get('/device/disable/{id}', array('as' => 'device_disable', 'uses' => 'DeviceController@disableTracking'))->where(array('id' => '[0-9]+'));
 
     Route::get('/vats', array('as' => 'vat_list', 'uses' => 'VatTypeController@liste'));
     Route::get('/vat/add', array('as' => 'vat_add', 'uses' => 'VatTypeController@add'));

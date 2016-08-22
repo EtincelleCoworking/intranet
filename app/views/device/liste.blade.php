@@ -26,6 +26,7 @@
                         <table class="table table-striped table-hover">
                             <thead>
                             <tr>
+                                <th>Suivi</th>
                                 <th>Membre</th>
                                 <th>Mac</th>
                                 <th>Nom</th>
@@ -36,6 +37,13 @@
                             <tbody>
                             @foreach ($devices as $device)
                                 <tr>
+                                    <td>
+                                        @if($device->tracking_enabled)
+                                            <a href="{{URL::route('device_disable', $device->id)}}"><i class="fa fa-check"></i></a>
+                                        @else
+                                            <a href="{{URL::route('device_enable', $device->id)}}"><i class="fa fa-times"></i></a>
+                                        @endif
+                                    </td>
                                     <td>
                                         @if($device->user)
                                             <a href="{{ URL::route('user_modify', $device->user->id) }}">{{ $device->user->fullname }}</a>
@@ -63,7 +71,7 @@
                             </tbody>
                             <tfoot>
                             <tr>
-                                <td colspan="5">{{ $devices->links() }}</td>
+                                <td colspan="6">{{ $devices->links() }}</td>
                             </tr>
                             </tfoot>
                         </table>

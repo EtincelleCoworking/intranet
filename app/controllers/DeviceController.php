@@ -109,4 +109,18 @@ class DeviceController extends BaseController
             return Redirect::route('device_list', 'all')->with('mError', 'Impossible de supprimer ce périphérique');
         }
     }
+
+    public function enableTracking($id){
+        $device = Device::findOrFail($id);
+        $device->tracking_enabled  = true;
+        $device->save();
+        return Redirect::route('device_list', 'all')->with('mSuccess', 'Le périphérique a bien été activé');
+    }
+
+    public function disableTracking($id){
+        $device = Device::findOrFail($id);
+        $device->tracking_enabled  = false;
+        $device->save();
+        return Redirect::route('device_list', 'all')->with('mSuccess', 'Le périphérique a bien été désactivé');
+    }
 }
