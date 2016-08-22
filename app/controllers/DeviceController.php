@@ -23,7 +23,7 @@ class DeviceController extends BaseController
      */
     public function liste()
     {
-        $devices = Device::leftJoin('users', 'users.id', '=', 'devices.user_id')->orderBy('lastname', 'ASC')->paginate(15);
+        $devices = Device::paginate(15);
 
         return View::make('device.liste', array('devices' => $devices));
     }
@@ -48,7 +48,11 @@ class DeviceController extends BaseController
         $validator = Validator::make(Input::all(), Country::$rules);
         if (!$validator->fails()) {
             $update_previous_timeslots = !$device->user_id;
-            $device->user_id = Input::get('user_id');
+            if (Input::get('user_id')) {
+                $device->user_id = Input::get('user_id');
+            } else {
+                $device->user_id = null;
+            }
             $device->mac = strtolower(Input::get('mac'));
             $device->name = Input::get('name');
 
