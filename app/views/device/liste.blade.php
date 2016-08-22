@@ -36,7 +36,12 @@
                             <tbody>
                             @foreach ($devices as $device)
                                 <tr>
-                                    <td><a href="{{ URL::route('user_modify', $device->user->id) }}">{{ $device->user->fullname }}</a></td>
+                                    <td>
+                                        @if($device->user)
+                                        <a href="{{ URL::route('user_modify', $device->user->id) }}">{{ $device->user->fullname }}</a></td>
+                                    @else
+                                        -
+                                    @endif
                                     <td>{{ $device->mac }}</td>
                                     <td>{{ $device->name }}</td>
                                     <td>
