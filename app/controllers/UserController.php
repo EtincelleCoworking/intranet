@@ -76,12 +76,12 @@ class UserController extends BaseController
     public function modify($id)
     {
         $user = User::find($id);
-        $skills = Skill::findSkillsForUser($id);
+        //$skills = Skill::findSkillsForUser($id);
         if (!$user) {
             return Redirect::route('members')->with('mError', 'Cet utilisateur est introuvable !');
         }
 
-        return View::make('user.modify', array('user' => $user, 'skills' => $skills));
+        return View::make('user.modify', array('user' => $user));
     }
 
     /**
@@ -127,6 +127,7 @@ class UserController extends BaseController
                     $user->is_member = Input::get('is_member', false);
                     $user->default_location_id = Input::get('default_location_id');
                 }
+                $user->slack_id = Input::get('slack_id');
 
                 if (Input::get('birthday')) {
                     $birthday = explode('/', Input::get('birthday'));

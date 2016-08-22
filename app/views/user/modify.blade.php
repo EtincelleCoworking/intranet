@@ -105,6 +105,12 @@
                             <small class="text-muted">ex : https://www.facebook.com/EtincelleCoworking</small>
                             <p>{{ Form::text('social_facebook', null, array('class' => 'form-control')) }}</p>
                         </div>
+                        <div class="col-lg-12">
+                            <i class="fa fa-slack"></i>
+                            {{ Form::label('slack_id', 'Slack') }}
+                            <small class="text-muted">ex : shordeaux</small>
+                            <p>{{ Form::text('slack_id', null, array('class' => 'form-control')) }}</p>
+                        </div>
                     </div>
                 </div>
             </div>

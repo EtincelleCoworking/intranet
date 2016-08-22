@@ -35,7 +35,6 @@ class UserEventHandler
             return true;
         }
         if (!$Location->slack_endpoint) {
-            // https://hooks.slack.com/services/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
             return true;
         }
         $timeslot = PastTime::where('user_id', '=', $PastTime->user_id)
@@ -47,18 +46,37 @@ class UserEventHandler
             // this is first show of the day
             $user = $PastTime->user;
 
-            if($user->gender = 'F'){
-                $message = 'Elle est dans la place :';
-            }else{
-                $message = 'Il est dans la place :';
+            if ($user->slack_id) {
+                $message = sprintf('@%s est là !', $user->slack_id);
+            } else {
+                $message = sprintf('%s est là !', $user->fullname);
             }
+
+            $urls = array();
+            $urls[] = sprintf('<%s|Intranet>', URL::route('user_profile', array('id' => $user->id)));
+            if ($user->social_facebook) {
+                $urls[] = sprintf('<%s|Facebook>', $user->social_facebook);
+            }
+            if ($user->social_linkedin) {
+                $urls[] = sprintf('<%s|Linkedin>', $user->social_linkedin);
+            }
+            if ($user->twitter) {
+                $urls[] = sprintf('<https://twitter.com/%s|Twitter>', $user->twitter);
+            }
+            if ($user->social_instagram) {
+                $urls[] = sprintf('<%s|Instagram>', $user->social_instagram);
+            }
+            if ($user->social_github) {
+                $urls[] = sprintf('<%s|GitHub>', $user->social_github);
+            }
+            $content = $user->bio_short . "\n\nVoir son profil sur " . implode(', ', $urls);
 
             $attachments = array();
             $attachments[] = array(
                 'title' => $user->fullname,
-                'title_link' =>  URL::route('user_profile', array('id' => $user->id)),
-                'text' =>  $user->bio_short,
-                'image_url' =>  $user->avatarUrl
+                //'title_link' => '',
+                'text' => $content,
+                'image_url' => asset($user->avatarUrl)
             );
             $client = new Client();
 
@@ -69,16 +87,17 @@ class UserEventHandler
                     "Accept" => "application/json"
                 ))
             );
-            $quote =json_decode($res->getBody(), true);
+            $quote = json_decode($res->getBody(), true);
 
             $attachments[] = array(
+                'pretext' => 'Citation du jour :',
                 'author_name' => $quote['author'],
-                'text' =>  $quote['quote']
+                'text' => $quote['quote'],
             );
-
 
             $this->slack($Location->slack_endpoint, array(
                 'text' => $message,
+                'link_names' => 1,
                 'attachments' => $attachments
             ));
         }

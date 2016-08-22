@@ -88,7 +88,7 @@ class ApiController extends BaseController
                     $timeslot->location_id = $location->id;
                     $timeslot->date_past = date('Y-m-d');
                     $timeslot->time_start = date('Y-m-d H:i:s', $this->floorTime($item['lastSeen']));
-                    Event::fire('user.shown', array($timeslot));
+                    Event::fire('user.shown', array($timeslot, $location));
                 }
                 $timeslot->device_id = $device->id;
                 $timeslot->time_end = date('Y-m-d H:i:s', $this->ceilTime($item['lastSeen']) + 10 * 60);

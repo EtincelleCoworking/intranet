@@ -20,7 +20,7 @@ class AddDeviceOnPastTimesMigration extends Migration {
             $table->dropColumn('auto_updated');
         });
 
-        Schema::table('location', function (Blueprint $table) {
+        Schema::table('locations', function (Blueprint $table) {
             $table->string('slack_endpoint')->nullable();
         });
 	}
