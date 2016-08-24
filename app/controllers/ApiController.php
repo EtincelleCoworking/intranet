@@ -94,8 +94,10 @@ class ApiController extends BaseController
                         $timeslot->time_start = date('Y-m-d H:i:s', $this->floorTime($item['lastSeen']));
                     }
                     $timeslot->device_id = $device->id;
-                    $timeslot->time_end = date('Y-m-d H:i:s', $this->ceilTime($item['lastSeen']) + 10 * 60);
-                    //$timeslot->auto_updated = true;
+                    $date_end = date('Y-m-d H:i:s', $this->ceilTime($item['lastSeen']) + 10 * 60);
+                    if ($timeslot->time_end < $date_end) {
+                        $timeslot->time_end = $date_end;
+                    }
                     $timeslot->save();
 
                     if ($triggerUserShown && !isset($notified_users[$timeslot->user_id])) {
