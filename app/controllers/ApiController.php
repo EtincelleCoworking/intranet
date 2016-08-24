@@ -115,7 +115,7 @@ class ApiController extends BaseController
                         $device_seen->save();
                     }
                 }
-                $device->last_seen_at = date('Y-m-d H:i:s', strtotime($item['lastSeen']));
+                $device->last_seen_at = max($device->last_seen_at, date('Y-m-d H:i:s', strtotime($item['lastSeen'])));
                 if (isset($item['name'])) {
                     $device->name = $item['name'];
                 }
