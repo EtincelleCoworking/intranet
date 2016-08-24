@@ -56,6 +56,7 @@ class ApiController extends BaseController
         }
         // var_dump(array_keys($devices));
         $notified_users = array();
+        $updated_users = array();
 
         foreach ($json as $item) {
             $item['mac'] = strtolower($item['mac']);
@@ -71,8 +72,8 @@ class ApiController extends BaseController
             }
             if (isset($devices[$item['mac']])) {
                 $device = $devices[$item['mac']];
-                if ($device->tracking_enabled) {
-                    $timeslot = null;
+                if ($device->tracking_enabled && !isset($updated_users[(int)$device->user_id])) {
+                    $updated_users[(int)$device->user_id] = true;
                     $timeslot = PastTime::where('user_id', '=', (int)$device->user_id)
                         ->where('date_past', '=', date('Y-m-d', strtotime($item['lastSeen'])))
                         ->where('time_start', '<', date('Y-m-d H:i:s', strtotime($item['lastSeen'])))
