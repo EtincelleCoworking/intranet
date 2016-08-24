@@ -74,7 +74,7 @@ class ApiController extends BaseController
                 if ($device->tracking_enabled) {
                     $timeslot = null;
                     if ($device->user_id) {
-                        $timeslot = PastTime::where('user_id', '=', $device->user_id)
+                        $timeslot = PastTime::where('user_id', '=', (int)$device->user_id)
                             ->where('date_past', '=', date('Y-m-d', strtotime($item['lastSeen'])))
                             ->where('time_start', '<', date('Y-m-d H:i:s', strtotime($item['lastSeen'])))
                             ->where(function ($query) use ($item) {
