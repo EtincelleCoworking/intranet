@@ -55,6 +55,7 @@ class ApiController extends BaseController
             $devices[$device->mac] = $device;
         }
         // var_dump(array_keys($devices));
+        $notified_users = array();
 
         foreach ($json as $item) {
             $item['mac'] = strtolower($item['mac']);
@@ -97,7 +98,8 @@ class ApiController extends BaseController
                     //$timeslot->auto_updated = true;
                     $timeslot->save();
 
-                    if ($triggerUserShown) {
+                    if ($triggerUserShown && !isset($notified_users[$timeslot->user_id])) {
+                        $notified_users[$timeslot->user_id] = true;
                         Event::fire('user.shown', array($timeslot, $location));
                     }
 

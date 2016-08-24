@@ -188,7 +188,7 @@
                                             @if($time->confirmed)
                                                 <i class="fa fa-check"></i>
                                             @else
-                                                @if(!($time->invoice_id or $time->is_free))
+                                                @if(!($time->invoice_id or $time->is_free) && $time->date_past != date('Y-m-d'))
                                                 <a href="{{ URL::route('pasttime_confirm', $time->id) }}"
                                                    class="ajax btn btn-xs btn-primary">Confirmer</a>
                                             @endif

@@ -89,7 +89,7 @@ class PastTimeController extends BaseController
             if (Session::has('filtre_pasttime.user_id')) {
                 $recapFilter = Session::get('filtre_pasttime.user_id');
                 $q->whereUserId($recapFilter);
-            }else{
+            } else {
                 $q->where('user_id', '>', 0);
             }
         } else {
@@ -339,12 +339,18 @@ class PastTimeController extends BaseController
     public function confirm($id)
     {
         $time = $this->dataExist($id);
-        $time->confirmed = true;
-        $time->save();
-
-        if (Request::ajax()) {
-            return Response::make('<i class="fa fa-check"></i>', 200);
+        if ($time->date_past != date('Y-m-d')) {
+            $time->confirmed = true;
+            $time->save();
+            if (Request::ajax()) {
+                return Response::make('<i class="fa fa-check"></i>', 200);
+            }
+        } else {
+            if (Request::ajax()) {
+                return Response::make('<i class="fa fa-times"></i>', 200);
+            }
         }
+
         return Redirect::route('pasttime_list')->with('mSuccess', 'Cette entrée a été confirmée');
     }
 
@@ -358,8 +364,10 @@ class PastTimeController extends BaseController
             ->get();
 
         foreach ($items as $item) {
-            $item->confirmed = true;
-            $item->save();
+            if ($item->date_past != date('Y-m-d')) {
+                $item->confirmed = true;
+                $item->save();
+            }
         }
 
         return Redirect::route('pasttime_list')->with('mSuccess', 'Ces entrées ont étés confirmées');
