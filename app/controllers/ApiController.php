@@ -73,17 +73,15 @@ class ApiController extends BaseController
                 $device = $devices[$item['mac']];
                 if ($device->tracking_enabled) {
                     $timeslot = null;
-                    if ($device->user_id) {
-                        $timeslot = PastTime::where('user_id', '=', (int)$device->user_id)
-                            ->where('date_past', '=', date('Y-m-d', strtotime($item['lastSeen'])))
-                            ->where('time_start', '<', date('Y-m-d H:i:s', strtotime($item['lastSeen'])))
-                            ->where(function ($query) use ($item) {
-                                $query->where('time_end', '>', date('Y-m-d H:i:s', strtotime('-60 minutes', strtotime($item['lastSeen']))))
-                                    ->orWhereNull('time_end');
-                            })
-                            ->orderBy('time_start', 'DESC')
-                            ->first();
-                    }
+                    $timeslot = PastTime::where('user_id', '=', (int)$device->user_id)
+                        ->where('date_past', '=', date('Y-m-d', strtotime($item['lastSeen'])))
+                        ->where('time_start', '<', date('Y-m-d H:i:s', strtotime($item['lastSeen'])))
+                        ->where(function ($query) use ($item) {
+                            $query->where('time_end', '>', date('Y-m-d H:i:s', strtotime('-60 minutes', strtotime($item['lastSeen']))))
+                                ->orWhereNull('time_end');
+                        })
+                        ->orderBy('time_start', 'DESC')
+                        ->first();
                     $triggerUserShown = !$timeslot;
                     if (!$timeslot) {
                         $timeslot = new PastTime();
