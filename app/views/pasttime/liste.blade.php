@@ -37,22 +37,27 @@
                 <div class="ibox-content">
                     {{ Form::open(array('route' => array('pasttime_list'))) }}
                     {{ Form::hidden('filtre_submitted', 1) }}
-                    <div class="row">
-                        @if (Auth::user()->isSuperAdmin())
-                            <div class="col-md-4 col-lg-4">
+                    @if (Auth::user()->isSuperAdmin())
+                        <div class="row">
+                            <div class="col-md-5">
+                                {{ Form::select('filtre_organisation_id', Organisation::Select('Sélectionnez une organisation'), Session::get('filtre_pasttime.organisation_id') ? Session::get('filtre_pasttime.organisation_id') : null, array('id' => 'filter-organisation','class' => 'form-control')) }}
+                            </div>
+                            <div class="col-md-5">
                                 {{ Form::select('filtre_user_id', User::Select('Sélectionnez un client'), Session::get('filtre_pasttime.user_id') ? Session::get('filtre_pasttime.user_id') : null, array('id' => 'filter-client','class' => 'form-control')) }}
                             </div>
-                        @else
-                            {{ Form::hidden('filtre_user_id', Auth::user()->id) }}
-                        @endif
-
-                        <div class="col-md-2 col-lg-2 input-group-sm">{{ Form::text('filtre_start', Session::get('filtre_pasttime.start') ? date('d/m/Y', strtotime(Session::get('filtre_pasttime.start'))) : date('01/m/Y'), array('class' => 'form-control datePicker')) }}</div>
-                        <div class="col-md-2 col-lg-2 input-group-sm">{{ Form::text('filtre_end', ((Session::get('filtre_pasttime.end')) ? date('d/m/Y', strtotime(Session::get('filtre_pasttime.end'))) : date('t', date('m')).'/'.date('m/Y')), array('class' => 'form-control datePicker')) }}</div>
-                        <div class="col-md-2 col-lg-2 input-group-sm">
-                            {{ Form::checkbox('filtre_toinvoice', true, Session::has('filtre_pasttime.toinvoice') ? Session::get('filtre_pasttime.toinvoice') : false) }}
-                            A facturer
+                            <div class="col-md-2 input-group-sm">
+                                {{ Form::checkbox('filtre_toinvoice', true, Session::has('filtre_pasttime.toinvoice') ? Session::get('filtre_pasttime.toinvoice') : false) }}
+                                A facturer
+                            </div>
                         </div>
-                        <div class="col-md-2 col-lg-2">
+                    @else
+                        {{ Form::hidden('filtre_user_id', Auth::user()->id) }}
+                    @endif
+
+                    <div class="row">
+                        <div class="col-md-4 input-group-sm">{{ Form::text('filtre_start', Session::get('filtre_pasttime.start') ? date('d/m/Y', strtotime(Session::get('filtre_pasttime.start'))) : date('01/m/Y'), array('class' => 'form-control datePicker')) }}</div>
+                        <div class="col-md-4 input-group-sm">{{ Form::text('filtre_end', ((Session::get('filtre_pasttime.end')) ? date('d/m/Y', strtotime(Session::get('filtre_pasttime.end'))) : date('t', date('m')).'/'.date('m/Y')), array('class' => 'form-control datePicker')) }}</div>
+                        <div class="col-md-4">
                             {{ Form::submit('Filtrer', array('class' => 'btn btn-sm btn-primary')) }}
                             <a href="{{URL::route('pasttime_filter_reset')}}" class="btn btn-sm btn-default">Réinitialiser</a>
                             @if (Auth::user()->isSuperAdmin())
@@ -152,11 +157,11 @@
                                 <tbody>
                                 @foreach ($times as $time)
                                     <tr @if ((Auth::user()->isSuperAdmin()) and ($time->invoice_id or $time->is_free)) class="text-muted" @endif >
-                                            <th>
-                                                @if(!($time->invoice_id or $time->is_free))
-                                                    {{ Form::checkbox('items[]', $time->id, false, array('class' => 'check')) }}
-                                                @endif
-                                            </th>
+                                        <th>
+                                            @if(!($time->invoice_id or $time->is_free))
+                                                {{ Form::checkbox('items[]', $time->id, false, array('class' => 'check')) }}
+                                            @endif
+                                        </th>
                                         <td>{{ $time->location }}</td>
 
                                         <td>{{ date('d/m/Y', strtotime($time->date_past)) }}</td>
@@ -189,9 +194,9 @@
                                                 <i class="fa fa-check"></i>
                                             @else
                                                 @if(!($time->invoice_id or $time->is_free) && $time->date_past != date('Y-m-d'))
-                                                <a href="{{ URL::route('pasttime_confirm', $time->id) }}"
-                                                   class="ajax btn btn-xs btn-primary">Confirmer</a>
-                                            @endif
+                                                    <a href="{{ URL::route('pasttime_confirm', $time->id) }}"
+                                                       class="ajax btn btn-xs btn-primary">Confirmer</a>
+                                                @endif
                                             @endif
                                         </td>
                                         <td>
@@ -222,7 +227,8 @@
                             </table>
                             {{ $times->links() }}
                             @if (Auth::user()->isSuperAdmin())
-                                <input type="submit" class="btn btn-default pull-right" name="invoice" value="Facturer"/>
+                                <input type="submit" class="btn btn-default pull-right" name="invoice"
+                                       value="Facturer"/>
                             @endif
                             <input type="submit" class="btn btn-default pull-right" name="confirm" value="Confirmer"/>
                         </div>
@@ -240,12 +246,13 @@
         $().ready(function () {
             $('.datePicker').datepicker();
             $('#filter-client').select2();
+            $('#filter-organisation').select2();
 
             $('#checkall').click(function () {
                 $('input.check').prop('checked', $(this).prop('checked'));
             });
 
-            $('.ajax').click(function (){
+            $('.ajax').click(function () {
                 $.ajax({
                     url: $(this).attr('href'),
                     context: $(this)

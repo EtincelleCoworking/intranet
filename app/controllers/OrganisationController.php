@@ -52,7 +52,8 @@ class OrganisationController extends BaseController
         return View::make('organisation.liste', array('organisations' => $organisations));
     }
 
-    public function cancelFilter(){
+    public function cancelFilter()
+    {
         Session::forget('filtre_organisation.organisation_id');
         Session::forget('filtre_organisation.domiciliation');
         return Redirect::route('organisation_list');
@@ -86,9 +87,9 @@ class OrganisationController extends BaseController
             $organisation->tva_number = Input::get('tva_number');
             $organisation->code_purchase = Input::get('code_purchase');
             $organisation->code_sale = Input::get('code_sale');
-            $organisation->domiciliation_kind_id = Input::get('domiciliation_kind_id', null)?Input::get('domiciliation_kind_id', null):null;
+            $organisation->domiciliation_kind_id = Input::get('domiciliation_kind_id', null) ? Input::get('domiciliation_kind_id', null) : null;
             $organisation->domiciliation_start_at = $this->normalizeDate(Input::get('domiciliation_start_at'));
-            $organisation->domiciliation_end_at = $this->normalizeDate(Input::get('domiciliation_end_at', null));
+            $organisation->domiciliation_end_at = $this->normalizeDate(Input::get('domiciliation_end_at'));
             if (Input::get('accountant_id')) {
                 $organisation->accountant_id = Input::get('accountant_id');
             } else {
@@ -130,7 +131,9 @@ class OrganisationController extends BaseController
         $validator = Validator::make(Input::all(), Organisation::$rulesAdd);
         if (!$validator->fails()) {
             $organisation = new Organisation(Input::all());
-            $organisation->domiciliation_kind_id = Input::get('domiciliation_kind_id', null)?Input::get('domiciliation_kind_id', null):null;
+            $organisation->domiciliation_kind_id = Input::get('domiciliation_kind_id', null) ? Input::get('domiciliation_kind_id', null) : null;
+            $organisation->domiciliation_start_at = $this->normalizeDate(Input::get('domiciliation_start_at'));
+            $organisation->domiciliation_end_at = $this->normalizeDate(Input::get('domiciliation_end_at'));
 
             if ($organisation->save()) {
                 return Redirect::route('organisation_modify', $organisation->id)->with('mSuccess', 'L\'organisme a bien été ajouté');

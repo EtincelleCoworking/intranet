@@ -42,6 +42,9 @@ class PastTimeController extends BaseController
                 if (Input::has('filtre_user_id')) {
                     Session::put('filtre_pasttime.user_id', Input::get('filtre_user_id'));
                 }
+                if (Input::has('filtre_organisation_id')) {
+                    Session::put('filtre_pasttime.organisation_id', Input::get('filtre_organisation_id'));
+                }
                 if (Input::has('filtre_start')) {
                     $date_start_explode = explode('/', Input::get('filtre_start'));
                     Session::put('filtre_pasttime.start', $date_start_explode[2] . '-' . $date_start_explode[1] . '-' . $date_start_explode[0]);
@@ -90,7 +93,13 @@ class PastTimeController extends BaseController
                 $recapFilter = Session::get('filtre_pasttime.user_id');
                 $q->whereUserId($recapFilter);
             } else {
-                $q->where('user_id', '>', 0);
+                $q->where('past_times.user_id', '>', 0);
+            }
+            if (Session::has('filtre_pasttime.organisation_id')) {
+                $recapFilter = Session::get('filtre_pasttime.organisation_id');
+                $q->join('organisation_user', 'past_times.user_id', '=', 'organisation_user.user_id');
+                $q->where('organisation_user.organisation_id', '=', $recapFilter);
+
             }
         } else {
             $recapFilter = Auth::id();
@@ -206,6 +215,7 @@ class PastTimeController extends BaseController
     public function cancelFilter()
     {
         Session::forget('filtre_pasttime.user_id');
+        Session::forget('filtre_pasttime.organisation_id');
         Session::forget('filtre_pasttime.start');
         Session::forget('filtre_pasttime.end');
         Session::forget('filtre_pasttime.filtre_toinvoice');
