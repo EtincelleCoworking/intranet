@@ -83,6 +83,7 @@ class PastTimeController extends BaseController
 
         $recapFilter = false;
         $q = PastTime::whereBetween('date_past', array($date_filtre_start, $date_filtre_end));
+        $q->select('past_times.*');
         $q->with('user', 'ressource');
         if (Session::get('filtre_pasttime.filtre_toinvoice')) {
             $q->where('invoice_id', 0);
