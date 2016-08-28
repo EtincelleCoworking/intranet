@@ -36,6 +36,7 @@ class PastTimeController extends BaseController
             if (Input::has('toinvoice')) {
                 Session::put('filtre_pasttime.filtre_toinvoice', true);
                 Session::forget('filtre_pasttime.user_id');
+                Session::forget('filtre_pasttime.organisation_id');
                 Session::put('filtre_pasttime.start', '2014-12-01');
                 Session::put('filtre_pasttime.end', date('Y-12-31'));
             } else {
