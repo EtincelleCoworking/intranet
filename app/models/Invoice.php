@@ -27,7 +27,8 @@ class Invoice extends Eloquent
         }
     }
 
-    public function scopeInvoicesDesc($query, $user){
+    public function scopeInvoicesDesc($query, $user)
+    {
         return $query->where('user_id', $user->id)->orderBy('created_at', 'DESC')->get();
     }
 
@@ -191,19 +192,24 @@ class Invoice extends Eloquent
         'address' => 'required|min:1'
     );
 
-    public function scopeSelect($query, $title = "Select", $user_id = null)
+    public function scopeSelectAll($query, $title = "Select", $user_id = null)
     {
+//        var_dump($title);
+//        var_dump($user_id);
         $selectVals[''] = $title;
-        $query = $this;
+        //$query = $this;
         if ($user_id) {
-            $query = $query->where('user_id', $user_id);
+            $query->select('invoices.*');
+            $query->join('organisation_user', 'invoices.organisation_id', '=', 'organisation_user.organisation_id');
+            $query->where('organisation_user.user_id', $user_id);
         }
         $query = $query->orderBy('days', 'desc')->orderBy('number', 'desc')->where('type', 'F');
         $selectVals += $query->with('user')->get()->lists('caption', 'id');
         return $selectVals;
     }
 
-    public function getPdfHtml(){
+    public function getPdfHtml()
+    {
         $html = '
         <html>
             <head>

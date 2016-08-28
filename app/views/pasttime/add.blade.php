@@ -57,7 +57,7 @@
                             </div>
                             <div class="col-md-4">
                                 {{ Form::label('invoice_id', 'Facture') }}
-                                <p>{{ Form::select('invoice_id', Invoice::Select('Sélectionnez une facture'), null, array('class' => 'form-control')) }}</p>
+                                <p>{{ Form::select('invoice_id', Invoice::SelectAll('Sélectionnez une facture'), null, array('class' => 'form-control')) }}</p>
                             </div>
                             <div class="col-md-2">
                                 <p>

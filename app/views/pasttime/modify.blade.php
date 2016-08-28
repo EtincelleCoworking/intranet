@@ -59,7 +59,7 @@
                             </div>
                             <div class="col-md-4">
                                 {{ Form::label('invoice_id', 'Facture') }}
-                                <p>{{ Form::select('invoice_id', Invoice::Select('Sélectionnez une facture', $time->user_id), $time->invoice_id, array('class' => 'form-control')) }}</p>
+                                <p>{{ Form::select('invoice_id', Invoice::selectAll('Sélectionnez une facture', $time->user_id), $time->invoice_id, array('class' => 'form-control')) }}</p>
                             </div>
                             <div class="col-md-2">
                                 <p>
