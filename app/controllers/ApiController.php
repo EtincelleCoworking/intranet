@@ -99,9 +99,9 @@ class ApiController extends BaseController
                     }
                     $timeslot->save();
 
-                    if ($triggerUserShown && !isset($notified_users[$timeslot->user_id])) {
+                    if ($timeslot->user_id && $triggerUserShown && !isset($notified_users[$timeslot->user_id])) {
                         $notified_users[$timeslot->user_id] = true;
-                        Event::fire('user.shown', array($timeslot, $location));
+                        Event::fire('user.shown', array($timeslot->user, $timeslot, $location));
                     }
 
                     $device_seen = DeviceSeen::where('device_id', '=', $device->id)

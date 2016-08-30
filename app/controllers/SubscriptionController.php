@@ -219,9 +219,9 @@ class SubscriptionController extends BaseController
             $invoice_line->order_index = $index++;
             $invoice_line->save();
 
-            $date = new DateTime($subscription->renew_at);
-            $date->modify('+1 month');
-            $subscription->renew_at = $date->format('Y-m-d');
+            $date3 = new DateTime($subscription->renew_at);
+            $date3->modify('next month');
+            $subscription->renew_at = $date3->format('Y-m-d');
             $subscription->save();
         }
 
