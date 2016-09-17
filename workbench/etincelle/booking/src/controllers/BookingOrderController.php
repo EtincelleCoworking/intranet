@@ -9,28 +9,8 @@ class BookingOrderController extends Controller
 
     public function invoicing()
     {
-
-      //  $params = array('items' => BookingOrder::overview()->get()->toArray());
-
-
-
-        // User
-        // Nb heures commandées
-        // Nb heures réalisées - Nb heures non associées
-        // Nb heures restantes
-
-        // Bouton pour associer les booking_items aux factures correspondantes >
-
-        // user > invoice > invoices_items.booking_hours
-        // user > booking > booking_item.duration
-
-        /*
-
-
-*/
-
         $results = DB::select( DB::raw('SELECT users.id, users.firstname, users.lastname, users.email
-         , (SELECT SUM(invoices_items.booking_hours) FROM invoices_items JOIN invoices ON invoices_items.invoice_id = invoices.id WHERE invoices.user_id = users.id)  as quantity_ordered
+         , (SELECT SUM(invoices_items.booking_hours) FROM invoices_items JOIN invoices ON invoices_items.invoice_id = invoices.id WHERE invoices.user_id = users.id) * 60 as quantity_ordered
          , (SELECT SUM(booking_item.duration) FROM booking_item JOIN booking ON booking_item.booking_id = booking.id WHERE booking.user_id = users.id AND booking_item.is_free = false)  as quantity_used
          FROM users 
          LEFT OUTER JOIN invoices ON invoices.user_id = users.id LEFT OUTER JOIN invoices_items ON invoices_items.invoice_id = invoices.id
