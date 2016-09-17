@@ -62,6 +62,9 @@
             <li{{ Request::is('booking/list') ? ' class="active"' : '' }}>
                 <a href="{{ URL::route('booking_list') }}"><i class="fa fa-calendar-o"></i> Liste</a>
             </li>
+            <li{{ Request::is('booking/invoicing') ? ' class="active"' : '' }}>
+                <a href="{{ URL::route('booking_invoicing') }}"><i class="fa fa-money"></i> Pré-réservations</a>
+            </li>
             {{--<li><a href="{{ URL::route('user_directory') }}">Annuaire</a></li>--}}
         </ul>
     </li>

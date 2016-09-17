@@ -3,7 +3,7 @@
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
 
-class InvoiceMigration extends Migration {
+class AddUserOnBookingItem extends Migration {
 
 	/**
 	 * Run the migrations.
@@ -12,12 +12,9 @@ class InvoiceMigration extends Migration {
 	 */
 	public function up()
 	{
-		Schema::table('booking_item', function(Blueprint $table)
+        Schema::table('invoices_items', function(Blueprint $table)
 		{
-			$table->integer('invoice_id')->unsigned()->nullable();
-			$table->foreign('invoice_id')->references('id')->on('invoices');
-
-			$table->boolean('is_free')->default(false);
+            $table->integer('booking_hours')->unsigned();
 		});
 	}
 

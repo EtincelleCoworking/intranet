@@ -25,20 +25,21 @@
                 <div class="title-action">
 
                     @if ($invoice->type == 'D')
-                                <a href="{{ URL::route('invoice_validate', $invoice->id) }}" data-method="get"
-                                   data-confirm="Etes-vous certain de vouloir passer ce devis en facture ?"
-                                   rel="nofollow"
-                                   class="btn btn-success btn-outline">Facturer</a>
-                                <a href="{{ URL::route('invoice_cancel', $invoice->id) }}" data-method="get"
-                                   data-confirm="Etes-vous certain de vouloir passer ce devis en refusé ?"
-                                   rel="nofollow"
-                                   class="btn btn-warning btn-outline">Refuser</a>
-                                <a href="{{ URL::route('invoice_delete', $invoice->id) }}" data-method="get"
-                                   data-confirm="Etes-vous certain de vouloir supprimer ce devis ?" rel="nofollow"
-                                   class="btn btn-danger btn-outline">Supprimer</a>
+                        <a href="{{ URL::route('invoice_validate', $invoice->id) }}" data-method="get"
+                           data-confirm="Etes-vous certain de vouloir passer ce devis en facture ?"
+                           rel="nofollow"
+                           class="btn btn-success btn-outline">Facturer</a>
+                        <a href="{{ URL::route('invoice_cancel', $invoice->id) }}" data-method="get"
+                           data-confirm="Etes-vous certain de vouloir passer ce devis en refusé ?"
+                           rel="nofollow"
+                           class="btn btn-warning btn-outline">Refuser</a>
+                        <a href="{{ URL::route('invoice_delete', $invoice->id) }}" data-method="get"
+                           data-confirm="Etes-vous certain de vouloir supprimer ce devis ?" rel="nofollow"
+                           class="btn btn-danger btn-outline">Supprimer</a>
                     @endif
 
-                    <a href="{{ URL::route('invoice_print_pdf', $invoice->id) }}" class="btn btn-default" target="_blank">PDF</a>
+                    <a href="{{ URL::route('invoice_print_pdf', $invoice->id) }}" class="btn btn-default"
+                       target="_blank">PDF</a>
                 </div>
             @endif
         </div>
@@ -56,10 +57,10 @@
                         @if ($invoice->organisation)
                             {{ $invoice->organisation->name }}
                             &gt;
-@if($invoice->user)
-                            {{ $invoice->user->fullname }}
-                                           @endif
-     @endif
+                            @if($invoice->user)
+                                {{ $invoice->user->fullname }}
+                            @endif
+                        @endif
                     </h5>
                 </div>
                 <div class="ibox-content">
@@ -124,7 +125,17 @@
                             <tr>
                                 <td class="col-lg-1">{{ Form::number('order_index['.$item->id.']', $item->order_index, array('class' => 'form-control')) }}</td>
                                 <td>{{ Form::select('ressource_id['.$item->id.']', Ressource::SelectAll(), $item->ressource_id, array('class' => 'form-control')) }}</td>
-                                <td>{{ Form::textarea('text['.$item->id.']', $item->text, array('rows' => 4, 'class' => 'form-control')) }}</td>
+                                <td>
+                                    {{ Form::textarea('text['.$item->id.']', $item->text, array('rows' => 4, 'class' => 'form-control')) }}
+                                    @if(!$item->subscription_user_id)
+                                        <a href="#" class="btn btn-xs btn-default action-item-option-toggle"
+                                           data-id="{{$item->id}}" data-kind="subscription">+ Abonnement</a>
+                                    @endif
+                                    @if(!$item->booking_hours)
+                                        <a href="#" class="btn btn-xs btn-default action-item-option-toggle"
+                                           data-id="{{$item->id}}" data-kind="booking">+ Pré-réservation</a>
+                                    @endif
+                                </td>
                                 <td>{{ Form::text('amount['.$item->id.']', $item->amount, array('class' => 'form-control')) }}</td>
                                 <td>{{ Form::select('vat_types_id['.$item->id.']', VatType::SelectAll(), $item->vat->id, array('class' => 'form-control')) }}</td>
                                 <td>
@@ -132,7 +143,54 @@
                                        data-method="delete"
                                        data-confirm="Etes-vous certain de vouloir retirer cette ligne ?"
                                        rel="nofollow"
-                                            class="btn btn-xs btn-danger btn-outline">Supprimer</a</td>
+                                       class="btn btn-xs btn-danger btn-outline">Supprimer</a</td>
+                            </tr>
+                            <tr id="item-option-subscription-{{$item->id}}"
+                                @if(!$item->subscription_user_id)
+                                    class="hide"
+                                @endif
+                            >
+                                <td></td>
+                                <td>Abonnement</td>
+                                <td colspan="3">
+                                    <div class="form-group"><label
+                                                class="col-sm-2 control-label">Utilisateur</label>
+                                        <div class="col-sm-10">
+                                            {{ Form::select('subscription_user_id['.$item->id.']', User::SelectInOrganisation($invoice->organisation_id, '-'),$item->subscription_user_id, array('class' => 'form-control')) }}
+                                        </div>
+                                    </div>
+                                    <div class="form-group"><label
+                                                class="col-sm-2 control-label">Abonnement</label>
+                                        <div class="col-sm-10">
+                                            {{ Form::select('subscription_hours_quota['.$item->id.']',SubscriptionKind::SelectOptions(), $item->subscription_hours_quota, array('class' => 'form-control')) }}
+                                        </div>
+                                    </div>
+                                    <div class="form-group"><label
+                                                class="col-sm-2 control-label">Du</label>
+                                        <div class="col-sm-10">
+                                            {{ Form::text('subscription_from['.$item->id.']', ($item->subscription_from != '0000-00-00 00:00:00') ?date('d/m/Y', strtotime($item->subscription_from)):null, array('class' => 'form-control datePicker')) }}
+                                        </div>
+                                    </div>
+                                    <div class="form-group"><label
+                                                class="col-sm-2 control-label">Au</label>
+                                        <div class="col-sm-10">
+                                            {{ Form::text('subscription_to['.$item->id.']', ($item->subscription_to != '0000-00-00 00:00:00')?date('d/m/Y', strtotime($item->subscription_to)):null, array('class' => 'form-control datePicker')) }}
+                                        </div>
+                                    </div>
+                                </td>
+                                <td></td>
+                            </tr>
+                            <tr id="item-option-booking-{{$item->id}}"
+                                @if(!$item->booking_hours)
+                                class="hide"
+                                    @endif
+                            >
+                                <td></td>
+                                <td>Pré-réservation</td>
+                                <td colspan="3">
+                                    {{ Form::text('booking_hours['.$item->id.']', $item->booking_hours, array('class' => 'form-control')) }}
+                                </td>
+                                <td></td>
                             </tr>
                         @endforeach
                         </tbody>
@@ -154,7 +212,6 @@
                         </div>
                     </div>
                     {{ Form::close() }}
-
 
 
                 </div>
@@ -204,8 +261,13 @@
 @section('javascript')
     <script type="text/javascript">
         $().ready(function () {
-
             $('.datePicker').datepicker();
+
+            $('.action-item-option-toggle').click(function () {
+                $(this).hide();
+                $('#item-option-' + $(this).attr('data-kind') + '-' + $(this).attr('data-id')).removeClass('hide');
+                return false;
+            });
         });
     </script>
 @stop

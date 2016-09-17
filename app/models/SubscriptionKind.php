@@ -17,4 +17,13 @@ class SubscriptionKind extends Eloquent
         $selectVals += $query->orderBy('order_index', 'ASC')->lists('name', 'id');
         return $selectVals;
     }
+
+    public function scopeSelectOptions($query)
+    {
+        $selectVals[null] = 'Aucun';
+        $selectVals += $query->orderBy('order_index', 'DESC')->lists('name', 'hours_quota');
+        return $selectVals;
+    }
+
+
 }

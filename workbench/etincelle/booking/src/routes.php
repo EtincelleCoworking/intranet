@@ -26,5 +26,6 @@ Route::group(['before' => 'member'], function () {
 
 Route::group(['before' => 'superadmin'], function () {
     Route::get('/booking/log-time/{id}', array('as' => 'booking_log_time_ajax', 'uses' => 'BookingController@logTimeAjax'));
+    Route::get('/booking/make-gift/{id}', array('as' => 'booking_make_gift', 'uses' => 'BookingController@makeGift'));
 
 });

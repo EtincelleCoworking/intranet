@@ -288,6 +288,21 @@ class BookingController extends Controller
     }
 
 
+    public function makeGift($id)
+    {
+        $booking_item = BookingItem::find($id);
+        if (!$booking_item) {
+            return Response::json(array('status' => 'KO',
+                'message' => 'La réservation est inconnue'));
+        }
+
+        $booking_item->is_free = true;
+        $booking_item->save();
+
+        return Response::json(array('status' => 'OK'));
+    }
+
+
     public function raw()
     {
         if (Input::has('filtre_submitted')) {
@@ -301,7 +316,11 @@ class BookingController extends Controller
             }
             if (Input::has('filtre_start')) {
                 $date_start_explode = explode('/', Input::get('filtre_start'));
-                Session::put('filtre_booking.start', $date_start_explode[2] . '-' . $date_start_explode[1] . '-' . $date_start_explode[0]);
+                if (count($date_start_explode) == 3) {
+                    Session::put('filtre_booking.start', $date_start_explode[2] . '-' . $date_start_explode[1] . '-' . $date_start_explode[0]);
+                }else{
+                    Session::put('filtre_booking.start', false);
+                }
                 if (!Input::has('filtre_user_id')) {
                     Session::forget('filtre_booking.user_id');
                 }
@@ -310,7 +329,11 @@ class BookingController extends Controller
             }
             if (Input::has('filtre_end')) {
                 $date_end_explode = explode('/', Input::get('filtre_end'));
-                Session::put('filtre_booking.end', $date_end_explode[2] . '-' . $date_end_explode[1] . '-' . $date_end_explode[0]);
+                if (count($date_end_explode) == 3) {
+                    Session::put('filtre_booking.end', $date_end_explode[2] . '-' . $date_end_explode[1] . '-' . $date_end_explode[0]);
+                } else {
+                    Session::put('filtre_booking.end', false);
+                }
             } else {
                 Session::put('filtre_booking.end', date('Y-m-t'));
             }

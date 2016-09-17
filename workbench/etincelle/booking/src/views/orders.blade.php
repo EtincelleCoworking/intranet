@@ -1,18 +1,18 @@
 @extends('layouts.master')
 
 @section('meta_title')
-    Réservations
+    Suivi de la consommation des pré-réservations
 @stop
 
 @section('breadcrumb')
     <div class="row wrapper border-bottom white-bg page-heading">
         <div class="col-sm-10">
-            <h2>Suivi de la facturation des réservations</h2>
+            <h2>Suivi de la consommation des pré-réservations</h2>
         </div>
         <div class="col-sm-2">
-            <div class="title-action">
-                <a href="#" class="btn btn-primary" id="meeting-add">Nouvelle réservation</a>
-            </div>
+            {{--<div class="title-action">--}}
+                {{--<a href="#" class="btn btn-primary" id="meeting-add">Nouvelle réservation</a>--}}
+            {{--</div>--}}
         </div>
 
     </div>
@@ -30,13 +30,10 @@
                             <thead>
 
                             <tr>
-                                @if (Auth::user()->isSuperAdmin())
-                                    <th>Utilisateur</th>
-                                @endif
-                                <th>Vue d'ensemble</th>
+                                <th>Utilisateur</th>
+                                <th>Facturé</th>
                                 <th>Effectué</th>
-                                <th>Réservé</th>
-                                <th>Crédit</th>
+                                <th>Delta</th>
                                 <th>Actions</th>
                             </tr>
                             </thead>
@@ -45,41 +42,20 @@
                                 <tr>
                                     @if (Auth::user()->isSuperAdmin())
                                         <td>
-                                            <a href="{{ route('user_modify', $item->booking->user->id) }}">{{ $item->booking->user->fullname }}</a>
-                                            <a href="?filtre_submitted=1&filtre_user_id={{ $item->booking->user->id }}"><i
-                                                        class="fa fa-filter"></i></a>
+                                            <a href="{{ route('user_modify', $item->id) }}">{{ $item->firstname }} {{ $item->lastname }}</a>
                                         </td>
                                     @endif
+                                    <td>{{$item->quantity_ordered?durationToHuman($item->quantity_ordered):'-'}}</td>
+                                    <td>{{$item->quantity_used?durationToHuman($item->quantity_used):'-'}}</td>
                                     <td>
-                                        <div class="progress">
-                                            @if($item->quantity_done)
-                                                <div class="progress-bar progress-bar-success"
-                                                     style="width: {{$item->quantity_done_percent}}%">
-                                                </div>
-                                            @endif
-                                            @if($item->quantity_pending)
-                                                <div class="progress-bar progress-bar-warning progress-bar-striped"
-                                                     style="width: {{$item->quantity_done_percent}}%">
-                                                </div>
-                                            @endif
-                                            @if($item->quantity_remaining)
-                                                <div class="progress-bar progress-bar-danger"
-                                                     style="width: {{$item->quantity_done_percent}}%">
-                                                </div>
-                                            @endif
-                                        </div>
-                                    </td>
-                                    <td>{{$item->quantity_done}}</td>
-                                    <td>{{$item->quantity_pending}}</td>
-                                    <td>
-                                        @if($item->quantity_remaining<0)
-                                            <span class="text-danger">{{$item->quantity_remaining}}</span>
+                                        @if($item->quantity_ordered<$item->quantity_used)
+                                            <span class="text-danger">{{ durationToHuman($item->quantity_used - $item->quantity_ordered)}}</span>
                                         @else
-                                            {{$item->quantity_remaining}}
+                                            {{durationToHuman($item->quantity_used - $item->quantity_ordered) }}
                                         @endif
                                     </td>
                                     <td>
-                                        <a href="#" class="btn btn-xs btn-primary">Détails</a>
+                                        <a href="{{route('booking_list')}}?filtre_submitted=1&filtre_start=0&filtre_end=0&filtre_user_id={{ $item->id }}" class="btn btn-xs btn-primary">Détails</a>
                                     </td>
                                 </tr>
                             @endforeach

@@ -64,9 +64,12 @@ function getDuration($start, $end)
 
 function durationToHuman($minutes)
 {
-    $hours = floor($minutes / 60);
-    $minutes = $minutes % 60;
+    $hours = floor(abs($minutes) / 60);
+    $minutes = abs($minutes) % 60;
     $result = '';
+    if($minutes < 0){
+        $result .= '- ';
+    }
     if ($hours) {
         $result = $hours . Lang::choice('messages.times_hours', $hours);
     }

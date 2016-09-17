@@ -103,7 +103,10 @@
                                             @if ($item->is_free)
                                                 Offert
                                             @else
-                                                -
+                                                @if (Auth::user()->isSuperAdmin())
+                                                    <a href="{{ route('booking_make_gift', array('id' => $item->id)) }}"
+                                                       class="btn btn-xs btn-default action-booking-make-gift">Offrir</a>
+                                                @endif
                                             @endif
                                         @endif
                                     </td>
@@ -132,6 +135,34 @@
         $().ready(function () {
             $('.datePicker').datepicker();
             $('#filter-client').select2();
+
+            $('.action-booking-make-gift')
+                    .click(function () {
+                        var link = $(this);
+                        $.ajax({
+                            dataType: 'json',
+                            url: $(this).attr('href'),
+                            type: "GET",
+                            success: function (data) {
+                                if (data.status == 'KO') {
+                                    toastr.error(data.message);
+                                } else {
+                                    link.parent().html('Offert');
+                                }
+                            },
+                            error: function (data) {
+                                // afficher un message générique?
+                                toastr.error('Erreur inconnue');
+                                $('#BookingDialog').modal('hide');
+                            }
+                        });
+                        return false;
+                    });
+
+
         });
+
+
+
     </script>
 @stop
