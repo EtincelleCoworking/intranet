@@ -47,5 +47,6 @@ return array(
     'stripe_pk' =>  'pk_test_',
 
     'slack_token' => '',
-    'slack_endpoint' => ''
+    'slack_endpoint' => '',
+    'slack_url' => ''
 );

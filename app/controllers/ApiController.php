@@ -44,10 +44,14 @@ class ApiController extends BaseController
 
         $json = json_decode(Request::getContent(), true);
         $macs = array();
-        foreach ($json as $item) {
-            if ($item['lastSeen'] > date('Y-m-d')) {
-                $macs[] = strtolower($item['mac']);
+        if (is_array($json)) {
+            foreach ($json as $item) {
+                if ($item['lastSeen'] > date('Y-m-d')) {
+                    $macs[] = strtolower($item['mac']);
+                }
             }
+        }else{
+            error_log(sprintf('offixUpload: JSON is not an array [%s]', Request::getContent()), E_USER_WARNING);
         }
         //var_dump($macs);
         $devices = array();
