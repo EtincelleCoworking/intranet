@@ -127,7 +127,7 @@
                                 <td>{{ Form::select('ressource_id['.$item->id.']', Ressource::SelectAll(), $item->ressource_id, array('class' => 'form-control')) }}</td>
                                 <td>
                                     {{ Form::textarea('text['.$item->id.']', $item->text, array('rows' => 4, 'class' => 'form-control')) }}
-                                    @if(!$item->subscription_user_id)
+                                    @if(!$item->subscription_hours_quota)
                                         <a href="#" class="btn btn-xs btn-default action-item-option-toggle"
                                            data-id="{{$item->id}}" data-kind="subscription">+ Abonnement</a>
                                     @endif
@@ -146,7 +146,7 @@
                                        class="btn btn-xs btn-danger btn-outline">Supprimer</a</td>
                             </tr>
                             <tr id="item-option-subscription-{{$item->id}}"
-                                @if(!$item->subscription_user_id)
+                                @if(!$item->subscription_hours_quota)
                                     class="hide"
                                 @endif
                             >
