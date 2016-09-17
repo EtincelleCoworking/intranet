@@ -26,7 +26,7 @@
                     @if(count($items) == 0)
                         <p>Aucun élément à afficher</p>
                     @else
-                        <table class="table">
+                        <table class="table table-hover table-striped">
                             <thead>
 
                             <tr>
