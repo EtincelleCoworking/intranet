@@ -19,8 +19,8 @@ class BookingOrderController extends Controller
 
         $items = array();
         foreach ($results as $item) {
-            if ($item->quantity_ordered > 0 || $item->quantity_used > 0) {
-                $results[] = $item;
+            if (((int)$item->quantity_ordered > 0) || ((int)$item->quantity_used > 0)) {
+                $items[] = $item;
             }
         }
         return View::make('booking::orders', array('items' => $items));
