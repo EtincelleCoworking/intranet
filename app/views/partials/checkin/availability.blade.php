@@ -6,7 +6,7 @@ if (count($items) == 0) {
     $results = DB::select(DB::raw('SELECT locations.id, locations.coworking_capacity, concat(cities.name, " > ", IF(locations.name IS NULL, "", locations.name)) as name
 FROM locations
 JOIN cities on locations.city_id = cities.id
-WHERE locations.enabled = 1
+WHERE locations.enabled = 1 AND locations.coworking_capacity > 0
 ORDER BY cities.name ASC, locations.name ASC'));
     $items = array();
     foreach ($results as $result) {
