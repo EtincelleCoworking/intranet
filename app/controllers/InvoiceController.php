@@ -48,11 +48,19 @@ class InvoiceController extends BaseController
             }
             if (Input::has('filtre_start')) {
                 $date_start_explode = explode('/', Input::get('filtre_start'));
-                Session::put('filtre_invoice.start', $date_start_explode[2] . '-' . $date_start_explode[1] . '-' . $date_start_explode[0]);
+                if (count($date_start_explode) == 3) {
+                    Session::put('filtre_invoice.start', $date_start_explode[2] . '-' . $date_start_explode[1] . '-' . $date_start_explode[0]);
+                } else {
+                    Session::forget('filtre_invoice.start');
+                }
             }
             if (Input::has('filtre_end')) {
                 $date_end_explode = explode('/', Input::get('filtre_end'));
-                Session::put('filtre_invoice.end', $date_end_explode[2] . '-' . $date_end_explode[1] . '-' . $date_end_explode[0]);
+                if (count($date_end_explode) == 3) {
+                    Session::put('filtre_invoice.end', $date_end_explode[2] . '-' . $date_end_explode[1] . '-' . $date_end_explode[0]);
+                } else {
+                    Session::forget('filtre_invoice.end');
+                }
             } else {
                 Session::put('filtre_invoice.end', date('Y-m-d'));
             }
@@ -353,7 +361,7 @@ class InvoiceController extends BaseController
         if ($invoice->organisation && $invoice->organisation->accountant) {
             $target_user = $invoice->organisation->accountant;
         }
-        if(!$target_user){
+        if (!$target_user) {
             return Redirect::route('invoice_list')
                 ->with('mError', sprintf('Aucun utilisateur trouvé pour envoyer la facture %s par email', $invoice->ident));
         }

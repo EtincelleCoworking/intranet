@@ -34,7 +34,6 @@
                                 <th>Facturé</th>
                                 <th>Effectué</th>
                                 <th>Delta</th>
-                                <th>Actions</th>
                             </tr>
                             </thead>
                             <tbody>
@@ -45,17 +44,20 @@
                                             <a href="{{ route('user_modify', $item->id) }}">{{ $item->firstname }} {{ $item->lastname }}</a>
                                         </td>
                                     @endif
-                                    <td>{{$item->quantity_ordered?durationToHuman($item->quantity_ordered):'-'}}</td>
-                                    <td>{{$item->quantity_used?durationToHuman($item->quantity_used):'-'}}</td>
+                                    <td>
+                                        <a href="{{route('invoice_list')}}?filtre_submitted=1&filtre_start=0&filtre_end=0&filtre_user_id={{ $item->id }}" class="btn btn-xs btn-default">Détails</a>
+                                        {{$item->quantity_ordered?durationToHuman($item->quantity_ordered):'-'}}
+                                    </td>
+                                    <td>
+                                        <a href="{{route('booking_list')}}?filtre_submitted=1&filtre_start=0&filtre_end=0&filtre_user_id={{ $item->id }}" class="btn btn-xs btn-default">Détails</a>
+                                        {{$item->quantity_used?durationToHuman($item->quantity_used):'-'}}
+                                    </td>
                                     <td>
                                         @if($item->quantity_ordered<$item->quantity_used)
                                             <span class="text-danger">{{ durationToHuman($item->quantity_used - $item->quantity_ordered)}}</span>
                                         @else
                                             {{durationToHuman($item->quantity_used - $item->quantity_ordered) }}
                                         @endif
-                                    </td>
-                                    <td>
-                                        <a href="{{route('booking_list')}}?filtre_submitted=1&filtre_start=0&filtre_end=0&filtre_user_id={{ $item->id }}" class="btn btn-xs btn-primary">Détails</a>
                                     </td>
                                 </tr>
                             @endforeach
