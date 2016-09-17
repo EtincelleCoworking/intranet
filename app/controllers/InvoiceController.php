@@ -26,6 +26,7 @@ class InvoiceController extends BaseController
     public function cancelFilter()
     {
         Session::forget('filtre_invoice.user_id');
+        Session::forget('filtre_invoice.organisation_id');
         Session::forget('filtre_invoice.start');
         Session::forget('filtre_invoice.end');
         Session::forget('filtre_invoice.filtre_unpaid');
@@ -68,14 +69,6 @@ class InvoiceController extends BaseController
             $date_filtre_start = null;
             $date_filtre_end = null;
         }
-
-//        if (Session::has('filtre_invoice.month')) {
-//            $date_filtre_start = Session::get('filtre_invoice.year').'-'.Session::get('filtre_invoice.month').'-01';
-//            $date_filtre_end = Session::get('filtre_invoice.year').'-'.Session::get('filtre_invoice.month').'-'.date('t', Session::get('filtre_invoice.month'));
-//        } else {
-//            $date_filtre_start = date('Y-m').'-01';
-//            $date_filtre_end = date('Y-m').'-'.date('t', Session::get('filtre_invoice.month'));
-//        }
 
         $q = Invoice::InvoiceOnly();
         if ($date_filtre_start && $date_filtre_end) {
@@ -365,12 +358,12 @@ class InvoiceController extends BaseController
                 ->with('mError', sprintf('Aucun utilisateur trouvé pour envoyer la facture %s par email', $invoice->ident));
         }
         Mail::send('emails.invoice', array('invoice' => $invoice), function ($message) use ($invoice, $target_user) {
-            $message->from('sebastien@coworking-toulouse.com', 'Sébastien Hordeaux')
-                ->bcc('sebastien@coworking-toulouse.com', 'Sébastien Hordeaux');
+            $message->from($_ENV['mail_address'], $_ENV['mail_name'])
+                ->bcc($_ENV['mail_address'], $_ENV['mail_name']);
 
             $message->to($target_user->email, $target_user->fullname);
 
-            $message->subject(sprintf('Etincelle Coworking - Facture %s', $invoice->ident));
+            $message->subject(sprintf('%s - Facture %s', $_ENV['organisation_name'], $invoice->ident));
 
             $pdf = App::make('snappy.pdf.wrapper');
 

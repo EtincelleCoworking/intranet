@@ -1,0 +1,7 @@
+update user's slack_id:
+
+1. exporter le fichier de Slack
+2. transformer le CSV en fichier excel et copier/coller les 2 premières colonnes
+3. utiliser cette RegExp:
+    (.+)\t(.+)
+    UPDATE users SET slack_id = '$1' WHERE email = '$2';

@@ -105,17 +105,16 @@
                                             @if ($invoice->organisation)
                                                 @if (Auth::user()->isSuperAdmin())
                                                     <a href="{{ URL::route('organisation_modify', $invoice->organisation->id) }}">{{ $invoice->organisation->name }}</a>
-                                                    @if ($invoice->user)
-                                                        (
-                                                        <a href="{{ URL::route('user_modify', $invoice->user->id) }}">{{ $invoice->user->fullname }}</a>
-                                                        <a href="?filtre_submitted=1&filtre_user_id={{ $invoice->user->id }}"><i
-                                                                    class="fa fa-filter"></i></a>)
-                                                    @endif
                                                 @else
                                                     {{ $invoice->organisation->name }}
                                                 @endif
                                             @else
                                                 {{ preg_replace("/\n.+/", '', $invoice->address) }}
+                                            @endif
+                                            @if ($invoice->user)
+                                                (<a href="{{ URL::route('user_modify', $invoice->user->id) }}">{{ $invoice->user->fullname }}</a>
+                                                <a href="?filtre_submitted=1&filtre_user_id={{ $invoice->user->id }}"><i
+                                                            class="fa fa-filter"></i></a>)
                                             @endif
                                         </td>
                                         <td>

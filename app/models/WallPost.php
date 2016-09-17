@@ -74,13 +74,4 @@ class WallPost extends \Gzero\EloquentTree\Model\Tree
         }
 
     }
-
-//    /**
-//     * Get list of vat
-//     */
-//    public function scopeSelectAll($query)
-//    {
-//        $selectVals = $this->orderBy('value', 'DESC')->lists('value', 'id');
-//        return $selectVals;
-//    }
 }

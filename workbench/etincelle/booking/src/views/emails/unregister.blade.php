@@ -43,7 +43,7 @@
         <tr>
             <td class="content-block">
                 Pour toute question ou suggestion, n'hésitez pas à
-                <a href="mailto:sebastien@coworking-toulouse.com">me contacter</a>.
+                <a href="mailto:{{$_ENV['mail_address']}}">nous contacter</a>.
             </td>
         </tr>
     </table>

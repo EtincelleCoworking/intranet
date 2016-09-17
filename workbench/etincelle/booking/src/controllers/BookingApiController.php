@@ -52,8 +52,8 @@ class BookingApiController extends Controller
         $user = User::find($user_id);
         $booking_item = BookingItem::find($booking_item_id);
         Mail::send('booking::emails.register', array('booking_item' => $booking_item, 'user' => $user), function ($m) use ($user, $booking_item) {
-            $m->from('sebastien@coworking-toulouse.com', 'Sébastien Hordeaux')
-                ->bcc('sebastien@coworking-toulouse.com', 'Sébastien Hordeaux')
+            $m->from($_ENV['mail_address'], $_ENV['mail_name'])
+                ->bcc($_ENV['mail_address'], $_ENV['mail_name'])
                 ->to($booking_item->booking->user->email, $booking_item->booking->user->fullname)
                 ->subject(sprintf('%s - Inscription - %s', $_ENV['organisation_name'], $booking_item->booking->title));
         });
@@ -78,8 +78,8 @@ class BookingApiController extends Controller
         $user = User::find($user_id);
         $booking_item = BookingItem::find($booking_item_id);
         Mail::send('booking::emails.unregister', array('booking_item' => $booking_item, 'user' => $user), function ($m) use ($user, $booking_item) {
-            $m->from('sebastien@coworking-toulouse.com', 'Sébastien Hordeaux')
-                ->bcc('sebastien@coworking-toulouse.com', 'Sébastien Hordeaux')
+            $m->from($_ENV['mail_address'], $_ENV['mail_name'])
+                ->bcc($_ENV['mail_address'], $_ENV['mail_name'])
                 ->to($booking_item->booking->user->email, $booking_item->booking->user->fullname)
                 ->subject(sprintf('%s - Désinscription - %s', $_ENV['organisation_name'], $booking_item->booking->title));
         });

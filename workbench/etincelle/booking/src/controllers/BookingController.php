@@ -499,4 +499,6 @@ class BookingController extends Controller
         }
         return View::make('booking::show', array('booking_item' => $item));
     }
+
+
 }
