@@ -198,9 +198,54 @@
                         <tr>
                             <td>{{ Form::number('order_index[0]', 1, array('class' => 'form-control')) }}</td>
                             <td>{{ Form::select('ressource_id[0]', Ressource::SelectAll(), null, array('class' => 'form-control')) }}</td>
-                            <td>{{ Form::textarea('text[0]', null, array('rows' => 4, 'placeholder' => 'Nouvelle ligne', 'class' => 'form-control')) }}</td>
+                            <td>
+                                {{ Form::textarea('text[0]', null, array('rows' => 4, 'placeholder' => 'Nouvelle ligne', 'class' => 'form-control')) }}
+                                    <a href="#" class="btn btn-xs btn-default action-item-option-toggle"
+                                       data-id="0" data-kind="subscription">+ Abonnement</a>
+                                    <a href="#" class="btn btn-xs btn-default action-item-option-toggle"
+                                       data-id="0" data-kind="booking">+ Pré-réservation</a>
+                            </td>
                             <td>{{ Form::text('amount[0]', null, array('class' => 'form-control')) }}</td>
                             <td>{{ Form::select('vat_types_id[0]', VatType::SelectAll(), null, array('class' => 'form-control')) }}</td>
+                        </tr>
+                        <tr id="item-option-subscription-0" class="hide">
+                            <td></td>
+                            <td>Abonnement</td>
+                            <td colspan="3">
+                                <div class="form-group"><label
+                                            class="col-sm-2 control-label">Utilisateur</label>
+                                    <div class="col-sm-10">
+                                        {{ Form::select('subscription_user_id[0]', User::SelectInOrganisation($invoice->organisation_id, '-'),null, array('class' => 'form-control')) }}
+                                    </div>
+                                </div>
+                                <div class="form-group"><label
+                                            class="col-sm-2 control-label">Abonnement</label>
+                                    <div class="col-sm-10">
+                                        {{ Form::select('subscription_hours_quota[0]',SubscriptionKind::SelectOptions(), null, array('class' => 'form-control')) }}
+                                    </div>
+                                </div>
+                                <div class="form-group"><label
+                                            class="col-sm-2 control-label">Du</label>
+                                    <div class="col-sm-10">
+                                        {{ Form::text('subscription_from[0]', null, array('class' => 'form-control datePicker')) }}
+                                    </div>
+                                </div>
+                                <div class="form-group"><label
+                                            class="col-sm-2 control-label">Au</label>
+                                    <div class="col-sm-10">
+                                        {{ Form::text('subscription_to[0]', null, array('class' => 'form-control datePicker')) }}
+                                    </div>
+                                </div>
+                            </td>
+                            <td></td>
+                        </tr>
+                        <tr id="item-option-booking-0" class="hide">
+                            <td></td>
+                            <td>Pré-réservation</td>
+                            <td colspan="3">
+                                {{ Form::text('booking_hours[0]', null, array('class' => 'form-control')) }}
+                            </td>
+                            <td></td>
                         </tr>
                         </tfoot>
                     </table>

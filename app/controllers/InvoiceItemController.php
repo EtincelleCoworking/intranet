@@ -24,10 +24,13 @@ class InvoiceItemController extends BaseController
                 if (count($values) == 3) {
                     $result[$fieldName] = $values[2] . '-' . $values[1] . '-' . $values[0];
                 } else {
-                    $result[$fieldName] = null;
+                    $result[$fieldName] = '0000-00-00 00:00:00';
                 }
+            } elseif ($fieldKind == 'integer') {
+                $result[$fieldName] = (int)Input::get($fieldName . '.' . $fieldIndex);
             } else {
-                $result[$fieldName] = Input::get($fieldName . '.' . $fieldIndex);
+                $value =Input::get($fieldName . '.' . $fieldIndex, null);
+                $result[$fieldName] = empty($value)?null:$value;
             }
         }
         return $result;
@@ -44,12 +47,12 @@ class InvoiceItemController extends BaseController
         $fields['ressource_id'] = null;
         $fields['text'] = null;
         $fields['vat_types_id'] = null;
-        $fields['order_index'] = null;
+        $fields['order_index'] = 'integer';
 
-        $fields['booking_hours'] = null;
+        $fields['booking_hours'] = 'integer';
 
         $fields['subscription_user_id'] = null;
-        $fields['subscription_hours_quota'] = null;
+        $fields['subscription_hours_quota'] = 'integer';
         $fields['subscription_from'] = 'date';
         $fields['subscription_to'] = 'date';
 
@@ -59,7 +62,7 @@ class InvoiceItemController extends BaseController
 
         // Add new line
         if (Input::get('text.0')) {
-            $this->add_check($this->getInputData(0, $fields));
+            $this->add_check(array_merge(array('invoice_id' => $id), $this->getInputData(0, $fields)));
         }
 
         return Redirect::route('invoice_modify', $id);
