@@ -1,68 +1,58 @@
-# Intranet Etincelle Coworking
-
-## Fonctionalités
-
-### Core
-
-* Accès super-admin / Membre
-* Gestion de différents types de ressources (coworking, salle de réunion)
-* Suivi du temps passé (coworking, salles de réunion)
-* Gestion d'abonnements mensuels
-* Statistiques (Évolution du CA total, Évolution du CA par type de ressource, Évolution du nb de clients par type de ressource, Évolution des charges)
-
-### Communauté
-
-* Gestion d'organisations (ajouter, modifier, supprimer)
-* Gestion d'utilisateurs/membres (ajouter, modifier, supprimer)
-* Lien organisation > utilisateurs
-* Annuaire des membres
-
-### Gestion financière
-
-* Devis
-* Facture
-* Gestion des dates de validité, d'échéances et de paiement
-* Paiement des factures via Stripe
-* Gestion des dépenses
-* Gestion de la TVA (saisie, préparation de la déclaration trimestrielle de TVA)
-* Suivi de la facturation des usages des ressources
-* Génération PDF de factures et devis
-
-
-## Installation
-
-### 1) Cloner le repository
-
-```sh-session
-$ git clone https://github.com/EtincelleCoworking/intranet.git your-folder
-```
-
-### 2) Installer les dépendances via Composer
-
-```sh-session
-$ cd your-folder
-$ composer install
-```
-
-### 3) Configurer le projet
-
-Modifier le fichier `default.env.php` et renommez le en `.env.php`.
-
-### 4) Créer la base de données
-
-```sh-session
-$ cd your-folder
-$ php artisan migrate
-$ php artisan db:seed
-```
-
-### 5) Configurer le VirtualHost
-
-### 6) Accéder à l'interface
-
-Connectez-vous à l'interface http://intranet.votre-espace.com
-
-```
-Login: admin@mydomain.fr
-Password: 123456
-```
+UPDATE users SET slack_id = 'username' WHERE email = 'email';
+UPDATE users SET slack_id = 'ademauroy' WHERE email = 'agathe@etincelle-coworking.com';
+UPDATE users SET slack_id = 'alex' WHERE email = 'alexrenaudcm@gmail.com';
+UPDATE users SET slack_id = 'alexandre' WHERE email = 'a.hagen@opendecide.com';
+UPDATE users SET slack_id = 'aurelienbibaut' WHERE email = 'aurelien.bibaut@berkeley.edu';
+UPDATE users SET slack_id = 'biadie' WHERE email = 'emmanuelle_biadi@europe.pall.com';
+UPDATE users SET slack_id = 'blandine' WHERE email = 'matahiti@hotmail.com';
+UPDATE users SET slack_id = 'blandine_dev' WHERE email = 'blandine.descamps@gmail.com';
+UPDATE users SET slack_id = 'bruno' WHERE email = 'sistersofdespair@gmail.com';
+UPDATE users SET slack_id = 'callan' WHERE email = 'cerveaux.allanjean@gmail.com';
+UPDATE users SET slack_id = 'caro' WHERE email = 'caroline.boulanger@freelancer-app.fr';
+UPDATE users SET slack_id = 'chema' WHERE email = 'sales@pergradus.eu';
+UPDATE users SET slack_id = 'clairea' WHERE email = 'caubazac@blueflamingo-marketing.com';
+UPDATE users SET slack_id = 'corinneplays' WHERE email = 'corinne.plays@cpa-etudes.fr';
+UPDATE users SET slack_id = 'craissacljm' WHERE email = 'ludovic@agence636.com';
+UPDATE users SET slack_id = 'dclairac' WHERE email = 'd.clairac@groupeonepoint.com';
+UPDATE users SET slack_id = 'dmathieu' WHERE email = 'damien@heroku.com';
+UPDATE users SET slack_id = 'elena.perrouin' WHERE email = 'elena.perrouin@go-multilingual.com';
+UPDATE users SET slack_id = 'elgamine' WHERE email = 'elghayate@live.com';
+UPDATE users SET slack_id = 'fab' WHERE email = 'fabiennecampariol@gmail.com';
+UPDATE users SET slack_id = 'flo.zen-office' WHERE email = 'zenoffice82@gmail.com';
+UPDATE users SET slack_id = 'francois' WHERE email = 'francois.helloco@wanadoo.fr';
+UPDATE users SET slack_id = 'guillaumelinossier' WHERE email = 'glinossier@outlook.com';
+UPDATE users SET slack_id = 'jcouturier' WHERE email = 'contact@jctrad.com';
+UPDATE users SET slack_id = 'jfkappes' WHERE email = 'jfkappes@simplon.co';
+UPDATE users SET slack_id = 'jlevivalensin' WHERE email = 'j.levivalensin@gmail.com';
+UPDATE users SET slack_id = 'labeurx' WHERE email = 'xavier.labeur@gmail.com';
+UPDATE users SET slack_id = 'laeti' WHERE email = 'laetitia.bordier1@gmail.com';
+UPDATE users SET slack_id = 'lalayn' WHERE email = 'contact@lalaina.fr';
+UPDATE users SET slack_id = 'laurent.meurisse' WHERE email = 'laurent.meurisse@me.com';
+UPDATE users SET slack_id = 'lighty-bot' WHERE email = 'botuser-T0452MGB3-B1Z5ZFL66@slack-bots.com';
+UPDATE users SET slack_id = 'lisa.degalle' WHERE email = 'lisa.degalle@gmail.com';
+UPDATE users SET slack_id = 'llaurent' WHERE email = 'contact@loiclaurent.com';
+UPDATE users SET slack_id = 'manudejean' WHERE email = 'contact@manudejean.fr';
+UPDATE users SET slack_id = 'marie' WHERE email = 'm.del-valle@groupeonepoint.com';
+UPDATE users SET slack_id = 'marjorie' WHERE email = 'marjorietheuzillot@gmail.com';
+UPDATE users SET slack_id = 'martad' WHERE email = 'marta.dabek@hotmail.fr';
+UPDATE users SET slack_id = 'mateba' WHERE email = 'mzanibelli@gmail.com';
+UPDATE users SET slack_id = 'mathieudev' WHERE email = 'mathieu.faury@gmail.com';
+UPDATE users SET slack_id = 'matthieu' WHERE email = 'contact@m-prod.fr';
+UPDATE users SET slack_id = 'maxime_pawlak' WHERE email = 'contact@maximepawlak.fr';
+UPDATE users SET slack_id = 'mickaelmarsault' WHERE email = 'mickaelmarsault@wanadoo.fr';
+UPDATE users SET slack_id = 'nathalie' WHERE email = 'nat.grenet@gmail.com';
+UPDATE users SET slack_id = 'nico' WHERE email = 'ncazal@evagroup.fr';
+UPDATE users SET slack_id = 'nicolas' WHERE email = 'nicolas.medda@ling.fr';
+UPDATE users SET slack_id = 'oswaldo' WHERE email = 'oswaldo.lamothe@iplogos.fr';
+UPDATE users SET slack_id = 'pcouzon' WHERE email = 'philippe.c@free.fr';
+UPDATE users SET slack_id = 'philippeadrien' WHERE email = 'pchaix@bettersrift.com';
+UPDATE users SET slack_id = 'raphael' WHERE email = 'raphael.apard@acolad.fr';
+UPDATE users SET slack_id = 'remish' WHERE email = 'r.alonso@groupeonepoint.com';
+UPDATE users SET slack_id = 'rudy' WHERE email = 'rudy.dumont@gmail.com';
+UPDATE users SET slack_id = 'sandra' WHERE email = 'sandra.doussier@gmail.com';
+UPDATE users SET slack_id = 'seo' WHERE email = '2manyseo@gmail.com';
+UPDATE users SET slack_id = 'shordeaux' WHERE email = 'sebastien@coworking-toulouse.com';
+UPDATE users SET slack_id = 'torlus' WHERE email = 'gregory.estrade@gmail.com';
+UPDATE users SET slack_id = 'vero' WHERE email = 'v.lemaitre@groupeonepoint.com';
+UPDATE users SET slack_id = 'whoshere' WHERE email = 'botuser-T0452MGB3-B23UL1V9T@slack-bots.com';
+UPDATE users SET slack_id = 'wo0dyn' WHERE email = 'nicolas.c.dubois@gmail.com';

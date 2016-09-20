@@ -24,7 +24,7 @@
         <div class="col-md-6">
             <h2 class="font-bold">Intranet {{ $_ENV['organisation_name'] }}</h2>
 
-            <p>Avant de pouvoir accéder aux ressources merveilleuses que nous vous avons préparés, il vous faut vous identifier avec le formulaire à droite.</p>
+            <p>Avant de pouvoir accéder aux ressources merveilleuses que nous vous avons préparées, il vous faut vous identifier avec le formulaire à droite.</p>
             <p>Un problème pour vous connecter ? <a href="mailto:{{ $_ENV['organisation_email'] }}">Contactez-nous</a></p>
 
 
