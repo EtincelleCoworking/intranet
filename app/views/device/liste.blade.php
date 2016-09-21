@@ -29,6 +29,7 @@
                                 <th>Suivi</th>
                                 <th>Membre</th>
                                 <th>Mac</th>
+                                <th>IP</th>
                                 <th>Nom</th>
                                 <th>Vu le</th>
                                 <th>Actions</th>
@@ -38,12 +39,14 @@
                             @foreach ($devices as $device)
                                 <tr @if(!$device->tracking_enabled)
                                     class="text-muted"
-                                @endif>
+                                        @endif>
                                     <td>
                                         @if($device->tracking_enabled)
-                                            <a href="{{URL::route('device_disable', $device->id)}}"><i class="fa fa-check"></i></a>
+                                            <a href="{{URL::route('device_disable', $device->id)}}"><i
+                                                        class="fa fa-check"></i></a>
                                         @else
-                                            <a href="{{URL::route('device_enable', $device->id)}}"><i class="fa fa-times"></i></a>
+                                            <a href="{{URL::route('device_enable', $device->id)}}"><i
+                                                        class="fa fa-times"></i></a>
                                         @endif
                                     </td>
                                     <td>
@@ -54,7 +57,13 @@
                                         @endif
                                     </td>
                                     <td>{{ $device->mac }}</td>
-                                    <td>{{ $device->name }}</td>
+                                    <td>{{ $device->ip }}</td>
+                                    <td>
+                                        {{ $device->name }}
+                                        @if($device->brand)
+                                            {{$device->brand}}
+                                        @endif
+                                    </td>
                                     <td>
                                         @if($device->last_seen_at)
                                             {{ date('d/m/Y H:i', strtotime($device->last_seen_at)) }}
@@ -73,7 +82,7 @@
                             </tbody>
                             <tfoot>
                             <tr>
-                                <td colspan="6">{{ $devices->links() }}</td>
+                                <td colspan="7">{{ $devices->links() }}</td>
                             </tr>
                             </tfoot>
                         </table>

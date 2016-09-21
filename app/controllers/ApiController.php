@@ -50,7 +50,7 @@ class ApiController extends BaseController
                     $macs[] = strtolower($item['mac']);
                 }
             }
-        }else{
+        } else {
             error_log(sprintf('offixUpload: JSON is not an array [%s]', Request::getContent()), E_USER_WARNING);
         }
         //var_dump($macs);
@@ -68,8 +68,10 @@ class ApiController extends BaseController
                 if (isset($item['name'])) {
                     // Create the device because it is connected to the WIFI
                     $device = new Device();
-                    $device->mac = $item['mac'];
+                    $device->brand = $item['brand'];
                     $device->name = $item['name'];
+                    $device->mac = $item['mac'];
+                    $device->ip = $item['ip'];
                     $device->save();
                     $devices[$item['mac']] = $device;
                 }
@@ -122,6 +124,13 @@ class ApiController extends BaseController
                 if (isset($item['name'])) {
                     $device->name = $item['name'];
                 }
+                if (isset($item['brand'])) {
+                    $device->brand = $item['brand'];
+                }
+                if (isset($item['ip'])) {
+                    $device->ip = $item['ip'];
+                }
+
                 $device->save();
             }
         }
