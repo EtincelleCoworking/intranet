@@ -61,7 +61,7 @@
                                     <td>
                                         {{ $device->name }}
                                         @if($device->brand)
-                                            {{$device->brand}}
+                                            ({{$device->brand}})
                                         @endif
                                     </td>
                                     <td>

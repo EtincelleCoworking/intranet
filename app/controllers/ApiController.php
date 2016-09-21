@@ -124,7 +124,7 @@ class ApiController extends BaseController
                 if (isset($item['name'])) {
                     $device->name = $item['name'];
                 }
-                if (isset($item['brand'])) {
+                if (isset($item['brand']) && ($item['brand'] != 'Unknown')) {
                     $device->brand = $item['brand'];
                 }
                 if (isset($item['ip'])) {
