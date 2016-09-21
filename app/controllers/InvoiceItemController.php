@@ -28,9 +28,11 @@ class InvoiceItemController extends BaseController
                 }
             } elseif ($fieldKind == 'integer') {
                 $result[$fieldName] = (int)Input::get($fieldName . '.' . $fieldIndex);
+            } elseif ($fieldKind == 'price') {
+                $result[$fieldName] = str_replace(',', '.', Input::get($fieldName . '.' . $fieldIndex));
             } else {
-                $value =Input::get($fieldName . '.' . $fieldIndex, null);
-                $result[$fieldName] = empty($value)?null:$value;
+                $value = Input::get($fieldName . '.' . $fieldIndex, null);
+                $result[$fieldName] = empty($value) ? null : $value;
             }
         }
         return $result;
@@ -46,6 +48,7 @@ class InvoiceItemController extends BaseController
         $fields = array();
         $fields['ressource_id'] = null;
         $fields['text'] = null;
+        $fields['amount'] = 'price';
         $fields['vat_types_id'] = null;
         $fields['order_index'] = 'integer';
 
