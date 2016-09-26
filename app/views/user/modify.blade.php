@@ -10,7 +10,7 @@
 
 @section('breadcrumb')
     <div class="row wrapper border-bottom white-bg page-heading">
-        <div class="col-sm-12">
+        <div class="col-sm-8">
             <h2>
                 @if(Auth::id() == $user->id)
                     Mon profil
@@ -18,6 +18,15 @@
                     Modification de {{ $user->fullname }}
                 @endif
             </h2>
+        </div>
+        <div class="col-sm-4">
+            <div class="title-action">
+                @if (Auth::user()->isSuperAdmin())
+                    <a href="{{URL::route('user_login_as', $user->id)}}"
+                       title="Se connecter en tant que {{$user->fullname}}"
+                       class="btn btn-default"><i class="fa fa-user-secret"></i></a>
+                @endif
+            </div>
         </div>
     </div>
 @stop
@@ -39,7 +48,7 @@
                             <p>{{ Form::text('lastname', null, array('class' => 'form-control')) }}</p>
                             {{ Form::label('birthday', 'Date de naissance') }}
                             <p>{{ Form::text('birthday', ($user->birthday == '0000-00-00')?'':date('d/m/Y', strtotime($user->birthday)), array('class' => 'form-control datePicker')) }}</p>
-                                {{ Form::label('gender', 'Genre') }}
+                            {{ Form::label('gender', 'Genre') }}
                             <p>{{ Form::select('gender', User::getGenders(), $user->gender, array('class' => 'form-control')) }}</p>
                         </div>
                         <div class="col-lg-6">
@@ -288,6 +297,7 @@
     <script type="text/javascript">
         $().ready(function () {
             $('.datePicker').datepicker();
-            $('#organisation_selector').select2();        });
+            $('#organisation_selector').select2();
+        });
     </script>
 @stop

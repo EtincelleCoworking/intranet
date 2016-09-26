@@ -154,7 +154,7 @@ class User extends Eloquent implements UserInterface, RemindableInterface
             $this->fullname,
             $this->avatarUrl,
             $this->fullnameOrga
-    );
+        );
 
 
     }
@@ -287,13 +287,14 @@ class User extends Eloquent implements UserInterface, RemindableInterface
             ->select(DB::raw('sum((TIME_TO_SEC(past_times.time_end) - TIME_TO_SEC(past_times.time_start)) / 60) as amount'))
             ->first()->amount;
     }
-    public function getActiveTimesheet(){
+
+    public function getActiveTimesheet()
+    {
         return PastTime::where('user_id', $this->id)
             ->where('date_past', date('Y-m-d'))
             ->where('ressource_id', Ressource::TYPE_COWORKING)
             ->whereRaw('time_start < NOW()')
-            ->where(function($query)
-            {
+            ->where(function ($query) {
                 $query->whereNull('time_end')
                     ->orWhereRaw('time_end > NOW()');
             })
@@ -305,11 +306,36 @@ class User extends Eloquent implements UserInterface, RemindableInterface
         return $this->belongsTo('Location', 'default_location_id');
     }
 
-    public static function getGenders(){
+    public static function getGenders()
+    {
         return array(
             'M' => 'Homme',
             'F' => 'Femme',
             null => 'Inconnu'
         );
+    }
+
+    public function getWeeksAgoCss()
+    {
+        if (null == $this->last_seen_at) {
+            return 'opacity10';
+        }
+        $days = time() - strtotime($this->last_seen_at);
+        $days /= 24 * 60 * 60;
+        $weeks = round($days / 7);
+        switch($weeks){
+            case 0: return 'opacity100';
+            case 1: return 'opacity90';
+            case 2: return 'opacity80';
+            case 3: return 'opacity70';
+            case 4: return 'opacity60';
+            case 5: return 'opacity50';
+            case 6: return 'opacity40';
+            case 7: return 'opacity30';
+            case 8: return 'opacity20';
+            case 9: return 'opacity10';
+            default:
+                return 'opacity10';
+        }
     }
 }

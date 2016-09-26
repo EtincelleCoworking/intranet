@@ -27,7 +27,7 @@
                 <div class="col-lg-4 col-md-6 col-xs-12">
                     <div class="contact-box">
                         <a href="{{URL::Route('user_profile', $user->id)}}">
-                            <div class="col-sm-4">
+                            <div class="col-sm-4 {{$user->getWeeksAgoCss()}}">
                                 <div class="text-center">
                                     <img alt="image" class="img-circle m-t-xs img-responsive"
                                          src="{{$user->avatarUrl}}">
@@ -82,7 +82,7 @@
 
                                 </div>
                             </div>
-                            <div class="col-sm-8">
+                            <div class="col-sm-8 {{$user->getWeeksAgoCss()}}">
                                 <a href="{{URL::Route('user_profile', $user->id)}}">
                                     <h3><strong>{{ $user->fullname }}</strong></h3>
                                     @if($user->bio_short)

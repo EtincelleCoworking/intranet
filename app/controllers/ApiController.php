@@ -68,10 +68,16 @@ class ApiController extends BaseController
                 if (isset($item['name'])) {
                     // Create the device because it is connected to the WIFI
                     $device = new Device();
-                    $device->brand = $item['brand'];
-                    $device->name = $item['name'];
                     $device->mac = $item['mac'];
-                    $device->ip = $item['ip'];
+                    if (isset($item['name'])) {
+                        $device->name = $item['name'];
+                    }
+                    if (isset($item['brand']) && ($item['brand'] != 'Unknown')) {
+                        $device->brand = $item['brand'];
+                    }
+                    if (isset($item['ip'])) {
+                        $device->ip = $item['ip'];
+                    }
                     $device->save();
                     $devices[$item['mac']] = $device;
                 }
@@ -132,6 +138,11 @@ class ApiController extends BaseController
                 }
 
                 $device->save();
+                if ($device->user_id) {
+                    $user = $device->user;
+                    $user->last_seen_at = date('Y-m-d H:i:s');
+                    $user->save();
+                }
             }
         }
 

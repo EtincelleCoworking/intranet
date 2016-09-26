@@ -62,7 +62,8 @@ class UserController extends BaseController
     public function members()
     {
         $users = User::where('is_member', true)
-            ->where('default_location_id', '=', Auth::user()->default_location_id)
+//            ->where('default_location_id', '=', Auth::user()->default_location_id)
+            ->orderBy('last_seen_at', 'desc')
             ->orderBy('lastname', 'asc')
             ->with('organisations')
             ->get();
@@ -494,7 +495,7 @@ class UserController extends BaseController
         }
         rtrim($fields_string, '&');
         $ch = curl_init();
-        curl_setopt($ch, CURLOPT_URL, 'https://etincelle-coworking.slack.com/api/users.admin.invite');
+        curl_setopt($ch, CURLOPT_URL, sprintf('%s/api/users.admin.invite', $_ENV['slack_url']));
         curl_setopt($ch, CURLOPT_USERAGENT, 'Mozilla/5.0 (Windows NT 6.1) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/41.0.2228.0 Safari/537.36');
         curl_setopt($ch, CURLOPT_HEADER, 0);
         curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);

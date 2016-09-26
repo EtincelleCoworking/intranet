@@ -44,8 +44,6 @@ class UserEventHandler
             ->orderBy('time_start', 'ASC')
             ->first();
         if (!$timeslot) {
-            $user = $PastTime->user;
-
             if ($user->slack_id) {
                 $message = sprintf('@%s est là !', $user->slack_id);
             } else {
