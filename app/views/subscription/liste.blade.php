@@ -48,6 +48,7 @@
                             <thead>
                             <tr>
                                 <th>N°</th>
+                                <th>Type</th>
                                 <th>Membre</th>
                                 <th>Description</th>
                                 <th>Echéance</th>
@@ -58,6 +59,7 @@
                             @foreach ($subscriptions as $position => $subscription)
                                 <tr>
                                     <td>{{$position + 1}}</td>
+                                    <td>{{$subscription->kind->ressource->name}}</td>
                                     <td>
                                         @if (Auth::user()->isSuperAdmin())
                                             <a href="{{ URL::route('organisation_modify', $subscription->organisation->id) }}">{{ $subscription->organisation->name }}</a>

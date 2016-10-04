@@ -50,7 +50,8 @@ class Subscription extends Eloquent
 
     public function getCaptionAttribute()
     {
-        return sprintf('%s - %s', $this->kind->name, $this->user->fullname);
+        return $this->kind->name;
+        //return sprintf('%s - %s', $this->kind->name, $this->user->fullname);
 
     }
 

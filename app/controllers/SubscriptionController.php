@@ -41,7 +41,7 @@ class SubscriptionController extends BaseController
         $subscription->organisation_id = Input::get('organisation_id');
         $subscription->subscription_kind_id = Input::get('subscription_kind_id');
         $subscription->renew_at = $date_explode[2] . '-' . $date_explode[1] . '-' . $date_explode[0];
-        $subscription->duration = Input::get('duration');
+        //$subscription->duration = Input::get('duration');
     }
 
     /**
@@ -131,29 +131,26 @@ class SubscriptionController extends BaseController
 
         $invoice_line = new InvoiceItem();
         $invoice_line->invoice_id = $invoice->id;
-        $invoice_line->ressource_id = Ressource::TYPE_COWORKING;
+        $invoice_line->ressource_id = $subscription->kind->ressource_id;
         $invoice_line->amount = $subscription->kind->price;
         $date = new \DateTime($subscription->renew_at);
         $date2 = new \DateTime($subscription->renew_at);
-        $invoice_line->subscription_from = $date->format('Y-m-d');
-        $date2->modify('next month');
-        $invoice_line->subscription_to = $date2->format('Y-m-d');
-        $invoice_line->subscription_hours_quota = $subscription->kind->hours_quota;
-        $invoice_line->subscription_user_id = $subscription->user_id;
-
-        // update invoices_items set subscription_to = date_add(subscription_from, interval 1 MONTH) where subscription_from <> '0000-00-00 00:00:00'
-
-
+        $date2->modify('+' . $subscription->kind->duration);
+        if ($subscription->kind->ressource_id == Ressource::TYPE_COWORKING) {
+            $invoice_line->subscription_from = $date->format('Y-m-d');
+            $invoice_line->subscription_to = $date2->format('Y-m-d');
+            $invoice_line->subscription_hours_quota = $subscription->kind->hours_quota;
+            $invoice_line->subscription_user_id = $subscription->user_id;
+        }
         $date2->modify('-1 day');
-        $invoice_line->text = sprintf("%s - %s\nDu %s au %s", $subscription->kind->name, $subscription->user->fullname,
-            $date->format('d/m/Y'), $date2->format('d/m/Y'));
+        $caption = str_replace(array('%OrganisationName%', '%UserName%'), array($subscription->organisation->name, $subscription->user->fullname), $subscription->kind->name);
+        $invoice_line->text = sprintf("%s\nDu %s au %s", $caption, $date->format('d/m/Y'), $date2->format('d/m/Y'));
         $invoice_line->vat_types_id = VatType::whereValue(20)->first()->id;
-        $invoice_line->ressource_id = Ressource::TYPE_COWORKING;
         $invoice_line->save();
         $invoice_line->order_index = 1;
 
         $date = new DateTime($subscription->renew_at);
-        $date->modify('+1 month');
+        $date->modify('+' . $subscription->kind->duration);
         $subscription->renew_at = $date->format('Y-m-d');
         $subscription->save();
 
@@ -169,7 +166,7 @@ class SubscriptionController extends BaseController
         }
 
         $subscriptions = Subscription::where('organisation_id', $id)
-            ->join('subscription_kind', 'subscription_kind_id', '=', 'subscription_kind.id', 'left outer')
+            // ->join('subscription_kind', 'subscription_kind_id', '=', 'subscription_kind.id', 'left outer')
             ->orderBy('subscription_kind.price', 'DESC')
             ->orderBy('subscription.renew_at', 'ASC')
             ->get();

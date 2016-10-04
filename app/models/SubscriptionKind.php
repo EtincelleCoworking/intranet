@@ -11,6 +11,11 @@ class SubscriptionKind extends Eloquent
     protected $table = 'subscription_kind';
 
 
+    public function ressource()
+    {
+        return $this->belongsTo('Ressource', 'ressource_id');
+    }
+
     public function scopeSelectAll($query)
     {
         $selectVals[null] = 'Aucun';

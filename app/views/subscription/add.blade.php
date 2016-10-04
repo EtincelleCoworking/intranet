@@ -48,15 +48,11 @@
                         </div>
                     </div>
                     <div class="row">
-                        <div class="col-md-4">
+                        <div class="col-md-6">
                             {{ Form::label('renew_at', 'Echéance') }}
                             <p>{{ Form::text('renew_at', date('d/m/Y', isset($subscription)?strtotime($subscription->renew_at):time()), array('class' => 'form-control datePicker')) }}</p>
                         </div>
-                        <div class="col-md-4">
-                            {{ Form::label('duration', 'Fréquence') }}
-                            <p>{{ Form::select('duration', array('1 month' => 'Mensuel'), isset($subscription)?$subscription->duration:'', array('class' => 'form-control')) }}</p>
-                        </div>
-                        <div class="col-md-4">
+                        <div class="col-md-6">
                             {{ Form::label('subscription_kind_id', 'Type') }}
                             <p>{{ Form::select('subscription_kind_id', SubscriptionKind::selectAll(), isset($subscription)?$subscription->subscription_kind_id:'', array('class' => 'form-control')) }}</p>
                         </div>
