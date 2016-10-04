@@ -15,6 +15,7 @@ class SubscriptionController extends BaseController
             ->addSelect('organisations.id')
             ->addSelect('organisations.name')
             ->addSelect(DB::raw('count(subscription.id) as count'))
+            ->where('renew_at', '<', (new DateTime())->modify('+1 month')->format('Y-m-d'))
             ->having('count', '>', 1)
             ->get();
         $companies = array();
