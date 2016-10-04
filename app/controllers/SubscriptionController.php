@@ -194,26 +194,29 @@ class SubscriptionController extends BaseController
         foreach ($subscriptions as $subscription) {
             $invoice_line = new InvoiceItem();
             $invoice_line->invoice_id = $invoice->id;
-            $invoice_line->ressource_id = Ressource::TYPE_COWORKING;
+            $invoice_line->ressource_id = $subscription->kind->ressource_id;
             $invoice_line->amount = $subscription->kind->price;
-            if (!$skipped_first) {
-                $skipped_first = true;
-            } else {
-                $discountable_amount += $invoice_line->amount;
+            if ($subscription->kind->ressource_id == Ressource::TYPE_COWORKING) {
+                if (!$skipped_first) {
+                    $skipped_first = true;
+                } else {
+                    $discountable_amount += $invoice_line->amount;
+                }
             }
             $date = new \DateTime($subscription->renew_at);
             $date2 = new \DateTime($subscription->renew_at);
             $invoice_line->subscription_from = $date->format('Y-m-d');
-            $date2->modify('next month');
-            $invoice_line->subscription_to = $date2->format('Y-m-d');
-            $invoice_line->subscription_hours_quota = $subscription->kind->hours_quota;
-            $invoice_line->subscription_user_id = $subscription->user_id;
+            $date2->modify('+' . $subscription->kind->duration);
+            if ($subscription->kind->ressource_id == Ressource::TYPE_COWORKING) {
+                $invoice_line->subscription_to = $date2->format('Y-m-d');
+                $invoice_line->subscription_hours_quota = $subscription->kind->hours_quota;
+                $invoice_line->subscription_user_id = $subscription->user_id;
+            }
 
             $date2->modify('-1 day');
-            $invoice_line->text = sprintf("%s - %s\nDu %s au %s", $subscription->kind->name, $subscription->user->fullname,
-                $date->format('d/m/Y'), $date2->format('d/m/Y'));
+            $caption = str_replace(array('%OrganisationName%', '%UserName%'), array($subscription->organisation->name, $subscription->user->fullname), $subscription->kind->name);
+            $invoice_line->text = sprintf("%s\nDu %s au %s", $caption, $date->format('d/m/Y'), $date2->format('d/m/Y'));
             $invoice_line->vat_types_id = VatType::whereValue(20)->first()->id;
-            $invoice_line->ressource_id = Ressource::TYPE_COWORKING;
             $invoice_line->order_index = $index++;
             $invoice_line->save();
 
@@ -223,15 +226,17 @@ class SubscriptionController extends BaseController
             $subscription->save();
         }
 
-        $invoice_line = new InvoiceItem();
-        $invoice_line->invoice_id = $invoice->id;
-        $invoice_line->ressource_id = Ressource::TYPE_COWORKING;
-        $invoice_line->amount = -0.2 * $discountable_amount;
-        $invoice_line->text = 'Réduction commerciale équipe (-20% à partir du 2ème collaborateur)';
-        $invoice_line->vat_types_id = VatType::whereValue(20)->first()->id;
-        $invoice_line->ressource_id = Ressource::TYPE_COWORKING;
-        $invoice_line->order_index = $index++;
-        $invoice_line->save();
+        if ($discountable_amount > 0) {
+            $invoice_line = new InvoiceItem();
+            $invoice_line->invoice_id = $invoice->id;
+            $invoice_line->ressource_id = Ressource::TYPE_COWORKING;
+            $invoice_line->amount = -0.2 * $discountable_amount;
+            $invoice_line->text = 'Réduction commerciale équipe (-20% à partir du 2ème collaborateur)';
+            $invoice_line->vat_types_id = VatType::whereValue(20)->first()->id;
+            $invoice_line->ressource_id = Ressource::TYPE_COWORKING;
+            $invoice_line->order_index = $index++;
+            $invoice_line->save();
+        }
 
         return Redirect::route('invoice_modify', $invoice->id)->with('mSuccess', 'La facture a été créée');
 
