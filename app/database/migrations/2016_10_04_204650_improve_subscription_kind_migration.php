@@ -30,14 +30,12 @@ class ImproveSubscriptionKindMigration extends Migration
 
         $kind = new SubscriptionKind();
         $kind->ressource_id = Ressource::TYPE_DOMICILIATION;
-        $kind->name = 'Domiciliation commerciale';
+        $kind->name = 'Domiciliation commerciale - %OrganisationName%';
         $kind->hours_quota = -1;
         $kind->price = 35*3;
         $kind->duration = '3 months';
         $kind->order_index = 5;
         $kind->save();
-
-
     }
 
     /**
