@@ -22,6 +22,8 @@ Route::group(['before' => 'member'], function () {
     Route::get('/booking/filter_reset', array('as' => 'booking_filter_reset', 'uses' => 'BookingController@cancelFilter'));
 
     Route::get('/booking/invoicing', array('as' => 'booking_invoicing', 'uses' => 'BookingOrderController@invoicing'));
+
+    Route::get('/booking/quote/{booking_item_id}', array('as' => 'booking_quote', 'uses' => 'BookingController@createQuoteFromBookingItem'));
 });
 
 Route::group(['before' => 'superadmin'], function () {

@@ -60,6 +60,10 @@
                                     {{ Form::label('title', 'Client') }}
                                     {{ Form::select('user_id', User::Select('Sélectionnez un client'), null, array('id' => 'booking-user','class' => 'form-control')) }}
                                 </div>
+                                <div class="col-xs-12">
+                                    {{ Form::label('title', 'Organisation') }}
+                                    {{ Form::select('organisation_id', Organisation::Select('Sélectionnez une organisation'), null, array('id' => 'booking-organisation','class' => 'form-control')) }}
+                                </div>
                             @endif
 
                             <div class="col-xs-12">
@@ -203,6 +207,7 @@
                 <div class="modal-footer">
                     <a href="#" class="btn btn-danger btn-outline pull-left" id="meeting-delete">Supprimer</a>
                     <a href="#" class="btn btn-default btn-outline" id="meeting-log-time">Comptabiliser</a>
+                    <a href="#" class="btn btn-default btn-outline" id="meeting-quote">Devis</a>
                     <a href="#" class="btn btn-default btn-outline" id="meeting-modify">Modifier</a>
                     <a href="#" class="btn btn-default btn-outline" id="meeting-duplicate">Dupliquer</a>
 
@@ -446,8 +451,10 @@
 
             @if (Auth::user()->isSuperAdmin())
                 $('#meeting-log-time').show();
+                $('#meeting-quote').show();
             @else
                 $('#meeting-log-time').hide();
+                $('#meeting-quote').hide();
             @endif
 
             $dialog.modal('show');
@@ -536,6 +543,12 @@
                             }
                         });
                         return false;
+                    });
+
+
+            $('#meeting-quote')
+                    .click(function () {
+                        window.location.href = '{{ URL::route('booking_quote', array('booking_item_id' => 999999)) }}'.replace('999999', activeEvent.id);
                     });
 
 
@@ -768,6 +781,7 @@
 
             $('#newBookingDialog').on('shown.bs.modal', function () {
                 $('#booking-user').select2();
+                $('#booking-organisation').select2();
                 $('.datePicker').datepicker();
             });
 

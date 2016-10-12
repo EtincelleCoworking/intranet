@@ -394,4 +394,5 @@ class InvoiceController extends BaseController
             ->with('mSuccess', sprintf('La facture %s a été envoyée par email à %s', $invoice->ident, $to));
     }
 
+
 }

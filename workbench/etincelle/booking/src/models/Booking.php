@@ -33,6 +33,10 @@ class Booking extends Illuminate\Database\Eloquent\Model
     {
         return $this->belongsTo('User');
     }
+    public function organisation()
+    {
+        return $this->belongsTo('Organisation');
+    }
 
     public function items()
     {
