@@ -90,6 +90,10 @@ class BookingController extends Controller
             $booking->user_id = Auth::id();
         }
         $booking->is_private = Input::get('is_private', false);
+
+        if(!$booking->organisation_id){
+            $booking->organisation_id = null;
+        }
         $booking->save();
 
         $result = array();
@@ -545,6 +549,7 @@ class BookingController extends Controller
             $invoice->organisation_id = $organisation->id;
             $invoice->address = $organisation->fulladdress;
         } else {
+            $invoice->organisation_id = null;
             $invoice->address = $user->fullname;
         }
 
