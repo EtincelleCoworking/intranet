@@ -9,7 +9,7 @@ class BookingController extends Controller
     public function index($now = false)
     {
         $params = array();
-        if(!$now){
+        if (!$now) {
             $now = date('Y-m-d');
         }
         $params['now'] = $now;
@@ -405,24 +405,26 @@ class BookingController extends Controller
 
     protected function sendNewBookingNotification($booking, $is_new)
     {
-        Mail::send('booking::emails.created', array('booking' => $booking, 'is_new' => $is_new), function ($m) use ($booking, $is_new) {
-            $start_at = $booking->items->first()->start_at;
-            if ($start_at instanceof \DateTime) {
-                $start_at = $start_at->format('d/m/Y H:i');
-            } else {
-                $start_at = date('d/m/Y H:i', strtotime($start_at));
-            }
-            if ($is_new) {
-                $title = 'Nouvelle réservation';
-            } else {
-                $title = 'Modification de réservation';
-            }
+        $start_at = $booking->items->first()->start_at;
+        if ($start_at instanceof \DateTime) {
+        } else {
+            $start_at = new \DateTime($start_at);
+        }
+        $is_booking_already_started = $start_at->format('Y-m-d H:i') <= date('Y-m-d H:i');
+        if (!$is_booking_already_started) {
+            Mail::send('booking::emails.created', array('booking' => $booking, 'is_new' => $is_new), function ($m) use ($booking, $is_new, $start_at) {
+                if ($is_new) {
+                    $title = 'Nouvelle réservation';
+                } else {
+                    $title = 'Modification de réservation';
+                }
 
-            $m->from($_ENV['organisation_email'], $_ENV['organisation_name'])
-                ->bcc($_ENV['organisation_email'], $_ENV['organisation_name'])
-                ->to($booking->user->email, $booking->user->fullname)
-                ->subject(sprintf('%s - %s - %s', $_ENV['organisation_name'], $title, $start_at));
-        });
+                $m->from($_ENV['organisation_email'], $_ENV['organisation_name'])
+                    ->bcc($_ENV['organisation_email'], $_ENV['organisation_name'])
+                    ->to($booking->user->email, $booking->user->fullname)
+                    ->subject(sprintf('%s - %s - %s', $_ENV['organisation_name'], $title, $start_at->format('d/m/Y H:i')));
+            });
+        }
     }
 
     protected function sendUpdatedBookingNotification($booking_item, $old, $new)
@@ -652,7 +654,7 @@ class BookingController extends Controller
             $booking_item_->is_open_to_registration = Input::get('is_open_to_registration', false);
             $booking_item_->is_free = Input::get('is_free', false);
             $booking_item_->invoice_id = Input::get('invoice_id', null);
-            if(!$booking_item_->invoice_id){
+            if (!$booking_item_->invoice_id) {
                 $booking_item_->invoice_id = null;
             }
             $booking_item_->save();
@@ -665,7 +667,7 @@ class BookingController extends Controller
         } catch (\Exception $e) {
 
         }
-        return Redirect::route('booking_with_date', array('now'=> date('Y-m-d', strtotime($booking_item->start_at))))->with('mSuccess', 'La réservation a été modifiée')->withInput();
+        return Redirect::route('booking_with_date', array('now' => date('Y-m-d', strtotime($booking_item->start_at))))->with('mSuccess', 'La réservation a été modifiée')->withInput();
 
     }
 
