@@ -28,8 +28,8 @@
                 </div>
                 <div class="ibox-content">
 
-                        {{ Form::open(array('route' => array('booking_filter'))) }}
-                        {{ Form::hidden('filtre_submitted', 1) }}
+                    {{ Form::open(array('route' => array('booking_filter'))) }}
+                    {{ Form::hidden('filtre_submitted', 1) }}
                     <div class="row">
                         <div class="col-md-4">
                             {{ Form::select('filtre_ressource_id', Ressource::bookable('Sélectionnez une salle'), Session::get('filtre_booking.ressource_id') ? Session::get('filtre_booking.ressource_id') : null, array('class' => 'form-control')) }}
@@ -41,22 +41,22 @@
                             {{ Form::submit('Filtrer', array('class' => 'btn btn-sm btn-primary')) }}
                             <a href="{{route('booking_filter_reset')}}" class="btn btn-sm btn-default">Réinitialiser</a>
                         </div>
-                            </div>
-                        @if (Auth::user()->isSuperAdmin())
-                    <div class="row">
+                    </div>
+                    @if (Auth::user()->isSuperAdmin())
+                        <div class="row">
                             <div class="col-md-6">
                                 {{ Form::select('filtre_user_id', User::Select('Sélectionnez un client'), Session::get('filtre_booking.user_id') ? Session::get('filtre_booking.user_id') : null, array('id' => 'filter-client','class' => 'form-control')) }}
                             </div>
 
-                        <div class="col-md-3 input-group-sm">
-                            {{ Form::checkbox('filtre_toinvoice', true, Session::has('filtre_booking.toinvoice') ? Session::get('filtre_booking.toinvoice') : false) }}
-                            A facturer
+                            <div class="col-md-3 input-group-sm">
+                                {{ Form::checkbox('filtre_toinvoice', true, Session::has('filtre_booking.toinvoice') ? Session::get('filtre_booking.toinvoice') : false) }}
+                                A facturer
+                            </div>
+                            @else
+                                {{ Form::hidden('filtre_user_id', Auth::user()->id) }}
+                            @endif
+                            {{ Form::close() }}
                         </div>
-                        @else
-                            {{ Form::hidden('filtre_user_id', Auth::user()->id) }}
-                        @endif
-                        {{ Form::close() }}
-                    </div>
                 </div>
             </div>
         </div>
@@ -74,13 +74,16 @@
 
                             <tr>
                                 @if (Auth::user()->isSuperAdmin())
-                                <th>Utilisateur</th>
+                                    <th>Utilisateur</th>
                                 @endif
                                 <th>Date</th>
                                 <th>Lieu</th>
                                 <th>Salle</th>
                                 <th>Réservation</th>
                                 <th>Facture</th>
+                                @if (Auth::user()->isSuperAdmin())
+                                    <th>Temps passé</th>
+                                @endif
                                 <th>Actions</th>
                             </tr>
                             </thead>
@@ -88,11 +91,11 @@
                             @foreach($items as $item)
                                 <tr>
                                     @if (Auth::user()->isSuperAdmin())
-                                    <td>
-                                        <a href="{{ route('user_modify', $item->booking->user->id) }}">{{ $item->booking->user->fullname }}</a>
-                                        <a href="?filtre_submitted=1&filtre_user_id={{ $item->booking->user->id }}"><i
-                                                    class="fa fa-filter"></i></a>
-                                    </td>
+                                        <td>
+                                            <a href="{{ route('user_modify', $item->booking->user->id) }}">{{ $item->booking->user->fullname }}</a>
+                                            <a href="?filtre_submitted=1&filtre_user_id={{ $item->booking->user->id }}"><i
+                                                        class="fa fa-filter"></i></a>
+                                        </td>
                                     @endif
                                     <td>
                                         {{ date('d/m/Y H:i', strtotime($item->start_at)) }} -
@@ -118,6 +121,31 @@
                                             @endif
                                         @endif
                                     </td>
+                                    @if (Auth::user()->isSuperAdmin())
+                                        <td>
+                                            <?php
+
+                                            $existing_timeslot = PastTime::query()
+                                                ->where('user_id', $item->booking->user_id)
+                                                ->where('ressource_id', $item->ressource_id)
+                                                ->where('date_past', date('Y-m-d', strtotime($item->start_at)))
+                                                ->where('time_start', date('Y-m-d H:i:s', strtotime($item->start_at)))
+                                                ->where('time_end', date('Y-m-d H:i:s', strtotime($item->start_at) + $item->duration * 60))
+                                                ->get()
+                                                ->first();
+
+                                            ?>
+
+                                            @if($existing_timeslot)
+                                                <i class="fa fa-check"></i>
+                                                <a href="{{ route('pasttime_list', array('filtre_submitted' => true, 'filtre_user_id'=>$item->booking->user_id)) }}"><i
+                                                            class="fa fa-filter"></i></a>
+                                            @else
+                                                    <a href="{{ route('booking_log_time_ajax', array('id' => $item->id)) }}" class="btn btn-xs btn-default action-log-time">Comptabiliser</a>
+                                            @endif
+                                        </td>
+                                    @endif
+
                                     <td>
                                         <a href="{{ route('booking_modify', array('id' => $item->id)) }}"
                                            class="btn btn-xs btn-primary">Modifier</a>
@@ -147,31 +175,55 @@
             $('#filter-client').select2();
 
             $('.action-booking-make-gift')
-                    .click(function () {
-                        var link = $(this);
-                        $.ajax({
-                            dataType: 'json',
-                            url: $(this).attr('href'),
-                            type: "GET",
-                            success: function (data) {
-                                if (data.status == 'KO') {
-                                    toastr.error(data.message);
-                                } else {
-                                    link.parent().html('Offert');
-                                }
-                            },
-                            error: function (data) {
-                                // afficher un message générique?
-                                toastr.error('Erreur inconnue');
-                                $('#BookingDialog').modal('hide');
+                .click(function () {
+                    var link = $(this);
+                    $.ajax({
+                        dataType: 'json',
+                        url: $(this).attr('href'),
+                        type: "GET",
+                        success: function (data) {
+                            if (data.status == 'KO') {
+                                toastr.error(data.message);
+                            } else {
+                                link.parent().html('Offert');
                             }
-                        });
-                        return false;
+                        },
+                        error: function (data) {
+                            // afficher un message générique?
+                            toastr.error('Erreur inconnue');
+                            $('#BookingDialog').modal('hide');
+                        }
                     });
+                    return false;
+                });
+
+            $('.action-log-time')
+                .click(function () {
+                    var link = $(this);
+                    $.ajax({
+                        dataType: 'json',
+                        url: $(this).attr('href'),
+                        type: "GET",
+                        success: function (data) {
+                            if (data.status == 'KO') {
+                                toastr.error(data.message);
+                            } else {
+                                link.parent().html('<i class="fa fa-check"></i>');
+                            }
+                        },
+                        error: function (data) {
+                            // afficher un message générique?
+                            toastr.error('Erreur inconnue');
+                            $('#BookingDialog').modal('hide');
+                        }
+                    });
+                    return false;
+                });
+
+
 
 
         });
-
 
 
     </script>
