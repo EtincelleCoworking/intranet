@@ -75,6 +75,7 @@
                             <tr>
                                 <th>Utilisateur</th>
                                 <th>Date</th>
+                                <th>Lieu</th>
                                 <th>Salle</th>
                                 <th>Réservation</th>
                                 <th>Facture</th>
@@ -93,6 +94,7 @@
                                         {{ date('d/m/Y H:i', strtotime($item->start_at)) }} -
                                         {{ date('H:i', strtotime($item->start_at) + 60 * $item->duration) }}
                                     </td>
+                                    <td>{{$item->ressource->location->full_name}}</td>
                                     <td>{{$item->ressource->name}}</td>
                                     <td>{{$item->booking->title}}</td>
                                     <td>
