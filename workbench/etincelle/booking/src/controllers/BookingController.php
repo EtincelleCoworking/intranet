@@ -561,7 +561,6 @@ class BookingController extends Controller
 
     public function modify_check($id)
     {
-
         $booking_item = $this->dataExist($id);
 
         $messages = array();
@@ -608,20 +607,15 @@ class BookingController extends Controller
         }
 
         $booking_items = array();
-        if ($id) {
-            $booking = $booking_item->booking;
-            if (!Auth::user()->isSuperAdmin() && (Auth::id() != $booking->user_id)) {
-                App::abort(403);
-            }
-            foreach ($booking->items()->where('start_at', '=', $booking_item->start_at)->get() as $item) {
-                $booking_items[$item->ressource_id] = $item;
-            }
-            $is_new = false;
-        } else {
-            $booking = new Booking();
-            $is_new = true;
+        $booking = $booking_item->booking;
+        if (!Auth::user()->isSuperAdmin() && (Auth::id() != $booking->user_id)) {
+            App::abort(403);
         }
-
+        foreach ($booking->items()->where('start_at', '=', $booking_item->start_at)->get() as $item) {
+            $booking_items[$item->ressource_id] = $item;
+        }
+        $is_new = false;
+        
         $booking->title = Input::get('title');
         $booking->content = Input::get('description');
         if (Auth::user()->isSuperAdmin()) {

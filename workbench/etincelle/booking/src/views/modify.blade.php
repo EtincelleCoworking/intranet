@@ -37,6 +37,13 @@
         $ressources_by_location[$ressource->location_id]['ressources'][] = $ressource;
 
     }
+
+
+    $booking = $booking_item->booking;
+    $booking_items = array();
+    foreach ($booking->items()->where('start_at', '=', $booking_item->start_at)->get() as $item) {
+        $booking_items[$item->ressource_id] = true;
+    }
     ?>
 
 
@@ -117,7 +124,7 @@
                                     @foreach($location_ressource['ressources'] as $ressource_)
                                         <p>
                                         <span class="label" style="{{$ressource_->labelCss}}">
-                                    {{ Form::checkbox('rooms[]', $ressource_->id, $ressource_->id == $booking_item->ressource_id, array('id'=> sprintf('meeting-add-room%d', $ressource_->id))) }}
+                                    {{ Form::checkbox('rooms[]', $ressource_->id, !empty($booking_items[$ressource_->id]), array('id'=> sprintf('meeting-add-room%d', $ressource_->id))) }}
                                             &nbsp;
                                             <label for="meeting-add-room{{$ressource_->id}}"
                                                    style="font-weight: normal;">
