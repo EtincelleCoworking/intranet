@@ -320,7 +320,7 @@
                 this.id = null;
                 this.booking_id = null;
                 this.user_id = '{{Auth::id()}}';
-                this.title = '{{str_replace("'", "\\'", Auth::user()->fullname)}}';
+                this.title = '{{str_replace("'", "\\'", Auth::user()->fullname_orga)}}';
                 this.description = '';
                 this.start = moment().add(7, 'days');
                 this.end = moment().add(7, 'days').add({{ Config::get('booking::default_meeting_duration', 1) }}, 'hours');

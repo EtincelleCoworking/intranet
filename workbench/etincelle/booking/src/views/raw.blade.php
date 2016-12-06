@@ -73,7 +73,9 @@
                             <thead>
 
                             <tr>
+                                @if (Auth::user()->isSuperAdmin())
                                 <th>Utilisateur</th>
+                                @endif
                                 <th>Date</th>
                                 <th>Lieu</th>
                                 <th>Salle</th>
@@ -85,11 +87,13 @@
                             <tbody>
                             @foreach($items as $item)
                                 <tr>
+                                    @if (Auth::user()->isSuperAdmin())
                                     <td>
                                         <a href="{{ route('user_modify', $item->booking->user->id) }}">{{ $item->booking->user->fullname }}</a>
                                         <a href="?filtre_submitted=1&filtre_user_id={{ $item->booking->user->id }}"><i
                                                     class="fa fa-filter"></i></a>
                                     </td>
+                                    @endif
                                     <td>
                                         {{ date('d/m/Y H:i', strtotime($item->start_at)) }} -
                                         {{ date('H:i', strtotime($item->start_at) + 60 * $item->duration) }}
@@ -108,6 +112,8 @@
                                                 @if (Auth::user()->isSuperAdmin())
                                                     <a href="{{ route('booking_make_gift', array('id' => $item->id)) }}"
                                                        class="btn btn-xs btn-default action-booking-make-gift">Offrir</a>
+                                                @else
+                                                    -
                                                 @endif
                                             @endif
                                         @endif

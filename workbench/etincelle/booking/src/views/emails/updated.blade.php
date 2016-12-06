@@ -20,7 +20,26 @@
                     </tr>
                     <tr>
                         <td width="30%">Salle</td>
-                        <td><strong>{{$booking_item->ressource->name}}</strong></td>
+                        <td>
+                            <strong>{{$booking_item->ressource->name}}</strong>
+                            {{$booking_item->ressource->location->full_name}}
+                        </td>
+                    </tr>
+                    <tr>
+                        <td width="30%">Titre</td>
+                        <td>
+                            @if($old['title'] != $new['title'])
+                            {{$old['title']}}
+                            &raquo;
+                            @endif
+                            {{$new['title']}}
+                        </td>
+                    </tr>
+                    <tr>
+                        <td width="30%">Description</td>
+                        <td>
+                            {{$new['content']}}
+                        </td>
                     </tr>
                     <tr>
                         <td width="30%">Date</td>

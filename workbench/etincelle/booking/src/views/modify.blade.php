@@ -6,7 +6,7 @@
 
 @section('breadcrumb')
     <div class="row wrapper border-bottom white-bg page-heading">
-        <div class="col-sm-4">
+        <div class="col-sm-12">
             <h2>Modification d'une réservation</h2>
         </div>
 

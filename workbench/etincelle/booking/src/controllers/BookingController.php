@@ -208,24 +208,38 @@ class BookingController extends Controller
     }
 
 
+    protected function extractPublicProperties($booking_item)
+    {
+        $result = array(
+            'title' => $booking_item->booking->title,
+            'content' => $booking_item->booking->content,
+            'start_at' => $booking_item->start_at,
+            'duration' => $booking_item->duration,
+//            'is_private' => $booking_item->booking->is_private,
+//            'is_open_to_registration' => $booking_item->is_open_to_registration,
+//            'ressources' => array(),
+        );
+//        foreach ($booking_item->booking->items() as $item) {
+//            $result['ressources'][$item->ressource->id] = array(
+//                'name' => $item->ressource->name,
+//                'location' => $item->ressource->location->fullname,
+//            );
+//        }
+        return $result;
+    }
+
     public function updateAjax()
     {
         $booking_item_id = Input::get('id');
         $booking_item = BookingItem::find($booking_item_id);
 
-        $old = array(
-            'start_at' => $booking_item->start_at,
-            'duration' => $booking_item->duration
-        );
+        $old = $this->extractPublicProperties($booking_item);
 
         $booking_item->start_at = Input::get('start');
         $booking_item->duration = floor((strtotime(Input::get('end')) - strtotime(Input::get('start'))) / 60);
         $booking_item->save();
 
-        $new = array(
-            'start_at' => $booking_item->start_at,
-            'duration' => $booking_item->duration
-        );
+        $new = $this->extractPublicProperties($booking_item);
         try {
             $this->sendUpdatedBookingNotification($booking_item, $old, $new);
         } catch (\Exception $e) {
@@ -405,35 +419,49 @@ class BookingController extends Controller
 
     protected function sendNewBookingNotification($booking, $is_new)
     {
-        $start_at = $booking->items->first()->start_at;
-        if ($start_at instanceof \DateTime) {
-        } else {
-            $start_at = new \DateTime($start_at);
-        }
-        $is_booking_already_started = $start_at->format('Y-m-d H:i') <= date('Y-m-d H:i');
-        if (!$is_booking_already_started) {
-            Mail::send('booking::emails.created', array('booking' => $booking, 'is_new' => $is_new), function ($m) use ($booking, $is_new, $start_at) {
-                if ($is_new) {
-                    $title = 'Nouvelle réservation';
-                } else {
-                    $title = 'Modification de réservation';
-                }
+        Mail::send('booking::emails.created', array('booking' => $booking, 'is_new' => $is_new), function ($m) use ($booking, $is_new) {
+            $start_at = $booking->items->first()->start_at;
+            if ($start_at instanceof \DateTime) {
+            } else {
+                $start_at = new \DateTime($start_at);
+            }
+            if ($is_new) {
+                $title = 'Nouvelle réservation';
+            } else {
+                $title = 'Modification de réservation';
+            }
 
-                $m->from($_ENV['organisation_email'], $_ENV['organisation_name'])
-                    ->bcc($_ENV['organisation_email'], $_ENV['organisation_name'])
-                    ->to($booking->user->email, $booking->user->fullname)
-                    ->subject(sprintf('%s - %s - %s', $_ENV['organisation_name'], $title, $start_at->format('d/m/Y H:i')));
-            });
-        }
+            $m->from($_ENV['organisation_email'], $_ENV['organisation_name'])
+                ->bcc($_ENV['organisation_email'], $_ENV['organisation_name'])
+                ->to($booking->user->email, $booking->user->fullname)
+                ->subject(sprintf('%s - %s - %s', $_ENV['organisation_name'], $title, $start_at->format('d/m/Y H:i')));
+        });
     }
 
     protected function sendUpdatedBookingNotification($booking_item, $old, $new)
     {
+        $has_changed = false;
+        foreach ($old as $k => $v) {
+            if (isset($new[$k])) {
+                if (is_array($v)) {
+                    $has_changed = $has_changed || (count(array_diff($old[$k], $new[$k])) > 0);
+                } elseif ($old[$k] != $new[$k]) {
+                    $has_changed = true;
+                }
+            }
+        }
+        if (!$has_changed) {
+            return false;
+        }
         Mail::send('booking::emails.updated', array('booking_item' => $booking_item, 'old' => $old, 'new' => $new), function ($m) use ($booking_item, $old, $new) {
             if ($old['start_at'] == $new['start_at']) {
                 $update = sprintf('%s %s > %s', date('d/m/Y H:i', strtotime($old['start_at'])), durationToHuman($old['duration']), durationToHuman($new['duration']));
             } else {
-                $update = sprintf('%s > %s', date('d/m/Y H:i', strtotime($old['start_at'])), date('d/m/Y H:i', strtotime($new['start_at'])));
+                if ($old['duration'] == $new['duration']) {
+                    $update = date('d/m/Y H:i', strtotime($old['start_at']));
+                } else {
+                    $update = sprintf('%s > %s', date('d/m/Y H:i', strtotime($old['start_at'])), date('d/m/Y H:i', strtotime($new['start_at'])));
+                }
             }
 
             $m->from($_ENV['organisation_email'], $_ENV['organisation_name'])
@@ -563,6 +591,8 @@ class BookingController extends Controller
     {
         $booking_item = $this->dataExist($id);
 
+        $old = $this->extractPublicProperties($booking_item);
+
         $messages = array();
         if (!preg_match('#^[0-9]{2}/[0-9]{2}/[0-9]{4}$#', Input::get('date'))) {
             $messages['date'] = 'La date doit être renseignée';
@@ -615,7 +645,7 @@ class BookingController extends Controller
             $booking_items[$item->ressource_id] = $item;
         }
         $is_new = false;
-        
+
         $booking->title = Input::get('title');
         $booking->content = Input::get('description');
         if (Auth::user()->isSuperAdmin()) {
@@ -656,11 +686,14 @@ class BookingController extends Controller
         foreach ($booking_items as $booking_item_to_delete) {
             $booking_item_to_delete->delete();
         }
+
+        $new = $this->extractPublicProperties($booking_item);
         try {
-            $this->sendNewBookingNotification($booking, $is_new);
+            $this->sendUpdatedBookingNotification($booking_item, $old, $new);
         } catch (\Exception $e) {
 
         }
+
         return Redirect::route('booking_with_date', array('now' => date('Y-m-d', strtotime($booking_item->start_at))))->with('mSuccess', 'La réservation a été modifiée')->withInput();
 
     }
