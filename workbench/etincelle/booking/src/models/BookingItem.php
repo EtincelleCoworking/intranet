@@ -39,6 +39,11 @@ class BookingItem extends Illuminate\Database\Eloquent\Model
         return $this->belongsTo('Booking');
     }
 
+    public function invoice()
+    {
+        return $this->belongsTo('Invoice');
+    }
+
     public function members()
     {
         return $this->belongsToMany('User', 'booking_item_user', 'booking_item_id', 'users_id');

@@ -11,10 +11,13 @@ Route::get('/api/booking/{booking_item_id}/unregister/{user_id?}', array('as' =>
 
 Route::group(['before' => 'member'], function () {
     Route::get('/booking', array('as' => 'booking', 'uses' => 'BookingController@index'));
+    Route::get('/booking/{now}', array('as' => 'booking_with_date', 'uses' => 'BookingController@index'))->where(array('now' => '[0-9]+-[0-9]+-[0-9]+'));
     Route::get('/booking/events', array('as' => 'booking_list_ajax', 'uses' => 'BookingController@listAjax'));
     Route::get('/booking/list', array('as' => 'booking_list', 'uses' => 'BookingController@raw'));
     Route::post('/booking/list', array('as' => 'booking_filter', 'uses' => 'BookingController@raw'));
     Route::post('/booking/create', array('as' => 'booking_create', 'uses' => 'BookingController@create'));
+    Route::get('/booking/modify/{id}', array('as' => 'booking_modify', 'uses' => 'BookingController@modify'));
+    Route::post('/booking/modify/{id}', array('as' => 'booking_modify_check', 'uses' => 'BookingController@modify_check'))->where(array('id' => '[0-9]+'));
     Route::get('/booking/delete/{id}', array('as' => 'booking_delete', 'uses' => 'BookingController@delete'));
     Route::get('/booking/show/{id}', array('as' => 'booking_item_show', 'uses' => 'BookingController@show'));
     Route::post('/booking/delete', array('as' => 'booking_delete_ajax', 'uses' => 'BookingController@deleteAjax'));

@@ -29,9 +29,9 @@
         </div>
         <div class="col-sm-2">
             @if(count($ressources)>0)
-            <div class="title-action">
-                <a href="#" class="btn btn-primary" id="meeting-add">Nouvelle réservation</a>
-            </div>
+                <div class="title-action">
+                    <a href="#" class="btn btn-primary" id="meeting-add">Nouvelle réservation</a>
+                </div>
             @endif
         </div>
 
@@ -97,7 +97,7 @@
                                         {{ Form::checkbox('is_private', true, count($ressources)>1, array('id'=> 'meeting-add-isprivate')) }}
                                         Événement privé
                                         <br/>
-                                    <span class="text-muted">
+                                        <span class="text-muted">
                                         <small>Les événements privés ne sont visibles que par vous</small>
                                     </span>
                                     </p>
@@ -109,7 +109,7 @@
                                         {{ Form::checkbox('is_open_to_registration', true, false, array('id'=> 'meeting-add-registration')) }}
                                         Permettre les inscriptions
                                         <br/>
-                                    <span class="text-muted">
+                                        <span class="text-muted">
                                         <small>Les autres membres pourrons s'inscrire à cet événément.</small>
                                     </span>
                                     </p>
@@ -221,37 +221,37 @@
 
     @if(count($ressources)>0)
 
-    <div class="row">
-        <div class="col-lg-12">
-            <div class="ibox">
-                <div class="ibox-content">
-                    <div id="calendar"></div>
+        <div class="row">
+            <div class="col-lg-12">
+                <div class="ibox">
+                    <div class="ibox-content">
+                        <div id="calendar"></div>
+                    </div>
                 </div>
             </div>
+
         </div>
+        <div class="row">
+            <div class="col-lg-12">
+                <div class="ibox">
+                    <div class="ibox-title">
+                        Exporter au format iCalendar
+                    </div>
+                    <div class="ibox-content">
+                        <p>Vous pouvez exporter toutes vos réservations privées via cette adresse:</p>
+                        <pre>{{route('booking_ical', Auth::user()->booking_key)}}</pre>
 
-    </div>
-    <div class="row">
-        <div class="col-lg-12">
-            <div class="ibox">
-                <div class="ibox-title">
-                    Exporter au format iCalendar
-                </div>
-                <div class="ibox-content">
-                    <p>Vous pouvez exporter toutes vos réservations privées via cette adresse:</p>
-                    <pre>{{route('booking_ical', Auth::user()->booking_key)}}</pre>
+                        <p>Vous pouvez exporter tous les rendez-vous publiques via cette adresse:</p>
+                        <pre>{{route('booking_ical', 'public')}}</pre>
 
-                    <p>Vous pouvez exporter tous les rendez-vous publiques via cette adresse:</p>
-                    <pre>{{route('booking_ical', 'public')}}</pre>
+                        <p>Vous pouvez exporter toutes les réservations via cette adresse:</p>
+                        <pre>{{route('booking_ical', Auth::user()->booking_key.'_all')}}</pre>
 
-                    <p>Vous pouvez exporter toutes les réservations via cette adresse:</p>
-                    <pre>{{route('booking_ical', Auth::user()->booking_key.'_all')}}</pre>
-
+                    </div>
                 </div>
             </div>
-        </div>
 
-    </div>
+        </div>
     @else
         <div class="row">
             <div class="col-lg-12">
@@ -277,7 +277,7 @@
     <style type="text/css">
         @foreach($ressources as $ressource)
 
-.fc-event.booking-ofuscated-{{$ressource->id}}                            {
+.fc-event.booking-ofuscated-{{$ressource->id}}                             {
             background: repeating-linear-gradient(
             135deg,
                     {{ adjustBrightness($ressource->booking_background_color, -32)}},
@@ -346,6 +346,7 @@
             this.is_private = e.is_private;
             this.is_accounted = e.is_accounted;
             this.is_open_to_registration = e.is_open_to_registration;
+            $('#meeting-modify').attr('href', '{{ route('booking_modify', 999999) }}'.replace('999999', this.id));
         };
 
         Etincelle.Event.prototype.edit = function () {
@@ -383,7 +384,7 @@
                 return '{{$ressource->name}}';
             }
             @endforeach
-            return false;
+                    return false;
         };
 
         Etincelle.Event.prototype.show = function () {
@@ -422,7 +423,7 @@
                 $('#meeting-view-members').hide();
             }
 
-            $dialog.find('.modal-header .modal-title').html('<a href="' + this.getViewLink() + '">' + this.title+'</a>');
+            $dialog.find('.modal-header .modal-title').html('<a href="' + this.getViewLink() + '">' + this.title + '</a>');
             $dialog.find('#meeting-view-date').html(this.start.format('DD/MM/YYYY'));
             $dialog.find('#meeting-view-hours').html(
                     this.start.format('HH:mm')
@@ -451,19 +452,41 @@
 
             @if (Auth::user()->isSuperAdmin())
                 $('#meeting-log-time').show();
-                $('#meeting-quote').show();
+            $('#meeting-quote').show();
             @else
                 $('#meeting-log-time').hide();
-                $('#meeting-quote').hide();
+            $('#meeting-quote').hide();
             @endif
 
             $dialog.modal('show');
         }
 
+        function getListOrganisations(id) {
+            var oldOrganisation = $('#booking-organisation').val();
+            var url = "{{ URL::route('user_json_organisations') }}";
+            var urlFinale = url.replace("%7Bid%7D", id);
 
+            $('#booking-organisation').html('');
+            $.getJSON(urlFinale, function (data) {
+                var items = '';
+                $.each(data, function (key, val) {
+                    if (oldOrganisation == key) {
+                        items = items + '<option value="' + key + '" selected>' + val + '</option>';
+                    } else {
+                        items = items + '<option value="' + key + '">' + val + '</option>';
+                    }
+                });
+
+                $('#booking-organisation')
+                        .html(items)
+                        .select2().trigger('change');
+            });
+        }
         var activeEvent;
 
         $().ready(function () {
+
+
             $('#meeting-add')
                     .click(function () {
                         var event = new Etincelle.Event();
@@ -471,12 +494,12 @@
                         return false;
                     });
 
-            $('#meeting-modify')
-                    .click(function () {
-                        $('#BookingDialog').modal('hide');
-                        activeEvent.edit();
-                        return false;
-                    });
+//            $('#meeting-modify')
+//                    .click(function () {
+//                        $('#BookingDialog').modal('hide');
+//                        activeEvent.edit();
+//                        return false;
+//                    });
 
             $('#meeting-duplicate')
                     .click(function () {
@@ -639,6 +662,7 @@
             });
 
             $('#calendar').fullCalendar({
+                defaultDate: '{{$now}}',
                 header: {
                     left: 'prev,next today',
                     center: 'title',
@@ -780,14 +804,19 @@
 
 
             $('#newBookingDialog').on('shown.bs.modal', function () {
-                $('#booking-user').select2();
                 $('#booking-organisation').select2();
+                $('#booking-user')
+                        .select2()
+                        .on('change', function (e) {
+                            getListOrganisations($(this).val());
+                            $('#newBookingDialog').find('input[name="title"]').val($('#booking-user option:selected').text());
+                        });
+
                 $('.datePicker').datepicker();
             });
 
-            $('#booking-user').on("select2:select", function (e) {
-                $('#newBookingDialog').find('input[name="title"]').val($('#booking-user option:selected').text());
-            });
+//            $('#booking-user').on("select2:select", function (e) {
+//            });
 
 
             $.fn.modal.Constructor.prototype.enforceFocus = $.noop;

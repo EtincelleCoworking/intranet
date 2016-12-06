@@ -111,6 +111,8 @@
                                         @endif
                                     </td>
                                     <td>
+                                        <a href="{{ route('booking_modify', array('id' => $item->id)) }}"
+                                           class="btn btn-xs btn-primary">Modifier</a>
                                         <a href="{{ route('booking_delete', array('id' => $item->id)) }}"
                                            class="btn btn-xs btn-danger">Supprimer</a>
                                     </td>
