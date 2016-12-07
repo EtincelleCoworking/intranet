@@ -340,16 +340,16 @@ order by `period` desc, kind ASC
                 '2016-12' => 3350,
             ),
             'Toulouse > Wilson' => array(
-                '2015-01' => 6000,
-                '2016-12' => 9500,
+                '2015-01' => 7000,
+                '2016-12' => 10500,
             ),
             'Toulouse > Carmes' => array(
                 '2016-01' => 500,
-                '2016-04' => 3000,
-                '2016-09' => 6000,
+                '2016-04' => 3500,
+                '2016-09' => 6500 + 3500,
             ),
             'Toulouse > Victor Hugo' => array(
-                '2016-09' => 2850
+                '2016-09' => 2800
             ),
         );
 
@@ -368,15 +368,35 @@ order by `period` desc, kind ASC
                 $costs[$location][$period] = $cost;
             }
         }
+        $operations = array(
+            'Toulouse > Carmes' => array(
+                // etalement du paiement Palantir
+                '2016-03' => -5 * 9250,
+                '2016-04' => 9250,
+                '2016-05' => 9250,
+                '2016-06' => 9250,
+                '2016-07' => 9250,
+                '2016-08' => 9250,
+            ),
+            'Toulouse > Victor Hugo' => array(
+                // Loyer 12/2016 Agence Trajectoires
+                '2016-11' => -1050,
+                '2016-12' => 1050,
+            )
+        );
 
         $datas = array();
         foreach ($costs as $location => $data) {
             foreach ($data as $period => $value) {
-                    $datas[$location][substr($period, 0, 4)][$period] = array(
-                        'sales' => $result[$location][$period],
-                        'cost' => $costs[$location][$period],
-                        'balance' => $result[$location][$period] - $costs[$location][$period],
-                    );
+                if (isset($operations[$location][$period])) {
+                    $result[$location][$period] += $operations[$location][$period];
+                }
+
+                $datas[$location][substr($period, 0, 4)][$period] = array(
+                    'sales' => $result[$location][$period],
+                    'cost' => $costs[$location][$period],
+                    'balance' => $result[$location][$period] - $costs[$location][$period],
+                );
             }
             krsort($datas[$location]);
         }
