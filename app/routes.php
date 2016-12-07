@@ -61,6 +61,15 @@ Route::group(['before' => 'member'], function() {
     Route::get('/checkin/start', array('as' => 'checkin_start', 'uses' => 'CheckinController@start'));
     Route::get('/checkin/stop', array('as' => 'checkin_stop', 'uses' => 'CheckinController@stop'));
     Route::get('/checkin/status', array('as' => 'checkin_status', 'uses' => 'CheckinController@status'));
+
+//    Route::get('/subscription/manage', array('as' => 'subscription_manage', 'uses' => 'SubscriptionController@manage'));
+//    Route::get('/subscription/cancel', array('as' => 'subscription_cancel', 'uses' => 'SubscriptionController@cancel'));
+//    Route::get('/subscription/add', array('as' => 'subscription_add', 'uses' => 'SubscriptionController@add'));
+//    Route::post('/subscription/add', array('as' => 'subscription_add_check', 'uses' => 'SubscriptionController@add_check'));
+//    Route::get('/subscription/modify/{id}', array('as' => 'subscription_modify', 'uses' => 'SubscriptionController@modify'));
+//    Route::post('/subscription/modify/{id}', array('as' => 'subscription_modify_check', 'uses' => 'SubscriptionController@modify_check'));
+//    Route::get('/subscription/renew/{id}', array('as' => 'subscription_renew', 'uses' => 'SubscriptionController@renew'));
+
 });
 
 Route::group(['before' => 'superadmin'], function() {
@@ -136,6 +145,7 @@ Route::group(['before' => 'superadmin'], function() {
     Route::get('/stats/sales_per_category', array('as' => 'stats_sales_per_category', 'uses' => 'StatsController@sales_per_category'));
     Route::get('/stats/members', array('as' => 'stats_members', 'uses' => 'StatsController@members'));
     Route::get('/stats/age', array('as' => 'stats_age', 'uses' => 'StatsController@age'));
+    Route::get('/stats/spaces', array('as' => 'stats_spaces', 'uses' => 'StatsController@spaces'));
 
     Route::get('/tags', array('as' => 'tag_list', 'uses' => 'TagController@liste'));
     Route::get('/tag/add', array('as' => 'tag_add', 'uses' => 'TagController@add'));

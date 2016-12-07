@@ -38,11 +38,14 @@
                     {{ Form::hidden('filtre_submitted', 1) }}
                     @if (Auth::user()->isSuperAdmin())
                         <div class="row">
-                            <div class="col-md-6">
+                            <div class="col-md-4">
                                 {{ Form::select('filtre_organisation_id', Organisation::Select('Sélectionnez une société'), Session::get('filtre_invoice.organisation_id') ? Session::get('filtre_invoice.organisation_id') : null, array('id' => 'filter-organisation','class' => 'form-control')) }}
                             </div>
-                            <div class="col-md-6">
+                            <div class="col-md-4">
                                 {{ Form::select('filtre_user_id', User::Select('Sélectionnez un client'), Session::get('filtre_invoice.user_id') ? Session::get('filtre_invoice.user_id') : null, array('id' => 'filter-client','class' => 'form-control')) }}
+                            </div>
+                            <div class="col-md-4">
+                                {{ Form::select('filtre_location_id', Location::SelectAll('Sélectionnez un espace', true), Session::get('filtre_invoice.location_id') ? Session::get('filtre_invoice.location_id') : null, array('id' => 'filter-location','class' => 'form-control')) }}
                             </div>
                         </div>
                     @else
@@ -271,6 +274,7 @@
             $('.datePicker').datepicker();
             $('#filter-client').select2();
             $('#filter-organisation').select2();
+            $('#filter-location').select2();
         });
     </script>
 @stop

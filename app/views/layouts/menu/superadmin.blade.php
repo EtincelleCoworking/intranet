@@ -128,6 +128,9 @@
             <li{{ Request::is('stats/age') ? ' class="active"' : '' }}>
                 <a href="{{ URL::route('stats_age') }}">Démographie</a>
             </li>
+            <li{{ Request::is('stats/spaces') ? ' class="active"' : '' }}>
+                <a href="{{ URL::route('stats_spaces') }}">Espaces</a>
+            </li>
         </ul>
     </li>
 

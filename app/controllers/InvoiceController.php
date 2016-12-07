@@ -27,6 +27,7 @@ class InvoiceController extends BaseController
     {
         Session::forget('filtre_invoice.user_id');
         Session::forget('filtre_invoice.organisation_id');
+        Session::forget('filtre_invoice.location_id');
         Session::forget('filtre_invoice.start');
         Session::forget('filtre_invoice.end');
         Session::forget('filtre_invoice.filtre_unpaid');
@@ -36,6 +37,11 @@ class InvoiceController extends BaseController
     public function invoiceList()
     {
         if (Input::has('filtre_submitted')) {
+            if (Input::has('filtre_location_id')) {
+                Session::put('filtre_invoice.location_id', Input::get('filtre_location_id'));
+            } else {
+                Session::forget('filtre_invoice.location_id');
+            }
             if (Input::has('filtre_organisation_id')) {
                 Session::put('filtre_invoice.organisation_id', Input::get('filtre_organisation_id'));
             } else {
@@ -82,20 +88,24 @@ class InvoiceController extends BaseController
         if ($date_filtre_start && $date_filtre_end) {
             $q->whereBetween('date_invoice', array($date_filtre_start, $date_filtre_end));
         }
+        if (Session::get('filtre_invoice.location_id')) {
+            $q->select('invoices.*');
+            $q->distinct();
+            $q->join('invoices_items', 'invoices.id', '=', 'invoices_items.invoice_id');
+            $q->join('ressources', 'ressources.id', '=', 'invoices_items.ressource_id');
+            $q->where('ressources.location_id', Session::get('filtre_invoice.location_id'));
+        }
         if (Session::get('filtre_invoice.filtre_unpaid')) {
             $q->whereNull('date_payment');
         }
         if (Auth::user()->role == 'member') {
-            $recapFilter = Auth::user()->id;
             $q->whereUserId(Auth::user()->id);
         } else {
             if (Session::has('filtre_invoice.user_id')) {
-                $recapFilter = Session::get('filtre_invoice.user_id');
-                $q->whereUserId($recapFilter);
+                $q->whereUserId(Session::get('filtre_invoice.user_id'));
             }
             if (Session::has('filtre_invoice.organisation_id')) {
-                $recapFilter = Session::get('filtre_invoice.organisation_id');
-                $q->whereOrganisationId($recapFilter);
+                $q->whereOrganisationId(Session::get('filtre_invoice.organisation_id'));
             }
         }
 

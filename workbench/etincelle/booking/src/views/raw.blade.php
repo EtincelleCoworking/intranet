@@ -123,25 +123,30 @@
                                     </td>
                                     @if (Auth::user()->isSuperAdmin())
                                         <td>
-                                            <?php
-
-                                            $existing_timeslot = PastTime::query()
-                                                ->where('user_id', $item->booking->user_id)
-                                                ->where('ressource_id', $item->ressource_id)
-                                                ->where('date_past', date('Y-m-d', strtotime($item->start_at)))
-                                                ->where('time_start', date('Y-m-d H:i:s', strtotime($item->start_at)))
-                                                ->where('time_end', date('Y-m-d H:i:s', strtotime($item->start_at) + $item->duration * 60))
-                                                ->get()
-                                                ->first();
-
-                                            ?>
-
-                                            @if($existing_timeslot)
-                                                <i class="fa fa-check"></i>
-                                                <a href="{{ route('pasttime_list', array('filtre_submitted' => true, 'filtre_user_id'=>$item->booking->user_id)) }}"><i
-                                                            class="fa fa-filter"></i></a>
+                                            @if ($item->is_free)
+                                                Offert
                                             @else
-                                                    <a href="{{ route('booking_log_time_ajax', array('id' => $item->id)) }}" class="btn btn-xs btn-default action-log-time">Comptabiliser</a>
+                                                <?php
+
+                                                $existing_timeslot = PastTime::query()
+                                                    ->where('user_id', $item->booking->user_id)
+                                                    ->where('ressource_id', $item->ressource_id)
+                                                    ->where('date_past', date('Y-m-d', strtotime($item->start_at)))
+                                                    ->where('time_start', date('Y-m-d H:i:s', strtotime($item->start_at)))
+                                                    ->where('time_end', date('Y-m-d H:i:s', strtotime($item->start_at) + $item->duration * 60))
+                                                    ->get()
+                                                    ->first();
+
+                                                ?>
+
+                                                @if($existing_timeslot)
+                                                    <i class="fa fa-check"></i>
+                                                    <a href="{{ route('pasttime_list', array('filtre_submitted' => true, 'filtre_user_id'=>$item->booking->user_id)) }}"><i
+                                                                class="fa fa-filter"></i></a>
+                                                @else
+                                                    <a href="{{ route('booking_log_time_ajax', array('id' => $item->id)) }}"
+                                                       class="btn btn-xs btn-default action-log-time">Comptabiliser</a>
+                                                @endif
                                             @endif
                                         </td>
                                     @endif
@@ -219,8 +224,6 @@
                     });
                     return false;
                 });
-
-
 
 
         });

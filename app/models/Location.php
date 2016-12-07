@@ -22,16 +22,20 @@ class Location extends Eloquent
     /**
      * Get list of ressources
      */
-    public function scopeSelectAll($query, $includeEmpty = true)
+    public function scopeSelectAll($query, $includeEmpty = '-', $includeDisabled = false)
     {
         $selectVals = array();
         if ($includeEmpty) {
-            $selectVals[null] = '-';
+            $selectVals[null] = $includeEmpty;
+        }
+        $query
+            ->join('cities', 'cities.id', '=', 'locations.city_id')
+            ->select(array('locations.id', DB::raw('concat(cities.name, \' > \', IF(locations.name IS NULL, \'\', locations.name)) as _name')));
+
+        if(!$includeDisabled){
+            $query->where('enabled', '=', true);
         }
         $selectVals += $query
-            ->join('cities', 'cities.id', '=', 'locations.city_id')
-            ->select(array('locations.id', DB::raw('concat(cities.name, \' > \', IF(locations.name IS NULL, \'\', locations.name)) as _name')))
-            ->where('enabled', '=', true)
             ->orderBy('cities.name', 'ASC')
             ->orderBy('locations.name', 'ASC')
             ->lists('_name', 'id');

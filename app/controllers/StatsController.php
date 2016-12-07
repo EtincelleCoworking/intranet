@@ -248,4 +248,142 @@ class StatsController extends BaseController
         //var_dump($result2);        exit;
         return View::make('stats.age', array('gender' => $result1, 'age' => $result2, 'average' => round($total_age / $total_count, 2)));
     }
+
+
+    public function spaces()
+    {
+
+
+        $items = DB::select(DB::raw('select 
+date_format(invoices.date_invoice, "%Y-%m") as period, 
+SUM(invoices_items.amount) as total, 
+if(`locations`.`name` is null,cities.name,concat(cities.name, \' > \',  `locations`.`name`)) as `kind` 
+
+from `invoices_items` 
+inner join `invoices` on `invoice_id` = `invoices`.`id` and `type` = \'F\' 
+left outer join `organisations` on `organisation_id` = `organisations`.`id` 
+left outer join `ressources` on `ressource_id` = `ressources`.`id` 
+left outer join `locations` on `location_id` = `locations`.`id` 
+left outer join cities on city_id = cities.id
+
+where (`organisations`.`is_founder` = \'0\' or `organisation_id` is null) 
+AND ressources.ressource_kind_id NOT IN (1, 4)
+
+group by `period`, kind
+order by `period` desc, kind ASC'));
+        $result = array();
+        $periods = array();
+        foreach ($items as $item) {
+            $result[$item->kind][$item->period] = (float)$item->total;
+            $periods[$item->period] = true;
+        }
+
+        $items = DB::select(DB::raw('select 
+date_format(invoices.date_invoice, "%Y-%m") as period, 
+SUM(invoices_items.amount) as total, 
+if(`locations`.`name` is null,cities.name,concat(cities.name, \' > \',  `locations`.`name`)) as `kind` 
+
+from `invoices_items` 
+inner join `invoices` on `invoice_id` = `invoices`.`id` and `type` = \'F\' 
+left outer join `organisations` on `organisation_id` = `organisations`.`id` 
+join `ressources` on invoices_items.ressource_id = `ressources`.`id`
+
+join users u on u.id = invoices_items.subscription_user_id 
+join `locations` on u.default_location_id = `locations`.`id` 
+left outer join cities on city_id = cities.id
+
+where (`organisations`.`is_founder` = \'0\' or `organisation_id` is null) 
+AND ressources.ressource_kind_id = 1
+
+group by `period`, kind
+order by `period` desc, kind ASC
+'));
+        foreach ($items as $item) {
+            if (!isset($result[$item->kind][$item->period])) {
+                $result[$item->kind][$item->period] = 0;
+            }
+            $periods[$item->period] = true;
+            $result[$item->kind][$item->period] += (float)$item->total;
+        }
+
+
+        foreach ($result as $location => $data) {
+            foreach ($periods as $period => $value) {
+                if (!isset($result[$location][$period])) {
+                    $result[$location][$period] = 0;
+                }
+            }
+            ksort($result[$location]);
+        }
+        /*
+
+                $items = DB::select(DB::raw('select
+        date_format(locations_cost.period, "%Y-%m") as period,
+        SUM(locations_cost.amount) as total,
+        if(`locations`.`name` is null,cities.name,concat(cities.name, \' > \',  `locations`.`name`)) as `kind`
+
+        from `locations_cost`
+        join `locations` on u.default_location_id = `locations`.`id`
+        left outer join cities on city_id = cities.id
+
+        group by `period`, kind
+        order by `period` ASC, kind ASC
+        '));
+                $costs = array();
+                foreach ($items as $item) {
+                    $costs[$item->kind][$item->period] += (float)$item->total;
+                }
+        */
+        $costs = array(
+            'Montauban' => array(
+                '2015-09' => 2050,
+                '2016-12' => 3350,
+            ),
+            'Toulouse > Wilson' => array(
+                '2015-01' => 6000,
+                '2016-12' => 9500,
+            ),
+            'Toulouse > Carmes' => array(
+                '2016-01' => 500,
+                '2016-04' => 3000,
+                '2016-09' => 6000,
+            ),
+            'Toulouse > Victor Hugo' => array(
+                '2016-09' => 2850
+            ),
+        );
+
+        foreach ($costs as $location => $data) {
+            foreach ($periods as $period => $value) {
+                if (!isset($costs[$location][$period])) {
+                    $costs[$location][$period] = 0;
+                }
+            }
+            ksort($costs[$location]);
+            $cost = 0;
+            foreach ($costs[$location] as $period => $value) {
+                if ($value) {
+                    $cost = $value;
+                }
+                $costs[$location][$period] = $cost;
+            }
+        }
+
+        $year = date('Y');
+
+        $datas = array();
+        foreach ($costs as $location => $data) {
+            foreach ($data as $period => $value) {
+                if (preg_match(sprintf('/^%d-/', $year), $period)) {
+                    $datas[$location][$period] = array(
+                        'sales' => $result[$location][$period],
+                        'cost' => $costs[$location][$period],
+                        'balance' => $result[$location][$period] - $costs[$location][$period],
+                    );
+                }
+            }
+        }
+
+        return View::make('stats.spaces', array('datas' => $datas));
+    }
 }
