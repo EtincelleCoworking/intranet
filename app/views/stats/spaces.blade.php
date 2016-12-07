@@ -26,9 +26,11 @@
         </ul>
         <div class="tab-content">
             {{--*/ $index = 0 /*--}}
-            @foreach($datas as $location => $data)
+            @foreach($datas as $location => $data_)
                 <div id="tab-{{$index}}" class="tab-pane{{ $index?'':' active' }}">
                     <div class="panel-body">
+                        @foreach($data_ as $year => $data)
+                           <p><strong>{{$year}}</strong></p>
                         <table class="table">
                             <tr>
                                 <td width="20%">Période</td>
@@ -61,6 +63,7 @@
                                 </tr>
                             @endforeach
                         </table>
+                            @endforeach
                     </div>
                 </div>
 

@@ -369,19 +369,16 @@ order by `period` desc, kind ASC
             }
         }
 
-        $year = date('Y');
-
         $datas = array();
         foreach ($costs as $location => $data) {
             foreach ($data as $period => $value) {
-                if (preg_match(sprintf('/^%d-/', $year), $period)) {
-                    $datas[$location][$period] = array(
+                    $datas[$location][substr($period, 0, 4)][$period] = array(
                         'sales' => $result[$location][$period],
                         'cost' => $costs[$location][$period],
                         'balance' => $result[$location][$period] - $costs[$location][$period],
                     );
-                }
             }
+            krsort($datas[$location]);
         }
 
         return View::make('stats.spaces', array('datas' => $datas));
