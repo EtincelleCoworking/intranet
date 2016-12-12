@@ -41,6 +41,7 @@ class UserEventHandler
         $timeslot = PastTime::where('user_id', '=', $PastTime->user_id)
             ->where('date_past', '=', $PastTime->date_past)
             ->where('time_start', '<', $PastTime->time_start)
+            ->where('location_id', '=', $Location->id)
             ->orderBy('time_start', 'ASC')
             ->first();
         if (!$timeslot) {
