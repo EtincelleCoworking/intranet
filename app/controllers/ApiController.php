@@ -113,6 +113,7 @@ class ApiController extends BaseController
 
                     if ($timeslot->user_id && $triggerUserShown && !isset($notified_users[$timeslot->user_id])) {
                         $notified_users[$timeslot->user_id] = true;
+                        Log::info(sprintf('%s est là', $timeslot->user->fullname), array('context' => 'user.shown'));
                         Event::fire('user.shown', array($timeslot->user, $timeslot, $location));
                     }
 

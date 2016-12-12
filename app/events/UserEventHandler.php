@@ -93,6 +93,8 @@ class UserEventHandler
                 'text' => $quote['quote'],
             );
 
+            Log::info(sprintf('Posted to Slack: ', $Location->slack_endpoint), array('context' => 'user.shown'));
+
             $this->slack($Location->slack_endpoint, array(
                 'text' => $message,
                 'link_names' => 1,
@@ -125,6 +127,13 @@ class UserEventHandler
         curl_setopt($ch, CURLOPT_POSTFIELDS, "payload=" . json_encode($data));
         curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
         $result = curl_exec($ch);
+
+        $errors = curl_error($ch);
+        if ($errors) {
+            Log::error($errors, array('context' => 'user.shown'));
+        }
+        $responseCode = curl_getinfo($ch, CURLINFO_HTTP_CODE);
+        Log::info(sprintf('Slack response HTTP Code:  ', $responseCode), array('context' => 'user.shown'));
         curl_close($ch);
 
         return $result;
