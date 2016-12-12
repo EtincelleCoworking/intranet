@@ -133,6 +133,7 @@ class UserEventHandler
             Log::error($errors, array('context' => 'user.shown'));
         }
         $responseCode = curl_getinfo($ch, CURLINFO_HTTP_CODE);
+        Log::info(sprintf('Slack payload: %s', json_encode($data)), array('context' => 'user.shown'));
         Log::info(sprintf('Slack response (HTTP Code: %s): %s', $responseCode, $result), array('context' => 'user.shown'));
         curl_close($ch);
 
