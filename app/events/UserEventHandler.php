@@ -93,7 +93,7 @@ class UserEventHandler
                 'text' => $quote['quote'],
             );
 
-            Log::info(sprintf('Posted to Slack: ', $Location->slack_endpoint), array('context' => 'user.shown'));
+            Log::info(sprintf('Posted to Slack: %s', $Location->slack_endpoint), array('context' => 'user.shown'));
 
             $this->slack($Location->slack_endpoint, array(
                 'text' => $message,
@@ -133,7 +133,7 @@ class UserEventHandler
             Log::error($errors, array('context' => 'user.shown'));
         }
         $responseCode = curl_getinfo($ch, CURLINFO_HTTP_CODE);
-        Log::info(sprintf('Slack response HTTP Code:  ', $responseCode), array('context' => 'user.shown'));
+        Log::info(sprintf('Slack response (HTTP Code: %s): %s', $responseCode, $result), array('context' => 'user.shown'));
         curl_close($ch);
 
         return $result;

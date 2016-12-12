@@ -89,6 +89,7 @@ class ApiController extends BaseController
                     $timeslot = PastTime::where('user_id', '=', (int)$device->user_id)
                         ->where('date_past', '=', date('Y-m-d', strtotime($item['lastSeen'])))
                         ->where('time_start', '<', date('Y-m-d H:i:s', strtotime($item['lastSeen'])))
+                        ->where('location_id', '=', $location->id)
                         ->where(function ($query) use ($item) {
                             $query->where('time_end', '>', date('Y-m-d H:i:s', strtotime('-60 minutes', strtotime($item['lastSeen']))))
                                 ->orWhereNull('time_end');
