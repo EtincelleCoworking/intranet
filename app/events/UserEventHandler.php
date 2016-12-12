@@ -97,7 +97,7 @@ class UserEventHandler
 
             $this->slack($Location->slack_endpoint, array(
                 'text' => $message,
-                'link_names' => 1,
+//                'link_names' => 1,
                 'attachments' => $attachments
             ));
         }
