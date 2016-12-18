@@ -237,4 +237,119 @@ class OrganisationController extends BaseController
 
         return Response::json($ajaxArray);
     }
+
+
+    public function remind($id)
+    {
+        $organisation = $this->dataExist($id);
+
+        $pending_invoices = array();
+        foreach ($organisation->invoices as $invoice) {
+            if ($invoice->type == 'F' && !$invoice->date_payment) {
+                $pending_invoices[$invoice->date_invoice] = $invoice;
+            }
+        }
+        ksort($pending_invoices);
+
+        $content = "<p>Bonjour,</p><p>Sauf erreur ou omission de notre part, ";
+
+        if (count($pending_invoices) == 1) {
+            $invoice = $pending_invoices[0];
+            $amount = Invoice::TotalInvoiceWithTaxes($invoice->items);
+            $content .= sprintf('le paiement de la facture n°%s datée du %s pour un montant de %s euros, et payable à réception de facture ne nous est pas parvenu.',
+                $invoice->ident, date('d/m/y', strtotime($invoice->date_invoice)), $amount);
+            $content .= "Nous vous prions de bien vouloir procéder à son règlement dans les meilleurs délais, et vous adressons, à toutes fins utiles, un duplicata de cette facture en pièce jointe.\n";
+        } else {
+            $content .= "le paiement des factures suivantes ne nous est pas parvenu:</p><ul>";
+            $total = 0;
+            foreach ($pending_invoices as $invoice) {
+                $amount = Invoice::TotalInvoiceWithTaxes($invoice->items);
+                $content .= sprintf("<li>Facture n°%s datée du %s pour un montant de %s euros</li>",
+                    $invoice->ident, date('d/m/y', strtotime($invoice->date_invoice)), $amount);
+                $total += $amount;
+            }
+            $content .= sprintf("</ul><p>Soit un total de %s euros.</p>", $total);
+            $content .= "<p>Ces factures sont payables à réception de facture.</p>";
+            $content .= "<p>Nous vous prions de bien vouloir procéder à leur règlement dans les meilleurs délais, et vous adressons, à toutes fins utiles, un duplicata de ces facture en pièce jointe.</p>";
+        }
+
+        $content .= '<p>Si par ailleurs votre paiement venait à nous parvenir avant la réception de la présente, nous vous saurions gré de ne pas en tenir compte.</p>';
+        $content .= '<p>Vous remerciant de faire le nécessaire, et restant à votre entière disposition pour toute question, nous vous prions d\'agréer, l\'expression de nos salutations distinguées. </p>';
+        return View::make('organisation.remind', array(
+            'organisation' => $organisation,
+            'invoices' => $pending_invoices,
+            'content' => str_replace('</p>', "</p>\n", $content),
+
+        ));
+
+    }
+
+    public function remind_send($id)
+    {
+        $organisation = $this->dataExist($id);
+        $content = Input::get('content');
+        $invoice_ids = Input::get('invoices');
+
+        $invoices = Invoice::whereIn('id', $invoice_ids)->get();
+        if (count($invoices) == 0) {
+            return Redirect::route('invoice_unpaid')->with('mError', sprintf('Aucune facture sélectionnée pour la société %s', $organisation->name));
+        }
+
+        $target_user = null;
+        if ($organisation->accountant) {
+            $target_user = $organisation->accountant;
+        } else {
+            foreach ($invoices as $invoice) {
+                if ($invoice->user) {
+                    $target_user = $invoice->user;
+                }
+            }
+        }
+
+        if (!$target_user) {
+            return Redirect::route('invoice_unpaid')->with('mError', sprintf('Impossible de trouver un contact à informer pour la société %s', $organisation->name));
+        }
+        Mail::send('emails.organisation_remind', array('content' => $content), function ($message) use ($organisation, $invoices, $target_user) {
+            $message->from($_ENV['mail_address'], $_ENV['mail_name'])
+                ->bcc($_ENV['mail_address'], $_ENV['mail_name']);
+
+            $message->to($target_user->email, $target_user->fullname);
+
+            if (count($invoices) == 1) {
+                $message->subject(sprintf('%s - Relance facture impayée', $_ENV['organisation_name']));
+
+            } else {
+                $message->subject(sprintf('%s - Relance factures impayées', $_ENV['organisation_name']));
+            }
+
+            $pdf = App::make('snappy.pdf.wrapper');
+            foreach ($invoices as $invoice) {
+                $message->attachData($pdf->getOutputFromHtml($invoice->getPdfHtml()),
+                    sprintf('%s.pdf', $invoice->ident), array('mime' => 'application/pdf'));
+            }
+        });
+
+        $to = htmlentities(sprintf('%s <%s>', $target_user->fullname, $target_user->email));
+
+        foreach ($invoices as $invoice) {
+            if (!$invoice->reminder1_at) {
+                $invoice->reminder1_at = new \DateTime();
+            } elseif (!$invoice->reminder2_at) {
+                $invoice->reminder2_at = new \DateTime();
+            } else {
+                $invoice->reminder3_at = new \DateTime();
+            }
+            $invoice->save();
+
+            $invoice_comment = new InvoiceComment();
+            $invoice_comment->invoice_id = $invoice->id;
+            $invoice_comment->user_id = Auth::user()->id;
+            $invoice_comment->content = sprintf('Relance envoyée par email le %s à %s', date('d/m/Y'), $to);
+            $invoice_comment->save();
+        }
+
+        $organisation->last_invoice_reminder_at = new \DateTime();
+        $organisation->save();
+        return Redirect::route('invoice_unpaid')->with('mSuccess', sprintf('L\'organisation %s a été relancée (%s)', $organisation->name, $to));
+    }
 }

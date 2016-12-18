@@ -34,7 +34,9 @@
                                     <th>Client</th>
                                     <th>Nb de factures</th>
                                     <th>1<sup>ère</sup> émise le</th>
+                                    <th>Dernière relance</th>
                                     <th>Montant TTC</th>
+                                    <th>Actions</th>
                                 </tr>
                                 </thead>
                                 <tbody>
@@ -45,8 +47,23 @@
                                         </td>
                                         <td>{{ $item->nb_invoices }}</td>
                                         <td>{{ date('d/m/y', strtotime($item->older_invoice_at)) }}</td>
-                                        <td style="text-align:right" title=" {{ number_format( $item->total_ht, 2, ',', '.') }}€ HT">
+                                        <td>
+                                            @if($item->last_invoice_reminder_at)
+                                                {{ date('d/m/y', strtotime($item->last_invoice_reminder_at)) }}
+                                            @else
+                                                -
+                                            @endif
+
+                                        </td>
+                                        <td style="text-align:right"
+                                            title=" {{ number_format( $item->total_ht, 2, ',', '.') }}€ HT">
                                             {{ number_format( $item->total_ttc, 2, ',', '.') }}€
+                                        </td>
+                                        <td>
+                                            <a href="{{ URL::route('organisation_remind', $item->organisation_id) }}"
+                                               class="btn btn-xs btn-default">
+                                                Relancer
+                                            </a>
                                         </td>
                                     </tr>
                                 @endforeach

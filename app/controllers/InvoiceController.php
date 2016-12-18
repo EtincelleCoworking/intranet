@@ -411,6 +411,7 @@ class InvoiceController extends BaseController
         $items = DB::select(DB::raw('select 
 invoices.organisation_id, 
 organisations.name,
+organisations.last_invoice_reminder_at,
 count(distinct(invoices.id)) as nb_invoices,
 sum(invoices_items.amount) as total_ht,
 sum(invoices_items.amount * (1+vat_types.value/100)) as total_ttc,

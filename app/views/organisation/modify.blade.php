@@ -136,6 +136,8 @@
                     <h5>Factures</h5>
 
                     <div class="pull-right">
+                        <a href="{{ URL::route('organisation_remind', array('id' => $organisation->id)) }}"
+                           class="btn btn-xs btn-default">Relancer</a>
                         <a href="{{ URL::route('invoice_add_organisation', array('type' => 'F', 'organisation' =>$organisation->id)) }}"
                            class="btn btn-xs btn-default">Ajouter une facture</a>
                     </div>
