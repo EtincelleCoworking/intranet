@@ -273,7 +273,6 @@ class OrganisationController extends BaseController
             $content .= "<p>Nous vous prions de bien vouloir procéder à leur règlement dans les meilleurs délais, et vous adressons, à toutes fins utiles, un duplicata de ces facture en pièce jointe.</p>";
         }
 
-        $content .= '<p>Si par ailleurs votre paiement venait à nous parvenir avant la réception de la présente, nous vous saurions gré de ne pas en tenir compte.</p>';
         $content .= '<p>Vous remerciant de faire le nécessaire, et restant à votre entière disposition pour toute question, nous vous prions d\'agréer, l\'expression de nos salutations distinguées. </p>';
         return View::make('organisation.remind', array(
             'organisation' => $organisation,

@@ -15,7 +15,7 @@
         </tr>
         <tr>
             <td class="content-block aligncenter">
-                <a href="{{ route('invoice_list') }}" class="btn-primary">Régler cette facture par carte bancaire</a>
+                <a href="{{ route('invoice_list') }}" class="btn-primary">Régler par carte bancaire</a>
             </td>
         </tr>
         <tr>
