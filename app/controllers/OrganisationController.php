@@ -254,11 +254,11 @@ class OrganisationController extends BaseController
         $content = "<p>Bonjour,</p><p>Sauf erreur ou omission de notre part, ";
 
         if (count($pending_invoices) == 1) {
-            $invoice = $pending_invoices[0];
+            $invoice = current($pending_invoices);
             $amount = Invoice::TotalInvoiceWithTaxes($invoice->items);
-            $content .= sprintf('le paiement de la facture n°%s datée du %s pour un montant de %s euros, et payable à réception de facture ne nous est pas parvenu.',
+            $content .= sprintf('le paiement de la facture n°%s datée du %s pour un montant de %s euros, et payable à réception de facture ne nous est pas parvenu.</p>',
                 $invoice->ident, date('d/m/y', strtotime($invoice->date_invoice)), $amount);
-            $content .= "Nous vous prions de bien vouloir procéder à son règlement dans les meilleurs délais, et vous adressons, à toutes fins utiles, un duplicata de cette facture en pièce jointe.\n";
+            $content .= "<p>Nous vous prions de bien vouloir procéder à son règlement dans les meilleurs délais, et vous adressons, à toutes fins utiles, un duplicata de cette facture en pièce jointe.</p>";
         } else {
             $content .= "le paiement des factures suivantes ne nous est pas parvenu:</p><ul>";
             $total = 0;
