@@ -270,7 +270,7 @@ where (`organisations`.`is_founder` = \'0\' or `organisation_id` is null)
 AND ressources.ressource_kind_id NOT IN (1, 4)
 
 group by `period`, kind
-order by `period` desc, kind ASC'));
+order by kind ASC, `period` desc'));
         $result = array();
         $periods = array();
         foreach ($items as $item) {
@@ -296,7 +296,7 @@ where (`organisations`.`is_founder` = \'0\' or `organisation_id` is null)
 AND ressources.ressource_kind_id = 1
 
 group by `period`, kind
-order by `period` desc, kind ASC
+order by kind ASC, `period` DESC
 '));
         foreach ($items as $item) {
             if (!isset($result[$item->kind][$item->period])) {
@@ -339,10 +339,6 @@ order by `period` desc, kind ASC
                 '2015-09' => 2050,
                 '2016-12' => 3350,
             ),
-            'Toulouse > Wilson' => array(
-                '2015-01' => 7000,
-                '2016-12' => 10500,
-            ),
             'Toulouse > Carmes' => array(
                 '2016-01' => 500,
                 '2016-04' => 3500,
@@ -350,6 +346,10 @@ order by `period` desc, kind ASC
             ),
             'Toulouse > Victor Hugo' => array(
                 '2016-09' => 2800
+            ),
+            'Toulouse > Wilson' => array(
+                '2015-01' => 7000,
+                '2016-12' => 10500,
             ),
         );
 
@@ -389,18 +389,34 @@ order by `period` desc, kind ASC
         foreach ($costs as $location => $data) {
             foreach ($data as $period => $value) {
                 if (isset($operations[$location][$period])) {
-                    $result[$location][$period] += $operations[$location][$period];
+                    $result[$location][$period] += (float)$operations[$location][$period];
                 }
 
                 $datas[$location][substr($period, 0, 4)][$period] = array(
-                    'sales' => $result[$location][$period],
-                    'cost' => $costs[$location][$period],
-                    'balance' => $result[$location][$period] - $costs[$location][$period],
+                    'sales' => (float)$result[$location][$period],
+                    'cost' => (float)$costs[$location][$period],
+                    'balance' => (float)$result[$location][$period] - (float)$costs[$location][$period],
                 );
             }
             krsort($datas[$location]);
         }
+        $global = array();
+        foreach ($datas as $location => $subdata) {
+            foreach ($subdata as $year => $subdata2) {
+                foreach ($subdata2 as $month => $values) {
+                    foreach ($values as $k => $v) {
+                        if(!isset($global[$year][$month][$k])){
+                            $global[$year][$month][$k] = 0;
+                        }
+                        $global[$year][$month][$k] += (float)$v;
+                    }
+                }
+            }
+        }
 
-        return View::make('stats.spaces', array('datas' => $datas));
+        return View::make('stats.spaces', array(
+            'datas' => $datas,
+            'global' => $global,
+            ));
     }
 }

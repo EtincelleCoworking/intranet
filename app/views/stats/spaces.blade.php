@@ -17,6 +17,10 @@
     <div class="tabs-container">
         <ul class="nav nav-tabs">
             {{--*/ $index = 0 /*--}}
+            <li{{ $index?'':' class="active"' }}>
+                <a data-toggle="tab" href="#tab-{{$index}}" id="tab{{$index}}action">Global</a>
+            </li>
+            {{--*/ $index = 1 /*--}}
             @foreach($datas as $location => $data)
                 <li{{ $index?'':' class="active"' }}>
                     <a data-toggle="tab" href="#tab-{{$index}}" id="tab{{$index}}action">{{$location}}</a>
@@ -26,11 +30,10 @@
         </ul>
         <div class="tab-content">
             {{--*/ $index = 0 /*--}}
-            @foreach($datas as $location => $data_)
-                <div id="tab-{{$index}}" class="tab-pane{{ $index?'':' active' }}">
-                    <div class="panel-body">
-                        @foreach($data_ as $year => $data)
-                           <p><strong>{{$year}}</strong></p>
+            <div id="tab-{{$index}}" class="tab-pane{{ $index?'':' active' }}">
+                <div class="panel-body">
+                    @foreach($global as $year => $data)
+                        <p><strong>{{$year}}</strong></p>
                         <table class="table">
                             <tr>
                                 <td width="20%">Période</td>
@@ -43,27 +46,75 @@
                             @foreach($data as $period => $infos)
                                 <tr>
                                     <td>{{$period}}</td>
-                                    <td style="text-align: right">{{ sprintf('%0.2f', $infos['sales']) }}€</td>
-                                    <td style="text-align: right">{{ sprintf('%0.2f', $infos['cost']) }}€</td>
+                                    <td style="text-align: right">{{ number_format($infos['sales'], 0, ',', '.') }}€
+                                    </td>
+                                    <td style="text-align: right">{{ number_format($infos['cost'], 0, ',', '.') }}€</td>
                                     <td style="text-align: right">
                                         @if ($infos['balance'] < 0)
-                                            <span style="color: red">{{ sprintf('%0.2f', $infos['balance']) }}€</span>
+                                            <span style="color: red">{{ number_format($infos['balance'], 0, ',', '.') }}
+                                                €</span>
                                         @else
-                                            <span style="color: green">{{ sprintf('%0.2f', $infos['balance']) }}€</span>
+                                            <span style="color: green">{{ number_format( $infos['balance'], 0, ',', '.') }}
+                                                €</span>
                                         @endif
                                     </td>
                                     <?php $cumul += $infos['balance']; ?>
                                     <td style="text-align: right">
                                         @if ($cumul < 0)
-                                            <span style="color: red">{{ sprintf('%0.2f', $cumul) }}€</span>
+                                            <span style="color: red">{{ number_format( $cumul, 0, ',', '.') }}€</span>
                                         @else
-                                            <span style="color: green">{{ sprintf('%0.2f', $cumul) }}€</span>
+                                            <span style="color: green">{{ number_format( $cumul, 0, ',', '.') }}€</span>
                                         @endif
                                     </td>
                                 </tr>
                             @endforeach
                         </table>
-                            @endforeach
+                    @endforeach
+                </div>
+            </div>
+
+            {{--*/ $index++ /*--}}
+            @foreach($datas as $location => $data_)
+                <div id="tab-{{$index}}" class="tab-pane{{ $index?'':' active' }}">
+                    <div class="panel-body">
+                        @foreach($data_ as $year => $data)
+                            <p><strong>{{$year}}</strong></p>
+                            <table class="table">
+                                <tr>
+                                    <td width="20%">Période</td>
+                                    <td style="text-align: right" width="20%">Chiffre d'affaires</td>
+                                    <td style="text-align: right" width="20%">Coût</td>
+                                    <td style="text-align: right" width="20%">Balance</td>
+                                    <td style="text-align: right" width="20%">Cumul</td>
+                                </tr>
+                                <?php $cumul = 0; ?>
+                                @foreach($data as $period => $infos)
+                                    <tr>
+                                        <td>{{$period}}</td>
+                                        <td style="text-align: right">{{ number_format($infos['sales'], 0, ',', '.') }}€
+                                        </td>
+                                        <td style="text-align: right">{{ number_format($infos['cost'], 0, ',', '.') }}€</td>
+                                        <td style="text-align: right">
+                                            @if ($infos['balance'] < 0)
+                                                <span style="color: red">{{ number_format($infos['balance'], 0, ',', '.') }}
+                                                    €</span>
+                                            @else
+                                                <span style="color: green">{{ number_format( $infos['balance'], 0, ',', '.') }}
+                                                    €</span>
+                                            @endif
+                                        </td>
+                                        <?php $cumul += $infos['balance']; ?>
+                                        <td style="text-align: right">
+                                            @if ($cumul < 0)
+                                                <span style="color: red">{{ number_format( $cumul, 0, ',', '.') }}€</span>
+                                            @else
+                                                <span style="color: green">{{ number_format( $cumul, 0, ',', '.') }}€</span>
+                                            @endif
+                                        </td>
+                                    </tr>
+                                @endforeach
+                            </table>
+                        @endforeach
                     </div>
                 </div>
 
