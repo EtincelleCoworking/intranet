@@ -245,7 +245,7 @@ class OrganisationController extends BaseController
 
         $pending_invoices = array();
         foreach ($organisation->invoices as $invoice) {
-            if ($invoice->type == 'F' && !$invoice->date_payment) {
+            if ($invoice->type == 'F' && !$invoice->date_payment && !$invoice->on_hold) {
                 $pending_invoices[$invoice->date_invoice] = $invoice;
             }
         }
