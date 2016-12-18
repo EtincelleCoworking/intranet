@@ -88,6 +88,7 @@
                             <p>{{ Form::text('sent_at', (($invoice->sent_at) ? date('d/m/Y', strtotime($invoice->sent_at)) : null), array('class' => 'form-control datePicker')) }}</p>
 
                             <p>{{Form::checkbox('on_hold', true, $invoice->on_hold)}} {{ Form::label('on_hold', 'En compte') }}</p>
+                            <p>{{Form::checkbox('is_lost', true, $invoice->is_lost)}} {{ Form::label('is_lost', 'Créance irrecouvrable') }}</p>
                         </div>
                     </div>
                     <div class="row">

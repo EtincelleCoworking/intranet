@@ -100,6 +100,8 @@
                                     <tr
                                             @if($invoice->date_payment)
                                             class="text-muted"
+                                            @elseif($invoice->is_lost)
+                                            class="text-danger"
                                             @endif
                                     >
                                         <td>{{ $invoice->ident }}</td>

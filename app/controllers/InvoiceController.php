@@ -183,6 +183,7 @@ class InvoiceController extends BaseController
             $invoice->address = Input::get('address');
             $invoice->details = Input::get('details');
             $invoice->on_hold = Input::get('on_hold');
+            $invoice->is_lost = Input::get('is_lost');
 
             if ($invoice->save()) {
                 $feedback_message = 'La facture a bien été modifiée';
@@ -402,6 +403,33 @@ class InvoiceController extends BaseController
 
         return Redirect::route('invoice_list')
             ->with('mSuccess', sprintf('La facture %s a été envoyée par email à %s', $invoice->ident, $to));
+    }
+
+
+    public function unpaid(){
+
+        $items = DB::select(DB::raw('select 
+invoices.organisation_id, 
+organisations.name,
+count(distinct(invoices.id)) as nb_invoices,
+sum(invoices_items.amount) as total_ht,
+sum(invoices_items.amount * (1+vat_types.value/100)) as total_ttc,
+min(invoices.date_invoice) as older_invoice_at
+
+from invoices_items 
+join vat_types ON invoices_items.vat_types_id = vat_types.id
+join invoices on invoices.id = invoices_items.invoice_id
+join organisations on invoices.organisation_id = organisations.id
+
+WHERE invoices.type = \'F\' 
+  AND invoices.date_payment IS NULL
+  AND invoices.on_hold = 0
+  AND invoices.is_lost = 0
+GROUP by invoices.organisation_id
+order by older_invoice_at ASC'));
+
+        return View::make('invoice.unpaid', array('items' => $items));
+
     }
 
 

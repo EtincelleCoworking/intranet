@@ -133,11 +133,81 @@
         <div class="col-lg-6">
             <div class="ibox ">
                 <div class="ibox-title">
-                    <h5>Devis &amp; Factures</h5>
+                    <h5>Factures</h5>
 
                     <div class="pull-right">
                         <a href="{{ URL::route('invoice_add_organisation', array('type' => 'F', 'organisation' =>$organisation->id)) }}"
                            class="btn btn-xs btn-default">Ajouter une facture</a>
+                    </div>
+                </div>
+                <div class="ibox-content">
+                    <table class="table table-hover">
+                        <thead>
+                        <tr>
+                            <th>#</th>
+                            <th>Créée le</th>
+                            <th>Echéance</th>
+                            <th>Montant HT</th>
+                            <th>Actions</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        @foreach ($organisation->invoices as $invoice)
+                            @if($invoice->type == 'F')
+                                <tr
+                                        @if($invoice->date_payment)
+                                        class="text-muted"
+                                        @elseif($invoice->is_lost)
+                                        class="text-danger"
+                                        @endif
+                                >
+                                    <td>{{ $invoice->ident }}</td>
+                                    <td>{{ $invoice->created_at->format('d/m/Y') }}</td>
+                                    <td>
+                                        @if ($invoice->date_canceled)
+                                            <span class="badge badge-danger">Refusé</span>
+                                        @else
+                                            @if (!$invoice->date_payment)
+                                                @if ($invoice->daysDeadline > 7)
+                                                    <span class="badge badge-success">
+                                                    {{ date('d/m/Y', strtotime($invoice->deadline)) }}
+                                                </span>
+                                                @elseif ($invoice->daysDeadline <= 7 && $invoice->daysDeadline != -1)
+                                                    <span class="badge badge-warning">
+                                                    {{ date('d/m/Y', strtotime($invoice->deadline)) }}
+                                                </span>
+                                                @else
+                                                    <span class="badge badge-danger">
+                                                   {{ date('d/m/Y', strtotime($invoice->deadline)) }}
+                                                </span>
+                                                @endif
+                                            @else
+                                                Payée le {{ date('d/m/Y', strtotime($invoice->date_payment)) }}
+                                            @endif
+                                        @endif
+
+
+                                    </td>
+                                    <td style="text-align:right">{{ Invoice::TotalInvoice($invoice->items) }}€</td>
+                                    <td>
+                                        <a href="{{ URL::route('invoice_modify', $invoice->id) }}"
+                                           class="btn btn-xs btn-default btn-outline">Modifier</a>
+                                        <a href="{{ URL::route('invoice_print_pdf', $invoice->id) }}"
+                                           class="btn btn-xs btn-default"
+                                           target="_blank">PDF</a>
+                                    </td>
+                                </tr>
+                            @endif
+                        @endforeach
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+            <div class="ibox ">
+                <div class="ibox-title">
+                    <h5>Devis</h5>
+
+                    <div class="pull-right">
                         <a href="{{ URL::route('invoice_add_organisation', array('type' => 'D', 'organisation' =>$organisation->id)) }}"
                            class="btn btn-xs btn-default">Ajouter un devis</a>
                     </div>
@@ -155,43 +225,45 @@
                         </thead>
                         <tbody>
                         @foreach ($organisation->invoices as $invoice)
-                            <tr>
-                                <td>{{ $invoice->ident }}</td>
-                                <td>{{ $invoice->created_at->format('d/m/Y') }}</td>
-                                <td>
-                                    @if ($invoice->date_canceled)
-                                        <span class="badge badge-danger">Refusé</span>
-                                    @else
-                                        @if (!$invoice->date_payment)
-                                            @if ($invoice->daysDeadline > 7)
-                                                <span class="badge badge-success">
+                            @if($invoice->type == 'D')
+                                <tr>
+                                    <td>{{ $invoice->ident }}</td>
+                                    <td>{{ $invoice->created_at->format('d/m/Y') }}</td>
+                                    <td>
+                                        @if ($invoice->date_canceled)
+                                            <span class="badge badge-danger">Refusé</span>
+                                        @else
+                                            @if (!$invoice->date_payment)
+                                                @if ($invoice->daysDeadline > 7)
+                                                    <span class="badge badge-success">
                                                     {{ date('d/m/Y', strtotime($invoice->deadline)) }}
                                                 </span>
-                                            @elseif ($invoice->daysDeadline <= 7 && $invoice->daysDeadline != -1)
-                                                <span class="badge badge-warning">
+                                                @elseif ($invoice->daysDeadline <= 7 && $invoice->daysDeadline != -1)
+                                                    <span class="badge badge-warning">
                                                     {{ date('d/m/Y', strtotime($invoice->deadline)) }}
                                                 </span>
-                                            @else
-                                                <span class="badge badge-danger">
+                                                @else
+                                                    <span class="badge badge-danger">
                                                    {{ date('d/m/Y', strtotime($invoice->deadline)) }}
                                                 </span>
+                                                @endif
+                                            @else
+                                                Payée le {{ date('d/m/Y', strtotime($invoice->date_payment)) }}
                                             @endif
-                                        @else
-                                            Payée le {{ date('d/m/Y', strtotime($invoice->date_payment)) }}
                                         @endif
-                                    @endif
 
 
-                                </td>
-                                <td style="text-align:right">{{ Invoice::TotalInvoice($invoice->items) }}€</td>
-                                <td>
-                                    <a href="{{ URL::route('invoice_modify', $invoice->id) }}"
-                                       class="btn btn-xs btn-default btn-outline">Modifier</a>
-                                    <a href="{{ URL::route('invoice_print_pdf', $invoice->id) }}"
-                                       class="btn btn-xs btn-default"
-                                       target="_blank">PDF</a>
-                                </td>
-                            </tr>
+                                    </td>
+                                    <td style="text-align:right">{{ Invoice::TotalInvoice($invoice->items) }}€</td>
+                                    <td>
+                                        <a href="{{ URL::route('invoice_modify', $invoice->id) }}"
+                                           class="btn btn-xs btn-default btn-outline">Modifier</a>
+                                        <a href="{{ URL::route('invoice_print_pdf', $invoice->id) }}"
+                                           class="btn btn-xs btn-default"
+                                           target="_blank">PDF</a>
+                                    </td>
+                                </tr>
+                            @endif
                         @endforeach
                         </tbody>
                     </table>

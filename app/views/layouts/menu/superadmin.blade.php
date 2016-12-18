@@ -80,8 +80,11 @@
             <li{{ Request::is('subscription*') ? ' class="active"' : '' }}>
                 <a href="{{ URL::route('subscription_list') }}">Abonnements</a>
             </li>
-            <li{{ Request::is('invoice*') ? ' class="active"' : '' }}>
+            <li{{ (Request::is('invoice*') && !Request::is('invoice_unpaid')) ? ' class="active"' : '' }}>
                 <a href="{{ URL::route('invoice_list') }}">Factures</a>
+            </li>
+            <li{{ Request::is('invoice_unpaid') ? ' class="active"' : '' }}>
+                <a href="{{ URL::route('invoice_unpaid') }}">Impayés</a>
             </li>
             <li{{ Request::is('quote*') ? ' class="active"' : '' }}>
                 <a href="{{ URL::route('quote_list', 'all') }}">Devis</a>
