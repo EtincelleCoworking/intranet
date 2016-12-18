@@ -22,8 +22,8 @@
                     <h5>Société</h5>
                 </div>
                 <div class="ibox-content">
+                    {{ Form::model($organisation, array('route' => array('organisation_remind_send', $organisation->id))) }}
                     <div class="row">
-                        {{ Form::model($organisation, array('route' => array('organisation_remind_send', $organisation->id))) }}
                         <div class="col-lg-6">
                             <p>{{ Form::textarea('content', $content, array('class' => 'form-control', 'rows' => 15)) }}</p>
 
@@ -50,15 +50,17 @@
                                 @endforeach
                             </table>
                         </div>
-
-
-                        <div class="hr-line-dashed"></div>
-                        <div class="form-group">
-                            {{ Form::submit('Envoyer', array('class' => 'btn btn-success')) }}
-                            <a href="{{ URL::route('invoice_unpaid') }}" class="btn btn-white">Annuler</a>
-                        </div>
-                        {{ Form::close() }}
                     </div>
+                    <div class="row">
+                        <div class="col-lg-12">
+                            <div class="hr-line-dashed"></div>
+                            <div class="form-group">
+                                {{ Form::submit('Envoyer', array('class' => 'btn btn-success')) }}
+                                <a href="{{ URL::route('invoice_unpaid') }}" class="btn btn-white">Annuler</a>
+                            </div>
+                        </div>
+                    </div>
+                    {{ Form::close() }}
                 </div>
             </div>
         </div>
