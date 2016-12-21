@@ -32,6 +32,7 @@
                                 <th>IP</th>
                                 <th>Nom</th>
                                 <th>Vu le</th>
+                                <th>Site</th>
                                 <th>Actions</th>
                             </tr>
                             </thead>
@@ -50,8 +51,8 @@
                                         @endif
                                     </td>
                                     <td>
-                                        @if($device->user)
-                                            <a href="{{ URL::route('user_modify', $device->user->id) }}">{{ $device->user->fullname }}</a>
+                                        @if($device->user_id)
+                                            <a href="{{ URL::route('user_modify', $device->user_id) }}">{{ $device->username }}</a>
                                         @else
                                             -
                                         @endif
@@ -69,6 +70,13 @@
                                             {{ date('d/m/Y H:i', strtotime($device->last_seen_at)) }}
                                         @else
                                             -
+                                        @endif
+                                    </td>
+                                    <td>
+                                        @if($device->location)
+                                            {{$device->city}} > {{$device->location}}
+                                        @else
+                                            {{$device->city}}
                                         @endif
                                     </td>
                                     <td>

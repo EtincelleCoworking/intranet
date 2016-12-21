@@ -23,9 +23,35 @@ class DeviceController extends BaseController
      */
     public function liste()
     {
-        $devices = Device::orderBy('last_seen_at', 'DESC')->paginate(15);
+        $pageNo = Input::get('page') - 1;
+        $itemPerPage = 15;
+        $devices = DB::select(DB::raw(sprintf('select 
+devices.id,
+devices.tracking_enabled, 
+users.id as user_id, 
+concat(users.firstname, \' \', users.lastname) as username,
+devices.mac,
+devices.ip,
+devices.name,
+devices.brand,
+cities.name as city,
+locations.name as location,
+devices_seen.last_seen_at
+ 
+from devices 
+join users on devices.user_id = users.id
+join devices_seen on devices.id = devices_seen.device_id
+join locations on devices_seen.location_id = locations.id
+join cities on locations.city_id = cities.id
 
-        return View::make('device.liste', array('devices' => $devices));
+group by devices.id
+order by devices_seen.last_seen_at DESC
+LIMIT %d, %d
+', $itemPerPage * $pageNo, $itemPerPage)));
+
+        $pager = Paginator::make($devices, Device::count(), $itemPerPage);
+
+        return View::make('device.liste', array('devices' => $pager));
     }
 
     /**
@@ -110,16 +136,18 @@ class DeviceController extends BaseController
         }
     }
 
-    public function enableTracking($id){
+    public function enableTracking($id)
+    {
         $device = Device::findOrFail($id);
-        $device->tracking_enabled  = true;
+        $device->tracking_enabled = true;
         $device->save();
         return Redirect::route('device_list', 'all')->with('mSuccess', 'Le périphérique a bien été activé');
     }
 
-    public function disableTracking($id){
+    public function disableTracking($id)
+    {
         $device = Device::findOrFail($id);
-        $device->tracking_enabled  = false;
+        $device->tracking_enabled = false;
         $device->save();
         return Redirect::route('device_list', 'all')->with('mSuccess', 'Le périphérique a bien été désactivé');
     }
