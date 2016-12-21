@@ -23,7 +23,7 @@ class DeviceController extends BaseController
      */
     public function liste()
     {
-        $pageNo = Input::get('page') - 1;
+        $pageNo = max(0, Input::get('page') - 1);
         $itemPerPage = 15;
         $devices = DB::select(DB::raw(sprintf('select 
 devices.id,
@@ -36,14 +36,13 @@ devices.name,
 devices.brand,
 cities.name as city,
 locations.name as location,
-devices_seen.last_seen_at
+devices.last_seen_at
  
 from devices 
 join users on devices.user_id = users.id
-join devices_seen on devices.id = devices_seen.device_id
+join devices_seen on devices.id = devices_seen.device_id AND devices.last_seen_at = devices_seen.last_seen_at
 join locations on devices_seen.location_id = locations.id
 join cities on locations.city_id = cities.id
-
 group by devices.id
 order by devices_seen.last_seen_at DESC
 LIMIT %d, %d
