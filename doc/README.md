@@ -3,7 +3,11 @@ Chaque site a un routeur Asus configuré pour servir de serveur DHCP. Il a l'IP 
 
 ## Connectivité
 Un script est appelé régulièrement pour valider que le site est toujours bien connecté à internet:
-TBC
+```
+*/15 * * * * root wget -q http://intranet.coworking-toulouse.com/api/1.0/location/[LocationSlug]/[LocationHash] -O /dev/null
+```
+* [LocationSlug] est le slug correspondant au site concerné (toulouse-wilson, toulouse-victor-hugo, montauban...)
+* [LocationHash] est une clef spécifique au site permettant d'identifier le site
 
 ## ASUS-SPY
 Le repository <https://github.com/EtincelleCoworking/asus-spy> est dans /home/pi/asus-spy. Il permet de remonter dans l'intranet les membres présents connectés sur le réseau.
