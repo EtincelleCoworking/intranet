@@ -39,10 +39,10 @@ locations.name as location,
 devices.last_seen_at
  
 from devices 
-join users on devices.user_id = users.id
-join devices_seen on devices.id = devices_seen.device_id AND devices.last_seen_at = devices_seen.last_seen_at
-join locations on devices_seen.location_id = locations.id
-join cities on locations.city_id = cities.id
+LEFT OUTER join users on devices.user_id = users.id
+LEFT OUTER join devices_seen on devices.id = devices_seen.device_id AND devices.last_seen_at = devices_seen.last_seen_at
+LEFT OUTER join locations on devices_seen.location_id = locations.id
+LEFT OUTER join cities on locations.city_id = cities.id
 group by devices.id
 order by devices_seen.last_seen_at DESC
 LIMIT %d, %d
