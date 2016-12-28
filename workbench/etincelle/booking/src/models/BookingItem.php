@@ -44,6 +44,11 @@ class BookingItem extends Illuminate\Database\Eloquent\Model
         return $this->belongsTo('Invoice');
     }
 
+    public function confirmedByUser()
+    {
+        return $this->belongsTo('User');
+    }
+
     public function members()
     {
         return $this->belongsToMany('User', 'booking_item_user', 'booking_item_id', 'users_id');
@@ -101,6 +106,12 @@ class BookingItem extends Illuminate\Database\Eloquent\Model
             $className .= ' booking-completed';
         }
 
+        if($this->confirmed_at){
+            $className .= ' booking-confirmed';
+        }else{
+            $className .= ' booking-not-confirmed';
+        }
+
         if ($user->isSuperAdmin()) {
             $time = new PastTime();
             $time->user_id = $this->booking->user_id;
@@ -129,6 +140,7 @@ class BookingItem extends Illuminate\Database\Eloquent\Model
             'user_id' => $this->booking->user_id,
             'is_private' => (bool)$this->booking->is_private,
             'is_accounted' => (bool)$is_accounted,
+            'is_confirmed' => (bool)($this->confirmed_at != null),
             'is_open_to_registration' => (bool)$this->is_open_to_registration,
             'description' => (string)$this->booking->content,
             'canDelete' => (bool)$canManage,

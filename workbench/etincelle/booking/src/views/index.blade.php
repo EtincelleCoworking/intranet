@@ -30,7 +30,7 @@
         <div class="col-sm-2">
             @if(count($ressources)>0)
                 <div class="title-action">
-                    <a href="#" class="btn btn-primary" id="meeting-add">Nouvelle réservation</a>
+                    <a href="{{route('booking_new')}}" class="btn btn-primary" id="meeting-add">Nouvelle réservation</a>
                 </div>
             @endif
         </div>
@@ -39,120 +39,6 @@
 @stop
 
 @section('content')
-    <div class="modal inmodal fade" id="newBookingDialog" role="dialog" aria-hidden="true">
-        <div class="modal-dialog modal-lg">
-            <div class="modal-content">
-                {{ Form::open(array('route' => 'booking_create', 'class' => 'form', 'id'=>'meeting-form'), array()) }}
-                {{ Form::hidden('id') }}
-                {{ Form::hidden('booking_id') }}
-                <div class="modal-header">
-                    <button type="button" class="close" data-dismiss="modal">
-                        <span aria-hidden="true">&times;</span>
-                        <span class="sr-only">Close</span>
-                    </button>
-                    <h4 class="modal-title">Nouvelle réservation</h4>
-                </div>
-                <div class="modal-body">
-                    <div class="row">
-                        <div class="col-xs-6">
-                            @if (Auth::user()->isSuperAdmin())
-                                <div class="col-xs-12">
-                                    {{ Form::label('title', 'Client') }}
-                                    {{ Form::select('user_id', User::Select('Sélectionnez un client'), null, array('id' => 'booking-user','class' => 'form-control')) }}
-                                </div>
-                                <div class="col-xs-12">
-                                    {{ Form::label('title', 'Organisation') }}
-                                    {{ Form::select('organisation_id', Organisation::Select('Sélectionnez une organisation'), null, array('id' => 'booking-organisation','class' => 'form-control')) }}
-                                </div>
-                            @endif
-
-                            <div class="col-xs-12">
-                                {{ Form::label('title', 'Titre') }}
-                                <p>{{ Form::text('title', null, array('class' => 'form-control')) }}</p>
-                            </div>
-
-                            <div class="col-xs-12">
-                                {{ Form::label('description', 'Description') }}
-                                <p>{{ Form::textarea('description', null, array('class' => 'form-control')) }}</p>
-                            </div>
-                        </div>
-                        <div class="col-xs-6">
-                            <div class="col-xs-4">
-                                {{ Form::label('date', 'Date') }}
-                                <p>{{ Form::text('date', null, array('class' => 'form-control datePicker')) }}</p>
-                            </div>
-
-                            <div class="col-xs-4">
-                                {{ Form::label('start', 'Début') }}
-                                <p>{{ Form::select('start', Booking::selectableHours(), false, array('class' => 'form-control')) }}</p>
-                            </div>
-
-                            <div class="col-xs-4">
-                                {{ Form::label('end', 'Fin') }}
-                                <p>{{ Form::select('end', Booking::selectableHours(), false, array('class' => 'form-control')) }}</p>
-                            </div>
-                            <div class="col-xs-12">
-                                <label for="meeting-add-isprivate" style="font-weight: normal;">
-                                    <p>
-                                        {{ Form::checkbox('is_private', true, count($ressources)>1, array('id'=> 'meeting-add-isprivate')) }}
-                                        Événement privé
-                                        <br/>
-                                        <span class="text-muted">
-                                        <small>Les événements privés ne sont visibles que par vous</small>
-                                    </span>
-                                    </p>
-                                </label>
-                            </div>
-                            <div class="col-xs-12">
-                                <label for="meeting-add-registration" style="font-weight: normal;">
-                                    <p>
-                                        {{ Form::checkbox('is_open_to_registration', true, false, array('id'=> 'meeting-add-registration')) }}
-                                        Permettre les inscriptions
-                                        <br/>
-                                        <span class="text-muted">
-                                        <small>Les autres membres pourrons s'inscrire à cet événément.</small>
-                                    </span>
-                                    </p>
-                                </label>
-                            </div>
-                            @if(count($ressources)>1)
-                                <div class="col-xs-12">
-                                    {{ Form::label('rooms', 'Lieu') }}
-                                    @foreach($ressources as $ressource)
-                                        <p>
-                                        <span class="label" style="{{$ressource->labelCss}}">
-                                    {{ Form::checkbox('rooms[]', $ressource->id, false, array('id'=> sprintf('meeting-add-room%d', $ressource->id))) }}
-                                            &nbsp;
-                                            <label for="meeting-add-room{{$ressource->id}}"
-                                                   style="font-weight: normal;">
-                                                {{$ressource->name}}
-                                            </label>
-                                        </span>
-                                        </p>
-                                    @endforeach
-                                </div>
-                            @else
-                                @foreach($ressources as $ressource)
-                                    {{ Form::hidden('rooms[]', $ressource->id) }}
-                                @endforeach
-                            @endif
-
-
-                        </div>
-
-
-                    </div>
-                </div>
-
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-white" data-dismiss="modal">Annuler</button>
-                    <button type="button" class="btn btn-primary" id="meeting-submit">Sauvegarder</button>
-                </div>
-                {{ Form::close() }}
-            </div>
-        </div>
-    </div>
-
     <div class="modal inmodal fade" id="BookingDialog" tabindex="-1" role="dialog" aria-hidden="true">
         <div class="modal-dialog modal-lg">
             <div class="modal-content">
@@ -209,9 +95,11 @@
                     <a href="#" class="btn btn-default btn-outline" id="meeting-log-time">Comptabiliser</a>
                     <a href="#" class="btn btn-default btn-outline" id="meeting-quote">Devis</a>
                     <a href="#" class="btn btn-default btn-outline" id="meeting-modify">Modifier</a>
-                    <a href="#" class="btn btn-default btn-outline" id="meeting-duplicate">Dupliquer</a>
+                    {{--<a href="#" class="btn btn-default btn-outline" id="meeting-duplicate">Dupliquer</a>--}}
 
-                    <button type="button" class="btn btn-primary" data-dismiss="modal">Fermer</button>
+                    <a href="#" class="btn btn-primary" id="meeting-confirm">Confirmer</a>
+
+                    <button type="button" class="btn btn-default" data-dismiss="modal">Fermer</button>
                 </div>
                 {{ Form::close() }}
             </div>
@@ -275,6 +163,17 @@
     {{ HTML::style('css/plugins/fullcalendar/fullcalendar.print.css', array('media'=> 'print')) }}
 
     <style type="text/css">
+        .fc-event.booking-confirmed {
+            border-style: solid;
+            border-width: 1px;
+        }
+
+        .fc-event.booking-not-confirmed {
+            border-style: dotted;
+            border-width: 3px;
+        }
+
+
         @foreach($ressources as $ressource)
 
 .fc-event.booking-ofuscated-{{$ressource->id}}                             {
@@ -327,6 +226,7 @@
                 this.ressource_id = null;
                 this.is_private = true;
                 this.is_accounted = false;
+                this.is_confirmed = {{ Config::get('booking::default_is_confirmed', true)?'true':'false' }};
                 this.is_open_to_registration = false;
             }
         };
@@ -345,31 +245,33 @@
             this.ressource_id = e.ressource_id;
             this.is_private = e.is_private;
             this.is_accounted = e.is_accounted;
+            this.is_confirmed = e.is_confirmed;
             this.is_open_to_registration = e.is_open_to_registration;
             $('#meeting-modify').attr('href', '{{ route('booking_modify', 999999) }}'.replace('999999', this.id));
+            $('#meeting-confirm').attr('href', '{{ route('booking_confirm', 999999) }}'.replace('999999', this.id));
         };
 
-        Etincelle.Event.prototype.edit = function () {
-            var self = this;
-            var $form = $('#meeting-form');
-            $form.find('input[name="id"]').val(this.id);
-            $form.find('input[name="booking_id"]').val(this.booking_id);
-            $form.find('input[name="title"]').val(this.title);
-            @if (Auth::user()->isSuperAdmin())
-                $('select[name="user_id"]').select2().select2('val', this.user_id);
-            @endif
-            $form.find('textarea[name="description"]').val(this.description);
-            $form.find('input[name="date"]').val(this.start.format('DD/MM/YYYY'));
-            $form.find('select[name="start"]').val(this.start.format('HH:mm'));
-            $form.find('select[name="end"]').val(this.end.format('HH:mm'));
-            $form.find('input[name="rooms[]"]').each(function () {
-                $(this).prop('checked', $(this).val() == self.ressource_id);
-            });
-            $form.find('input[name="is_private"]').prop('checked', this.is_private);
-            $form.find('input[name="is_open_to_registration"]').prop('checked', this.is_open_to_registration);
+        {{--Etincelle.Event.prototype.edit = function () {--}}
+            {{--var self = this;--}}
+            {{--var $form = $('#meeting-form');--}}
+            {{--$form.find('input[name="id"]').val(this.id);--}}
+            {{--$form.find('input[name="booking_id"]').val(this.booking_id);--}}
+            {{--$form.find('input[name="title"]').val(this.title);--}}
+            {{--@if (Auth::user()->isSuperAdmin())--}}
+                {{--$('select[name="user_id"]').select2().select2('val', this.user_id);--}}
+            {{--@endif--}}
+            {{--$form.find('textarea[name="description"]').val(this.description);--}}
+            {{--$form.find('input[name="date"]').val(this.start.format('DD/MM/YYYY'));--}}
+            {{--$form.find('select[name="start"]').val(this.start.format('HH:mm'));--}}
+            {{--$form.find('select[name="end"]').val(this.end.format('HH:mm'));--}}
+            {{--$form.find('input[name="rooms[]"]').each(function () {--}}
+                {{--$(this).prop('checked', $(this).val() == self.ressource_id);--}}
+            {{--});--}}
+            {{--$form.find('input[name="is_private"]').prop('checked', this.is_private);--}}
+            {{--$form.find('input[name="is_open_to_registration"]').prop('checked', this.is_open_to_registration);--}}
 
-            $('#newBookingDialog').modal('show');
-        };
+            {{--$('#newBookingDialog').modal('show');--}}
+        {{--};--}}
 
         Etincelle.Event.prototype.getViewLink = function () {
             return '{{ route('booking_item_show', 999999) }}'.replace('999999', this.id);
@@ -452,47 +354,39 @@
 
             @if (Auth::user()->isSuperAdmin())
                 $('#meeting-log-time').show();
-            $('#meeting-quote').show();
+                $('#meeting-quote').show();
+                if (!this.is_confirmed) {
+                    $('#meeting-confirm').show();
+                }else{
+                    $('#meeting-confirm').hide();
+                }
             @else
                 $('#meeting-log-time').hide();
-            $('#meeting-quote').hide();
+                $('#meeting-quote').hide();
+                if(this.user_id == {{Auth::id()}}){
+                    if (!this.is_confirmed) {
+                        $('#meeting-confirm').show();
+                    }else{
+                        $('#meeting-confirm').hide();
+                    }
+                }else{
+                    $('#meeting-confirm').hide();
+                }
             @endif
 
             $dialog.modal('show');
         }
 
-        function getListOrganisations(id) {
-            var oldOrganisation = $('#booking-organisation').val();
-            var url = "{{ URL::route('user_json_organisations') }}";
-            var urlFinale = url.replace("%7Bid%7D", id);
 
-            $('#booking-organisation').html('');
-            $.getJSON(urlFinale, function (data) {
-                var items = '';
-                $.each(data, function (key, val) {
-                    if (oldOrganisation == key) {
-                        items = items + '<option value="' + key + '" selected>' + val + '</option>';
-                    } else {
-                        items = items + '<option value="' + key + '">' + val + '</option>';
-                    }
-                });
-
-                $('#booking-organisation')
-                        .html(items)
-                        .select2().trigger('change');
-            });
-        }
         var activeEvent;
 
         $().ready(function () {
-
-
-            $('#meeting-add')
-                    .click(function () {
-                        var event = new Etincelle.Event();
-                        event.edit();
-                        return false;
-                    });
+//            $('#meeting-add')
+//                    .click(function () {
+//                        var event = new Etincelle.Event();
+//                        event.edit();
+//                        return false;
+//                    });
 
 //            $('#meeting-modify')
 //                    .click(function () {
@@ -501,19 +395,19 @@
 //                        return false;
 //                    });
 
-            $('#meeting-duplicate')
-                    .click(function () {
-                        $('#BookingDialog').modal('hide');
-                        var newEvent = new Etincelle.Event();
-                        newEvent.populate(activeEvent);
-                        newEvent.id = null;
-                        newEvent.booking_id = null;
-                        newEvent.start.add(7, 'days');
-                        newEvent.end.add(7, 'days');
-                        activeEvent = newEvent;
-                        activeEvent.edit();
-                        return false;
-                    });
+//            $('#meeting-duplicate')
+//                    .click(function () {
+//                        $('#BookingDialog').modal('hide');
+//                        var newEvent = new Etincelle.Event();
+//                        newEvent.populate(activeEvent);
+//                        newEvent.id = null;
+//                        newEvent.booking_id = null;
+//                        newEvent.start.add(7, 'days');
+//                        newEvent.end.add(7, 'days');
+//                        activeEvent = newEvent;
+//                        activeEvent.edit();
+//                        return false;
+//                    });
 
             $('#meeting-delete')
                     .click(function () {
@@ -622,45 +516,6 @@
             });
 
 
-            $('#meeting-submit').click(function () {
-                $.ajax({
-                    dataType: 'json',
-                    url: '{{ URL::route('booking_create') }}',
-                    type: "POST",
-                    data: $('#meeting-form').serialize(),
-                    success: function (data) {
-                        if (data.status == 'KO') {
-                            var msg = '';
-                            for (field in data.messages) {
-                                msg += data.messages[field] + "\n";
-                            }
-                            alert(msg);
-                        } else {
-                            for (var i = 0; i < data.events.length; i++) {
-                                var events = $('#calendar').fullCalendar('clientEvents', data.events[i].id);
-                                if (events.length > 0) {
-                                    var event = events[0];
-                                    for (k in data.events[i]) {
-                                        event[k] = data.events[i][k];
-                                    }
-                                    $('#calendar').fullCalendar('updateEvent', event);
-                                    //console.log('updated ' + data.events[i].id);
-                                } else {
-                                    $('#calendar').fullCalendar('renderEvent', data.events[i], true);
-                                    //console.log('added ' + data.events[i].id);
-                                }
-                                $('#newBookingDialog').modal('hide');
-                            }
-                        }
-                    },
-                    error: function (data) {
-                        $('#newBookingDialog').modal('hide');
-                    }
-                });
-
-                return false;
-            });
-
             $('#calendar').fullCalendar({
                 defaultDate: '{{$now}}',
                 header: {
@@ -698,11 +553,17 @@
                 eventTextColor: '#000000',
                 slotDuration: '00:30:00',
                 select: function (start, end) {
-                    activeEvent = new Etincelle.Event();
-                    activeEvent.start = start;
-                    activeEvent.end = end;
-                    activeEvent.edit();
-                    $('#calendar').fullCalendar('unselect');
+//                    activeEvent = new Etincelle.Event();
+//                    activeEvent.start = start;
+//                    activeEvent.end = end;
+//                    activeEvent.edit();
+//                    $('#calendar').fullCalendar('unselect');
+                    var startMoment = moment(start);
+                    var endMoment = moment(end);
+
+                    window.location.href = '{{ URL::route('booking_new_full', array('start_at' => 999999, 'end_at' => 888888)) }}'
+                        .replace('999999', startMoment.format('YYYY-MM-DD HH:mm')).replace('888888', endMoment.format('YYYY-MM-DD HH:mm'));
+
                 },
                 eventClick: function (calEvent, jsEvent, view) {
                     activeEvent = new Etincelle.Event();
@@ -801,23 +662,6 @@
                     });
                 }
             });
-
-
-            $('#newBookingDialog').on('shown.bs.modal', function () {
-                $('#booking-organisation').select2();
-                $('#booking-user')
-                        .select2()
-                        .on('change', function (e) {
-                            getListOrganisations($(this).val());
-                            $('#newBookingDialog').find('input[name="title"]').val($('#booking-user option:selected').text());
-                        });
-
-                $('.datePicker').datepicker();
-            });
-
-//            $('#booking-user').on("select2:select", function (e) {
-//            });
-
 
             $.fn.modal.Constructor.prototype.enforceFocus = $.noop;
 

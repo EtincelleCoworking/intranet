@@ -22,7 +22,7 @@
         ->where('locations.city_id', '=', Auth::user()->location->city_id)
         ->join('locations', 'ressources.location_id', '=', 'locations.id')
         //->with('location')
-                ->select('ressources.*')
+        ->select('ressources.*')
         ->orderBy('locations.name', 'ASC')
         ->get();
 
@@ -93,13 +93,36 @@
                             <p>{{ Form::select('end', Booking::selectableHours(), date('H:i', strtotime($booking_item->start_at) + $booking_item->duration * 60), array('class' => 'form-control')) }}</p>
                         </div>
                         <div class="col-xs-12">
+                            @if($booking_item->confirmed_at)
+                                <p>
+                                    <b>Réservation confirmée le {{ date('d/m/Y', strtotime($booking_item->confirmed_at)) }}
+                                    à {{date('H:i', strtotime($booking_item->confirmed_at))}}
+                                        par {{$booking_item->confirmedByUser->fullname}}</b>
+                                </p>
+                            @endif
+                            @if(!$booking_item->confirmed_at or Auth::user()->isSuperAdmin())
+                                <label for="meeting-add-isconfirmed" style="font-weight: normal;">
+                                    <p>
+                                        {{ Form::checkbox('is_confirmed', true, $booking_item->confirmed_at) }}
+                                        Réservation confirmée
+                                        <br/>
+                                        <span class="text-muted">
+                                        <small>Vous pouvez annuler gratuitement jusqu'à 2 jours ouvré avant le début de la réservation tant qu'elle n'est pas confirmée.<br/>
+                                        Si nous recevons une autre demande pour le même créneau, nous vous contacterons pour valider ou pas votre réservation.</small>
+                                    </span>
+                                    </p>
+                                </label>
+                                @endif
+
+                        </div>
+                        <div class="col-xs-12">
                             <label for="meeting-add-isprivate" style="font-weight: normal;">
                                 <p>
                                     {{ Form::checkbox('is_private', true, $booking_item->booking->is_private, array('id'=> 'meeting-add-isprivate')) }}
                                     Événement privé
                                     <br/>
                                     <span class="text-muted">
-                                        <small>Les événements privés ne sont visibles que par vous</small>
+                                        <small>Les événements publics sont mis en avant dans la communication (site web et réseaux sociaux)</small>
                                     </span>
                                 </p>
                             </label>
@@ -116,6 +139,7 @@
                                 </p>
                             </label>
                         </div>
+
                         @if(count($ressources)>1)
                             <div class="col-xs-12">
                                 {{ Form::label('rooms', 'Lieu') }}
