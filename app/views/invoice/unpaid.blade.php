@@ -41,7 +41,17 @@
                                 </thead>
                                 <tbody>
                                 @foreach ($items as $item)
-                                    <tr>
+                                    <tr
+                                    @if(strtotime($item->older_invoice_at) - strtotime('now') < 31*24*3600)
+                                        class="text-muted"
+                                    @elseif(strtotime($item->older_invoice_at) - strtotime('now') < 2 * 31*24*3600)
+                                    class=""
+                                    @elseif(strtotime($item->older_invoice_at) - strtotime('now') < 3 * 31*24*3600)
+                                    class="text-warning"
+                                    @else
+                                        class="text-danger"
+                                    @endif
+                                    >
                                         <td>
                                             <a href="{{ URL::route('organisation_modify', $item->organisation_id) }}">{{ $item->name }}</a>
                                         </td>

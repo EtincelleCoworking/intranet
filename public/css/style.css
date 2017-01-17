@@ -3794,11 +3794,17 @@ table.table-mail tr td {
 .text-info {
   color: #23c6c8;
 }
+.text-warning a{
+  color: #d68a37;
+}
 .text-warning {
   color: #f8ac59;
 }
 .text-danger {
   color: #ed5565;
+}
+.text-danger a{
+  color: #cb3343;
 }
 .text-muted {
   color: #cccccc;
