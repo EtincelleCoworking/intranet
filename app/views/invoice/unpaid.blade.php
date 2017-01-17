@@ -42,11 +42,11 @@
                                 <tbody>
                                 @foreach ($items as $item)
                                     <tr
-                                    @if(strtotime($item->older_invoice_at) - strtotime('now') < 31*24*3600)
+                                    @if(strtotime('now') - strtotime($item->older_invoice_at) < 31*24*3600)
                                         class="text-muted"
-                                    @elseif(strtotime($item->older_invoice_at) - strtotime('now') < 2 * 31*24*3600)
+                                    @elseif(strtotime('now') - strtotime($item->older_invoice_at) < 2 * 31*24*3600)
                                     class=""
-                                    @elseif(strtotime($item->older_invoice_at) - strtotime('now') < 3 * 31*24*3600)
+                                    @elseif(strtotime('now') - strtotime($item->older_invoice_at) < 3 * 31*24*3600)
                                     class="text-warning"
                                     @else
                                         class="text-danger"
