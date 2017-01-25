@@ -103,8 +103,8 @@
                 <div id="tab-{{$index}}" class="tab-pane{{ $index?'':' active' }}">
                     <div class="panel-body">
                         @foreach($data_ as $year => $data)
-                            <?php $total_sales += $infos['sales']; ?>
-                            <?php $total_costs += $infos['cost']; ?>
+                            <?php $total_sales = 0; ?>
+                            <?php $total_costs = 0; ?>
                             <p><strong>{{$year}}</strong></p>
                             <table class="table table-striped">
                                 <thead>
@@ -118,6 +118,8 @@
                                 <tbody>
                                 <?php $cumul = 0; ?>
                                 @foreach($data as $period => $infos)
+                                    <?php $total_sales += $infos['sales']; ?>
+                                    <?php $total_costs += $infos['cost']; ?>
                                     <tr>
                                         <td>{{$period}}</td>
                                         <td style="text-align: right">{{ number_format($infos['sales'], 0, ',', '.') }}€
