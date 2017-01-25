@@ -78,16 +78,18 @@
                             </tbody>
                             <tfoot>
                             <tr>
-                                <td width="20%">Total</td>
-                                <td style="text-align: right"
-                                    width="20%">{{ number_format( $total_sales, 0, ',', '.') }}€
-                                </td>
-                                <td style="text-align: right"
-                                    width="20%">{{ number_format( $total_costs, 0, ',', '.') }}€
-                                </td>
-                                <td style="text-align: right"
-                                    width="20%">{{ number_format( $total_sales - $total_costs, 0, ',', '.') }}€
-                                </td>
+                                <th>Total</th>
+                                <th style="text-align: right">{{ number_format( $total_sales, 0, ',', '.') }}€
+                                </th>
+                                <th style="text-align: right">{{ number_format( $total_costs, 0, ',', '.') }}€
+                                </th>
+                                <th style="text-align: right">
+                                    @if ($total_sales - $total_costs < 0)
+                                        <span style="color: red">{{ number_format( $total_sales - $total_costs, 0, ',', '.') }}€</span>
+                                    @else
+                                        <span style="color: green">{{ number_format( $total_sales - $total_costs, 0, ',', '.') }}€</span>
+                                    @endif
+                                </th>
                                 <td style="text-align: right" width="20%"></td>
                             </tr>
                             </tfoot>
