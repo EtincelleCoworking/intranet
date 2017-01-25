@@ -267,7 +267,7 @@ left outer join `locations` on `location_id` = `locations`.`id`
 left outer join cities on city_id = cities.id
 
 where (`organisations`.`is_founder` = \'0\' or `organisation_id` is null) 
-AND ressources.ressource_kind_id NOT IN (1, 4)
+AND ressources.ressource_kind_id NOT IN ('.RessourceKind::TYPE_COWORKING.', '.RessourceKind::TYPE_EXCEPTIONNAL.')
 
 group by `period`, kind
 order by kind ASC, `period` desc'));

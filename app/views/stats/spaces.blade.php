@@ -33,8 +33,11 @@
             <div id="tab-{{$index}}" class="tab-pane{{ $index?'':' active' }}">
                 <div class="panel-body">
                     @foreach($global as $year => $data)
+                        <?php $total_sales = 0; ?>
+                        <?php $total_costs = 0; ?>
                         <p><strong>{{$year}}</strong></p>
-                        <table class="table">
+                        <table class="table table-striped">
+                            <thead>
                             <tr>
                                 <td width="20%">Période</td>
                                 <td style="text-align: right" width="20%">Chiffre d'affaires</td>
@@ -42,8 +45,12 @@
                                 <td style="text-align: right" width="20%">Balance</td>
                                 <td style="text-align: right" width="20%">Cumul</td>
                             </tr>
+                            </thead>
+                            <tbody>
                             <?php $cumul = 0; ?>
                             @foreach($data as $period => $infos)
+                                <?php $total_sales += $infos['sales']; ?>
+                                <?php $total_costs += $infos['cost']; ?>
                                 <tr>
                                     <td>{{$period}}</td>
                                     <td style="text-align: right">{{ number_format($infos['sales'], 0, ',', '.') }}€
@@ -68,6 +75,22 @@
                                     </td>
                                 </tr>
                             @endforeach
+                            </tbody>
+                            <tfoot>
+                            <tr>
+                                <td width="20%">Total</td>
+                                <td style="text-align: right"
+                                    width="20%">{{ number_format( $total_sales, 0, ',', '.') }}€
+                                </td>
+                                <td style="text-align: right"
+                                    width="20%">{{ number_format( $total_costs, 0, ',', '.') }}€
+                                </td>
+                                <td style="text-align: right"
+                                    width="20%">{{ number_format( $total_sales - $total_costs, 0, ',', '.') }}€
+                                </td>
+                                <td style="text-align: right" width="20%"></td>
+                            </tr>
+                            </tfoot>
                         </table>
                     @endforeach
                 </div>
@@ -93,7 +116,9 @@
                                         <td>{{$period}}</td>
                                         <td style="text-align: right">{{ number_format($infos['sales'], 0, ',', '.') }}€
                                         </td>
-                                        <td style="text-align: right">{{ number_format($infos['cost'], 0, ',', '.') }}€</td>
+                                        <td style="text-align: right">{{ number_format($infos['cost'], 0, ',', '.') }}
+                                            €
+                                        </td>
                                         <td style="text-align: right">
                                             @if ($infos['balance'] < 0)
                                                 <span style="color: red">{{ number_format($infos['balance'], 0, ',', '.') }}
@@ -106,9 +131,11 @@
                                         <?php $cumul += $infos['balance']; ?>
                                         <td style="text-align: right">
                                             @if ($cumul < 0)
-                                                <span style="color: red">{{ number_format( $cumul, 0, ',', '.') }}€</span>
+                                                <span style="color: red">{{ number_format( $cumul, 0, ',', '.') }}
+                                                    €</span>
                                             @else
-                                                <span style="color: green">{{ number_format( $cumul, 0, ',', '.') }}€</span>
+                                                <span style="color: green">{{ number_format( $cumul, 0, ',', '.') }}
+                                                    €</span>
                                             @endif
                                         </td>
                                     </tr>
