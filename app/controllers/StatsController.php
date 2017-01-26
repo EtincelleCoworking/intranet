@@ -260,11 +260,11 @@ SUM(invoices_items.amount) as total,
 if(`locations`.`name` is null,cities.name,concat(cities.name, \' > \',  `locations`.`name`)) as `kind` 
 
 from `invoices_items` 
-inner join `invoices` on `invoice_id` = `invoices`.`id` and `type` = \'F\' 
-left outer join `organisations` on `organisation_id` = `organisations`.`id` 
-left outer join `ressources` on `ressource_id` = `ressources`.`id` 
-left outer join `locations` on `location_id` = `locations`.`id` 
-left outer join cities on city_id = cities.id
+inner join `invoices` on `invoice_id` = `invoices`.`id` and invoices.`type` = \'F\' 
+left outer join `organisations` on invoices.`organisation_id` = `organisations`.`id` 
+left outer join `ressources` on invoices_items.`ressource_id` = `ressources`.`id` 
+left outer join `locations` on ressources.`location_id` = `locations`.`id` 
+left outer join cities on locations.city_id = cities.id
 
 where ressources.ressource_kind_id NOT IN ('.RessourceKind::TYPE_COWORKING.', '.RessourceKind::TYPE_EXCEPTIONNAL.')
 
