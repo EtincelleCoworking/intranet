@@ -125,9 +125,11 @@ return array(
         'Barryvdh\Snappy\ServiceProvider',
         'GuilhermeGuitte\BehatLaravel\BehatLaravelServiceProvider',
 		'Bkwld\Croppa\ServiceProvider',
+		'Maatwebsite\Excel\ExcelServiceProvider',
 
 		'Etincelle\Booking\BookingServiceProvider',
-		'Maatwebsite\Excel\ExcelServiceProvider',
+//		'Etincelle\\Issues\\IssuesServiceProvider',
+		'Etincelle\Cashflow\CashflowServiceProvider',
 	),
 
 	/*

@@ -68,8 +68,13 @@
             {{--<li><a href="{{ URL::route('user_directory') }}">Annuaire</a></li>--}}
         </ul>
     </li>
+    {{--
+        <li{{ (Request::is('issues*') ? ' class="active"' : '') }}>
+            <a href="{{ URL::route('issues') }}"><i class="fa fa-bug"></i> <span class="nav-label">Incidents</span></a>
+        </li>
+    --}}
 
-    {{--<li{{ Request::is('booking*') ? ' class="active"' : '' }}>--}}
+        {{--<li{{ Request::is('booking*') ? ' class="active"' : '' }}>--}}
     {{--<a href="{{ URL::route('booking_list') }}"><i class="fa fa-th-large"></i> <span class="nav-label">Réservations</span></a>--}}
     {{--</li>--}}
 
@@ -92,8 +97,11 @@
             <li{{ Request::is('charge*') ? ' class="active"' : '' }}>
                 <a href="{{ URL::route('charge_list', 'all') }}">Dépenses</a>
             </li>
-            <li{{ Request::is('cashflow*') ? ' class="active"' : '' }}>
+            <li{{ Request::is('vat*') ? ' class="active"' : '' }}>
                 <a href="{{ URL::route('vat_overview', 'all') }}">TVA</a>
+            </li>
+            <li{{ Request::is('cashflow*') ? ' class="active"' : '' }}>
+                <a href="{{ URL::route('cashflow', 'all') }}">Trésorerie</a>
             </li>
             <li{{ Request::is('device*') ? ' class="active"' : '' }}>
                 <a href="{{ URL::route('device_list', 'all') }}">Périphériques</a>
