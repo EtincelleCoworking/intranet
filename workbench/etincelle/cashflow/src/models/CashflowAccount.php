@@ -105,7 +105,7 @@ class CashflowAccount extends Illuminate\Database\Eloquent\Model
                 $start_at = $operation->occurs_at;
                 $result[$start_at]['operations'][] = array(
                     'id' => $operation->id,
-                    'name' => $operation->formatName($start_at),
+                    'name' => CashflowOperation::formatName($operation->name, $start_at),
                     'amount' => $operation->amount,
                     'refreshable' => false
                 );
