@@ -63,10 +63,10 @@
                                                     </td>
                                                     <td class="text-right">
                                                         @if ($operation['amount'] < 0)
-                                                            <span style="color: red">{{ number_format( $operation['amount'], 0, ',', '.') }}
+                                                            <span style="color: red">{{ number_format( $operation['amount'], 2, ',', '.') }}
                                                                 €</span>
                                                         @else
-                                                            <span style="color: green">{{ number_format( $operation['amount'], 0, ',', '.') }}
+                                                            <span style="color: green">{{ number_format( $operation['amount'], 2, ',', '.') }}
                                                                 €</span>
                                                         @endif
                                                     </td>

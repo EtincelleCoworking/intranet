@@ -58,14 +58,25 @@ class CashflowAccount extends Illuminate\Database\Eloquent\Model
         }
 
         if ($_ENV['stripe_sk']) {
-            Stripe::setApiKey($_ENV['stripe_sk']);
+            $cacheKey = 'stripe.upcoming_transfers';
+            if (Cache::has($cacheKey)) {
+                $stripe_items = Cache::get($cacheKey);
+            } else {
+                Stripe::setApiKey($_ENV['stripe_sk']);
 
-            $items = \Stripe\Transfer::all(array('status' => 'pending'));
-            foreach ($items->data as $item) {
-                $result[date('Y-m-d', $item->date)]['operations'][] = array(
+                $items = \Stripe\Transfer::all(array('status' => 'pending'));
+                $stripe_items = array();
+                foreach ($items->data as $item) {
+                    $stripe_items[date('Y-m-d', $item->date)] = $item->amount / 100;
+                }
+                Cache::put($cacheKey, $stripe_items, 15);
+            }
+
+            foreach ($stripe_items as $date => $amount) {
+                $result[$date]['operations'][] = array(
                     'id' => null,
-                    'name' => sprintf('Stripe %s', date('d/m/Y', $item->date)),
-                    'amount' => $item->amount / 100,
+                    'name' => sprintf('Stripe %s', date('d/m/Y', strtotime($date))),
+                    'amount' => $amount,
                     'refreshable' => false
                 );
             }
