@@ -50,19 +50,26 @@
                                 <small>Macros disponibles qui seront remplacées automatiquement:
                                     <ul>
                                         <li>Jour: %today%
-                                            (ex. <?php echo (new \DateTime())->format('d/m/Y'); ?>)
+                                            (ex. <?php echo CashflowOperation::formatName('%today%', date('Y-m-d')); ?>)
                                         </li>
                                         <li>Semaine: %week%
-                                            (ex. sem.<?php echo (new \DateTime())->format('W/Y'); ?>)
+                                            (ex. <?php echo CashflowOperation::formatName('%week%', date('Y-m-d')); ?>)
                                         </li>
                                         <li>Mois dernier: %month.last%
-                                            (ex. <?php echo (new \DateTime())->modify('-1 month')->format('m/Y'); ?>)
+                                            (ex. <?php echo CashflowOperation::formatName('%month.last%', date('Y-m-d')); ?>)
                                         </li>
                                         <li>Mois courant: %month%
-                                            (ex. <?php echo (new \DateTime())->format('m/Y'); ?>)
+                                            (ex. <?php echo CashflowOperation::formatName('%month%', date('Y-m-d')); ?>)
                                         </li>
+                                        <li>Trimestre courant: %quarter%
+                                            (ex. <?php echo CashflowOperation::formatName('%quarter%', date('Y-m-d')); ?>)
+                                        </li>
+                                        <li>Trimestre dernier: %quarter.last%
+                                            (ex. <?php echo CashflowOperation::formatName('%quarter.last%', date('Y-m-d')); ?>)
+                                        </li>
+
                                         <li>Année courante: %year%
-                                            (ex. <?php echo (new \DateTime())->format('Y'); ?>)
+                                            (ex. <?php echo CashflowOperation::formatName('%year%', date('Y-m-d')); ?>)
                                         </li>
                                     </ul>
                                 </small>

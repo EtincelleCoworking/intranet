@@ -1,5 +1,7 @@
 <?php
 
+use Stripe\Stripe;
+
 class CashflowAccount extends Illuminate\Database\Eloquent\Model
 {
     /**
@@ -55,6 +57,20 @@ class CashflowAccount extends Illuminate\Database\Eloquent\Model
             $start_at = (new \DateTime($start_at))->modify('+1 day')->format('Y-m-d');
         }
 
+        if ($_ENV['stripe_sk']) {
+            Stripe::setApiKey($_ENV['stripe_sk']);
+
+            $items = \Stripe\Transfer::all(array('status' => 'pending'));
+            foreach ($items->data as $item) {
+                $result[date('Y-m-d', $item->date)]['operations'][] = array(
+                    'id' => null,
+                    'name' => sprintf('Stripe %s', date('d/m/Y', $item->date)),
+                    'amount' => $item->amount / 100,
+                    'refreshable' => false
+                );
+            }
+        }
+
         $operations = CashflowOperation::where('account_id', $this->id)
             ->where('archived', false)
             ->where('occurs_at', '<', $ends_at)
@@ -66,7 +82,7 @@ class CashflowAccount extends Illuminate\Database\Eloquent\Model
                 while ($start_at < $ends_at) {
                     $result[$start_at]['operations'][] = array(
                         'id' => $operation->id,
-                        'name' => $operation->formatName($start_at),
+                        'name' => CashflowOperation::formatName($operation->name, $start_at),
                         'amount' => $operation->amount,
                         'refreshable' => true
                     );
