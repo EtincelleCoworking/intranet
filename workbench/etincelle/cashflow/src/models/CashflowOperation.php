@@ -21,16 +21,21 @@ class CashflowOperation extends Illuminate\Database\Eloquent\Model
 
     protected $guarded = array();
 
-    public function formatName($occurs_at)
+    public static function formatName($name, $occurs_at)
     {
         $macros = array();
+        $ts = strtotime($occurs_at);
         $macros['%today%'] = (new \DateTime($occurs_at))->format('d/m/Y');
         $macros['%week%'] = (new \DateTime($occurs_at))->format('\s\e\m. W/Y');
         $macros['%month.last%'] = (new \DateTime($occurs_at))->modify('-1 month')->format('m/Y');
         $macros['%month%'] = (new \DateTime($occurs_at))->format('m/Y');
+        $macros['%quarter%'] = 'Q'.ceil(date('n', $ts) / 3) . '/' . date('Y', $ts);
+
+        $lastQuarter = (new \DateTime($occurs_at))->modify('-3 months');
+        $macros['%quarter.last%'] = 'Q'.ceil($lastQuarter->format('n') / 3) . '/' . $lastQuarter->format('Y');
         $macros['%year%'] = (new \DateTime($occurs_at))->format('Y');
 
-        return str_replace(array_keys($macros), array_values($macros), $this->name);
+        return str_replace(array_keys($macros), array_values($macros), $name);
     }
 
     public static function getAvailableFrequencies()

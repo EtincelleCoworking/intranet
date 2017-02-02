@@ -25,7 +25,8 @@
                 <div class="ibox">
                     <div class="ibox-title">
                         {{$account->name}}
-                        <a href="{{ URL::route('cashflow_add', $account->id) }}" class="btn btn-xs btn-primary pull-right">Nouvelle
+                        <a href="{{ URL::route('cashflow_add', $account->id) }}"
+                           class="btn btn-xs btn-primary pull-right">Nouvelle
                             opération</a>
 
                     </div>
@@ -41,19 +42,23 @@
                             <tbody>
                             @foreach($account->getDailyOperations() as $date => $data)
                                 <tr>
-                                    <td>{{$date}}</td>
+                                    <td>{{date('d/m/Y', strtotime($date))}}</td>
                                     <td>
                                         <table class="table table-condensed">
                                             @foreach($data['operations'] as $operation)
                                                 <tr>
                                                     <td>
-                                                        <a href="{{ URL::route('cashflow_delete', $operation['id']) }}"><i
-                                                                    class="fa fa-close text-danger"></i></a>
-                                                        <a href="{{ URL::route('cashflow_modify', $operation['id']) }}">{{$operation['name']}}</a>
+                                                        @if ($operation['id'])
+                                                            <a href="{{ URL::route('cashflow_delete', $operation['id']) }}"><i
+                                                                        class="fa fa-close text-danger"></i></a>
+                                                            <a href="{{ URL::route('cashflow_modify', $operation['id']) }}">{{$operation['name']}}</a>
 
-                                                        @if($operation['refreshable'])
-                                                            <a href="{{ URL::route('cashflow_refresh', $operation['id']) }}"><i
-                                                                        class="fa fa-refresh text-success"></i></a>
+                                                            @if($operation['refreshable'])
+                                                                <a href="{{ URL::route('cashflow_refresh', $operation['id']) }}"><i
+                                                                            class="fa fa-refresh text-success"></i></a>
+                                                            @endif
+                                                        @else
+                                                            {{$operation['name']}}
                                                         @endif
                                                     </td>
                                                     <td class="text-right">

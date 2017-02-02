@@ -3,6 +3,7 @@
 
 use Illuminate\Routing\Controller;
 use Illuminate\Support\Facades\Response;
+use Stripe\Stripe;
 
 class CashflowController extends Controller
 {
