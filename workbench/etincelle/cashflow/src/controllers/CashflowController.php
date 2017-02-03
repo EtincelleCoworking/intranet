@@ -16,15 +16,24 @@ class CashflowController extends Controller
         return View::make('cashflow::index', $params);
     }
 
-    public function delete($id)
+    public function delete($account_id, $id)
+    {
+        $operation = CashflowOperation::findOrFail($id);
+        $message = sprintf('L\'opération %s a été supprimée', $operation->name);
+        $operation->delete();
+        return Redirect::route('cashflow', 'all')->with('mSuccess', $message);
+    }
+
+
+    public function archive($account_id, $id)
     {
         $operation = CashflowOperation::findOrFail($id);
         $operation->archived = true;
         $operation->save();
-        return Redirect::route('cashflow', 'all')->with('mSuccess', sprintf('L\'opération %s a été supprimée', $operation->name));
+        return Redirect::route('cashflow', 'all')->with('mSuccess', sprintf('L\'opération %s a été archivée', $operation->name));
     }
 
-    public function refresh($id)
+    public function refresh($account_id, $id)
     {
         $operation = CashflowOperation::findOrFail($id);
         $start_at = $operation->occurs_at;

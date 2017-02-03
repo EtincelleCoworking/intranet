@@ -21,17 +21,20 @@ class OperationController extends Controller
     /**
      * Modify operation
      */
-    public function modify($id)
+    public function modify($account_id, $id)
     {
         $operation = $this->dataExist($id);
 
-        return View::make('cashflow::modify', array('operation' => $operation));
+        return View::make('cashflow::modify', array(
+            'account_id' => $account_id,
+            'operation' => $operation
+        ));
     }
 
     /**
      * Modify operation (form)
      */
-    public function modify_check($id)
+    public function modify_check($account_id, $id)
     {
         $operation = $this->dataExist($id);
 
@@ -42,12 +45,12 @@ class OperationController extends Controller
             $operation->occurs_at = $occurs_at[2] . '-' . $occurs_at[1] . '-' . $occurs_at[0];
 
             if ($operation->save()) {
-                return Redirect::route('cashflow', $operation->id)->with('mSuccess', 'Cette opération a bien été modifié');
+                return Redirect::route('cashflow')->with('mSuccess', 'Cette opération a bien été modifié');
             } else {
-                return Redirect::route('cashflow_modify', $operation->id)->with('mError', 'Impossible de modifier cette opération')->withInput();
+                return Redirect::route('cashflow_operation_modify', array('account_id' => $operation->account_id, 'id' => $operation->id))->with('mError', 'Impossible de modifier cette opération')->withInput();
             }
         } else {
-            return Redirect::route('cashflow_modify', $operation->id)->with('mError', 'Il y a des erreurs')->withErrors($validator->messages())->withInput();
+            return Redirect::route('cashflow_operation_modify', array('account_id' => $operation->account_id, 'id' => $operation->id))->with('mError', 'Il y a des erreurs')->withErrors($validator->messages())->withInput();
         }
     }
 
@@ -71,14 +74,13 @@ class OperationController extends Controller
             $occurs_at = explode('/', Input::get('occurs_at'));
             $operation->occurs_at = $occurs_at[2] . '-' . $occurs_at[1] . '-' . $occurs_at[0];
 
-
             if ($operation->save()) {
                 return Redirect::route('cashflow', $operation->id)->with('mSuccess', 'L\'opération a bien été modifiée');
             } else {
-                return Redirect::route('cashflow_add')->with('mError', 'Impossible de créer cette opération')->withInput();
+                return Redirect::route('cashflow_operation_add')->with('mError', 'Impossible de créer cette opération')->withInput();
             }
         } else {
-            return Redirect::route('cashflow_add')->with('mError', 'Il y a des erreurs')->withErrors($validator->messages())->withInput();
+            return Redirect::route('cashflow_operation_add')->with('mError', 'Il y a des erreurs')->withErrors($validator->messages())->withInput();
         }
     }
 }

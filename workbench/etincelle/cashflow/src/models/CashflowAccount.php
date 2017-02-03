@@ -1,9 +1,13 @@
 <?php
 
+use Illuminate\Database\Eloquent\SoftDeletingTrait;
 use Stripe\Stripe;
 
 class CashflowAccount extends Illuminate\Database\Eloquent\Model
 {
+    use SoftDeletingTrait;
+
+    protected $dates = ['deleted_at'];
     /**
      * The database table used by the model.
      *
@@ -50,6 +54,7 @@ class CashflowAccount extends Illuminate\Database\Eloquent\Model
     {
         $ends_at = (new \DateTime())->modify($duration)->format('Y-m-d');
         $result = array();
+        $today = date('Y-m-d');
         $start_at = date('Y-m-d');
         while ($start_at <= $ends_at) {
             $result[$start_at]['operations'] = array();
@@ -77,6 +82,7 @@ class CashflowAccount extends Illuminate\Database\Eloquent\Model
                     'id' => null,
                     'name' => sprintf('Stripe %s', date('d/m/Y', strtotime($date))),
                     'amount' => $amount,
+                    'comment' => false,
                     'refreshable' => false
                 );
             }
@@ -91,10 +97,12 @@ class CashflowAccount extends Illuminate\Database\Eloquent\Model
             if ($operation->frequency) {
                 $start_at = $operation->occurs_at;
                 while ($start_at < $ends_at) {
-                    $result[$start_at]['operations'][] = array(
+                    $when = ($start_at < $today) ? $today : $start_at;
+                    $result[$when]['operations'][] = array(
                         'id' => $operation->id,
                         'name' => CashflowOperation::formatName($operation->name, $start_at),
                         'amount' => $operation->amount,
+                        'comment' => ($when != $start_at)?sprintf('Date: %s', date('d/m/Y', strtotime($start_at))):null,
                         'refreshable' => true
                     );
                     $start_at = (new \DateTime($start_at))
@@ -103,10 +111,12 @@ class CashflowAccount extends Illuminate\Database\Eloquent\Model
                 }
             } else {
                 $start_at = $operation->occurs_at;
-                $result[$start_at]['operations'][] = array(
+                $when = ($start_at < $today) ? $today : $start_at;
+                $result[$when]['operations'][] = array(
                     'id' => $operation->id,
                     'name' => CashflowOperation::formatName($operation->name, $start_at),
                     'amount' => $operation->amount,
+                    'comment' => ($when != $start_at)?sprintf('Date: %s', date('d/m/Y', strtotime($start_at))):null,
                     'refreshable' => false
                 );
             }

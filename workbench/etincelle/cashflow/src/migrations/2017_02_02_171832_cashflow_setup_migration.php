@@ -72,6 +72,8 @@ class CashflowSetupMigration extends Migration
 //        $account->createOperation('2017-03-01', -1150 * 1.2, $groupName . 'Loyer %month%', '+1 month');
 //        $account->createOperation('2017-03-01', -850 * 1.2, $groupName . 'Charges %month%', '+1 month');
 
+
+
     }
 
 

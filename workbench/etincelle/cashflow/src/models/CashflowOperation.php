@@ -1,7 +1,13 @@
 <?php
 
+use Illuminate\Database\Eloquent\SoftDeletingTrait;
+
 class CashflowOperation extends Illuminate\Database\Eloquent\Model
 {
+    use SoftDeletingTrait;
+
+    protected $dates = ['deleted_at'];
+
     /**
      * The database table used by the model.
      *

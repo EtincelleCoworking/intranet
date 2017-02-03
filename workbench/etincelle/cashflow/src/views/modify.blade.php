@@ -32,9 +32,9 @@
             <div class="ibox">
                 <div class="ibox-content">
                     @if (isset($operation))
-                        {{ Form::model($operation, array('route' => array('cashflow_modify', $operation->id))) }}
+                        {{ Form::model($operation, array('route' => array('cashflow_operation_modify',$operation->account_id,  $operation->id))) }}
                     @else
-                        {{ Form::open(array('route' => array('cashflow_add', $account_id))) }}
+                        {{ Form::open(array('route' => array('cashflow_operation_add', $account_id))) }}
                         <input type="hidden" name="account_id" value="{{$account_id}}">
                     @endif
 
