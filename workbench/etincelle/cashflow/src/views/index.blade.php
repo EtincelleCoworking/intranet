@@ -59,20 +59,21 @@
                                             @foreach($data['operations'] as $operation)
                                                 <tr>
                                                     <td class="col-lg-1">
-                                                        @if ($operation->getId())
-                                                            <a href="{{ URL::route('cashflow_operation_delete', array('account_id' => $account->id,'id' => $operation->getId())) }}"
+                                                        @if ($operation instanceof IDeletableBankOperation and $operation->getDeleteLink())
+                                                            <a href="{{ $operation->getDeleteLink() }}"
                                                                class="btn btn-xs btn-danger m-xxs"><i
                                                                         class="fa fa-close"></i></a>
                                                         @endif
                                                     </td>
                                                     <td class="col-lg-7">
-                                                        @if ($operation->getId())
-                                                            <a href="{{ URL::route('cashflow_operation_modify', array('account_id' => $account->id,'id' => $operation->getId())) }}">{{$operation->getName()}}</a>
+                                                        @if ($operation instanceof IEditableBankOperation and $operation->getEditLink())
+                                                            <a href="{{ $operation->getEditLink() }}">{{$operation->getName()}}</a>
                                                         @else
                                                             {{$operation->getName()}}
                                                         @endif
                                                         @if ($operation->getComment())
-                                                            <span class="badge" title="{{$operation->getComment()}}"><i class="fa fa-info"></i></span>
+                                                            <span class="badge" title="{{$operation->getComment()}}"><i
+                                                                        class="fa fa-info"></i></span>
                                                         @endif
                                                     </td>
                                                     <td class="text-right col-lg-2">
@@ -85,14 +86,15 @@
                                                         @endif
                                                     </td>
                                                     <td class="col-lg-2">
-                                                        @if ($operation->getId())
+                                                        @if ($operation instanceof IActionsProviderBankOperation)
                                                             <div class="pull-right">
-                                                                    <a href="{{ URL::route('cashflow_operation_refresh', array('account_id' => $account->id,'id' => $operation->getId())) }}"
-                                                                       class="btn btn-xs btn-default m-xxs"><i
-                                                                                class="fa fa-refresh"></i></a>
-                                                                <a href="{{ URL::route('cashflow_operation_archive', array('account_id' => $account->id,'id' => $operation->getId())) }}"
-                                                                   class="btn btn-xs btn-primary m-xxs"><i
-                                                                            class="fa fa-check text-primary"></i></a>
+                                                                @foreach($operation->getBankOperationActions() as $action)
+                                                                    <a href="{{ $action->getUrl() }}"
+                                                                       class="btn btn-xs m-xxs {{$action->getLinkClass()}}"
+                                                                       title="{{$action->getHelp()}}"
+                                                                       target="{{$action->getTarget()}}"><i
+                                                                                class="fa {{$action->getIconClass()}}"></i></a>
+                                                                @endforeach
                                                             </div>
                                                         @endif
                                                     </td>

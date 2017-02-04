@@ -66,8 +66,9 @@ class CashflowAccount extends Illuminate\Database\Eloquent\Model
 
         $collection = new BankOperationCollection($ends_at);
         (new StripeBankOperationFactory())->populate($collection);
-        (new SubscriptionBankOperationFactory())->populate($collection);
+//        (new SubscriptionBankOperationFactory())->populate($collection);
         (new CashflowBankOperationFactory($this->id))->populate($collection);
+        (new InvoiceBankOperationFactory($this->id))->populate($collection);
 
         return $collection->getItems($this->amount);
     }

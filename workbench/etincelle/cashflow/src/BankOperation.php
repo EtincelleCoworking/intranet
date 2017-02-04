@@ -2,7 +2,6 @@
 
 class BankOperation
 {
-    protected $id;
     protected $occurs_at;
     protected $name;
     protected $amount;
@@ -46,16 +45,6 @@ class BankOperation
     public function getComment()
     {
         return $this->comment;
-    }
-
-    public function getId()
-    {
-        return $this->id;
-    }
-
-    public function setId($value)
-    {
-        $this->id = $value;
     }
 
     public function __construct($occurs_at, $name, $amount)
