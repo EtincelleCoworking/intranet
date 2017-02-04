@@ -59,40 +59,38 @@
                                             @foreach($data['operations'] as $operation)
                                                 <tr>
                                                     <td class="col-lg-1">
-                                                        @if ($operation['id'])
-                                                            <a href="{{ URL::route('cashflow_operation_delete', array('account_id' => $account->id,'id' => $operation['id'])) }}"
+                                                        @if ($operation->getId())
+                                                            <a href="{{ URL::route('cashflow_operation_delete', array('account_id' => $account->id,'id' => $operation->getId())) }}"
                                                                class="btn btn-xs btn-danger m-xxs"><i
                                                                         class="fa fa-close"></i></a>
                                                         @endif
                                                     </td>
                                                     <td class="col-lg-7">
-                                                        @if ($operation['id'])
-                                                            <a href="{{ URL::route('cashflow_operation_modify', array('account_id' => $account->id,'id' => $operation['id'])) }}">{{$operation['name']}}</a>
+                                                        @if ($operation->getId())
+                                                            <a href="{{ URL::route('cashflow_operation_modify', array('account_id' => $account->id,'id' => $operation->getId())) }}">{{$operation->getName()}}</a>
                                                         @else
-                                                            {{$operation['name']}}
+                                                            {{$operation->getName()}}
                                                         @endif
-                                                        @if ($operation['comment'])
-                                                            <p class="text-muted">{{$operation['comment']}}</p>
+                                                        @if ($operation->getComment())
+                                                            <span class="badge" title="{{$operation->getComment()}}"><i class="fa fa-info"></i></span>
                                                         @endif
                                                     </td>
                                                     <td class="text-right col-lg-2">
-                                                        @if ($operation['amount'] < 0)
-                                                            <span style="color: red">{{ number_format( $operation['amount'], 2, ',', '.') }}
+                                                        @if ($operation->getAmount() < 0)
+                                                            <span style="color: red">{{ number_format( $operation->getAmount(), 2, ',', '.') }}
                                                                 €</span>
                                                         @else
-                                                            <span style="color: green">{{ number_format( $operation['amount'], 2, ',', '.') }}
+                                                            <span style="color: green">{{ number_format( $operation->getAmount(), 2, ',', '.') }}
                                                                 €</span>
                                                         @endif
                                                     </td>
                                                     <td class="col-lg-2">
-                                                        @if ($operation['id'])
+                                                        @if ($operation->getId())
                                                             <div class="pull-right">
-                                                                @if($operation['refreshable'])
-                                                                    <a href="{{ URL::route('cashflow_operation_refresh', array('account_id' => $account->id,'id' => $operation['id'])) }}"
+                                                                    <a href="{{ URL::route('cashflow_operation_refresh', array('account_id' => $account->id,'id' => $operation->getId())) }}"
                                                                        class="btn btn-xs btn-default m-xxs"><i
                                                                                 class="fa fa-refresh"></i></a>
-                                                                @endif
-                                                                <a href="{{ URL::route('cashflow_operation_archive', array('account_id' => $account->id,'id' => $operation['id'])) }}"
+                                                                <a href="{{ URL::route('cashflow_operation_archive', array('account_id' => $account->id,'id' => $operation->getId())) }}"
                                                                    class="btn btn-xs btn-primary m-xxs"><i
                                                                             class="fa fa-check text-primary"></i></a>
                                                             </div>

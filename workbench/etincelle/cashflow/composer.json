@@ -16,7 +16,8 @@
         "classmap": [
             "src/migrations",
             "src/models",
-            "src/controllers"
+            "src/controllers",
+            "src"
         ],
         "psr-0": {
             "Etincelle\\Cashflow\\": "src/"

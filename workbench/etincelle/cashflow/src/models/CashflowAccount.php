@@ -50,88 +50,26 @@ class CashflowAccount extends Illuminate\Database\Eloquent\Model
         return $operation;
     }
 
+    protected function createOperationArray($name, $amount, $id = false, $comment = false, $is_recurring = false)
+    {
+        return array(
+            'id' => $id,
+            'name' => $name,
+            'amount' => $amount,
+            'comment' => $comment,
+            'refreshable' => $is_recurring);
+    }
+
     public function getDailyOperations($duration = '3 months')
     {
         $ends_at = (new \DateTime())->modify($duration)->format('Y-m-d');
-        $result = array();
-        $today = date('Y-m-d');
-        $start_at = date('Y-m-d');
-        while ($start_at <= $ends_at) {
-            $result[$start_at]['operations'] = array();
-            $result[$start_at]['amount'] = 0;
-            $start_at = (new \DateTime($start_at))->modify('+1 day')->format('Y-m-d');
-        }
 
-        if ($_ENV['stripe_sk']) {
-            $cacheKey = 'stripe.upcoming_transfers';
-            if (Cache::has($cacheKey)) {
-                $stripe_items = Cache::get($cacheKey);
-            } else {
-                Stripe::setApiKey($_ENV['stripe_sk']);
+        $collection = new BankOperationCollection($ends_at);
+        (new StripeBankOperationFactory())->populate($collection);
+        (new SubscriptionBankOperationFactory())->populate($collection);
+        (new CashflowBankOperationFactory($this->id))->populate($collection);
 
-                $items = \Stripe\Transfer::all(array('status' => 'pending'));
-                $stripe_items = array();
-                foreach ($items->data as $item) {
-                    $stripe_items[date('Y-m-d', $item->date)] = $item->amount / 100;
-                }
-                Cache::put($cacheKey, $stripe_items, 15);
-            }
-
-            foreach ($stripe_items as $date => $amount) {
-                $result[$date]['operations'][] = array(
-                    'id' => null,
-                    'name' => sprintf('Stripe %s', date('d/m/Y', strtotime($date))),
-                    'amount' => $amount,
-                    'comment' => false,
-                    'refreshable' => false
-                );
-            }
-        }
-
-        $operations = CashflowOperation::where('account_id', $this->id)
-            ->where('archived', false)
-            ->where('occurs_at', '<', $ends_at)
-            ->get();
-
-        foreach ($operations as $operation) {
-            if ($operation->frequency) {
-                $start_at = $operation->occurs_at;
-                while ($start_at < $ends_at) {
-                    $when = ($start_at < $today) ? $today : $start_at;
-                    $result[$when]['operations'][] = array(
-                        'id' => $operation->id,
-                        'name' => CashflowOperation::formatName($operation->name, $start_at),
-                        'amount' => $operation->amount,
-                        'comment' => ($when != $start_at)?sprintf('Date: %s', date('d/m/Y', strtotime($start_at))):null,
-                        'refreshable' => true
-                    );
-                    $start_at = (new \DateTime($start_at))
-                        ->modify(sprintf('+%s', $operation->frequency))
-                        ->format('Y-m-d');
-                }
-            } else {
-                $start_at = $operation->occurs_at;
-                $when = ($start_at < $today) ? $today : $start_at;
-                $result[$when]['operations'][] = array(
-                    'id' => $operation->id,
-                    'name' => CashflowOperation::formatName($operation->name, $start_at),
-                    'amount' => $operation->amount,
-                    'comment' => ($when != $start_at)?sprintf('Date: %s', date('d/m/Y', strtotime($start_at))):null,
-                    'refreshable' => false
-                );
-            }
-        }
-        // print_r($result);
-        // exit;
-        $amount = $this->amount;
-        foreach ($result as $date => $data) {
-            foreach ($data['operations'] as $operation) {
-                $amount += $operation['amount'];
-            }
-            $result[$date]['amount'] = $amount;
-        }
-
-        return $result;
+        return $collection->getItems($this->amount);
     }
 
 }
