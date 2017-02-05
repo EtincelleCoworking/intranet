@@ -18,6 +18,11 @@ class Invoice extends Eloquent
         return $query->whereType('F')->whereNull('date_canceled');
     }
 
+    public function scopeUnpaid($query)
+    {
+        return $query->whereNull('date_payment');
+    }
+
     public function scopeQuoteOnly($query, $filtre)
     {
         if ($filtre == 'canceled') {
