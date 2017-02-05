@@ -13,6 +13,7 @@
 Route::get('/', array('as' => 'dashboard', 'uses' => 'UserController@dashboard'));
 
 Route::get('/api/1.0/location/{location_slug}/{key}', array('as' => 'api_location_update', 'uses' => 'ApiController@updateLocationIp'));
+//Route::get('/api/1.0/metric/{location_slug}/{key}/{metric_slug}/{metric_value}', array('as' => 'api_metric_update', 'uses' => 'ApiController@updateMetric'));
 Route::post('/api/1.0/offix/{location_slug}/{key}', array('as' => 'api_offix', 'uses' => 'ApiController@offixUpload'));
 Route::get('/api/1.0/offix/{secure_key}', array('as' => 'api_offix', 'uses' => 'ApiController@offixDownload'));
 
@@ -94,6 +95,7 @@ Route::group(['before' => 'superadmin'], function() {
 	Route::get('/invoice/{invoice}/item/{id}/delete', array('as' => 'invoice_item_delete', 'uses' => 'InvoiceItemController@delete'))->where(array('invoice' => '[0-9]+', 'id' => '[0-9]+'));
 	Route::get('/invoice/send/{id}', array('as' => 'invoice_send', 'uses' => 'InvoiceController@send'))->where(array('id' => '[0-9]+'));
 	Route::get('/invoice/unpaid', array('as' => 'invoice_unpaid', 'uses' => 'InvoiceController@unpaid'));
+	Route::get('/invoice/paid/{id}', array('as' => 'invoice_paid', 'uses' => 'InvoiceController@paid'));
 
 	Route::get('/ressources', array('as' => 'ressource_list', 'uses' => 'RessourceController@liste'));
 	Route::get('/ressource/add', array('as' => 'ressource_add', 'uses' => 'RessourceController@add'));

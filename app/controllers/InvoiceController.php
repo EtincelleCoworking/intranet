@@ -406,6 +406,19 @@ class InvoiceController extends BaseController
     }
 
 
+    public function paid($invoice_id)
+    {
+        /** @var Invoice $invoice */
+        $invoice = $this->dataExist($invoice_id, 'invoice_list');
+
+        $invoice->date_payment = date('Y-m-d');
+        $invoice->save();
+
+        return Redirect::route('cashflow')
+            ->with('mSuccess', sprintf('La facture %s a été notée comme payée', $invoice->ident));
+    }
+
+
     public function unpaid(){
 
         $items = DB::select(DB::raw('select 
