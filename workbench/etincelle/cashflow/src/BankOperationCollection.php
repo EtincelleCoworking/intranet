@@ -30,6 +30,7 @@ class BankOperationCollection
     public function getItems($initial_amount)
     {
         $result = $this->items;
+        ksort($result);
         $amount = $initial_amount;
         foreach ($result as $date => $data) {
             foreach ($data['operations'] as $operation) {
