@@ -6,7 +6,7 @@ class Reminder extends \BankOperationAction
 {
     public function __construct($url)
     {
-        parent::__construct($url, 'btn-default', 'fa-envelope');
+        parent::__construct($url, 'btn-default', 'fa-bell');
     }
 
 }

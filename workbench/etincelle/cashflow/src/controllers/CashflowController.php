@@ -13,8 +13,8 @@ class CashflowController extends Controller
 
         $params['accounts'] = CashflowAccount::all();
         $params['charts'] = array();
-        foreach($params['accounts'] as $account) {
-            foreach($account->getDailyOperations() as $date => $data){
+        foreach ($params['accounts'] as $account) {
+            foreach ($account->getDailyOperations() as $date => $data) {
                 $params['charts'][$account->id][] = array(
                     'date' => $date,
                     'value' => $data['amount']);
@@ -24,23 +24,69 @@ class CashflowController extends Controller
         return View::make('cashflow::index', $params);
     }
 
-    public function graph()
+    public function update()
     {
-        $charts = array();
+        $params = array();
+        return View::make('cashflow::update', $params);
+    }
 
-        foreach (CashflowAccount::all() as $account) {
-            foreach($account->getDailyOperations() as $date => $data){
-
-            $charts[$account->name][$date] = $data['amount'];
+    public function handle_update()
+    {
+        if (Input::hasFile('file')) {
+            $fileObject = Input::file('file');
+            if ($fileObject->isValid()) {
+                $movedFile = $fileObject->move('../app/storage/ofx', sprintf('%s.%s', date('Y-m-d_His'), $fileObject->getClientOriginalExtension()));
+                $result = array();
+                $ofxParser = new \OfxParser\Parser();
+                $ofx = $ofxParser->loadFromFile($movedFile->getPathName());
+                $messages = array();
+                foreach ($ofx->bankAccounts as $bankAccount) {
+                    /*            $operations = array();
+                                foreach ($bankAccount->statement->transactions as $transaction) {
+                                    $operations[$transaction->date->format('Y-m-d')][] = array(
+                                        'name' => (string)$transaction->name,
+                                        'comment' => (string)$transaction->memo,
+                                        'amount' => (float)$transaction->amount,
+                                        'checkNumber' => (string)$transaction->checkNumber,
+                                    );
+                                }
+                    */
+                    $result[(string)$bankAccount->accountNumber] = array(
+                        'balance' => (float)$bankAccount->balance,
+                        'balanceDate' => $bankAccount->balanceDate->format('Y-m-d'),
+//                'operations' => $operations
+                    );
+                }
+                $isSuccess = false;
+                //var_dump($result);exit;
+                foreach (CashflowAccount::all() as $account) {
+                    if (isset($result[$account->account_number])) {
+                        if ($account->amount_updated_at < $result[$account->account_number]['balanceDate']) {
+                            $account->amount = $result[$account->account_number]['balance'];
+                            $account->amount_updated_at = $result[$account->account_number]['balanceDate'];
+                            $account->save();
+                            $messages[] = sprintf('Le solde du compte %s a été mis à jour (%s€ en date du %s)',
+                                $account->account_number, $account->amount, date('d/m/Y', strtotime($account->amount_updated_at)));
+                            $isSuccess = true;
+                        } else {
+                            $messages[] = sprintf('Le compte %s a déjà été mis à jour avec une version plus récente (mise à jour le %s, date du fichier: %s) - aucune opération effectuée',
+                                $account->account_number,
+                                date('d/m/Y', strtotime($account->amount_updated_at)),
+                                date('d/m/Y', strtotime($result[$account->account_number]['balanceDate'])));
+                        }
+                    } else {
+                        $messages[] = sprintf('Aucune information de mise à jour trouvée pour le compte %s', $account->account_number);
+                    }
+                }
+                return Redirect::route($isSuccess ? 'cashflow' : 'cashflow_update')->with('mInfo', implode('<br />', $messages));
+            } else {
+                return Redirect::route('cashflow_update')->with('mError', 'Fichier invalide');
             }
+        } else {
+            return Redirect::route('cashflow_update');
         }
 
-        foreach ($charts as $name => $chart) {
-            ksort($charts[$name]);
-        }
 
-
-        return View::make('stats.ca', array('charts' => $charts));
     }
 
     public function delete($account_id, $id)

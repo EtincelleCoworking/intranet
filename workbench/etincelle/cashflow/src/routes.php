@@ -5,7 +5,8 @@ Route::group(['before' => 'member'], function () {
 
 Route::group(['before' => 'superadmin'], function () {
     Route::get('/cashflow', array('as' => 'cashflow', 'uses' => 'CashflowController@index'));
-    Route::get('/cashflow/graph', array('as' => 'cashflow_graph', 'uses' => 'CashflowController@graph'));
+    Route::get('/cashflow/update', array('as' => 'cashflow_update', 'uses' => 'CashflowController@update'));
+    Route::post('/cashflow/update', array('as' => 'cashflow_update_post', 'uses' => 'CashflowController@handle_update'));
     Route::get('/cashflow/{account_id}/delete/{id}', array('as' => 'cashflow_operation_delete', 'uses' => 'CashflowController@delete'));
     Route::get('/cashflow/{account_id}/refresh/{id}', array('as' => 'cashflow_operation_refresh', 'uses' => 'CashflowController@refresh'));
     Route::get('/cashflow/{account_id}/archive/{id}', array('as' => 'cashflow_operation_archive', 'uses' => 'CashflowController@archive'));
