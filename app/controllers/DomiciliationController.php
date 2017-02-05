@@ -19,6 +19,7 @@ class DomiciliationController extends BaseController
         $invoice->address = $organisation->fulladdress;
         $invoice->date_invoice = new \DateTime();
         $invoice->deadline = new \DateTime(date('Y-m-d', strtotime('+1 month')));
+        $invoice->expected_payment_at = $invoice->deadline ;
         $invoice->save();
         $vat = VatType::where('value', 20)->first();
 

@@ -30,6 +30,9 @@
                             opération</a>
                     </div>
                     <div class="ibox-content">
+                        <div id="chart-{{$account->id}}"></div>
+
+
                         {{ Form::model($account, array('route' => array('cashflow_account_modify_check', $account->id))) }}
                         {{ Form::label('amount', 'Solde actuel') }}
                         <div class="input-group">
@@ -129,16 +132,32 @@
 
 @section('stylesheets')
 
+    {{ HTML::style('css/plugins/morris/morris-0.4.3.min.css') }}
     <style type="text/css">
-
     </style>
 
 @stop
 
 @section('javascript')
+    {{ HTML::script('js/plugins/morris/Raphael-2.1.0.min.js') }}
+    {{ HTML::script('js/plugins/morris/morris.js') }}
 
     <script type="text/javascript">
+        @foreach($accounts as $account)
 
+        Morris.Line({
+            element: 'chart-{{$account->id}}',
+            data: {{json_encode($charts[$account->id])}},
+            xkey: 'date',
+            ykeys: ['value'],
+            resize: true,
+            lineWidth: 4,
+            labels: ['Solde'],
+            lineColors: ['#1ab394'],
+            pointSize: 5,
+        });
+
+        @endforeach
     </script>
 
 @stop

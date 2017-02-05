@@ -128,6 +128,7 @@ class SubscriptionController extends BaseController
         $date = new DateTime($invoice->date_invoice);
         $date->modify('+1 month');
         $invoice->deadline = $date->format('Y-m-d');
+        $invoice->expected_payment_at = $invoice->deadline ;
         $invoice->save();
 
         $invoice_line = new InvoiceItem();
@@ -144,8 +145,8 @@ class SubscriptionController extends BaseController
             $invoice_line->subscription_user_id = $subscription->user_id;
         }
         $date2->modify('-1 day');
-        $caption = str_replace(array('%OrganisationName%', '%UserName%'), array($subscription->organisation->name, $subscription->user->fullname), $subscription->kind->name);
-        $invoice_line->text = sprintf("%s\nDu %s au %s", $caption, $date->format('d/m/Y'), $date2->format('d/m/Y'));
+        //$caption = str_replace(array('%OrganisationName%', '%UserName%'), array($subscription->organisation->name, $subscription->user->fullname), $subscription->kind->name);
+        $invoice_line->text = sprintf("%s\nDu %s au %s", $subscription->formattedName(), $date->format('d/m/Y'), $date2->format('d/m/Y'));
         $invoice_line->vat_types_id = VatType::whereValue(20)->first()->id;
         $invoice_line->save();
         $invoice_line->order_index = 1;
@@ -186,6 +187,7 @@ class SubscriptionController extends BaseController
         $date = new DateTime($invoice->date_invoice);
         $date->modify('+1 month');
         $invoice->deadline = $date->format('Y-m-d');
+        $invoice->expected_payment_at = $invoice->deadline ;
         $invoice->save();
 
         $skipped_first = false;

@@ -168,6 +168,13 @@ class InvoiceController extends BaseController
             $invoice->date_invoice = $date_invoice_explode[2] . '-' . $date_invoice_explode[1] . '-' . $date_invoice_explode[0];
             $date_deadline_explode = explode('/', Input::get('deadline'));
             $invoice->deadline = $date_deadline_explode[2] . '-' . $date_deadline_explode[1] . '-' . $date_deadline_explode[0];
+
+            if (Input::get('expected_payment_at')) {
+                $date_payment_explode = explode('/', Input::get('expected_payment_at'));
+                $invoice->expected_payment_at = $date_payment_explode[2] . '-' . $date_payment_explode[1] . '-' . $date_payment_explode[0];
+            } else {
+                $invoice->expected_payment_at = null;
+            }
             if (Input::get('date_payment')) {
                 $date_payment_explode = explode('/', Input::get('date_payment'));
                 $invoice->date_payment = $date_payment_explode[2] . '-' . $date_payment_explode[1] . '-' . $date_payment_explode[0];
@@ -235,6 +242,8 @@ class InvoiceController extends BaseController
             $date = new DateTime($invoice->date_invoice);
             $date->modify('+1 month');
             $invoice->deadline = $date->format('Y-m-d');
+            $invoice->expected_payment_at = $invoice->deadline ;
+
 
             if ($invoice->save()) {
                 return Redirect::route('invoice_modify', $invoice->id)->with('mSuccess', 'La facture a bien été ajoutée');

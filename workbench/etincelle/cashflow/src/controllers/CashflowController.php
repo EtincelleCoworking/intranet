@@ -12,6 +12,14 @@ class CashflowController extends Controller
         $params = array();
 
         $params['accounts'] = CashflowAccount::all();
+        $params['charts'] = array();
+        foreach($params['accounts'] as $account) {
+            foreach($account->getDailyOperations() as $date => $data){
+                $params['charts'][$account->id][] = array(
+                    'date' => $date,
+                    'value' => $data['amount']);
+            }
+        }
 
         return View::make('cashflow::index', $params);
     }

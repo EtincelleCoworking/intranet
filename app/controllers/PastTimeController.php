@@ -300,10 +300,12 @@ class PastTimeController extends BaseController
         $invoice->address = $organisation->fulladdress;
         $invoice->date_invoice = new \DateTime();
         $invoice->deadline = new \DateTime(date('Y-m-d', strtotime('+1 month')));
+        $invoice->expected_payment_at = $invoice->deadline ;
         $invoice->save();
         $vat = VatType::where('value', 20)->first();
 
         $orderIndex = 0;
+        $invoice_lines = array();
         foreach ($lines as $ressource_id => $line) {
             $ressource = $ressources[$ressource_id];
             $invoice_line = new InvoiceItem();
@@ -342,7 +344,14 @@ class PastTimeController extends BaseController
             $invoice_line->subscription_user_id = $invoice->user_id;
 
             $invoice_line->save();
+            $invoice_lines[] = $invoice_line;
+        }
 
+        foreach ($organisation->invoicing_rules() as $rule) {
+            $processor = $rule->createProcessor();
+            if ($processor) {
+                $processor->execute($invoice_lines);
+            }
         }
 
         return Redirect::route('invoice_modify', $invoice->id)->with('mSuccess', 'La facture a bien été générée');

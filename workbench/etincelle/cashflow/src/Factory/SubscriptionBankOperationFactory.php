@@ -18,7 +18,7 @@ class SubscriptionBankOperationFactory extends AbstractBankOperationFactory
 
                 $operation->setDeleteLink(URL::route('subscription_delete', $subscription->id));
                 $operation->setEditLink(URL::route('subscription_modify', $subscription->id));
-                $operation->registerAction(new BankOperationAction\Refresh(URL::route('subscription_renew', $subscription->id)));
+                //$operation->registerAction(new BankOperationAction\Refresh(URL::route('subscription_renew', $subscription->id)));
 
                 $collection->register($operation);
                 $start_at = (new \DateTime($start_at))
