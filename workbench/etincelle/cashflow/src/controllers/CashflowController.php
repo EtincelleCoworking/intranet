@@ -16,6 +16,25 @@ class CashflowController extends Controller
         return View::make('cashflow::index', $params);
     }
 
+    public function graph()
+    {
+        $charts = array();
+
+        foreach (CashflowAccount::all() as $account) {
+            foreach($account->getDailyOperations() as $date => $data){
+
+            $charts[$account->name][$date] = $data['amount'];
+            }
+        }
+
+        foreach ($charts as $name => $chart) {
+            ksort($charts[$name]);
+        }
+
+
+        return View::make('stats.ca', array('charts' => $charts));
+    }
+
     public function delete($account_id, $id)
     {
         $operation = CashflowOperation::findOrFail($id);

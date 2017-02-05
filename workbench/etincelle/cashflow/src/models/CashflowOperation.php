@@ -61,14 +61,14 @@ class CashflowOperation extends Illuminate\Database\Eloquent\Model
         if ($this->frequency) {
             $when = $occurs_at ? $occurs_at : $this->occurs_at;
             $result = new RecurringIdentifiedBankOperation($when, $this->name, $this->amount, $this->frequency, $this->id);
+            $result->registerAction(new BankOperationAction\Archive(URL::route('cashflow_operation_refresh', array('account_id' => $this->account_id, 'id' => $this->id))));
         } else {
             $when = $occurs_at ? $occurs_at : $this->occurs_at;
             $result = new ManagedBankOperation($when, CashflowOperation::formatName($this->name, $when), $this->amount);
+            $result->registerAction(new BankOperationAction\Archive(URL::route('cashflow_operation_archive', array('account_id' => $this->account_id, 'id' => $this->id))));
         }
         $result->setDeleteLink(URL::route('cashflow_operation_delete', array('account_id' => $this->account_id, 'id' => $this->id)));
         $result->setEditLink(URL::route('cashflow_operation_modify', array('account_id' => $this->account_id, 'id' => $this->id)));
-        $result->registerAction(new BankOperationAction\Refresh(URL::route('cashflow_operation_refresh', array('account_id' => $this->account_id, 'id' => $this->id))));
-        $result->registerAction(new BankOperationAction\Archive(URL::route('cashflow_operation_archive', array('account_id' => $this->account_id, 'id' => $this->id))));
         return $result;
     }
 

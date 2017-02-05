@@ -9,7 +9,7 @@ class InvoiceBankOperationFactory extends AbstractBankOperationFactory
         foreach ($invoices as $invoice) {
             /** @var Invoice $invoice */
             $start_at = $invoice->date_invoice;
-            if ($start_at > $today) {
+            if (true or $start_at > $today) {
                 $occurs_at = (new \DateTime($start_at))->modify('+1 month')->format('Y-m-d');
                 $operation = new ManagedBankOperation($occurs_at, $invoice->caption, Invoice::TotalInvoiceWithTaxes($invoice->items));
                 $operation->setComment(sprintf('%s€ HT', Invoice::TotalInvoice($invoice->items)));

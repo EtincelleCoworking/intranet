@@ -21,6 +21,9 @@ class BankOperationCollection
     public function register(BankOperation $operation)
     {
         $occurs_at = ($this->today > $operation->getOccursAt()) ? $this->today : $operation->getOccursAt();
+        if ($occurs_at != $operation->getOccursAt()) {
+            $operation->setCOmment(sprintf('Date: %s', $operation->getOccursAt()));
+        }
         $this->items[$occurs_at]['operations'][] = $operation;
     }
 
@@ -38,7 +41,8 @@ class BankOperationCollection
         return $result;
     }
 
-    public function getEndsAt(){
+    public function getEndsAt()
+    {
         return $this->ends_at;
     }
 }
