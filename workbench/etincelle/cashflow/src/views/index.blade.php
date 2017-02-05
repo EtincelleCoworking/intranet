@@ -113,6 +113,21 @@
                                             <span style="color: green">{{ number_format( $data['amount'], 0, ',', '.') }}
                                                 €</span>
                                         @endif
+                                        <p>
+                                            <small>
+                                                @if($data['negative'] != 0)
+                                                    <span style="color: red">{{ number_format( $data['negative'], 0, ',', '.') }}
+                                                        €</span>
+                                                    @if($data['positive'] != 0)
+                                                        /
+                                                    @endif
+                                                @endif
+                                                @if($data['positive'] != 0)
+                                                    <span style="color: green">+{{ number_format( $data['positive'], 0, ',', '.') }}
+                                                        €</span>
+                                                @endif
+                                            </small>
+                                        </p>
                                     </td>
                                 </tr>
                             @endforeach

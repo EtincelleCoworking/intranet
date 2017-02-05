@@ -14,6 +14,8 @@ class BankOperationCollection
         while ($start_at <= $ends_at) {
             $this->items[$start_at]['operations'] = array();
             $this->items[$start_at]['amount'] = 0;
+            $this->items[$start_at]['positive'] = 0;
+            $this->items[$start_at]['negative'] = 0;
             $start_at = (new \DateTime($start_at))->modify('+1 day')->format('Y-m-d');
         }
         ksort($this->items);
@@ -36,9 +38,19 @@ class BankOperationCollection
 
         $amount = $initial_amount;
         foreach ($result as $date => $data) {
+            $positive = 0;
+            $negative = 0;
             foreach ($data['operations'] as $operation) {
-                $amount += $operation->getAmount();
+                if ($operation->getAmount() > 0) {
+                    $positive += $operation->getAmount();
+                } else {
+                    $negative += $operation->getAmount();
+                }
             }
+            $amount += $positive;
+            $amount += $negative;
+            $result[$date]['positive'] = $positive;
+            $result[$date]['negative'] = $negative;
             $result[$date]['amount'] = $amount;
         }
 
