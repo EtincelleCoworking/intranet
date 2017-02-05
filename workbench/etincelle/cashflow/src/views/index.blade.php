@@ -139,7 +139,7 @@
 @stop
 
 @section('javascript')
-    {{ HTML::script('js/plugins/morris/Raphael-2.1.0.min.js') }}
+    {{ HTML::script('js/plugins/morris/raphael-2.1.0.min.js') }}
     {{ HTML::script('js/plugins/morris/morris.js') }}
 
     <script type="text/javascript">
