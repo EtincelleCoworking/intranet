@@ -16,21 +16,24 @@ class BankOperationCollection
             $this->items[$start_at]['amount'] = 0;
             $start_at = (new \DateTime($start_at))->modify('+1 day')->format('Y-m-d');
         }
+        ksort($this->items);
     }
 
     public function register(BankOperation $operation)
     {
-        $occurs_at = ($this->today > $operation->getOccursAt()) ? $this->today : $operation->getOccursAt();
-        if ($occurs_at != $operation->getOccursAt()) {
-            $operation->setCOmment(sprintf('Date: %s', $operation->getOccursAt()));
+        if ($operation->getOccursAt() <= $this->ends_at) {
+            $occurs_at = ($this->today > $operation->getOccursAt()) ? $this->today : $operation->getOccursAt();
+            if ($occurs_at != $operation->getOccursAt()) {
+                $operation->setCOmment(sprintf('Date: %s', $operation->getOccursAt()));
+            }
+            $this->items[$occurs_at]['operations'][] = $operation;
         }
-        $this->items[$occurs_at]['operations'][] = $operation;
     }
 
     public function getItems($initial_amount)
     {
         $result = $this->items;
-        ksort($result);
+
         $amount = $initial_amount;
         foreach ($result as $date => $data) {
             foreach ($data['operations'] as $operation) {
