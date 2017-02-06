@@ -57,17 +57,14 @@ class CashflowController extends Controller
                         'operations' => $operations
                     );
                 }
-                $isSuccess = false;
-                //var_dump($result);exit;
                 foreach (CashflowAccount::all() as $account) {
                     if (isset($result[$account->account_number])) {
                         if ($account->amount_updated_at < $result[$account->account_number]['balanceDate']) {
                             $report = $account->processOperations($result[$account->account_number]['operations']);
 
-
                             $account->amount = $result[$account->account_number]['balance'];
                             $account->amount_updated_at = $result[$account->account_number]['balanceDate'];
-                       //     $account->save();
+                            $account->save();
                             $message = sprintf('Le solde du compte %s a été mis à jour (%s€ en date du %s)',
                                 $account->account_number, $account->amount, date('d/m/Y', strtotime($account->amount_updated_at)));
 
