@@ -13,7 +13,13 @@ class InvoiceController extends BaseController
         if (Auth::user()->isSuperAdmin()) {
             $data = Invoice::find($id);
         } else {
-            $data = Invoice::whereUserId(Auth::user()->id)->find($id);
+            $data = Invoice::select('invoices.*')
+                ->join('organisations', 'organisations.id', '=', 'invoices.organisation_id')
+                ->where(function ($query) {
+                    $query->where('organisations.accountant_id', Auth::id())
+                        ->orWhere('invoices.user_id', Auth::id());
+                })
+                ->where('invoices.id', $id)->first();
         }
 
         if (!$data) {

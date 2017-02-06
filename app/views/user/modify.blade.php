@@ -153,9 +153,13 @@
                                 {{ Form::label('default_location_id', 'Espace habituel') }}
                                 {{ Form::select('default_location_id', Location::SelectAll(false), $user->default_location_id, array('class' => 'form-control')) }}
                             </div>
-                            <div class="col-lg-6">
+                            <div class="col-lg-12">
                                 {{ Form::checkbox('is_member', true) }}
                                 {{ Form::label('is_member', 'Membre') }}
+                            </div>
+                            <div class="col-lg-12">
+                                {{ Form::checkbox('is_student', true) }}
+                                {{ Form::label('is_student', 'Etudiant') }}
                             </div>
                         @endif
                     </div>

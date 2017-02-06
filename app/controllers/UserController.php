@@ -126,6 +126,7 @@ class UserController extends BaseController
                 $user->social_facebook = Input::get('social_facebook');
                 if (Auth::user()->isSuperAdmin()) {
                     $user->is_member = Input::get('is_member', false);
+                    $user->is_student = Input::get('is_student', false);
                     $user->default_location_id = Input::get('default_location_id');
                 }
                 $user->slack_id = Input::get('slack_id');
