@@ -85,7 +85,7 @@ class CashflowAccount extends Illuminate\Database\Eloquent\Model
 
     protected function checkInvoicePayment($operation, &$message, &$status)
     {
-        if (preg_match('/(F([0-9]{6})-([0-9]{4}))/', $operation['comment'], $tokens)) {
+        if (preg_match('/(F([0-9]{6})[- ]([0-9]{4}))/', $operation['comment'], $tokens)) {
             $invoice = Invoice::where('type', 'F')
                 ->where('days', $tokens[2])
                 ->where('number', $tokens[3])
