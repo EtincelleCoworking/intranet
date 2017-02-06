@@ -3,9 +3,9 @@
 /**
  * Cashflow Controller
  */
-class CashflowController extends BaseController
+class VatController extends BaseController
 {
-    public function vat()
+    public function overview()
     {
         $paid = array();
         $paid_rates = array();
@@ -64,7 +64,7 @@ class CashflowController extends BaseController
         krsort($overview);
 
 
-        return View::make('cashflow.vat', array('paid' => $paid, 'received' => $received,
+        return View::make('vat.overview', array('paid' => $paid, 'received' => $received,
             'sum' => $sum,
             'overview' => $overview,
             'paid_rates' => array_keys($paid_rates), 'received_rates' => array_keys($received_rates)));

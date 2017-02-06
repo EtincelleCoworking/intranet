@@ -41,20 +41,20 @@ class CashflowController extends Controller
                 $ofx = $ofxParser->loadFromFile($movedFile->getPathName());
                 $messages = array();
                 foreach ($ofx->bankAccounts as $bankAccount) {
-                    /*            $operations = array();
-                                foreach ($bankAccount->statement->transactions as $transaction) {
-                                    $operations[$transaction->date->format('Y-m-d')][] = array(
-                                        'name' => (string)$transaction->name,
-                                        'comment' => (string)$transaction->memo,
-                                        'amount' => (float)$transaction->amount,
-                                        'checkNumber' => (string)$transaction->checkNumber,
-                                    );
-                                }
-                    */
+                    $operations = array();
+                    foreach ($bankAccount->statement->transactions as $transaction) {
+                        $operations[] = array(
+                            'occurs_at' => $transaction->date->format('Y-m-d'),
+                            'name' => (string)$transaction->name,
+                            'comment' => (string)$transaction->memo,
+                            'amount' => (float)$transaction->amount,
+                            'checkNumber' => (string)$transaction->checkNumber,
+                        );
+                    }
                     $result[(string)$bankAccount->accountNumber] = array(
                         'balance' => (float)$bankAccount->balance,
                         'balanceDate' => $bankAccount->balanceDate->format('Y-m-d'),
-//                'operations' => $operations
+                        'operations' => $operations
                     );
                 }
                 $isSuccess = false;
@@ -62,12 +62,16 @@ class CashflowController extends Controller
                 foreach (CashflowAccount::all() as $account) {
                     if (isset($result[$account->account_number])) {
                         if ($account->amount_updated_at < $result[$account->account_number]['balanceDate']) {
+                            $report = $account->processOperations($result[$account->account_number]['operations']);
+
+
                             $account->amount = $result[$account->account_number]['balance'];
                             $account->amount_updated_at = $result[$account->account_number]['balanceDate'];
-                            $account->save();
-                            $messages[] = sprintf('Le solde du compte %s a été mis à jour (%s€ en date du %s)',
+                       //     $account->save();
+                            $message = sprintf('Le solde du compte %s a été mis à jour (%s€ en date du %s)',
                                 $account->account_number, $account->amount, date('d/m/Y', strtotime($account->amount_updated_at)));
-                            $isSuccess = true;
+
+                            return View::make('cashflow::update_report', array('report' => $report, 'message' => $message));
                         } else {
                             $messages[] = sprintf('Le compte %s a déjà été mis à jour avec une version plus récente (mise à jour le %s, date du fichier: %s) - aucune opération effectuée',
                                 $account->account_number,
@@ -78,7 +82,7 @@ class CashflowController extends Controller
                         $messages[] = sprintf('Aucune information de mise à jour trouvée pour le compte %s', $account->account_number);
                     }
                 }
-                return Redirect::route($isSuccess ? 'cashflow' : 'cashflow_update')->with('mInfo', implode('<br />', $messages));
+                return Redirect::route('cashflow_update')->with('mInfo', implode('<br />', $messages));
             } else {
                 return Redirect::route('cashflow_update')->with('mError', 'Fichier invalide');
             }

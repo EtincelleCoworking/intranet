@@ -35,7 +35,9 @@
 
                         {{ Form::model($account, array('route' => array('cashflow_account_modify_check', $account->id))) }}
                         {{ Form::label('amount', 'Solde actuel') }}
-                        (dernière mise à jour: {{date('d/m/Y', strtotime($account->updated_at))}})
+                        @if($account->amount_updated_at)
+                        (dernière mise à jour: {{date('d/m/Y', strtotime($account->amount_updated_at))}})
+                        @endif
                         <a href="{{URL::route('cashflow_update')}}" class="btn btn-xs btn-primary">Mettre à jour</a>
                         <div class="input-group">
                             {{ Form::text('amount', isset($account)?$account->amount:'', array('class' => 'form-control')) }}

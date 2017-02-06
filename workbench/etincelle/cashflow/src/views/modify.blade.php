@@ -74,6 +74,10 @@
                                     </ul>
                                 </small>
                             </div>
+                            {{ Form::label('line1', 'Ligne 1') }}
+                            <p>{{ Form::text('line1', isset($operation)?$operation->line1:'', array('class' => 'form-control')) }}</p>
+                            {{ Form::label('line2', 'Ligne 2') }}
+                            <p>{{ Form::text('line2', isset($operation)?$operation->line2:'', array('class' => 'form-control')) }}</p>
                         </div>
                         <div class="col-md-3">
                             {{ Form::label('amount', 'Montant') }}

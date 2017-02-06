@@ -140,7 +140,7 @@ Route::group(['before' => 'superadmin'], function() {
     Route::post('/vat/add', array('as' => 'vat_add_check', 'uses' => 'VatTypeController@add_check'));
     Route::get('/vat/modify/{id}', array('as' => 'vat_modify', 'uses' => 'VatTypeController@modify'))->where(array('id' => '[0-9]+'));
     Route::post('/vat/modify/{id}', array('as' => 'vat_modify_check', 'uses' => 'VatTypeController@modify_check'))->where(array('id' => '[0-9]+'));
-    Route::get('/cashflow/vat', array('as' => 'vat_overview', 'uses' => 'CashflowController@vat'));
+    Route::get('/vat/overview', array('as' => 'vat_overview', 'uses' => 'VatController@overview'));
 
     Route::get('/stats/overview', array('as' => 'stats_overview', 'uses' => 'StatsController@overview'));
     Route::get('/stats/sales', array('as' => 'stats_sales', 'uses' => 'StatsController@sales'));

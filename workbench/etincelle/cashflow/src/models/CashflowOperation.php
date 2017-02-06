@@ -72,4 +72,9 @@ class CashflowOperation extends Illuminate\Database\Eloquent\Model
         return $result;
     }
 
+    public function __toString()
+    {
+        return sprintf('<a href="%s">%s</a>',
+            URL::route('cashflow_operation_modify', array('account_id' => $this->account_id, 'id' => $this->id)), $this->name);
+    }
 }

@@ -424,4 +424,9 @@ class Invoice extends Eloquent
 
         return $html;
     }
+
+    public function __toString(){
+        return sprintf('<a href="%s">%s</a>',
+            URL::route('invoice_modify', $this->id), $this->ident);
+    }
 }
