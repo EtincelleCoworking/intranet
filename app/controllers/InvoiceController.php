@@ -99,7 +99,12 @@ class InvoiceController extends BaseController
             $q->whereNull('date_payment');
         }
         if (Auth::user()->role == 'member') {
-            $q->whereUserId(Auth::user()->id);
+            $q->select('invoices.*');
+            $q->join('organisations', 'organisations.id', '=', 'invoices.organisation_id');
+            $q->where(function ($query) {
+                $query->where('organisations.accountant_id', Auth::id())
+                    ->orWhere('invoices.user_id', Auth::id());
+            });
         } else {
             if (Session::has('filtre_invoice.user_id')) {
                 $q->whereUserId(Session::get('filtre_invoice.user_id'));
@@ -112,9 +117,9 @@ class InvoiceController extends BaseController
 
         $q->orderBy('created_at', 'DESC');
         $q->with('user', 'organisation', 'items', 'items.vat');
-        if (Auth::user()->role != 'superadmin') {
-            $q->whereUserId(Auth::user()->id);
-        }
+//        if (Auth::user()->role != 'superadmin') {
+//            $q->whereUserId(Auth::user()->id);
+        //      }
         $invoices = $q->paginate(15);
 
         return View::make('invoice.liste', array('invoices' => $invoices));
@@ -242,7 +247,7 @@ class InvoiceController extends BaseController
             $date = new DateTime($invoice->date_invoice);
             $date->modify('+1 month');
             $invoice->deadline = $date->format('Y-m-d');
-            $invoice->expected_payment_at = $invoice->deadline ;
+            $invoice->expected_payment_at = $invoice->deadline;
 
 
             if ($invoice->save()) {
@@ -428,7 +433,8 @@ class InvoiceController extends BaseController
     }
 
 
-    public function unpaid(){
+    public function unpaid()
+    {
 
         $items = DB::select(DB::raw('select 
 invoices.organisation_id, 

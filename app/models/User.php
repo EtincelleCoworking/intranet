@@ -262,7 +262,16 @@ class User extends Eloquent implements UserInterface, RemindableInterface
 
     public function getPendingInvoiceCount()
     {
-        return Invoice::whereType('F')->whereUserId($this->id)->whereNull('date_payment')->count();
+        return Invoice::whereType('F')
+            ->select('invoices.id')
+            ->join('organisations', 'organisations.id', '=', 'invoices.organisation_id')
+            ->where(function ($query) {
+                $query->where('organisations.accountant_id', $this->id)
+                    ->orWhere('invoices.user_id', $this->id);
+            })
+            //->whereUserId($this->id)
+            ->whereNull('date_payment')
+            ->count();
     }
 
     public function isSuperAdmin()
