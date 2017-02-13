@@ -59,7 +59,7 @@ class CashflowController extends Controller
                 }
                 foreach (CashflowAccount::all() as $account) {
                     if (isset($result[$account->account_number])) {
-                        if ($account->amount_updated_at < $result[$account->account_number]['balanceDate']) {
+                        if ($account->amount_updated_at <= $result[$account->account_number]['balanceDate']) {
                             $report = $account->processOperations($result[$account->account_number]['operations']);
 
                             $account->amount = $result[$account->account_number]['balance'];
