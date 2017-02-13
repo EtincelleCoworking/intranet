@@ -346,14 +346,14 @@ class PastTimeController extends BaseController
             $invoice_line->save();
             $invoice_lines[] = $invoice_line;
         }
-
+/*
         foreach ($organisation->invoicing_rules() as $rule) {
             $processor = $rule->createProcessor();
             if ($processor) {
                 $processor->execute($invoice_lines);
             }
         }
-
+*/
         return Redirect::route('invoice_modify', $invoice->id)->with('mSuccess', 'La facture a bien été générée');
     }
 
