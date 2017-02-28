@@ -252,8 +252,6 @@ class StatsController extends BaseController
 
     public function spaces()
     {
-
-
         $items = DB::select(DB::raw('select 
 date_format(invoices.date_invoice, "%Y-%m") as period, 
 SUM(invoices_items.amount) as total, 
@@ -334,6 +332,11 @@ order by kind ASC, `period` DESC
                 }
         */
         $costs = array(
+            'Albi' => array(
+                '2017-02' => 1130,
+                '2017-07' => 1630,
+                '2018-03' => 2350,
+            ),
             'Montauban' => array(
                 '2015-09' => 2050,
                 '2016-12' => 3730,
