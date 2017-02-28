@@ -264,7 +264,7 @@ left outer join `ressources` on invoices_items.`ressource_id` = `ressources`.`id
 left outer join `locations` on ressources.`location_id` = `locations`.`id` 
 left outer join cities on locations.city_id = cities.id
 
-where ressources.ressource_kind_id NOT IN ('.RessourceKind::TYPE_COWORKING.', '.RessourceKind::TYPE_EXCEPTIONNAL.')
+where ressources.ressource_kind_id NOT IN (' . RessourceKind::TYPE_COWORKING . ', ' . RessourceKind::TYPE_EXCEPTIONNAL . ')
 
 group by `period`, kind
 order by kind ASC, `period` desc')); // `organisations`.`is_founder` = '0' or (`organisation_id` is null) AND
@@ -387,18 +387,22 @@ order by kind ASC, `period` DESC
             )
         );
 
+        $this_month = date('Y-m');
+
         $datas = array();
         foreach ($costs as $location => $data) {
             foreach ($data as $period => $value) {
-                if (isset($operations[$location][$period])) {
-                    $result[$location][$period] += (float)$operations[$location][$period];
-                }
+                if ($period <= $this_month) {
+                    if (isset($operations[$location][$period])) {
+                        $result[$location][$period] += (float)$operations[$location][$period];
+                    }
 
-                $datas[$location][substr($period, 0, 4)][$period] = array(
-                    'sales' => (float)$result[$location][$period],
-                    'cost' => (float)$costs[$location][$period],
-                    'balance' => (float)$result[$location][$period] - (float)$costs[$location][$period],
-                );
+                    $datas[$location][substr($period, 0, 4)][$period] = array(
+                        'sales' => (float)$result[$location][$period],
+                        'cost' => (float)$costs[$location][$period],
+                        'balance' => (float)$result[$location][$period] - (float)$costs[$location][$period],
+                    );
+                }
             }
             krsort($datas[$location]);
         }
@@ -407,7 +411,7 @@ order by kind ASC, `period` DESC
             foreach ($subdata as $year => $subdata2) {
                 foreach ($subdata2 as $month => $values) {
                     foreach ($values as $k => $v) {
-                        if(!isset($global[$year][$month][$k])){
+                        if (!isset($global[$year][$month][$k])) {
                             $global[$year][$month][$k] = 0;
                         }
                         $global[$year][$month][$k] += (float)$v;
@@ -419,6 +423,6 @@ order by kind ASC, `period` DESC
         return View::make('stats.spaces', array(
             'datas' => $datas,
             'global' => $global,
-            ));
+        ));
     }
 }
