@@ -352,6 +352,7 @@ order by kind ASC, `period` DESC
             'Toulouse > Wilson' => array(
                 '2015-01' => 7000,
                 '2016-12' => 9280,
+                '2017-06' => 12500,
             ),
         );
 
