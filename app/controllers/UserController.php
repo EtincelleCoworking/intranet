@@ -532,8 +532,20 @@ class UserController extends BaseController
 
         ksort($items);
 
+        $months = array_keys($items);
+        $current_month = date('m');
+        $month = null;
+        do {
+            if ($month) {
+                $months[] = $month;
+            }
+            $month = array_shift($months);
+
+        } while ($month < $current_month - 1);
+        $months[] = $month;
+
         return View::make('user.birthday', array(
-            'months' => array_keys($items),
+            'months' => $months,
             'users' => $items
         ));
     }

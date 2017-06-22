@@ -14,7 +14,7 @@
 
 @section('content')
     @foreach ($months as $month)
-        <h2>{{ $month }}</h2>
+        <h2>{{ $month }} - {{ date('F', strtotime(date('Y-'.$month.'-d'))) }}</h2>
     <table class="table table-striped table-hover">
         <thead>
         <tr>
