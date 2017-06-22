@@ -60,6 +60,7 @@
                     ?>
                 </td><td>
                     <?php
+
                     if ($u->last_seen_at && $u->last_seen_at != '0000-00-00') {
                         echo date('d/m/Y', strtotime($u->last_seen_at));
                     } else {

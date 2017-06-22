@@ -35,7 +35,7 @@
             <li{{ Request::is('organisation*') ? ' class="active"' : '' }}>
                 <a href="{{ URL::route('organisation_list') }}"><i class="fa fa-building"></i> Sociétés</a>
             </li>
-            <li{{ (Request::is('user*') && !Request::is('user/list'))? ' class="active"' : '' }}>
+            <li{{ (Request::is('user*') && !Request::is('user/list') && !Request::is('user/birthday'))? ' class="active"' : '' }}>
                 <a href="{{ URL::route('members') }}"><i class="fa fa-user"></i> Membres</a>
             </li>
             <li{{ Request::is('user/list') ? ' class="active"' : '' }}>

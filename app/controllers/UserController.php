@@ -525,6 +525,7 @@ class UserController extends BaseController
             ->where('locations.city_id', '=', Auth::user()->location->city_id)
             ->where('users.id', '!=', Auth::id())
             ->orderBy('users.is_member', 'DESC')
+            ->orderBy('users.last_seen_at', 'DESC')
             ->distinct()
             //->select('users.id', 'users.birthday', 'users.firstname', 'users.lastname', 'users.email')
             ->get(array('users.*'))
