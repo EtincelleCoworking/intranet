@@ -37,8 +37,8 @@ class UpdateMemberStatusCommand extends Command {
 	 */
 	public function fire()
 	{
+        DB::update('update users set is_member  = 0');
         DB::update('update users set is_member  = 1 where last_seen_at > date_sub(now(), INTERVAL 100 DAY)');
-
 	}
 
 	/**

@@ -519,13 +519,18 @@ class UserController extends BaseController
 
     public function birthday()
     {
-        $users = User::where('birthday', '!=', '0000-00-00')
-            ->join('locations', 'users.default_location_id', '=', 'locations.id')
+        $users = User::
+            join('locations', 'users.default_location_id', '=', 'locations.id')
+            ->where('birthday', '!=', '0000-00-00')
             ->where('locations.city_id', '=', Auth::user()->location->city_id)
             ->where('users.id', '!=', Auth::id())
             ->orderBy('users.is_member', 'DESC')
-            ->get();
+            ->distinct()
+            //->select('users.id', 'users.birthday', 'users.firstname', 'users.lastname', 'users.email')
+            ->get(array('users.*'))
+        ;
         $items = array();
+            //var_dump($users);exit;
         foreach ($users as $user) {
             $items[date('m', strtotime($user->birthday))][] = $user;
         }
