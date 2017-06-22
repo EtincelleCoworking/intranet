@@ -33,6 +33,7 @@ Route::group(['before' => 'member'], function() {
     Route::get('/user/export-profile/{id}', array('as' => 'user_export_profile', 'uses' => 'UserController@exportMemberProfile'))->where(array('id' => '[0-9]+'));
 
     Route::get('/user/change-location', array('as' => 'user_change_location', 'uses' => 'UserController@ChangeLocation'));
+    Route::get('/user/birthday', array('as' => 'user_birthday', 'uses' => 'UserController@birthday'));
 
 
 	Route::get('/users', array('as' => 'members', 'uses' => 'UserController@members'));

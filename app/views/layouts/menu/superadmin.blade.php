@@ -41,6 +41,9 @@
             <li{{ Request::is('user/list') ? ' class="active"' : '' }}>
                 <a href="{{ URL::route('user_list') }}"><i class="fa fa-user"></i> Utilisateurs</a>
             </li>
+            <li{{ Request::is('user/birthday') ? ' class="active"' : '' }}>
+                <a href="{{ URL::route('user_birthday') }}"><i class="fa fa-user"></i> Anniversaires</a>
+            </li>
             {{--<li><a href="{{ URL::route('user_directory') }}">Annuaire</a></li>--}}
         </ul>
     </li>

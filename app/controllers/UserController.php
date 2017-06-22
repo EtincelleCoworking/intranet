@@ -1,6 +1,7 @@
 <?php
 
 use GuzzleHttp\Client;
+
 /**
  * UserController Class
  */
@@ -514,6 +515,27 @@ class UserController extends BaseController
         }
         throw new Exception('An error has occured: ' . $output);
 
+    }
+
+    public function birthday()
+    {
+        $users = User::where('birthday', '!=', '0000-00-00')
+            ->join('locations', 'users.default_location_id', '=', 'locations.id')
+            ->where('locations.city_id', '=', Auth::user()->location->city_id)
+            ->where('users.id', '!=', Auth::id())
+            ->orderBy('users.is_member', 'DESC')
+            ->get();
+        $items = array();
+        foreach ($users as $user) {
+            $items[date('m', strtotime($user->birthday))][] = $user;
+        }
+
+        ksort($items);
+
+        return View::make('user.birthday', array(
+            'months' => array_keys($items),
+            'users' => $items
+        ));
     }
 }
 
