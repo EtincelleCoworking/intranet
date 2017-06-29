@@ -175,6 +175,7 @@ Route::group(['before' => 'superadmin'], function() {
 
 
     Route::get('/subscriptions', array('as' => 'subscription_list', 'uses' => 'SubscriptionController@liste'));
+    Route::post('/subscriptions', array('as' => 'subscription_list', 'uses' => 'SubscriptionController@liste'));
     Route::get('/subscription/add', array('as' => 'subscription_add', 'uses' => 'SubscriptionController@add'));
     Route::post('/subscription/add', array('as' => 'subscription_add_check', 'uses' => 'SubscriptionController@add_check'));
     Route::get('/subscription/modify/{id}', array('as' => 'subscription_modify', 'uses' => 'SubscriptionController@modify'));
@@ -182,6 +183,7 @@ Route::group(['before' => 'superadmin'], function() {
     Route::get('/subscription/delete/{id}', array('as' => 'subscription_delete', 'uses' => 'SubscriptionController@delete'));
     Route::get('/subscription/renew/{id}', array('as' => 'subscription_renew', 'uses' => 'SubscriptionController@renew'));
     Route::get('/subscription/renew/company/{id}', array('as' => 'subscription_renew_company', 'uses' => 'SubscriptionController@renewCompany'));
+    Route::get('/subscription/reset-filter', array('as' => 'subscription_filter_reset', 'uses' => 'SubscriptionController@cancelFilter'));
 
     Route::get('/wall/delete/{id}', array('as' => 'wall_delete', 'uses' => 'WallPostController@delete'));
     Route::get('/wall/delete-reply/{id}', array('as' => 'wall_delete_reply', 'uses' => 'WallPostController@deleteReply'));

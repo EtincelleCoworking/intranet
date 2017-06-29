@@ -18,6 +18,46 @@
 @stop
 
 @section('content')
+    <div class="row">
+        <div class="col-lg-12">
+            <div class="ibox">
+                <div class="ibox-title">
+                    <h5>Filtre</h5>
+
+                    {{--<div class="ibox-tools">--}}
+                    {{--<a class="collapse-link">--}}
+                    {{--<i class="fa fa-chevron-up"></i>--}}
+                    {{--</a>--}}
+                    {{--</div>--}}
+                </div>
+                <div class="ibox-content">
+
+                    {{ Form::open(array('route' => array('subscription_list'))) }}
+                    {{ Form::hidden('filtre_submitted', 1) }}
+                    <div class="row">
+                        <div class="col-md-3">
+                            {{ Form::select('filtre_organisation_id', Organisation::Select('Sélectionnez une société'), Session::get('filtre_subscription.organisation_id') ? Session::get('filtre_subscription.organisation_id') : null, array('id' => 'filter-organisation','class' => 'form-control')) }}
+                        </div>
+                        <div class="col-md-3">
+                            {{ Form::select('filtre_user_id', User::Select('Sélectionnez un client'), Session::get('filtre_subscription.user_id') ? Session::get('filtre_subscription.user_id') : null, array('id' => 'filter-client','class' => 'form-control')) }}
+                        </div>
+                        <div class="col-md-3">
+                            {{ Form::select('filtre_city_id', City::SelectAll('Sélectionnez une ville'), Session::get('filtre_subscription.city_id') ? Session::get('filtre_subscription.city_id') : null, array('id' => 'filter-location','class' => 'form-control')) }}
+                        </div>
+                        <div class="col-md-3">
+                            {{ Form::submit('Filtrer', array('class' => 'btn btn-sm btn-primary')) }}
+                            <a href="{{URL::route('subscription_filter_reset')}}" class="btn btn-sm btn-default">Réinitialiser</a>
+                        </div>
+                    </div>
+                    {{ Form::close() }}
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+
+
     @if(count($subscriptions) == 0)
         <div class="middle-box text-center animated fadeInRightBig">
             <h3 class="font-bold">Aucun abonnement</h3>
@@ -48,6 +88,7 @@
                             <thead>
                             <tr>
                                 <th>N°</th>
+                                <th>Ville</th>
                                 <th>Type</th>
                                 <th>Membre</th>
                                 <th>Description</th>
@@ -59,6 +100,7 @@
                             @foreach ($subscriptions as $position => $subscription)
                                 <tr>
                                     <td>{{$position + 1}}</td>
+                                    <td>{{ $subscription->user->location->city->name }}</td>
                                     <td>{{$subscription->kind->ressource->name}}</td>
                                     <td>
                                         @if (Auth::user()->isSuperAdmin())
@@ -111,4 +153,15 @@
             </div>
         </div>
 
+@stop
+
+
+@section('javascript')
+    <script type="text/javascript">
+        $().ready(function () {
+            $('#filter-client').select2();
+            $('#filter-organisation').select2();
+            $('#filter-location').select2();
+        });
+    </script>
 @stop

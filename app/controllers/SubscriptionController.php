@@ -2,14 +2,38 @@
 
 class SubscriptionController extends BaseController
 {
+    public function cancelFilter()
+    {
+        Session::forget('filtre_subscription.user_id');
+        Session::forget('filtre_subscription.organisation_id');
+        Session::forget('filtre_subscription.city_id');
+        return Redirect::route('subscription_list');
+    }
     /**
      * List of vats
      */
     public function liste()
     {
+        if (Input::has('filtre_submitted')) {
+            if (Input::has('filtre_city_id')) {
+                Session::put('filtre_subscription.city_id', Input::get('filtre_city_id'));
+            } else {
+                Session::forget('filtre_subscription.city_id');
+            }
+            if (Input::has('filtre_organisation_id')) {
+                Session::put('filtre_subscription.organisation_id', Input::get('filtre_organisation_id'));
+            } else {
+                Session::forget('filtre_subscription.organisation_id');
+            }
+            if (Input::has('filtre_user_id')) {
+                Session::put('filtre_subscription.user_id', Input::get('filtre_user_id'));
+            } else {
+                Session::forget('filtre_subscription.user_id');
+            }
+        }
 
-
-        $items = Subscription::join('organisations', 'subscription.organisation_id', '=', 'organisations.id')
+        $companies = array();
+        $q = Subscription::join('organisations', 'subscription.organisation_id', '=', 'organisations.id')
             ->orderBy('organisations.name', 'desc')
             ->groupBy('organisations.name')
             ->addSelect('organisations.id')
@@ -17,19 +41,28 @@ class SubscriptionController extends BaseController
             ->addSelect(DB::raw('count(subscription.id) as count'))
             ->where('renew_at', '<=', date('Y-m-t'))
             //->where('renew_at', '<', (new DateTime())->modify('+1 month')->format('Y-m-d'))
-            ->having('count', '>', 1)
-            ->get();
-        $companies = array();
-        foreach ($items as $item) {
+            ->having('count', '>', 1);
+        foreach ($q->get() as $item) {
             $companies[$item->id] = array('name' => $item->name, 'count' => $item->count);
         }
 
 
         $subscriptions = Subscription::orderBy('renew_at', 'ASC')
-            //->where('subscription.organisation_id', 283)
-            ->paginate(15);
+            ->join('users', 'subscription.user_id', '=', 'users.id')
+            ->join('locations', 'users.default_location_id', '=', 'locations.id')
+            //->join('cities', 'locations.city_id', '=', 'cities.id')
+        ;
+        if (Session::has('filtre_subscription.user_id')) {
+            $subscriptions->where('subscription.user_id', '=', Session::get('filtre_subscription.user_id'));
+        }
+        if (Session::has('filtre_subscription.organisation_id')) {
+            $subscriptions->where('subscription.organisation_id', '=', Session::get('filtre_subscription.organisation_id'));
+        }
+        if (Session::has('filtre_subscription.city_id')) {
+            $subscriptions->where('locations.city_id', '=', Session::get('filtre_subscription.city_id'));
+        }
 
-        return View::make('subscription.liste', array('subscriptions' => $subscriptions, 'companies' => $companies));
+        return View::make('subscription.liste', array('subscriptions' => $subscriptions->paginate(15), 'companies' => $companies));
     }
 
     public function add()
