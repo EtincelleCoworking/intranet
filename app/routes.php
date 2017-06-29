@@ -128,6 +128,7 @@ Route::group(['before' => 'superadmin'], function() {
     Route::post('/country/modify/{id}', array('as' => 'country_modify_check', 'uses' => 'CountryController@modify_check'))->where(array('id' => '[0-9]+'));
 
     Route::get('/devices', array('as' => 'device_list', 'uses' => 'DeviceController@liste'));
+    Route::post('/devices', array('as' => 'device_list', 'uses' => 'DeviceController@liste'));
     Route::get('/device/add', array('as' => 'device_add', 'uses' => 'DeviceController@add'));
     Route::post('/device/add', array('as' => 'device_add_check', 'uses' => 'DeviceController@add_check'));
     Route::get('/device/modify/{id}', array('as' => 'device_modify', 'uses' => 'DeviceController@modify'))->where(array('id' => '[0-9]+'));
@@ -135,6 +136,7 @@ Route::group(['before' => 'superadmin'], function() {
     Route::get('/device/delete/{id}', array('as' => 'device_delete', 'uses' => 'DeviceController@delete'))->where(array('id' => '[0-9]+'));
     Route::get('/device/enable/{id}', array('as' => 'device_enable', 'uses' => 'DeviceController@enableTracking'))->where(array('id' => '[0-9]+'));
     Route::get('/device/disable/{id}', array('as' => 'device_disable', 'uses' => 'DeviceController@disableTracking'))->where(array('id' => '[0-9]+'));
+    Route::get('/device/reset-filter', array('as' => 'device_filter_reset', 'uses' => 'DeviceController@cancelFilter'));
 
     Route::get('/vats', array('as' => 'vat_list', 'uses' => 'VatTypeController@liste'));
     Route::get('/vat/add', array('as' => 'vat_add', 'uses' => 'VatTypeController@add'));
