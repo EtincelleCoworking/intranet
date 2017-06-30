@@ -20,6 +20,45 @@
 @section('content')
     <div class="row">
         <div class="col-lg-12">
+            <div class="ibox">
+                <div class="ibox-title">
+                    <h5>Filtre</h5>
+
+                    {{--<div class="ibox-tools">--}}
+                    {{--<a class="collapse-link">--}}
+                    {{--<i class="fa fa-chevron-up"></i>--}}
+                    {{--</a>--}}
+                    {{--</div>--}}
+                </div>
+                <div class="ibox-content">
+
+                    {{ Form::open(array('route' => array('device_list'))) }}
+                    {{ Form::hidden('filtre_submitted', 1) }}
+                    <div class="row">
+                        <div class="col-md-3">
+                            {{ Form::select('filtre_user_id', User::Select('Sélectionnez un client'), Session::get('filtre_device.user_id') ? Session::get('filtre_device.user_id') : null, array('id' => 'filter-client','class' => 'form-control')) }}
+                        </div>
+                        <div class="col-md-3">
+                            {{ Form::select('filtre_location_id', Location::SelectAll('Sélectionnez un espace'), Session::get('filtre_device.location_id') ? Session::get('filtre_device.location_id') : null, array('id' => 'filter-location','class' => 'form-control')) }}
+                        </div>
+                        <div class="col-md-3">
+                            {{ Form::text('filtre_ip', Session::get('filtre_device.ip') ? Session::get('filtre_device.ip') : null, array('id' => 'filter-location','class' => 'form-control')) }}
+                        </div>
+                        <div class="col-md-3">
+                            {{ Form::submit('Filtrer', array('class' => 'btn btn-sm btn-primary')) }}
+                            <a href="{{URL::route('device_filter_reset')}}" class="btn btn-sm btn-default">Réinitialiser</a>
+                        </div>
+                    </div>
+                    {{ Form::close() }}
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+
+    <div class="row">
+        <div class="col-lg-12">
             <div class="ibox ">
                 <div class="ibox-content">
                     <div class="row">
@@ -99,4 +138,14 @@
             </div>
         </div>
     </div>
+@stop
+
+
+@section('javascript')
+    <script type="text/javascript">
+        $().ready(function () {
+            $('#filter-client').select2();
+            $('#filter-location').select2();
+        });
+    </script>
 @stop

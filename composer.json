@@ -24,7 +24,8 @@
     "phpoffice/phpword": "dev-master",
     "guzzlehttp/guzzle": "~6.0",
     "guzzlehttp/oauth-subscriber": "*",
-    "maatwebsite/excel": "~1.3.0"
+    "maatwebsite/excel": "~1.3.0",
+    "asgrim/ofxparser": "^1.2"
   },
   "autoload": {
     "classmap": [
@@ -52,5 +53,11 @@
   "config": {
     "preferred-install": "dist"
   },
-  "minimum-stability": "dev"
+  "minimum-stability": "dev",
+  "authors": [
+    {
+      "name": "Sébastien Hordeaux",
+      "email": "sebastien@etincelle-coworking.com"
+    }
+  ]
 }

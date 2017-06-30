@@ -26,6 +26,6 @@ return array(
 	|
 	*/
 
-	'email' => 'sebastien@coworking-toulouse.com',
+	'email' => 'sebastien@etincelle-coworking.com',
 
 );

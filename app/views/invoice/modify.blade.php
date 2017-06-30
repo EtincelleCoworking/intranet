@@ -74,18 +74,22 @@
                             {{ Form::label('details', 'Détails') }}
                             <p>{{ Form::text('details', $invoice->details, array('class' => 'form-control')) }}</p>
                         </div>
-                        <div class="col-md-6">
+                        <div class="col-md-3">
                             {{ Form::label('date_invoice', 'Date de création') }}
                             <p>{{ Form::text('date_invoice', date('d/m/Y', strtotime($invoice->date_invoice)), array('class' => 'form-control datePicker')) }}</p>
 
+                            {{ Form::label('sent_at', 'Date d\'envoi') }}
+                            <p>{{ Form::text('sent_at', (($invoice->sent_at) ? date('d/m/Y', strtotime($invoice->sent_at)) : null), array('class' => 'form-control datePicker')) }}</p>
+
                             {{ Form::label('deadline', 'Date d\'expiration') }}
                             <p>{{ Form::text('deadline', date('d/m/Y', strtotime($invoice->deadline)), array('class' => 'form-control datePicker')) }}</p>
+                        </div>
+                        <div class="col-md-3">
+                            {{ Form::label('expected_payment_at', 'Date de paiement prévue') }}
+                            <p>{{ Form::text('expected_payment_at', (($invoice->expected_payment_at) ? date('d/m/Y', strtotime($invoice->expected_payment_at)) : null), array('class' => 'form-control datePicker')) }}</p>
 
                             {{ Form::label('date_payment', 'Date de paiement') }}
                             <p>{{ Form::text('date_payment', (($invoice->date_payment) ? date('d/m/Y', strtotime($invoice->date_payment)) : null), array('class' => 'form-control datePicker')) }}</p>
-
-                            {{ Form::label('sent_at', 'Date d\'envoi') }}
-                            <p>{{ Form::text('sent_at', (($invoice->sent_at) ? date('d/m/Y', strtotime($invoice->sent_at)) : null), array('class' => 'form-control datePicker')) }}</p>
 
                             <p>{{Form::checkbox('on_hold', true, $invoice->on_hold)}} {{ Form::label('on_hold', 'En compte') }}</p>
                             <p>{{Form::checkbox('is_lost', true, $invoice->is_lost)}} {{ Form::label('is_lost', 'Créance irrecouvrable') }}</p>
@@ -116,7 +120,7 @@
                             <th>Ordre</th>
                             <th>Ressource</th>
                             <th>Description</th>
-                            <th>Montant</th>
+                            <th>Montant HT</th>
                             <th>TVA</th>
                             <th>Action</th>
                         </tr>

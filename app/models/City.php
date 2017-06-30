@@ -27,4 +27,14 @@ class City extends Eloquent
         'name' => 'required|min:1'
     );
 
+    /**
+     * Get list of ressources
+     */
+    public function scopeSelectAll($query)
+    {
+        $result = $query->lists('name', 'id');
+        array_unshift($result, '-');
+        return $result;
+    }
+
 }

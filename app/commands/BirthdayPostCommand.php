@@ -40,22 +40,12 @@ class BirthdayPostCommand extends Command
      */
     public function fire()
     {
-        $author = User::where('role', '=', 'superadmin')->first();
-        if (!$author) {
-            $this->error('Impossible de trouver un administrateur comme auteur des messages');
-            return false;
-        }
         $count = 0;
         /** @var User $user */
         foreach (User::where('birthday', 'like', date('%-m-d'))->where('is_member', '=', true)->get() as $user) {
-            $post = new WallPost();
-            $post->setAsRoot();
-            $post->user_id = $author->id;
-            $post->message = $this->getMessage($user);
-            if ($post->save()) {
-                $this->info(sprintf('User: %s', $user->fullname));
-                $count++;
-            }
+            Event::fire('user.birthday', array($user));
+            $this->info(sprintf('User: %s', $user->fullname));
+            $count++;
         }
         if ($count) {
             $this->info(sprintf('%d anniversaire%s', $count, ($count > 1) ? 's' : ''));

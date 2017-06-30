@@ -13,6 +13,7 @@
 Route::get('/', array('as' => 'dashboard', 'uses' => 'UserController@dashboard'));
 
 Route::get('/api/1.0/location/{location_slug}/{key}', array('as' => 'api_location_update', 'uses' => 'ApiController@updateLocationIp'));
+//Route::get('/api/1.0/metric/{location_slug}/{key}/{metric_slug}/{metric_value}', array('as' => 'api_metric_update', 'uses' => 'ApiController@updateMetric'));
 Route::post('/api/1.0/offix/{location_slug}/{key}', array('as' => 'api_offix', 'uses' => 'ApiController@offixUpload'));
 Route::get('/api/1.0/offix/{secure_key}', array('as' => 'api_offix', 'uses' => 'ApiController@offixDownload'));
 
@@ -32,6 +33,7 @@ Route::group(['before' => 'member'], function() {
     Route::get('/user/export-profile/{id}', array('as' => 'user_export_profile', 'uses' => 'UserController@exportMemberProfile'))->where(array('id' => '[0-9]+'));
 
     Route::get('/user/change-location', array('as' => 'user_change_location', 'uses' => 'UserController@ChangeLocation'));
+    Route::get('/user/birthday', array('as' => 'user_birthday', 'uses' => 'UserController@birthday'));
 
 
 	Route::get('/users', array('as' => 'members', 'uses' => 'UserController@members'));
@@ -94,6 +96,7 @@ Route::group(['before' => 'superadmin'], function() {
 	Route::get('/invoice/{invoice}/item/{id}/delete', array('as' => 'invoice_item_delete', 'uses' => 'InvoiceItemController@delete'))->where(array('invoice' => '[0-9]+', 'id' => '[0-9]+'));
 	Route::get('/invoice/send/{id}', array('as' => 'invoice_send', 'uses' => 'InvoiceController@send'))->where(array('id' => '[0-9]+'));
 	Route::get('/invoice/unpaid', array('as' => 'invoice_unpaid', 'uses' => 'InvoiceController@unpaid'));
+	Route::get('/invoice/paid/{id}', array('as' => 'invoice_paid', 'uses' => 'InvoiceController@paid'));
 
 	Route::get('/ressources', array('as' => 'ressource_list', 'uses' => 'RessourceController@liste'));
 	Route::get('/ressource/add', array('as' => 'ressource_add', 'uses' => 'RessourceController@add'));
@@ -125,6 +128,7 @@ Route::group(['before' => 'superadmin'], function() {
     Route::post('/country/modify/{id}', array('as' => 'country_modify_check', 'uses' => 'CountryController@modify_check'))->where(array('id' => '[0-9]+'));
 
     Route::get('/devices', array('as' => 'device_list', 'uses' => 'DeviceController@liste'));
+    Route::post('/devices', array('as' => 'device_list', 'uses' => 'DeviceController@liste'));
     Route::get('/device/add', array('as' => 'device_add', 'uses' => 'DeviceController@add'));
     Route::post('/device/add', array('as' => 'device_add_check', 'uses' => 'DeviceController@add_check'));
     Route::get('/device/modify/{id}', array('as' => 'device_modify', 'uses' => 'DeviceController@modify'))->where(array('id' => '[0-9]+'));
@@ -132,13 +136,14 @@ Route::group(['before' => 'superadmin'], function() {
     Route::get('/device/delete/{id}', array('as' => 'device_delete', 'uses' => 'DeviceController@delete'))->where(array('id' => '[0-9]+'));
     Route::get('/device/enable/{id}', array('as' => 'device_enable', 'uses' => 'DeviceController@enableTracking'))->where(array('id' => '[0-9]+'));
     Route::get('/device/disable/{id}', array('as' => 'device_disable', 'uses' => 'DeviceController@disableTracking'))->where(array('id' => '[0-9]+'));
+    Route::get('/device/reset-filter', array('as' => 'device_filter_reset', 'uses' => 'DeviceController@cancelFilter'));
 
     Route::get('/vats', array('as' => 'vat_list', 'uses' => 'VatTypeController@liste'));
     Route::get('/vat/add', array('as' => 'vat_add', 'uses' => 'VatTypeController@add'));
     Route::post('/vat/add', array('as' => 'vat_add_check', 'uses' => 'VatTypeController@add_check'));
     Route::get('/vat/modify/{id}', array('as' => 'vat_modify', 'uses' => 'VatTypeController@modify'))->where(array('id' => '[0-9]+'));
     Route::post('/vat/modify/{id}', array('as' => 'vat_modify_check', 'uses' => 'VatTypeController@modify_check'))->where(array('id' => '[0-9]+'));
-    Route::get('/cashflow/vat', array('as' => 'vat_overview', 'uses' => 'CashflowController@vat'));
+    Route::get('/vat/overview', array('as' => 'vat_overview', 'uses' => 'VatController@overview'));
 
     Route::get('/stats/overview', array('as' => 'stats_overview', 'uses' => 'StatsController@overview'));
     Route::get('/stats/sales', array('as' => 'stats_sales', 'uses' => 'StatsController@sales'));
@@ -172,6 +177,7 @@ Route::group(['before' => 'superadmin'], function() {
 
 
     Route::get('/subscriptions', array('as' => 'subscription_list', 'uses' => 'SubscriptionController@liste'));
+    Route::post('/subscriptions', array('as' => 'subscription_list', 'uses' => 'SubscriptionController@liste'));
     Route::get('/subscription/add', array('as' => 'subscription_add', 'uses' => 'SubscriptionController@add'));
     Route::post('/subscription/add', array('as' => 'subscription_add_check', 'uses' => 'SubscriptionController@add_check'));
     Route::get('/subscription/modify/{id}', array('as' => 'subscription_modify', 'uses' => 'SubscriptionController@modify'));
@@ -179,6 +185,7 @@ Route::group(['before' => 'superadmin'], function() {
     Route::get('/subscription/delete/{id}', array('as' => 'subscription_delete', 'uses' => 'SubscriptionController@delete'));
     Route::get('/subscription/renew/{id}', array('as' => 'subscription_renew', 'uses' => 'SubscriptionController@renew'));
     Route::get('/subscription/renew/company/{id}', array('as' => 'subscription_renew_company', 'uses' => 'SubscriptionController@renewCompany'));
+    Route::get('/subscription/reset-filter', array('as' => 'subscription_filter_reset', 'uses' => 'SubscriptionController@cancelFilter'));
 
     Route::get('/wall/delete/{id}', array('as' => 'wall_delete', 'uses' => 'WallPostController@delete'));
     Route::get('/wall/delete-reply/{id}', array('as' => 'wall_delete_reply', 'uses' => 'WallPostController@deleteReply'));

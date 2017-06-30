@@ -20,6 +20,9 @@ class Subscription extends Eloquent
         return $this->belongsTo('Organisation');
     }
 
+    /**
+     * @return SubscriptionKind
+     */
     public function kind()
     {
         return $this->belongsTo('SubscriptionKind', 'subscription_kind_id');
@@ -78,7 +81,6 @@ class Subscription extends Eloquent
             ->join('invoices', function ($j) {
                 $j->on('invoice_id', '=', 'invoices.id')->where('type', '=', 'F');
             })
-
             ->first();
 
         $params['active_subscription'] = $active_subscription;
@@ -94,6 +96,11 @@ class Subscription extends Eloquent
             $params['subscription_ratio'] = 0;
         }
         return $params;
+    }
+
+    public function formattedName()
+    {
+        return str_replace(array('%OrganisationName%', '%UserName%'), array($this->organisation->name, $this->user->fullname), $this->kind->name);
     }
 
 //    /**

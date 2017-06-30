@@ -18,6 +18,11 @@ class Invoice extends Eloquent
         return $query->whereType('F')->whereNull('date_canceled');
     }
 
+    public function scopeUnpaid($query)
+    {
+        return $query->whereNull('date_payment');
+    }
+
     public function scopeQuoteOnly($query, $filtre)
     {
         if ($filtre == 'canceled') {
@@ -418,5 +423,10 @@ class Invoice extends Eloquent
 
 
         return $html;
+    }
+
+    public function __toString(){
+        return sprintf('<a href="%s">%s</a>',
+            URL::route('invoice_modify', $this->id), $this->ident);
     }
 }

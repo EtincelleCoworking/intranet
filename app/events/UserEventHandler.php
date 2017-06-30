@@ -98,7 +98,7 @@ class UserEventHandler
 
             $this->slack($Location->slack_endpoint, array(
                 'text' => $message,
-//                'link_names' => 1,
+                'link_names' => 1,
                 'attachments' => $attachments
             ));
         }
@@ -143,6 +143,46 @@ class UserEventHandler
         return $result;
     }
 
+    protected function displayBirthdayOnWall($user)
+    {
+        $author = User::where('role', '=', 'superadmin')->first();
+        if (!$author) {
+            return false;
+        }
+
+        $post = new WallPost();
+        $post->setAsRoot();
+        $post->user_id = $author->id;
+        $post->message = $this->getMessage($user);
+        $post->save();
+
+    }
+    protected function displayBirthdayOnSlack($user)
+    {
+        if ($user->slack_id) {
+            $message = sprintf('Bon anniversaire @%s', $user->slack_id);
+        } else {
+            $message = sprintf('Bon anniversaire %s', $user->fullname);
+        }
+
+        $Location = $user->location;
+
+        Log::info(sprintf('Posted to Slack: %s', $Location->slack_endpoint), array('context' => 'user.birthday'));
+
+        $this->slack($Location->slack_endpoint, array(
+            'text' => $message,
+            'link_names' => 1,
+            //'attachments' => $attachments
+        ));
+
+    }
+
+    public function onUserBirthday($user)
+    {
+        //$this->displayBirthdayOnWall($user);
+        $this->displayBirthdayOnSlack($user);
+    }
+
     /**
      * Register the listeners for the subscriber.
      *
@@ -153,6 +193,7 @@ class UserEventHandler
     {
         $events->listen('auth.login', 'UserEventHandler@onUserLogin');
         $events->listen('user.shown', 'UserEventHandler@onUserShown');
+        $events->listen('user.birthday', 'UserEventHandler@onUserBirthday');
     }
 
 }

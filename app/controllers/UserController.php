@@ -1,6 +1,7 @@
 <?php
 
 use GuzzleHttp\Client;
+
 /**
  * UserController Class
  */
@@ -126,6 +127,7 @@ class UserController extends BaseController
                 $user->social_facebook = Input::get('social_facebook');
                 if (Auth::user()->isSuperAdmin()) {
                     $user->is_member = Input::get('is_member', false);
+                    $user->is_student = Input::get('is_student', false);
                     $user->default_location_id = Input::get('default_location_id');
                 }
                 $user->slack_id = Input::get('slack_id');
@@ -439,7 +441,7 @@ class UserController extends BaseController
 
         $users = User::with('organisations')
             ->with('devices')
-            ->orderBy('lastname', 'asc');
+            ->orderBy('created_at', 'desc');
         if (Session::get('filtre_user.user_id')) {
             $users->where('users.id', '=', Session::get('filtre_user.user_id'));
         }
@@ -513,6 +515,45 @@ class UserController extends BaseController
         }
         throw new Exception('An error has occured: ' . $output);
 
+    }
+
+    public function birthday()
+    {
+        $users = User::
+            join('locations', 'users.default_location_id', '=', 'locations.id')
+            ->where('birthday', '!=', '0000-00-00')
+            ->where('locations.city_id', '=', Auth::user()->location->city_id)
+            ->where('users.id', '!=', Auth::id())
+            ->orderBy('users.is_member', 'DESC')
+            ->orderBy('users.last_seen_at', 'DESC')
+            ->distinct()
+            //->select('users.id', 'users.birthday', 'users.firstname', 'users.lastname', 'users.email')
+            ->get(array('users.*'))
+        ;
+        $items = array();
+            //var_dump($users);exit;
+        foreach ($users as $user) {
+            $items[date('m', strtotime($user->birthday))][] = $user;
+        }
+
+        ksort($items);
+
+        $months = array_keys($items);
+        $current_month = date('m');
+        $month = null;
+        do {
+            if ($month) {
+                $months[] = $month;
+            }
+            $month = array_shift($months);
+
+        } while ($month < $current_month - 1);
+        $months[] = $month;
+
+        return View::make('user.birthday', array(
+            'months' => $months,
+            'users' => $items
+        ));
     }
 }
 

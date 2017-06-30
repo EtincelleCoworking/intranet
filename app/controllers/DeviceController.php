@@ -18,14 +18,51 @@ class DeviceController extends BaseController
         }
     }
 
+    public function cancelFilter()
+    {
+        Session::forget('filtre_device.user_id');
+        Session::forget('filtre_device.organisation_id');
+        Session::forget('filtre_device.city_id');
+        return Redirect::route('device_list');
+    }
+
     /**
      * List countries
      */
     public function liste()
     {
+        if (Input::has('filtre_submitted')) {
+            if (Input::has('filtre_location_id')) {
+                Session::put('filtre_device.location_id', Input::get('filtre_location_id'));
+            } else {
+                Session::forget('filtre_device.city_id');
+            }
+            if (Input::has('filtre_user_id')) {
+                Session::put('filtre_device.user_id', Input::get('filtre_user_id'));
+            } else {
+                Session::forget('filtre_device.user_id');
+            }
+            if (Input::has('filtre_ip')) {
+                Session::put('filtre_device.ip', Input::get('filtre_ip'));
+            } else {
+                Session::forget('filtre_device.ip');
+            }
+        }
+            $sql = '';
+        if (Session::has('filtre_device.user_id')) {
+            $sql .= sprintf(' AND devices.user_id = %d', Session::get('filtre_device.user_id'));
+        }
+        if (Session::has('filtre_device.location_id')) {
+            $sql .= sprintf(' AND locations.id = %d', Session::get('filtre_device.location_id'));
+        }
+        if (Session::has('filtre_device.ip')) {
+            $sql .= sprintf(' AND ((devices.ip LIKE "%%%s%%") OR (devices.mac LIKE "%%%s%%"))', Session::get('filtre_device.ip'), Session::get('filtre_device.ip'));
+        }
+
+
         $pageNo = max(0, Input::get('page') - 1);
         $itemPerPage = 15;
-        $devices = DB::select(DB::raw(sprintf('select 
+        $devices = DB::select(DB::raw('select 
 devices.id,
 devices.tracking_enabled, 
 users.id as user_id, 
@@ -39,16 +76,25 @@ locations.name as location,
 devices.last_seen_at
  
 from devices 
-join users on devices.user_id = users.id
-join devices_seen on devices.id = devices_seen.device_id AND devices.last_seen_at = devices_seen.last_seen_at
-join locations on devices_seen.location_id = locations.id
-join cities on locations.city_id = cities.id
+LEFT OUTER join users on devices.user_id = users.id
+LEFT OUTER join devices_seen on devices.id = devices_seen.device_id AND devices.last_seen_at = devices_seen.last_seen_at
+LEFT OUTER join locations on devices_seen.location_id = locations.id
+LEFT OUTER join cities on locations.city_id = cities.id WHERE 1 '
+            .$sql
+            . sprintf('
 group by devices.id
 order by devices_seen.last_seen_at DESC
 LIMIT %d, %d
 ', $itemPerPage * $pageNo, $itemPerPage)));
 
-        $pager = Paginator::make($devices, Device::count(), $itemPerPage);
+        $devicesCount = DB::selectOne(DB::raw('select count(devices.id) as cnt from devices  
+LEFT OUTER join devices_seen on devices.id = devices_seen.device_id AND devices.last_seen_at = devices_seen.last_seen_at
+LEFT OUTER join locations on devices_seen.location_id = locations.id
+WHERE 1 '
+            .$sql));
+
+        //var_dump($devicesCount); exit;
+        $pager = Paginator::make($devices, $devicesCount->cnt, $itemPerPage);
 
         return View::make('device.liste', array('devices' => $pager));
     }

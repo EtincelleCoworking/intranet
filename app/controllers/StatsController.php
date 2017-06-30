@@ -252,25 +252,22 @@ class StatsController extends BaseController
 
     public function spaces()
     {
-
-
         $items = DB::select(DB::raw('select 
 date_format(invoices.date_invoice, "%Y-%m") as period, 
 SUM(invoices_items.amount) as total, 
 if(`locations`.`name` is null,cities.name,concat(cities.name, \' > \',  `locations`.`name`)) as `kind` 
 
 from `invoices_items` 
-inner join `invoices` on `invoice_id` = `invoices`.`id` and `type` = \'F\' 
-left outer join `organisations` on `organisation_id` = `organisations`.`id` 
-left outer join `ressources` on `ressource_id` = `ressources`.`id` 
-left outer join `locations` on `location_id` = `locations`.`id` 
-left outer join cities on city_id = cities.id
+inner join `invoices` on `invoice_id` = `invoices`.`id` and invoices.`type` = \'F\' 
+left outer join `organisations` on invoices.`organisation_id` = `organisations`.`id` 
+left outer join `ressources` on invoices_items.`ressource_id` = `ressources`.`id` 
+left outer join `locations` on ressources.`location_id` = `locations`.`id` 
+left outer join cities on locations.city_id = cities.id
 
-where (`organisations`.`is_founder` = \'0\' or `organisation_id` is null) 
-AND ressources.ressource_kind_id NOT IN (1, 4)
+where ressources.ressource_kind_id NOT IN (' . RessourceKind::TYPE_COWORKING . ', ' . RessourceKind::TYPE_EXCEPTIONNAL . ')
 
 group by `period`, kind
-order by kind ASC, `period` desc'));
+order by kind ASC, `period` desc')); // `organisations`.`is_founder` = '0' or (`organisation_id` is null) AND
         $result = array();
         $periods = array();
         foreach ($items as $item) {
@@ -335,21 +332,27 @@ order by kind ASC, `period` DESC
                 }
         */
         $costs = array(
+            'Albi' => array(
+                '2017-02' => 1130,
+                '2017-07' => 1630,
+                '2018-03' => 2350,
+            ),
             'Montauban' => array(
                 '2015-09' => 2050,
-                '2016-12' => 3350,
+                '2016-12' => 3730,
             ),
             'Toulouse > Carmes' => array(
                 '2016-01' => 500,
                 '2016-04' => 3500,
-                '2016-09' => 6500 + 3500,
+                '2016-09' => 10800,
             ),
             'Toulouse > Victor Hugo' => array(
-                '2016-09' => 2800
+                '2016-09' => 3000
             ),
             'Toulouse > Wilson' => array(
                 '2015-01' => 7000,
-                '2016-12' => 10500,
+                '2016-12' => 9280,
+                '2017-06' => 12500,
             ),
         );
 
@@ -385,18 +388,22 @@ order by kind ASC, `period` DESC
             )
         );
 
+        $this_month = date('Y-m');
+
         $datas = array();
         foreach ($costs as $location => $data) {
             foreach ($data as $period => $value) {
-                if (isset($operations[$location][$period])) {
-                    $result[$location][$period] += (float)$operations[$location][$period];
-                }
+                if ($period <= $this_month) {
+                    if (isset($operations[$location][$period])) {
+                        $result[$location][$period] += (float)$operations[$location][$period];
+                    }
 
-                $datas[$location][substr($period, 0, 4)][$period] = array(
-                    'sales' => (float)$result[$location][$period],
-                    'cost' => (float)$costs[$location][$period],
-                    'balance' => (float)$result[$location][$period] - (float)$costs[$location][$period],
-                );
+                    $datas[$location][substr($period, 0, 4)][$period] = array(
+                        'sales' => (float)$result[$location][$period],
+                        'cost' => (float)$costs[$location][$period],
+                        'balance' => (float)$result[$location][$period] - (float)$costs[$location][$period],
+                    );
+                }
             }
             krsort($datas[$location]);
         }
@@ -405,7 +412,7 @@ order by kind ASC, `period` DESC
             foreach ($subdata as $year => $subdata2) {
                 foreach ($subdata2 as $month => $values) {
                     foreach ($values as $k => $v) {
-                        if(!isset($global[$year][$month][$k])){
+                        if (!isset($global[$year][$month][$k])) {
                             $global[$year][$month][$k] = 0;
                         }
                         $global[$year][$month][$k] += (float)$v;
@@ -417,6 +424,6 @@ order by kind ASC, `period` DESC
         return View::make('stats.spaces', array(
             'datas' => $datas,
             'global' => $global,
-            ));
+        ));
     }
 }

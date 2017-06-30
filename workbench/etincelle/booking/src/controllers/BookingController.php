@@ -785,6 +785,7 @@ class BookingController extends Controller
         $date = new DateTime($invoice->date_invoice);
         $date->modify('+1 month');
         $invoice->deadline = $date->format('Y-m-d');
+        $invoice->expected_payment_at = $invoice->deadline;
         $invoice->save();
 
         $ressource = $booking_item->ressource;

@@ -32,6 +32,8 @@ class PastTimeController extends BaseController
 //            Session::put('filtre_pasttime.month', Input::get('filtre_month'));
 //            Session::put('filtre_pasttime.year', Input::get('filtre_year'));
 //        }
+
+        $itemPerPage = 15;
         if (Input::has('filtre_submitted')) {
             if (Input::has('toinvoice')) {
                 Session::put('filtre_pasttime.filtre_toinvoice', true);
@@ -42,9 +44,11 @@ class PastTimeController extends BaseController
             } else {
                 if (Input::has('filtre_user_id')) {
                     Session::put('filtre_pasttime.user_id', Input::get('filtre_user_id'));
+                    $itemPerPage = 1000;
                 }
                 if (Input::has('filtre_organisation_id')) {
                     Session::put('filtre_pasttime.organisation_id', Input::get('filtre_organisation_id'));
+                    $itemPerPage = 1000;
                 }
                 if (Input::has('filtre_start')) {
                     $date_start_explode = explode('/', Input::get('filtre_start'));
@@ -70,8 +74,8 @@ class PastTimeController extends BaseController
             $date_filtre_start = Session::get('filtre_pasttime.start');
             $date_filtre_end = Session::get('filtre_pasttime.end');
         } else {
-            $date_filtre_start = date('Y-m') . '-01';
-            $date_filtre_end = date('Y-m') . '-' . date('t', date('m'));
+            $date_filtre_start = date('Y-m-01') ;
+            $date_filtre_end = date('Y-m-t') ;
         }
 
 //        if (Session::has('filtre_pasttime.month')) {
@@ -114,7 +118,7 @@ class PastTimeController extends BaseController
         }
 
         $params = array();
-        $params['times'] = $q->orderBy('date_past', 'DESC')->with('location', 'location.city')->paginate(15);
+        $params['times'] = $q->orderBy('date_past', 'DESC')->with('location', 'location.city')->paginate($itemPerPage);
         $params['recap'] = $recap;
         $params['pending_invoice_amount'] = $pending_invoice_amount;
 
@@ -300,10 +304,12 @@ class PastTimeController extends BaseController
         $invoice->address = $organisation->fulladdress;
         $invoice->date_invoice = new \DateTime();
         $invoice->deadline = new \DateTime(date('Y-m-d', strtotime('+1 month')));
+        $invoice->expected_payment_at = $invoice->deadline ;
         $invoice->save();
         $vat = VatType::where('value', 20)->first();
 
         $orderIndex = 0;
+        $invoice_lines = array();
         foreach ($lines as $ressource_id => $line) {
             $ressource = $ressources[$ressource_id];
             $invoice_line = new InvoiceItem();
@@ -342,9 +348,16 @@ class PastTimeController extends BaseController
             $invoice_line->subscription_user_id = $invoice->user_id;
 
             $invoice_line->save();
-
+            $invoice_lines[] = $invoice_line;
         }
-
+/*
+        foreach ($organisation->invoicing_rules() as $rule) {
+            $processor = $rule->createProcessor();
+            if ($processor) {
+                $processor->execute($invoice_lines);
+            }
+        }
+*/
         return Redirect::route('invoice_modify', $invoice->id)->with('mSuccess', 'La facture a bien été générée');
     }
 

@@ -19,3 +19,8 @@ La tâche est éxecutée toutes les 5 minutes via CRON avec la commande suivante
 * [Password] est le mot de passe pour accéder au routeur Asus
 * [LocationSlug] est le slug correspondant au site concerné (toulouse-wilson, toulouse-victor-hugo, montauban...)
 * [LocationHash] est une clef spécifique au site permettant d'identifier le site
+
+
+
+*/15 * * * * root wget -q http://intranet.coworking-toulouse.com/api/1.0/location/albi/6zSIIUiesXPGTQST -O /dev/null
+*/5 * * * * root /usr/bin/php /home/pi/asus-spy/bin/console etincelle:list-devices --host 192.168.2.1 --username admin --password 3tu5ymog 'http://intranet.coworking-toulouse.com/api/1.0/offix/albi/6zSIIUiesXPGTQST'
