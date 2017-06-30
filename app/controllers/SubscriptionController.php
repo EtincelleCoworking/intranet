@@ -30,6 +30,7 @@ class SubscriptionController extends BaseController
             } else {
                 Session::forget('filtre_subscription.user_id');
             }
+
         }
 
         $companies = array();
@@ -50,6 +51,7 @@ class SubscriptionController extends BaseController
         $subscriptions = Subscription::orderBy('renew_at', 'ASC')
             ->join('users', 'subscription.user_id', '=', 'users.id')
             ->join('locations', 'users.default_location_id', '=', 'locations.id')
+            ->select('subscription.*')
             //->join('cities', 'locations.city_id', '=', 'cities.id')
         ;
         if (Session::has('filtre_subscription.user_id')) {
