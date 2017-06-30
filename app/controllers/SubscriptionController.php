@@ -15,7 +15,7 @@ class SubscriptionController extends BaseController
     public function liste()
     {
         if (Input::has('filtre_submitted')) {
-            if (Input::has('filtre_city_id')) {
+            if (Input::has('filtre_city_id') && !empty(Input::get('filtre_city_id'))) {
                 Session::put('filtre_subscription.city_id', Input::get('filtre_city_id'));
             } else {
                 Session::forget('filtre_subscription.city_id');

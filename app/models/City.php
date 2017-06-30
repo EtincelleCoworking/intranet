@@ -32,7 +32,9 @@ class City extends Eloquent
      */
     public function scopeSelectAll($query)
     {
-        return $query->lists('name', 'id');
+        $result = $query->lists('name', 'id');
+        array_unshift($result, '-');
+        return $result;
     }
 
 }
