@@ -22,7 +22,8 @@
                         <td width="30%">Salle</td>
                         <td>
                             <strong>{{$booking_item->ressource->name}}</strong>
-                            {{$booking_item->ressource->location->full_name}}
+                            <br />
+                            {{$booking_item->ressource->location}}
                         </td>
                     </tr>
                     <tr>

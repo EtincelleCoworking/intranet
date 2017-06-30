@@ -29,8 +29,10 @@ class BookingController extends Controller
         $item->booking = new Booking();
         $item->booking->user_id = Auth::id();
         $organisations = Auth::user()->organisations;
+        $item->booking->title = Auth::user()->fullnameOrga;
         if ($organisations) {
-            $item->booking->organisation_id = $organisations->last()->id;
+            $organisation = $organisations->last();
+            $item->booking->organisation_id = $organisation->id;
         }
         $item->booking->is_private = Config::get('booking::default_is_private', true);
         if (Config::get('booking::default_is_confirmed', true)) {
@@ -461,7 +463,7 @@ class BookingController extends Controller
             $m->from($_ENV['organisation_email'], $_ENV['organisation_name'])
                 ->bcc($_ENV['organisation_email'], $_ENV['organisation_name'])
                 ->to($booking->user->email, $booking->user->fullname)
-                ->subject(sprintf('%s - %s - %s', $_ENV['organisation_name'], $title, $start_at->format('d/m/Y H:i')));
+                ->subject(html_entity_decode(sprintf('%s - %s - %s', $_ENV['organisation_name'], $title, $start_at->format('d/m/Y H:i'))));
         });
     }
 
@@ -494,7 +496,7 @@ class BookingController extends Controller
             $m->from($_ENV['organisation_email'], $_ENV['organisation_name'])
                 ->bcc($_ENV['organisation_email'], $_ENV['organisation_name'])
                 ->to($booking_item->booking->user->email, $booking_item->booking->user->fullname)
-                ->subject(sprintf('%s - Modification de réservation - %s', $_ENV['organisation_name'], $update));
+                ->subject(html_entity_decode(sprintf('%s - Modification de réservation - %s', $_ENV['organisation_name'], $update)));
         });
     }
 
@@ -504,7 +506,7 @@ class BookingController extends Controller
             $m->from($_ENV['organisation_email'], $_ENV['organisation_name'])
                 ->bcc($_ENV['organisation_email'], $_ENV['organisation_name'])
                 ->to($user->email, $user->fullname)
-                ->subject(sprintf('%s - Annulation de réservation - %s', $_ENV['organisation_name'], date('d/m/Y H:i', strtotime($booking_item->start_at))));
+                ->subject(html_entity_decode(sprintf('%s - Annulation de réservation - %s', $_ENV['organisation_name'], date('d/m/Y H:i', strtotime($booking_item->start_at)))));
         });
     }
 
@@ -587,7 +589,9 @@ class BookingController extends Controller
         if (Auth::user()->isSuperAdmin()) {
             $data = BookingItem::with('booking')->find($id);
         } else {
-            $data = BookingItem::with('booking')->whereUserId(Auth::user()->id)->find($id);
+            $data = BookingItem::with('booking')
+                //->where('booking.user_id', '=', Auth::id())
+                ->find($id);
         }
 
         if (!$data) {
@@ -622,6 +626,7 @@ class BookingController extends Controller
         } else {
             $booking_item = new BookingItem();
             $booking_item->booking = new Booking();
+            $booking_item->booking->user_id = Auth::id();
             $is_new = true;
         }
 
@@ -648,7 +653,7 @@ class BookingController extends Controller
                 $items = BookingItem::where('start_at', '<', $end->format('Y-m-d H:i:s'))
                     ->where(DB::raw('DATE_ADD(start_at, INTERVAL duration MINUTE)'), '>', $start->format('Y-m-d H:i:s'))
                     ->whereIn('ressource_id', Input::get('rooms'))
-                    ->where('id', '!=', $id)
+                    ->where('id', '!=', (int)$id)
                     ->get();
                 foreach ($items as $conflict) {
                     if (!isset($messages['start'])) {
@@ -721,8 +726,8 @@ class BookingController extends Controller
                     $booking_item_->confirmed_at = $confirmed_at;
                     $booking_item_->confirmed_by_user_id = Auth::id();
                 }
-            }else{
-                if (Auth::user()->isSuperAdmin()){
+            } else {
+                if (Auth::user()->isSuperAdmin()) {
                     $booking_item_->confirmed_at = null;
                     $booking_item_->confirmed_by_user_id = null;
                 }
@@ -736,14 +741,19 @@ class BookingController extends Controller
             $booking_item_to_delete->delete();
         }
 
-        $new = $this->extractPublicProperties($booking_item);
+        $new = $this->extractPublicProperties($booking_item_);
         try {
-            $this->sendUpdatedBookingNotification($booking_item, $old, $new);
+            $this->sendUpdatedBookingNotification($booking_item_, $old, $new);
         } catch (\Exception $e) {
 
         }
 
-        return Redirect::route('booking_with_date', array('now' => date('Y-m-d', strtotime($booking_item->start_at))))->with('mSuccess', 'La réservation a été modifiée')->withInput();
+//        var_dump($booking_item_);
+//        var_dump($booking_item);
+        //      var_dump($booking_item->booking);
+        //exit;
+
+        return Redirect::route('booking_with_date', array('now' => $booking_item_->start_at->format('Y-m-d')))->with('mSuccess', 'La réservation a été modifiée')->withInput();
 
     }
 
@@ -800,7 +810,8 @@ class BookingController extends Controller
         return Redirect::route('invoice_modify', $invoice->id)->with('mSuccess', 'Le devis a été créé');
     }
 
-    public function confirm($id){
+    public function confirm($id)
+    {
         $booking_item = $this->dataExist($id);
 
         if (!Auth::user()->isSuperAdmin() && (Auth::id() != $booking_item->booking->user_id)) {

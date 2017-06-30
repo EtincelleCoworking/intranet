@@ -159,8 +159,9 @@
 
 
 @section('stylesheets')
-    {{ HTML::style('css/plugins/fullcalendar/fullcalendar.css') }}
-    {{ HTML::style('css/plugins/fullcalendar/fullcalendar.print.css', array('media'=> 'print')) }}
+    {{ HTML::style('css/fullcalendar.css') }}
+    {{ HTML::style('css/scheduler.css') }}
+    {{ HTML::style('css/fullcalendar.print.css', array('media'=> 'print')) }}
 
     <style type="text/css">
         .fc-event.booking-confirmed {
@@ -202,8 +203,9 @@
 
 @section('javascript')
 
-    {{ HTML::script('js/plugins/fullcalendar/fullcalendar.min.js') }}
-    {{ HTML::script('js/plugins/fullcalendar/lang-all.js') }}
+    {{ HTML::script('js/fullcalendar.min.js') }}
+    <?php /* HTML::script('js/scheduler.min.js') */ ?>
+    {{ HTML::script('js/locale/fr.js') }}
 
     <script type="text/javascript">
         formatMember = function (member) {
@@ -517,12 +519,22 @@
 
 
             $('#calendar').fullCalendar({
+                defaultView: 'agendaWeek', //timelineDay
                 defaultDate: '{{$now}}',
                 header: {
                     left: 'prev,next today',
                     center: 'title',
-                    right: 'agendaWeek,agendaDay' // month,basicWeek,basicDay,
+                    right: 'month,basicWeek,basicDay' // month,basicWeek,basicDay,
+                    //right: 'agendaWeek,agendaDay,timelineDay' // month,basicWeek,basicDay,
                 },
+                resourceGroupField: 'location',
+                resources: [
+                @foreach($ressources as $ressource)
+                    { id: 'res{{$ressource->id}}',
+                        location: '{{$ressource->location->name}}',
+                        title: '{{$ressource->name}}', eventColor: '{{$ressource->labelCss}}' },
+                    @endforeach
+                ],
                 eventRender: function (event, element) {
                     if (event.is_private) {
                         element.find(".fc-time")
@@ -542,7 +554,6 @@
                 editable: false,
                 firstDay: 1,
                 lang: 'fr',
-                defaultView: 'agendaWeek',
                 allDaySlot: false,
                 selectable: true,
                 selectHelper: true,

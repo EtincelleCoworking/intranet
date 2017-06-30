@@ -149,6 +149,7 @@ class BookingItem extends Illuminate\Database\Eloquent\Model
             'borderColor' => $borderColor,
             'textColor' => $textColor,
             'ressource_id' => $this->ressource->id,
+            'resourceId' => 'res'.$this->ressource->id,
             'className' => $className
         );
     }
