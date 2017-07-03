@@ -156,7 +156,7 @@ class AccountingExportCommand extends Command
 
                             $row[] = $invoice->ident;
                             $row[] = date('d/m/Y', strtotime($invoice->date_invoice));
-                            $row[] = sprintf('%06d', $invoice->organisation_id);
+                            $row[] = sprintf('9%05d', $invoice->organisation_id);
                             if ($name = preg_replace('/\n.+/', '', $invoice->address)) {
                                 $row[] = $name;
                             } else {
@@ -373,7 +373,10 @@ class AccountingExportCommand extends Command
                     return '708230';
             }
 
-            return $item->ressource->name;
+            if($item->ressource){
+                return $item->ressource->name;
+            }
+            return $item->id;
         }
     }
 
