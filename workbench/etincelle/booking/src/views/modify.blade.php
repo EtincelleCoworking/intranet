@@ -69,7 +69,7 @@
 
                         <div>
                             {{ Form::label('title', 'Titre') }}
-                            <p>{{ Form::text('title', $booking_item->booking->title, array('class' => 'form-control')) }}</p>
+                            <p>{{ Form::text('title', $booking_item->booking->title, array('id' => 'booking-title', 'class' => 'form-control')) }}</p>
                         </div>
 
                         <div>
@@ -208,6 +208,41 @@
             $('#booking-user').select2();
             $('#booking-organisation').select2();
             $('.datePicker').datepicker();
+
+                var oldOrganisation = $('#oldOrganisation').val();
+
+                function getListOrganisations(id) {
+                    var url = "{{ URL::route('user_json_organisations') }}";
+                    var urlFinale = url.replace("%7Bid%7D", id);
+
+                    $('#selectOrganisationId').html('');
+                    $.getJSON(urlFinale, function (data) {
+                        var items = '';
+                        $.each(data, function (key, val) {
+                            if (oldOrganisation == key) {
+                                items = items + '<option value="' + key + '" selected>' + val + '</option>';
+                            } else {
+                                items = items + '<option value="' + key + '">' + val + '</option>';
+                            }
+                        });
+
+                        $('#booking-organisation')
+                            .html(items)
+                            .trigger("change");
+
+                    });
+                }
+
+                $('#booking-user').on('change', function (e) {
+                    getListOrganisations($(this).val());
+                });
+                $('#booking-organisation').on('change', function (e) {
+                    $('#booking-title').val($(this).text());
+                });
+
+                getListOrganisations($('#booking-user').val());
+
+
         });
     </script>
 @stop

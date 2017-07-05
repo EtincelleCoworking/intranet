@@ -32,7 +32,9 @@ class BookingController extends Controller
         $item->booking->title = Auth::user()->fullnameOrga;
         if ($organisations) {
             $organisation = $organisations->last();
-            $item->booking->organisation_id = $organisation->id;
+            if ($organisation) {
+                $item->booking->organisation_id = $organisation->id;
+            }
         }
         $item->booking->is_private = Config::get('booking::default_is_private', true);
         if (Config::get('booking::default_is_confirmed', true)) {
