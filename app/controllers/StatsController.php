@@ -333,13 +333,13 @@ order by kind ASC, `period` DESC
         */
         $costs = array(
             'Albi' => array(
-                '2017-02' => 1130,
-                '2017-07' => 1630,
-                '2018-03' => 2350,
+                '2017-02' => 1350,
+                '2017-07' => 1870,
+                '2018-03' => 2500,
             ),
             'Montauban' => array(
                 '2015-09' => 2050,
-                '2016-12' => 3730,
+                '2016-12' => 3870,
             ),
             'Toulouse > Carmes' => array(
                 '2016-01' => 500,
@@ -347,7 +347,7 @@ order by kind ASC, `period` DESC
                 '2016-09' => 10800,
             ),
             'Toulouse > Victor Hugo' => array(
-                '2016-09' => 3000
+                '2016-09' => 3500
             ),
             'Toulouse > Wilson' => array(
                 '2015-01' => 7000,
