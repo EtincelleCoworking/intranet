@@ -344,10 +344,10 @@ order by kind ASC, `period` DESC
             'Toulouse > Carmes' => array(
                 '2016-01' => 500,
                 '2016-04' => 3500,
-                '2016-09' => 10950,
+                '2016-09' => 10650,
             ),
             'Toulouse > Victor Hugo' => array(
-                '2016-09' => 3500
+                '2016-09' => 3400
             ),
             'Toulouse > Wilson' => array(
                 '2015-01' => 7000,
