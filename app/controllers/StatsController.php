@@ -344,7 +344,7 @@ order by kind ASC, `period` DESC
             'Toulouse > Carmes' => array(
                 '2016-01' => 500,
                 '2016-04' => 3500,
-                '2016-09' => 10800,
+                '2016-09' => 10950,
             ),
             'Toulouse > Victor Hugo' => array(
                 '2016-09' => 3500
