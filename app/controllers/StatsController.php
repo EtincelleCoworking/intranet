@@ -91,15 +91,15 @@ JOIN users ON subscription.user_id = users.id
 WHERE subscription_kind.ressource_id = %d
 GROUP BY subscription_kind.id', Ressource::TYPE_COWORKING)));
         $ratio_all = array();
-        $total = 0;
+        $ratio_all_total = 0;
         foreach ($data as $item) {
             $caption = str_replace(array(' - %UserName%', 'Coworking - '), array('', ''), $item->name);
             $ratio_all[$caption]['count'] = $item->nb;
-            $total += $item->nb;
+            $ratio_all_total += $item->nb;
         }
         foreach ($data as $item) {
             $caption = str_replace(array(' - %UserName%', 'Coworking - '), array('', ''), $item->name);
-            $ratio_all[$caption]['ratio'] = 100 * $item->nb / $total;
+            $ratio_all[$caption]['ratio'] = 100 * $item->nb / $ratio_all_total;
         }
         $data = DB::select(DB::raw(sprintf('SELECT if(`locations`.`name` is null,cities.name,concat(cities.name, \' > \',  `locations`.`name`)) as location, subscription_kind.name, count( subscription.id ) AS nb
 FROM `subscription_kind`
@@ -110,24 +110,26 @@ JOIN cities on cities.id = locations.city_id
 WHERE subscription_kind.ressource_id = %d
 GROUP BY locations.id, subscription_kind.id', Ressource::TYPE_COWORKING)));
         $ratio_spaces = array();
-        $total = array();
+        $ratio_spaces_total = array();
         foreach ($data as $item) {
             $caption = str_replace(array(' - %UserName%', 'Coworking - '), array('', ''), $item->name);
             $ratio_spaces[$item->location][$caption]['count'] = $item->nb;
-            if (!isset($total[$item->location])) {
-                $total[$item->location] = 0;
+            if (!isset($ratio_spaces_total[$item->location])) {
+                $ratio_spaces_total[$item->location] = 0;
             }
-            $total[$item->location] += $item->nb;
+            $ratio_spaces_total[$item->location] += $item->nb;
         }
         foreach ($ratio_spaces as $location => $data) {
             foreach ($data as $caption => $d) {
-                $ratio_spaces[$location][$caption]['ratio'] = 100 * $ratio_spaces[$location][$caption]['count'] / $total[$location];
+                $ratio_spaces[$location][$caption]['ratio'] = 100 * $ratio_spaces[$location][$caption]['count'] / $ratio_spaces_total[$location];
             }
         }
         return View::make('stats.subscriptions', array(
             'datas' => $datas,
             'ratio_all' => $ratio_all,
-            'ratio_spaces' => $ratio_spaces
+            'ratio_all_total' => $ratio_all_total,
+            'ratio_spaces' => $ratio_spaces,
+            'ratio_spaces_total' => $ratio_spaces_total
         ));
     }
 
