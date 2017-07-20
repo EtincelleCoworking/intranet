@@ -18,7 +18,7 @@
         <div class="col-lg-12">
             <div class="ibox float-e-margins">
                 <div class="ibox-title">
-                    <h5>Répartition globale ({{$ratio_all_total}})</h5>
+                    <h5>Répartition globale ({{$ratio_all_total}} personnes - {{number_format($ratio_all_total_price, 0, ',', '.')}}€)</h5>
                 </div>
                 <div class="ibox-content">
                     <table class="table table-bordered table-striped table-hover">
@@ -43,7 +43,7 @@
             <div class="col-lg-12">
                 <div class="ibox float-e-margins">
                     <div class="ibox-title">
-                        <h5>{{$location}} ({{$ratio_spaces_total[$location]}})</h5>
+                        <h5>{{$location}} ({{$ratio_spaces_total[$location]['count']}} personnes - {{number_format($ratio_spaces_total[$location]['amount'], 0, ',', '.')}}€)</h5>
                     </div>
                     <div class="ibox-content">
                         <table class="table table-bordered table-striped table-hover">

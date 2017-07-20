@@ -84,7 +84,7 @@ class StatsController extends BaseController
             $datas[$item->period] = $item->total;
         }
 
-        $data = DB::select(DB::raw(sprintf('SELECT subscription_kind.name, count( subscription.id ) AS nb
+        $data = DB::select(DB::raw(sprintf('SELECT subscription_kind.name, subscription_kind.price, count( subscription.id ) AS nb
 FROM `subscription_kind`
 JOIN subscription ON subscription_kind.id = subscription.subscription_kind_id
 JOIN users ON subscription.user_id = users.id
@@ -92,16 +92,19 @@ WHERE subscription_kind.ressource_id = %d
 GROUP BY subscription_kind.id', Ressource::TYPE_COWORKING)));
         $ratio_all = array();
         $ratio_all_total = 0;
+        $ratio_all_total_price = 0;
         foreach ($data as $item) {
             $caption = str_replace(array(' - %UserName%', 'Coworking - '), array('', ''), $item->name);
             $ratio_all[$caption]['count'] = $item->nb;
+            $ratio_all[$caption]['amount'] = $item->nb * $item->price;
             $ratio_all_total += $item->nb;
+            $ratio_all_total_price += $item->nb * $item->price;
         }
         foreach ($data as $item) {
             $caption = str_replace(array(' - %UserName%', 'Coworking - '), array('', ''), $item->name);
             $ratio_all[$caption]['ratio'] = 100 * $item->nb / $ratio_all_total;
         }
-        $data = DB::select(DB::raw(sprintf('SELECT if(`locations`.`name` is null,cities.name,concat(cities.name, \' > \',  `locations`.`name`)) as location, subscription_kind.name, count( subscription.id ) AS nb
+        $data = DB::select(DB::raw(sprintf('SELECT if(`locations`.`name` is null,cities.name,concat(cities.name, \' > \',  `locations`.`name`)) as location, subscription_kind.name, subscription_kind.price, count( subscription.id ) AS nb
 FROM `subscription_kind`
 JOIN subscription ON subscription_kind.id = subscription.subscription_kind_id
 JOIN users ON subscription.user_id = users.id
@@ -114,20 +117,23 @@ GROUP BY locations.id, subscription_kind.id', Ressource::TYPE_COWORKING)));
         foreach ($data as $item) {
             $caption = str_replace(array(' - %UserName%', 'Coworking - '), array('', ''), $item->name);
             $ratio_spaces[$item->location][$caption]['count'] = $item->nb;
+            $ratio_spaces[$item->location][$caption]['amount'] = $item->nb * $item->price;
             if (!isset($ratio_spaces_total[$item->location])) {
-                $ratio_spaces_total[$item->location] = 0;
+                $ratio_spaces_total[$item->location] = array('amount' => 0, 'count' => 0);
             }
-            $ratio_spaces_total[$item->location] += $item->nb;
+            $ratio_spaces_total[$item->location]['count'] += $item->nb;
+            $ratio_spaces_total[$item->location]['amount'] += $item->nb * $item->price;
         }
         foreach ($ratio_spaces as $location => $data) {
             foreach ($data as $caption => $d) {
-                $ratio_spaces[$location][$caption]['ratio'] = 100 * $ratio_spaces[$location][$caption]['count'] / $ratio_spaces_total[$location];
+                $ratio_spaces[$location][$caption]['ratio'] = 100 * $ratio_spaces[$location][$caption]['count'] / $ratio_spaces_total[$location]['count'];
             }
         }
         return View::make('stats.subscriptions', array(
             'datas' => $datas,
             'ratio_all' => $ratio_all,
             'ratio_all_total' => $ratio_all_total,
+            'ratio_all_total_price' => $ratio_all_total_price,
             'ratio_spaces' => $ratio_spaces,
             'ratio_spaces_total' => $ratio_spaces_total
         ));
