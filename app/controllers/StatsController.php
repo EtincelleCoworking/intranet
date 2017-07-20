@@ -83,7 +83,52 @@ class StatsController extends BaseController
         foreach (Subscription::TotalPerMonth()->get() as $item) {
             $datas[$item->period] = $item->total;
         }
-        return View::make('stats.subscriptions', array('datas' => $datas));
+
+        $data = DB::select(DB::raw(sprintf('SELECT subscription_kind.name, count( subscription.id ) AS nb
+FROM `subscription_kind`
+JOIN subscription ON subscription_kind.id = subscription.subscription_kind_id
+JOIN users ON subscription.user_id = users.id
+WHERE subscription_kind.ressource_id = %d
+GROUP BY subscription_kind.id', Ressource::TYPE_COWORKING)));
+        $ratio_all = array();
+        $total = 0;
+        foreach ($data as $item) {
+            $caption = str_replace(array(' - %UserName%', 'Coworking - '), array('', ''), $item->name);
+            $ratio_all[$caption]['count'] = $item->nb;
+            $total += $item->nb;
+        }
+        foreach ($data as $item) {
+            $caption = str_replace(array(' - %UserName%', 'Coworking - '), array('', ''), $item->name);
+            $ratio_all[$caption]['ratio'] = 100 * $item->nb / $total;
+        }
+        $data = DB::select(DB::raw(sprintf('SELECT if(`locations`.`name` is null,cities.name,concat(cities.name, \' > \',  `locations`.`name`)) as location, subscription_kind.name, count( subscription.id ) AS nb
+FROM `subscription_kind`
+JOIN subscription ON subscription_kind.id = subscription.subscription_kind_id
+JOIN users ON subscription.user_id = users.id
+JOIN locations on locations.id = users.default_location_id
+JOIN cities on cities.id = locations.city_id
+WHERE subscription_kind.ressource_id = %d
+GROUP BY locations.id, subscription_kind.id', Ressource::TYPE_COWORKING)));
+        $ratio_spaces = array();
+        $total = array();
+        foreach ($data as $item) {
+            $caption = str_replace(array(' - %UserName%', 'Coworking - '), array('', ''), $item->name);
+            $ratio_spaces[$item->location][$caption]['count'] = $item->nb;
+            if (!isset($total[$item->location])) {
+                $total[$item->location] = 0;
+            }
+            $total[$item->location] += $item->nb;
+        }
+        foreach ($ratio_spaces as $location => $data) {
+            foreach ($data as $caption => $d) {
+                $ratio_spaces[$location][$caption]['ratio'] = 100 * $ratio_spaces[$location][$caption]['count'] / $total[$location];
+            }
+        }
+        return View::make('stats.subscriptions', array(
+            'datas' => $datas,
+            'ratio_all' => $ratio_all,
+            'ratio_spaces' => $ratio_spaces
+        ));
     }
 
     public function sales_per_category()
