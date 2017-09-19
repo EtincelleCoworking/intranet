@@ -29,7 +29,7 @@ class BookingController extends Controller
         $item->booking = new Booking();
         $item->booking->user_id = Auth::id();
         $organisations = Auth::user()->organisations;
-        $item->booking->title = Auth::user()->fullnameOrga;
+        $item->booking->title = Auth::user()->orgaFullname;
         if ($organisations) {
             $organisation = $organisations->last();
             if ($organisation) {

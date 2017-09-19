@@ -124,6 +124,25 @@ class User extends Eloquent implements UserInterface, RemindableInterface
     }
 
     /**
+     * Fullname user with Organisations
+     */
+    public function getOrgaFullnameAttribute()
+    {
+        $organisation = '';
+        foreach ($this->organisations as $key => $orga) {
+            if ($key > 0) {
+                $organisation .= ', ';
+            }
+            $organisation .= $orga->name;
+        }
+        $result = $this->firstname . ' ' . $this->lastname;
+        if (!empty($organisation) && ($result != $organisation)) {
+            $result = $organisation. ' (' . $result . ')';
+        }
+        return $result;
+    }
+
+    /**
      * List of skills
      */
     public function getAllSkillsAttribute()
