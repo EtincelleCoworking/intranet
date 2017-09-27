@@ -165,7 +165,8 @@ class BookingController extends Controller
         $bookings = Booking::whereHas('items', function ($query) {
             $query->whereBetween('start_at', array(Input::get('start'), Input::get('end')))
                 ->join('ressources', 'booking_item.ressource_id', '=', 'ressources.id')
-                ->where('ressources.location_id', '=', Auth::user()->default_location_id);
+                ->join('locations', 'ressources.location_id', '=', 'locations.id')
+                ->where('locations.city_id', '=', Auth::user()->location->city_id);
         })
             ->with('items')->get();
 

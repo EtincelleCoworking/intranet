@@ -5,8 +5,9 @@
 @stop
 
 <?php $ressources = Ressource::whereIsBookable(true)
-        ->where('location_id', '=', Auth::user()->default_location_id)
-        ->get(); ?>
+    ->join('locations', 'ressources.location_id', '=', 'locations.id')
+    ->where('locations.city_id', '=', Auth::user()->location->city_id)
+    ->get(); ?>
 
 @section('breadcrumb')
     <div class="row wrapper border-bottom white-bg page-heading">
@@ -174,10 +175,9 @@
             border-width: 3px;
         }
 
-
         @foreach($ressources as $ressource)
 
-.fc-event.booking-ofuscated-{{$ressource->id}}                             {
+.fc-event.booking-ofuscated-{{$ressource->id}}                              {
             background: repeating-linear-gradient(
             135deg,
                     {{ adjustBrightness($ressource->booking_background_color, -32)}},
@@ -210,9 +210,9 @@
     <script type="text/javascript">
         formatMember = function (member) {
             return '<span id="meeting-view-members-member-' + member.id + '" class="pull-left" style="margin-right: 10px">'
-                    + '<a href="' + member.profile_url + '">'
-                    + '<img alt="' + member.fullname + '" title="' + member.fullname + '" class="img-circle img-responsive" src="' + member.avatar_url + '"/>'
-                    + '</a></span> ';
+                + '<a href="' + member.profile_url + '">'
+                + '<img alt="' + member.fullname + '" title="' + member.fullname + '" class="img-circle img-responsive" src="' + member.avatar_url + '"/>'
+                + '</a></span> ';
 
         };
         var Etincelle = {
@@ -254,28 +254,28 @@
         };
 
         {{--Etincelle.Event.prototype.edit = function () {--}}
-            {{--var self = this;--}}
-            {{--var $form = $('#meeting-form');--}}
-            {{--$form.find('input[name="id"]').val(this.id);--}}
-            {{--$form.find('input[name="booking_id"]').val(this.booking_id);--}}
-            {{--$form.find('input[name="title"]').val(this.title);--}}
-            {{--@if (Auth::user()->isSuperAdmin())--}}
+                {{--var self = this;--}}
+                {{--var $form = $('#meeting-form');--}}
+                {{--$form.find('input[name="id"]').val(this.id);--}}
+                {{--$form.find('input[name="booking_id"]').val(this.booking_id);--}}
+                {{--$form.find('input[name="title"]').val(this.title);--}}
+                {{--@if (Auth::user()->isSuperAdmin())--}}
                 {{--$('select[name="user_id"]').select2().select2('val', this.user_id);--}}
-            {{--@endif--}}
-            {{--$form.find('textarea[name="description"]').val(this.description);--}}
-            {{--$form.find('input[name="date"]').val(this.start.format('DD/MM/YYYY'));--}}
-            {{--$form.find('select[name="start"]').val(this.start.format('HH:mm'));--}}
-            {{--$form.find('select[name="end"]').val(this.end.format('HH:mm'));--}}
-            {{--$form.find('input[name="rooms[]"]').each(function () {--}}
+                {{--@endif--}}
+                {{--$form.find('textarea[name="description"]').val(this.description);--}}
+                {{--$form.find('input[name="date"]').val(this.start.format('DD/MM/YYYY'));--}}
+                {{--$form.find('select[name="start"]').val(this.start.format('HH:mm'));--}}
+                {{--$form.find('select[name="end"]').val(this.end.format('HH:mm'));--}}
+                {{--$form.find('input[name="rooms[]"]').each(function () {--}}
                 {{--$(this).prop('checked', $(this).val() == self.ressource_id);--}}
-            {{--});--}}
-            {{--$form.find('input[name="is_private"]').prop('checked', this.is_private);--}}
-            {{--$form.find('input[name="is_open_to_registration"]').prop('checked', this.is_open_to_registration);--}}
+                {{--});--}}
+                {{--$form.find('input[name="is_private"]').prop('checked', this.is_private);--}}
+                {{--$form.find('input[name="is_open_to_registration"]').prop('checked', this.is_open_to_registration);--}}
 
-            {{--$('#newBookingDialog').modal('show');--}}
-        {{--};--}}
+                {{--$('#newBookingDialog').modal('show');--}}
+                {{--};--}}
 
-        Etincelle.Event.prototype.getViewLink = function () {
+            Etincelle.Event.prototype.getViewLink = function () {
             return '{{ route('booking_item_show', 999999) }}'.replace('999999', this.id);
         };
 
@@ -288,7 +288,7 @@
                 return '{{$ressource->name}}';
             }
             @endforeach
-                    return false;
+                return false;
         };
 
         Etincelle.Event.prototype.show = function () {
@@ -330,9 +330,9 @@
             $dialog.find('.modal-header .modal-title').html('<a href="' + this.getViewLink() + '">' + this.title + '</a>');
             $dialog.find('#meeting-view-date').html(this.start.format('DD/MM/YYYY'));
             $dialog.find('#meeting-view-hours').html(
-                    this.start.format('HH:mm')
-                    + ' - '
-                    + this.end.format('HH:mm')
+                this.start.format('HH:mm')
+                + ' - '
+                + this.end.format('HH:mm')
             );
             $dialog.find('#meeting-view-location').html(this.getLocation());
             if (this.description != '') {
@@ -356,24 +356,24 @@
 
             @if (Auth::user()->isSuperAdmin())
                 $('#meeting-log-time').show();
-                $('#meeting-quote').show();
-                if (!this.is_confirmed) {
-                    $('#meeting-confirm').show();
-                }else{
-                    $('#meeting-confirm').hide();
-                }
+            $('#meeting-quote').show();
+            if (!this.is_confirmed) {
+                $('#meeting-confirm').show();
+            } else {
+                $('#meeting-confirm').hide();
+            }
             @else
                 $('#meeting-log-time').hide();
-                $('#meeting-quote').hide();
-                if(this.user_id == {{Auth::id()}}){
-                    if (!this.is_confirmed) {
-                        $('#meeting-confirm').show();
-                    }else{
-                        $('#meeting-confirm').hide();
-                    }
-                }else{
+            $('#meeting-quote').hide();
+            if (this.user_id == {{Auth::id()}}) {
+                if (!this.is_confirmed) {
+                    $('#meeting-confirm').show();
+                } else {
                     $('#meeting-confirm').hide();
                 }
+            } else {
+                $('#meeting-confirm').hide();
+            }
             @endif
 
             $dialog.modal('show');
@@ -412,63 +412,63 @@
 //                    });
 
             $('#meeting-delete')
-                    .click(function () {
-                        $.ajax({
-                            dataType: 'json',
-                            url: '{{ URL::route('booking_delete_ajax') }}',
-                            type: "POST",
-                            data: {
-                                booking_id: activeEvent.booking_id,
-                                id: activeEvent.id
-                            },
-                            success: function (data) {
-                                if (data.status == 'KO') {
-                                    alert(data.message);
-                                } else {
-                                    $('#calendar').fullCalendar('removeEvents', data.id);
-                                    $('#BookingDialog').modal('hide');
-                                }
-                            },
-                            error: function (data) {
-                                // afficher un message générique?
+                .click(function () {
+                    $.ajax({
+                        dataType: 'json',
+                        url: '{{ URL::route('booking_delete_ajax') }}',
+                        type: "POST",
+                        data: {
+                            booking_id: activeEvent.booking_id,
+                            id: activeEvent.id
+                        },
+                        success: function (data) {
+                            if (data.status == 'KO') {
+                                alert(data.message);
+                            } else {
+                                $('#calendar').fullCalendar('removeEvents', data.id);
                                 $('#BookingDialog').modal('hide');
                             }
-                        });
-                        return false;
+                        },
+                        error: function (data) {
+                            // afficher un message générique?
+                            $('#BookingDialog').modal('hide');
+                        }
                     });
+                    return false;
+                });
 
 
             $('#meeting-log-time')
-                    .click(function () {
-                        $.ajax({
-                            dataType: 'json',
-                            url: '{{ URL::route('booking_log_time_ajax', array('booking_item_id' => 999999)) }}'.replace('999999', activeEvent.id),
-                            type: "GET",
-                            success: function (data) {
-                                if (data.status == 'KO') {
-                                    toastr.error(data.message);
-                                } else {
-                                    toastr.success(data.message);
-                                    //activeEvent.is_accounted = true;
-                                    activeEvent.event.is_accounted = true;
-                                    $('#calendar').fullCalendar('updateEvent', activeEvent.event);
-                                    $('#BookingDialog').modal('hide');
-                                }
-                            },
-                            error: function (data) {
-                                // afficher un message générique?
-                                toastr.error('Erreur inconnue');
+                .click(function () {
+                    $.ajax({
+                        dataType: 'json',
+                        url: '{{ URL::route('booking_log_time_ajax', array('booking_item_id' => 999999)) }}'.replace('999999', activeEvent.id),
+                        type: "GET",
+                        success: function (data) {
+                            if (data.status == 'KO') {
+                                toastr.error(data.message);
+                            } else {
+                                toastr.success(data.message);
+                                //activeEvent.is_accounted = true;
+                                activeEvent.event.is_accounted = true;
+                                $('#calendar').fullCalendar('updateEvent', activeEvent.event);
                                 $('#BookingDialog').modal('hide');
                             }
-                        });
-                        return false;
+                        },
+                        error: function (data) {
+                            // afficher un message générique?
+                            toastr.error('Erreur inconnue');
+                            $('#BookingDialog').modal('hide');
+                        }
                     });
+                    return false;
+                });
 
 
             $('#meeting-quote')
-                    .click(function () {
-                        window.location.href = '{{ URL::route('booking_quote', array('booking_item_id' => 999999)) }}'.replace('999999', activeEvent.id);
-                    });
+                .click(function () {
+                    window.location.href = '{{ URL::route('booking_quote', array('booking_item_id' => 999999)) }}'.replace('999999', activeEvent.id);
+                });
 
 
             $('#meeting-view-members-register').click(function () {
@@ -529,23 +529,25 @@
                 },
                 resourceGroupField: 'location',
                 resources: [
-                @foreach($ressources as $ressource)
-                    { id: 'res{{$ressource->id}}',
+                        @foreach($ressources as $ressource)
+                    {
+                        id: 'res{{$ressource->id}}',
                         location: '{{$ressource->location->name}}',
-                        title: '{{$ressource->name}}', eventColor: '{{$ressource->labelCss}}' },
+                        title: '{{$ressource->name}}', eventColor: '{{$ressource->labelCss}}'
+                    },
                     @endforeach
                 ],
                 eventRender: function (event, element) {
                     if (event.is_private) {
                         element.find(".fc-time")
-                                .before($("<span class=\"fa fa-lock pull-right\"></span>"))
+                            .before($("<span class=\"fa fa-lock pull-right\"></span>"))
                         ;
                     } else {
 //                        element.find(".fc-time").before($("<span class=\"fa fa-unlock pull-right\"></span>"));
                     }
                     if (event.is_accounted) {
                         element.find(".fc-time")
-                                .before($("<span class=\"fa fa-check-circle pull-right\"></span>"))
+                            .before($("<span class=\"fa fa-check-circle pull-right\"></span>"))
                         ;
                     } else {
 //                        element.find(".fc-time").before($("<span class=\"fa fa-unlock pull-right\"></span>"));
