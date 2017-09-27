@@ -7,6 +7,7 @@
 <?php $ressources = Ressource::whereIsBookable(true)
     ->join('locations', 'ressources.location_id', '=', 'locations.id')
     ->where('locations.city_id', '=', Auth::user()->location->city_id)
+    ->select('ressources.*')
     ->get(); ?>
 
 @section('breadcrumb')
