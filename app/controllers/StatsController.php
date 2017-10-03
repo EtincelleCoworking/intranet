@@ -464,6 +464,12 @@ order by kind ASC, `period` DESC
         foreach ($costs as $location => $data) {
             foreach ($data as $period => $value) {
                 if ($period <= $this_month) {
+                    if(!isset($result[$location][$period])){
+                        $result[$location][$period] = 0;
+                    }
+                    if(!isset($costs[$location][$period])){
+                        $costs[$location][$period] = 0;
+                    }
                     if (isset($operations[$location][$period])) {
                         $result[$location][$period] += (float)$operations[$location][$period];
                     }
