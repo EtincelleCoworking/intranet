@@ -430,7 +430,7 @@ order by kind ASC, `period` DESC
         }
         $operations = array(
             'Toulouse > Carmes' => array(
-                // etalement du paiement Palantir
+                // etalement du paiement Carmes
                 '2016-03' => -5 * 9250,
                 '2016-04' => 9250,
                 '2016-05' => 9250,
@@ -439,9 +439,10 @@ order by kind ASC, `period` DESC
                 '2016-08' => 9250,
             ),
             'Toulouse > Victor Hugo' => array(
-                // Loyer 12/2016 Agence Trajectoires
+                // Loyer 12/2016 A. T.
                 '2016-11' => -1050,
                 '2016-12' => 1050,
+                // Loyer trimestriel > mensuel
                 '2017-04' => -2 * 550,
                 '2017-05' => 550,
                 '2017-06' => 550,
@@ -465,6 +466,9 @@ order by kind ASC, `period` DESC
                 if ($period <= $this_month) {
                     if (isset($operations[$location][$period])) {
                         $result[$location][$period] += (float)$operations[$location][$period];
+                    }
+                    if (!isset($datas[$location][substr($period, 0, 4)])) {
+                        $datas[$location][substr($period, 0, 4)] = array();
                     }
 
                     $datas[$location][substr($period, 0, 4)][$period] = array(
