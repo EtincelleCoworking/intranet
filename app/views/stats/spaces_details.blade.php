@@ -14,6 +14,7 @@
 @stop
 
 @section('content')
+    @if(count($items) > 0)
     <table class="table table-striped table-hover">
         <thead>
         <tr>
@@ -49,7 +50,7 @@
                     @endif
                     @if ($invoice->user)
                         (<a href="{{ URL::route('user_modify', $invoice->user->id) }}">{{ $invoice->user->fullname }}</a>
-                        <a href="?filtre_submitted=1&filtre_user_id={{ $invoice->user->id }}"><i
+                        <a href="{{ URL::route('invoice_list') }}?filtre_submitted=1&filtre_user_id={{ $invoice->user->id }}"><i
                                     class="fa fa-filter"></i></a>)
                     @endif
                 </td>
@@ -145,7 +146,9 @@
         @endforeach
         </tbody>
     </table>
-
+@else
+    <p>Aucune facture</p>
+    @endif
 @stop
 
 
