@@ -53,7 +53,8 @@
                                 <?php $total_costs += $infos['cost']; ?>
                                 <tr>
                                     <td>{{$period}}</td>
-                                    <td style="text-align: right">{{ number_format($infos['sales'], 0, ',', '.') }}€
+                                    <td style="text-align: right">
+                                        {{ number_format($infos['sales'], 0, ',', '.') }}€
                                     </td>
                                     <td style="text-align: right">{{ number_format($infos['cost'], 0, ',', '.') }}€</td>
                                     <td style="text-align: right">
@@ -122,7 +123,10 @@
                                     <?php $total_costs += $infos['cost']; ?>
                                     <tr>
                                         <td>{{$period}}</td>
-                                        <td style="text-align: right">{{ number_format($infos['sales'], 0, ',', '.') }}€
+                                        <td style="text-align: right">
+                                            <a href="{{URL::route('stats_spaces_details', array('space_slug'=> $location_slugs[$location], 'period' => $period))}}">
+                                            {{ number_format($infos['sales'], 0, ',', '.') }}€
+                                            </a>
                                         </td>
                                         <td style="text-align: right">{{ number_format($infos['cost'], 0, ',', '.') }}
                                             €

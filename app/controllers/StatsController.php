@@ -343,7 +343,7 @@ join `locations` on u.default_location_id = `locations`.`id`
 left outer join cities on city_id = cities.id
 
 where (`organisations`.`is_founder` = \'0\' or `organisation_id` is null) 
-AND ressources.ressource_kind_id = 1
+AND ressources.ressource_kind_id = ' . RessourceKind::TYPE_COWORKING . '
 
 group by `period`, kind
 order by kind ASC, `period` DESC
@@ -500,9 +500,69 @@ order by kind ASC, `period` DESC
             }
         }
 
+        $location_slugs = array();
+        $items = DB::select(DB::raw('select 
+`locations`.slug, 
+if(`locations`.`name` is null,cities.name,concat(cities.name, \' > \',  `locations`.`name`)) as `kind` 
+
+from `locations` 
+left outer join cities on locations.city_id = cities.id'));
+        foreach ($items as $item) {
+            $location_slugs[$item->kind] = $item->slug;
+        }
+
         return View::make('stats.spaces', array(
             'datas' => $datas,
+            'location_slugs' => $location_slugs,
             'global' => $global,
+        ));
+    }
+
+    public function spaces_details($space_slug, $period){
+        $invoices_ids = array();
+        $items = DB::select(DB::raw(sprintf('select 
+invoices.id 
+
+from `invoices_items` 
+inner join `invoices` on `invoice_id` = `invoices`.`id` and invoices.`type` = \'F\' 
+left outer join `organisations` on invoices.`organisation_id` = `organisations`.`id` 
+left outer join `ressources` on invoices_items.`ressource_id` = `ressources`.`id` 
+left outer join `locations` on ressources.`location_id` = `locations`.`id` 
+
+where ressources.ressource_kind_id NOT IN (' . RessourceKind::TYPE_COWORKING . ', ' . RessourceKind::TYPE_EXCEPTIONNAL . ')
+AND date_format(invoices.date_invoice, "%%Y-%%m") = "%s"
+AND locations.slug = "%s"
+order by invoices.date_invoice ASC', $period, $space_slug)));
+        foreach ($items as $item) {
+            $invoices_ids[$item->id] = true;
+        }
+
+        $items = DB::select(DB::raw(sprintf('select 
+invoices.id 
+from `invoices_items` 
+inner join `invoices` on `invoice_id` = `invoices`.`id` and `type` = \'F\' 
+left outer join `organisations` on `organisation_id` = `organisations`.`id` 
+join `ressources` on invoices_items.ressource_id = `ressources`.`id`
+
+join users u on u.id = invoices_items.subscription_user_id 
+join `locations` on u.default_location_id = `locations`.`id` 
+
+where (`organisations`.`is_founder` = \'0\' or `organisation_id` is null) 
+AND ressources.ressource_kind_id = ' . RessourceKind::TYPE_COWORKING . '
+AND date_format(invoices.date_invoice, "%%Y-%%m") = "%s"
+AND locations.slug = "%s"
+', $period, $space_slug)));
+        foreach ($items as $item) {
+            $invoices_ids[$item->id] = true;
+        }
+
+        $items = Invoice::with(array('organisation','user'))->whereIn('id', array_keys($invoices_ids))->get();
+        //var_dump(array_keys($invoices_ids));exit;
+
+        return View::make('stats.spaces_details', array(
+            'items' => $items,
+            'space' => Location::where('slug', $space_slug)->first(),
+            'period' => $period,
         ));
     }
 }
