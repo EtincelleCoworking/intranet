@@ -6,7 +6,7 @@
 
 @section('breadcrumb')
     <div class="row wrapper border-bottom white-bg page-heading">
-        <div class="col-sm-4">
+        <div class="col-sm-12">
             <h2>{{$space}} - {{$period}}</h2>
         </div>
 
@@ -14,6 +14,11 @@
 @stop
 
 @section('content')
+    <div class="row">
+        <div class="col-lg-12">
+            <div class="ibox">
+                <div class="ibox-content">
+                    <div class="row">
     @if(count($items) > 0)
     <table class="table table-striped table-hover">
         <thead>
@@ -146,9 +151,17 @@
         @endforeach
         </tbody>
     </table>
+
 @else
     <p>Aucune facture</p>
     @endif
+
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </div>
 @stop
 
 
