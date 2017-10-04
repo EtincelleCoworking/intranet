@@ -453,6 +453,9 @@ join `locations` on u.default_location_id = `locations`.`id`
 ';
 
             $where = sprintf(' AND locations.slug = "%s" ', $space_slug);
+        }else{
+            $from = '';
+            $where = '';
         }
 
 
