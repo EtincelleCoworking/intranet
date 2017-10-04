@@ -439,10 +439,35 @@ class InvoiceController extends BaseController
     }
 
 
-    public function unpaid()
+    public function unpaid($space_slug = null)
     {
+        if($space_slug){
+            $sql = sprintf('select 
+invoices.organisation_id, 
+organisations.name,
+organisations.last_invoice_reminder_at,
+count(distinct(invoices.id)) as nb_invoices,
+sum(invoices_items.amount) as total_ht,
+sum(invoices_items.amount * (1+vat_types.value/100)) as total_ttc,
+min(invoices.date_invoice) as older_invoice_at
 
-        $items = DB::select(DB::raw('select 
+from invoices_items 
+join vat_types ON invoices_items.vat_types_id = vat_types.id
+join invoices on invoices.id = invoices_items.invoice_id
+join organisations on invoices.organisation_id = organisations.id
+left outer join `ressources` on invoices_items.`ressource_id` = `ressources`.`id` 
+left outer join `locations` on ressources.`location_id` = `locations`.`id` 
+
+WHERE invoices.type = \'F\' 
+  AND invoices.date_payment IS NULL
+  AND invoices.on_hold = 0
+  AND invoices.is_lost = 0
+  AND locations.slug = "%s"
+
+GROUP by invoices.organisation_id
+order by older_invoice_at ASC', $space_slug);
+        }else{
+            $sql = 'select 
 invoices.organisation_id, 
 organisations.name,
 organisations.last_invoice_reminder_at,
@@ -461,9 +486,15 @@ WHERE invoices.type = \'F\'
   AND invoices.on_hold = 0
   AND invoices.is_lost = 0
 GROUP by invoices.organisation_id
-order by older_invoice_at ASC'));
+order by older_invoice_at ASC';
+        }
 
-        return View::make('invoice.unpaid', array('items' => $items));
+        $items = DB::select(DB::raw($sql));
+        return View::make('invoice.unpaid', array(
+            'items' => $items,
+            'space_slug' => $space_slug,
+            'locations' => Location::orderBy('name', 'asc')->get(),
+            ));
 
     }
 

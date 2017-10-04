@@ -20,6 +20,25 @@
 @stop
 
 @section('content')
+    <p>
+        <a href="{{URL::route('invoice_unpaid')}}" class="btn btn-xs
+        @if ($space_slug == '')
+                btn-primary
+                @else
+                btn-default
+        @endif
+                ">Global</a>
+        @foreach($locations as $location)
+            <a href="{{URL::route('invoice_unpaid', $location->slug)}}" class="btn btn-xs
+        @if ($space_slug == $location->slug)
+                    btn-primary
+                    @else
+                    btn-default
+            @endif
+">{{$location}}</a>
+        @endforeach
+    </p>
+
     @if(count($items)==0)
         <p>Aucune facture impayée.</p>
     @else
@@ -42,15 +61,15 @@
                                 <tbody>
                                 @foreach ($items as $item)
                                     <tr
-                                    @if(strtotime('now') - strtotime($item->older_invoice_at) < 31*24*3600)
-                                        class="text-muted"
-                                    @elseif(strtotime('now') - strtotime($item->older_invoice_at) < 2 * 31*24*3600)
-                                    class=""
-                                    @elseif(strtotime('now') - strtotime($item->older_invoice_at) < 3 * 31*24*3600)
-                                    class="text-warning"
-                                    @else
-                                        class="text-danger"
-                                    @endif
+                                            @if(strtotime('now') - strtotime($item->older_invoice_at) < 31*24*3600)
+                                            class="text-muted"
+                                            @elseif(strtotime('now') - strtotime($item->older_invoice_at) < 2 * 31*24*3600)
+                                            class=""
+                                            @elseif(strtotime('now') - strtotime($item->older_invoice_at) < 3 * 31*24*3600)
+                                            class="text-warning"
+                                            @else
+                                            class="text-danger"
+                                            @endif
                                     >
                                         <td>
                                             <a href="{{ URL::route('organisation_modify', $item->organisation_id) }}">{{ $item->name }}</a>
