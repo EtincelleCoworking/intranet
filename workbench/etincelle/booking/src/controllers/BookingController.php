@@ -828,4 +828,79 @@ class BookingController extends Controller
         return Redirect::route('booking_with_date', array('now' => date('Y-m-d', strtotime($booking_item->start_at))))->with('mSuccess', 'La réservation a été confirmée');
     }
 
+    public function dailyPdf($location, $day = null)
+    {
+        if (null == $day) {
+            $day = date('Y-m-d');
+        }
+
+
+        $datas = DB::select(DB::raw(sprintf('SELECT ressources.name AS room, concat(date_format( booking_item.start_at, "%%H:%%i" ) , " - ", date_format( booking_item.start_at + INTERVAL booking_item.duration
+MINUTE , "%%H:%%i" )) AS timerange, booking.title, 
+concat( users.firstname, " ", users.lastname ) AS contact,
+organisations.name as organisation
+FROM `booking_item`
+JOIN ressources ON booking_item.ressource_id = ressources.id
+JOIN locations ON ressources.location_id = locations.id
+JOIN booking ON booking_item.booking_id = booking.id
+JOIN users ON users.id = booking.user_id
+LEFT OUTER JOIN organisations on organisations.id = booking.organisation_id 
+WHERE booking_item.start_at > "%s 00:00:00"
+AND booking_item.start_at <= "%s 23:59:59"
+AND locations.slug = "%s"
+ORDER BY room ASC , booking_item.start_at ASC ', $day, $day, $location)));
+
+        $bookings = array();
+        //var_dump($datas); exit;
+
+        foreach ($datas as $data) {
+
+            $title = trim($data->title);
+            if (empty($title)) {
+                $title = $data->organisation;
+                if (!empty($title) && trim($data->contact) != '') {
+                    $title .= sprintf(' (%s)', $data->contact);
+                }
+            }
+            if (empty($title)) {
+                $title = $data->contact;
+            }
+            $bookings[$data->room][$data->timerange] = $title;
+        }
+        $pages = array();
+        foreach ($bookings as $room => $meetings) {
+            $html = '
+        <html>
+            <head>
+                <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/></head>
+                <title>' . $location . ' - ' . $room . ' - ' . $day . '</title>
+            </head>
+            <body>
+            ';
+            $html .= '<div class="page">';
+            $html .= sprintf('<table width="100%%"><tr><td width="50%%">%s</td><td width="50%%" align="right">%s</td></tr>', $room, date('d/m/Y', strtotime($day)));
+            $html .= '<table width="100%"><tbody>';
+            foreach ($meetings as $timerange => $title) {
+                //$html .= sprintf('<tr><td width="1%%" nowrap="nowrap"><span style="color: #999999; font-size:30px;">%s&nbsp;</span></td><td><span style="font-size:60px;">%s</span></td></tr>', $timerange, $title);
+                $html .= sprintf('<tr><td><div style="color: #999999; font-size:30px; ">%s</div><div style="font-size:55px;text-overflow: ellipsis;">%s</div><hr style="border-top: dotted 1px;" /></td></tr>', $timerange, $title);
+                //valign="top"
+            }
+            $html .= '</tbody></table>';
+            $html .= '</div>';
+            $html .= '</body>';
+            $html .= '</html>';
+            $pages[] = $html;
+        }
+
+
+        $pdf = App::make('snappy.pdf');
+        $output = $pdf->getOutputFromHtml($pages,
+            array('orientation' => 'Landscape',
+                'default-header' => false));;
+        return new \Illuminate\Http\Response($output, 200, array(
+            'Content-Type' => 'application/pdf',
+            'Content-Disposition' => sprintf('filename="%s_%s.pdf"', $day, $location)));
+        //attachment;
+    }
+
 }
