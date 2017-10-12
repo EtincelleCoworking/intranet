@@ -219,6 +219,8 @@ class SubscriptionController extends BaseController
             ->orderBy('subscription_kind.price', 'DESC')
             ->orderBy('subscription.renew_at', 'ASC')
             ->where('subscription.renew_at', '<=', date('Y-m-t'))
+            //->where('subscription.renew_at', '<=', date('Y-m-t'))
+            ->where('subscription.renew_at', '<', (new DateTime())->modify('+1 month')->format('Y-m-d'))
             ->get();
         if (count($subscriptions) == 0) {
             return Redirect::route('subscription_list')->with('mError', 'Aucun abonnement pour cette société');
