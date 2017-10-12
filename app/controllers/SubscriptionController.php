@@ -218,7 +218,6 @@ class SubscriptionController extends BaseController
             ->join('subscription_kind', 'subscription_kind_id', '=', 'subscription_kind.id', 'left outer')
             ->orderBy('subscription_kind.price', 'DESC')
             ->orderBy('subscription.renew_at', 'ASC')
-            ->where('subscription.renew_at', '<=', date('Y-m-t'))
             //->where('subscription.renew_at', '<=', date('Y-m-t'))
             ->where('subscription.renew_at', '<', (new DateTime())->modify('+1 month')->format('Y-m-d'))
             ->get();
