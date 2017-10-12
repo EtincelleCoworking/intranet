@@ -95,8 +95,9 @@
                         <div class="col-xs-12">
                             @if($booking_item->confirmed_at)
                                 <p>
-                                    <b>Réservation confirmée le {{ date('d/m/Y', strtotime($booking_item->confirmed_at)) }}
-                                    à {{date('H:i', strtotime($booking_item->confirmed_at))}}
+                                    <b>Réservation confirmée
+                                        le {{ date('d/m/Y', strtotime($booking_item->confirmed_at)) }}
+                                        à {{date('H:i', strtotime($booking_item->confirmed_at))}}
                                         par {{$booking_item->confirmedByUser->fullname}}</b>
                                 </p>
                             @endif
@@ -112,7 +113,7 @@
                                     </span>
                                     </p>
                                 </label>
-                                @endif
+                            @endif
 
                         </div>
                         <div class="col-xs-12">
@@ -209,38 +210,40 @@
             $('#booking-organisation').select2();
             $('.datePicker').datepicker();
 
-                var oldOrganisation = $('#oldOrganisation').val();
+            var oldOrganisation = $('#oldOrganisation').val();
 
-                function getListOrganisations(id) {
-                    var url = "{{ URL::route('user_json_organisations') }}";
-                    var urlFinale = url.replace("%7Bid%7D", id);
+            function getListOrganisations(id) {
+                var url = "{{ URL::route('user_json_organisations') }}";
+                var urlFinale = url.replace("%7Bid%7D", id);
 
-                    $('#selectOrganisationId').html('');
-                    $.getJSON(urlFinale, function (data) {
-                        var items = '';
-                        $.each(data, function (key, val) {
-                            if (oldOrganisation == key) {
-                                items = items + '<option value="' + key + '" selected>' + val + '</option>';
-                            } else {
-                                items = items + '<option value="' + key + '">' + val + '</option>';
-                            }
-                        });
-
-                        $('#booking-organisation')
-                            .html(items)
-                            .trigger("change");
-
+                $('#selectOrganisationId').html('');
+                $.getJSON(urlFinale, function (data) {
+                    var items = '';
+                    $.each(data, function (key, val) {
+                        if (oldOrganisation == key) {
+                            items = items + '<option value="' + key + '" selected>' + val + '</option>';
+                        } else {
+                            items = items + '<option value="' + key + '">' + val + '</option>';
+                        }
                     });
-                }
 
-                $('#booking-user').on('change', function (e) {
-                    getListOrganisations($(this).val());
+                    $('#booking-organisation')
+                        .html(items)
+                        .trigger("change");
+
                 });
-                $('#booking-organisation').on('change', function (e) {
+            }
+
+            $('#booking-user').on('change', function (e) {
+                getListOrganisations($(this).val());
+            });
+            $('#booking-organisation').on('change', function (e) {
+                if ($('#booking-title').val() == '') {
                     $('#booking-title').val($(this).text());
-                });
+                }
+            });
 
-                getListOrganisations($('#booking-user').val());
+            getListOrganisations($('#booking-user').val());
 
 
         });
