@@ -40,8 +40,8 @@ class SubscriptionController extends BaseController
             ->addSelect('organisations.id')
             ->addSelect('organisations.name')
             ->addSelect(DB::raw('count(subscription.id) as count'))
-            ->where('renew_at', '<=', date('Y-m-t'))
-            //->where('renew_at', '<', (new DateTime())->modify('+1 month')->format('Y-m-d'))
+            //->where('renew_at', '<=', date('Y-m-t'))
+            ->where('renew_at', '<', (new DateTime())->modify('+1 month')->format('Y-m-d'))
             ->having('count', '>', 1);
         foreach ($q->get() as $item) {
             $companies[$item->id] = array('name' => $item->name, 'count' => $item->count);
@@ -280,7 +280,7 @@ class SubscriptionController extends BaseController
             $invoice_line->save();
 
             $date3 = new DateTime($subscription->renew_at);
-            $date3->modify('next month');
+            $date3->modify('+1 month');
             $subscription->renew_at = $date3->format('Y-m-d');
             $subscription->save();
         }
