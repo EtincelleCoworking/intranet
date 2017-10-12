@@ -71,7 +71,7 @@
             </li>
             --}}
             <li{{ Request::is('booking/dailyPdf') ? ' class="active"' : '' }}>
-                <a href="{{ URL::route('booking_daily_pdf', array('location' => Auth::user()->location->slug)) }}" target="_blank"><i class="fa fa-money"></i> PDF</a>
+                <a href="{{ URL::route('booking_daily_pdf', array('location' => Auth::user()->location->slug, 'day' => date('Y-m-d'))) }}" target="_blank"><i class="fa fa-money"></i> PDF</a>
             </li>
             {{--<li><a href="{{ URL::route('user_directory') }}">Annuaire</a></li>--}}
         </ul>
