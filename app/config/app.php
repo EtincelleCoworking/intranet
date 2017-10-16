@@ -128,6 +128,7 @@ return array(
 		'Maatwebsite\Excel\ExcelServiceProvider',
 
 		'Etincelle\Booking\BookingServiceProvider',
+		'Etincelle\Sensor\SensorServiceProvider',
 //		'Etincelle\\Issues\\IssuesServiceProvider',
 		'Etincelle\Cashflow\CashflowServiceProvider',
 	),

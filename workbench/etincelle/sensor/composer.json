@@ -1,0 +1,25 @@
+{
+    "name": "etincelle/sensor",
+    "description": "",
+    "authors": [
+        {
+            "name": "Sébastien Hordeaux",
+            "email": "sebastien@etincelle-coworking.com"
+        }
+    ],
+    "require": {
+        "php": ">=5.4.0",
+        "illuminate/support": "4.2.*"
+    },
+    "autoload": {
+        "classmap": [
+            "src/migrations",
+            "src/models",
+            "src/controllers"
+        ],
+        "psr-0": {
+            "Etincelle\\Sensor\\": "src/"
+        }
+    },
+    "minimum-stability": "stable"
+}
