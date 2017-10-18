@@ -155,6 +155,7 @@ Route::group(['before' => 'superadmin'], function() {
     Route::get('/stats/age', array('as' => 'stats_age', 'uses' => 'StatsController@age'));
     Route::get('/stats/spaces', array('as' => 'stats_spaces', 'uses' => 'StatsController@spaces'));
     Route::get('/stats/spaces/{space_slug}/{period}', array('as' => 'stats_spaces_details', 'uses' => 'StatsController@spaces_details'));
+    Route::get('/stats/ressource/{ressource_id}', array('as' => 'stats_sales_per_ressource', 'uses' => 'StatsController@sales_per_ressource'));
 
     Route::get('/tags', array('as' => 'tag_list', 'uses' => 'TagController@liste'));
     Route::get('/tag/add', array('as' => 'tag_add', 'uses' => 'TagController@add'));

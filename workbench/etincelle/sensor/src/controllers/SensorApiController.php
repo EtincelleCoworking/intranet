@@ -15,9 +15,13 @@ class SensorApiController extends Controller
         if (!$sensor) {
             App::abort(403);
         }
+        $occured_at = Input::get('occured_at');
+        if(empty($occured_at)){
+            $occured_at = date('Y-m-d H:i:s');
+        }
         $item = new SensorLog();
         $item->sensor_id = $sensor->id;
-        $item->occured_at = Input::get('occured_at');
+        $item->occured_at = $occured_at;
         $item->value = Input::get('value');
         $item->save();
 

@@ -565,4 +565,21 @@ AND locations.slug = "%s"
             'period' => $period,
         ));
     }
+
+
+    public function sales_per_ressource($ressource_id){
+        $items = DB::select(DB::raw(sprintf('SELECT  date_format(invoices.date_invoice, \'%%Y-%%m\') as occurs_at, round(sum(invoices_items.amount)) as amount
+FROM `invoices_items` 
+join invoices on invoices.id = invoices_items.invoice_id
+AND invoices.type = \'F\'
+WHERE 
+invoices_items.ressource_id = %d
+group by occurs_at DESC', $ressource_id)));
+
+        return View::make('stats.sales_per_ressource', array(
+            'ressource' => Ressource::where('id', $ressource_id)->first(),
+            'items' => $items
+            )
+        );
+    }
 }

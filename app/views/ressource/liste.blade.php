@@ -62,7 +62,8 @@
                                     @endif
                                 </td>
                                 <td>
-                                    <a href="{{ URL::route('ressource_modify', $ressource->id) }}" class="btn btn-default btn-xs btn-outline">Modifier</a>
+                                    <a href="{{ URL::route('ressource_modify', $ressource->id) }}" class="btn btn-primary btn-xs">Modifier</a>
+                                    <a href="{{ URL::route('stats_sales_per_ressource', $ressource->id) }}" class="btn btn-default btn-xs">Stats</a>
                                 </td>
                             </tr>
                         @endforeach
