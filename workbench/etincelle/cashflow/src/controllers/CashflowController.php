@@ -117,4 +117,29 @@ class CashflowController extends Controller
         $operation->save();
         return Redirect::route('cashflow', 'all')->with('mSuccess', sprintf('L\'opération %s a été modifiée (%s => %s)', $operation->name, $start_at, $operation->occurs_at));
     }
+
+    public function export($account_id)
+    {
+        $account = CashflowAccount::where('id', $account_id)->first();
+        $lines = array('Date;Montant;Debit;Credit;Tiers;Categorie');
+        foreach ($account->getDailyOperations() as $date => $data) {
+            $occured_at = date('d/m/Y', strtotime($date));
+            foreach ($data['operations'] as $operation) {
+                $lines[] = '"' . implode('";"', array(
+                            $occured_at,
+                            str_replace('.', ',', $operation->getAmount()),
+                            $operation->getAmount() < 0 ? str_replace('.', ',', -$operation->getAmount()) : 0,
+                            $operation->getAmount() > 0 ? str_replace('.', ',', -$operation->getAmount()) : 0,
+                            $operation->getName(),
+                            ''
+                        )
+                    ) . '"';
+            }
+        };
+        //var_dump($lines);exit;
+        return Response::make(implode("\n", $lines), 200, array(
+            'Content-Type' => 'text/csv',
+            'Content-Disposition' => 'attachment; filename="cashflow.csv"',
+        ));
+    }
 }

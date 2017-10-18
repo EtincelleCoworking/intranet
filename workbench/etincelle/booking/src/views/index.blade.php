@@ -8,6 +8,7 @@
     ->join('locations', 'ressources.location_id', '=', 'locations.id')
     ->where('locations.city_id', '=', Auth::user()->location->city_id)
     ->select('ressources.*')
+    ->orderBy('ressources.order_index', 'asc')
     ->get(); ?>
 
 @section('breadcrumb')

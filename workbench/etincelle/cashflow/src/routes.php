@@ -17,4 +17,5 @@ Route::group(['before' => 'superadmin'], function () {
     Route::post('/cashflow/{account_id}/modify/{id}', array('as' => 'cashflow_operation_modify_check', 'uses' => 'OperationController@modify_check'))->where(array('id' => '[0-9]+'));
 
     Route::post('/cashflow/{account_id}/modify', array('as' => 'cashflow_account_modify_check', 'uses' => 'AccountController@modify_check'))->where(array('account_id' => '[0-9]+'));
+    Route::get('/cashflow/{account_id}/export', array('as' => 'cashflow_account_export', 'uses' => 'CashflowController@export'))->where(array('account_id' => '[0-9]+'));
 });
