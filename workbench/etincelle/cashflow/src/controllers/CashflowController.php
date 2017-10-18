@@ -129,14 +129,14 @@ class CashflowController extends Controller
                             $occured_at,
                             str_replace('.', ',', $operation->getAmount()),
                             $operation->getAmount() < 0 ? str_replace('.', ',', -$operation->getAmount()) : 0,
-                            $operation->getAmount() > 0 ? str_replace('.', ',', -$operation->getAmount()) : 0,
+                            $operation->getAmount() > 0 ? str_replace('.', ',', $operation->getAmount()) : 0,
                             $operation->getName(),
                             ''
                         )
                     ) . '"';
             }
         };
-        //var_dump($lines);exit;
+        //print_r($lines);exit;
         return Response::make(implode("\n", $lines), 200, array(
             'Content-Type' => 'text/csv',
             'Content-Disposition' => 'attachment; filename="cashflow.csv"',
