@@ -393,6 +393,7 @@ order by kind ASC, `period` DESC
             'Montauban' => array(
                 '2015-09' => 2050,
                 '2016-12' => 3870,
+                '2017-11' => 2400,
             ),
             'Toulouse > Carmes' => array(
                 '2016-01' => 500,
