@@ -157,6 +157,7 @@ class UserEventHandler
         $post->save();
 
     }
+
     protected function displayBirthdayOnSlack($user)
     {
         if ($user->slack_id) {
@@ -165,16 +166,18 @@ class UserEventHandler
             $message = sprintf('Bon anniversaire %s', $user->fullname);
         }
 
-        $Location = $user->location;
+        $slack_endpoint = Config::get('etincelle.slack_general');
+        if (!empty($slack_endpoint)) {
+            Log::info(sprintf('Posted to Slack: %s', $slack_endpoint), array('context' => 'user.birthday'));
 
-        Log::info(sprintf('Posted to Slack: %s', $Location->slack_endpoint), array('context' => 'user.birthday'));
-
-        $this->slack($Location->slack_endpoint, array(
-            'text' => $message,
-            'link_names' => 1,
-            //'attachments' => $attachments
-        ));
-
+            $this->slack($slack_endpoint, array(
+                'text' => $message,
+                'link_names' => 1,
+                //'attachments' => $attachments
+            ));
+        } else {
+            Log::error('Missing Slack Endpoint for #general in etincelle.slack_general configuration parameter');
+        }
     }
 
     public function onUserBirthday($user)
