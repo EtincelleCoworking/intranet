@@ -150,7 +150,7 @@ Route::group(['before' => 'superadmin'], function() {
     Route::get('/stats/customers', array('as' => 'stats_customers', 'uses' => 'StatsController@customers'));
     Route::get('/stats/charges', array('as' => 'stats_charges', 'uses' => 'StatsController@charges'));
     Route::get('/stats/subscriptions', array('as' => 'stats_subscriptions', 'uses' => 'StatsController@subscriptions'));
-    Route::get('/stats/sales_per_category', array('as' => 'stats_sales_per_category', 'uses' => 'StatsController@sales_per_category'));
+    Route::get('/stats/sales_per_category/{period?}', array('as' => 'stats_sales_per_category', 'uses' => 'StatsController@sales_per_category'));
     Route::get('/stats/members', array('as' => 'stats_members', 'uses' => 'StatsController@members'));
     Route::get('/stats/age', array('as' => 'stats_age', 'uses' => 'StatsController@age'));
     Route::get('/stats/spaces', array('as' => 'stats_spaces', 'uses' => 'StatsController@spaces'));

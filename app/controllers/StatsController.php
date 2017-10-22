@@ -139,7 +139,7 @@ GROUP BY locations.id, subscription_kind.id', Ressource::TYPE_COWORKING)));
         ));
     }
 
-    public function sales_per_category()
+    public function sales_per_category($period = null)
     {
         $colors = array();
         $colors[] = '#3f2860';
@@ -148,7 +148,13 @@ GROUP BY locations.id, subscription_kind.id', Ressource::TYPE_COWORKING)));
         $colors[] = '#ef6d3b';
 
         $data = array();
-        foreach (InvoiceItem::withoutExceptionnals()->total()->byKind()->get() as $item) {
+        $query = InvoiceItem::withoutExceptionnals()->total()->byKind();
+        if ($period) {
+            $period = strtotime($period);
+            $query->whereBetween('invoices.date_invoice', array(date('Y-m-01', $period), date('Y-m-t', $period)));
+        }
+
+        foreach ($query->get() as $item) {
             $data[$item->kind ? $item->kind : self::LABEL_OTHERS] = array('amount' => $item->total, 'color' => array_shift($colors));
         }
 
@@ -160,7 +166,8 @@ GROUP BY locations.id, subscription_kind.id', Ressource::TYPE_COWORKING)));
             $data[$k]['ratio'] = $total ? sprintf('%0.2f', 100 * $data[$k]['amount'] / $total) : 0;
         }
 
-        return View::make('stats.pie', array('data' => $data, 'total' => $total));
+        return View::make('stats.pie', array(
+            'data' => $data, 'total' => $total, 'period' => $period));
     }
 
     protected function getNextPeriod($value)
@@ -455,8 +462,7 @@ order by kind ASC, `period` DESC
                 '2017-11' => 550,
 
             ),
-            'Toulouse > Wilson III' => array(
-            )
+            'Toulouse > Wilson III' => array()
         );
 
         $this_month = date('Y-m');
@@ -465,10 +471,10 @@ order by kind ASC, `period` DESC
         foreach ($costs as $location => $data) {
             foreach ($data as $period => $value) {
                 if ($period <= $this_month) {
-                    if(!isset($result[$location][$period])){
+                    if (!isset($result[$location][$period])) {
                         $result[$location][$period] = 0;
                     }
-                    if(!isset($costs[$location][$period])){
+                    if (!isset($costs[$location][$period])) {
                         $costs[$location][$period] = 0;
                     }
                     if (isset($operations[$location][$period])) {
@@ -519,7 +525,8 @@ left outer join cities on locations.city_id = cities.id'));
         ));
     }
 
-    public function spaces_details($space_slug, $period){
+    public function spaces_details($space_slug, $period)
+    {
         $invoices_ids = array();
         $items = DB::select(DB::raw(sprintf('select 
 invoices.id 
@@ -557,7 +564,7 @@ AND locations.slug = "%s"
             $invoices_ids[$item->id] = true;
         }
 
-        $items = Invoice::with(array('organisation','user'))->whereIn('id', array_keys($invoices_ids))->get();
+        $items = Invoice::with(array('organisation', 'user'))->whereIn('id', array_keys($invoices_ids))->get();
         //var_dump(array_keys($invoices_ids));exit;
 
         return View::make('stats.spaces_details', array(
@@ -568,7 +575,8 @@ AND locations.slug = "%s"
     }
 
 
-    public function sales_per_ressource($ressource_id){
+    public function sales_per_ressource($ressource_id)
+    {
         $items = DB::select(DB::raw(sprintf('SELECT  date_format(invoices.date_invoice, \'%%Y-%%m\') as occurs_at, round(sum(invoices_items.amount)) as amount
 FROM `invoices_items` 
 join invoices on invoices.id = invoices_items.invoice_id
@@ -578,8 +586,8 @@ invoices_items.ressource_id = %d
 group by occurs_at DESC', $ressource_id)));
 
         return View::make('stats.sales_per_ressource', array(
-            'ressource' => Ressource::where('id', $ressource_id)->first(),
-            'items' => $items
+                'ressource' => Ressource::where('id', $ressource_id)->first(),
+                'items' => $items
             )
         );
     }

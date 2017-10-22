@@ -52,7 +52,9 @@
                                 <?php $total_sales += $infos['sales']; ?>
                                 <?php $total_costs += $infos['cost']; ?>
                                 <tr>
-                                    <td>{{$period}}</td>
+                                    <td>{{$period}}
+                                        <a href="{{URL::route('stats_sales_per_category', array('period' => $period."-01"))}}" class="btn btn-default btn-xs">Details</a>
+                                    </td>
                                     <td style="text-align: right">
                                         {{ number_format($infos['sales'], 0, ',', '.') }}€
                                     </td>

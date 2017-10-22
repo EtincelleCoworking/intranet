@@ -6,8 +6,13 @@
 
 @section('breadcrumb')
     <div class="row wrapper border-bottom white-bg page-heading">
-        <div class="col-sm-4">
-            <h2>Statistiques &gt; Répartition de l'activité</h2>
+        <div class="col-sm-12">
+            <h2>
+                Statistiques &gt; Répartition de l'activité
+                @if($period)
+                    - {{ date('m/Y', $period) }}
+                @endif
+            </h2>
         </div>
 
     </div>
@@ -23,7 +28,7 @@
                 </div>
                 <div class="ibox-content">
                     <div class="row">
-                        <div class="col-lg-8">
+                        <div class="col-lg-6">
                             <canvas id="doughnutChart" height="140"></canvas>
                             <script type="text/javascript">
                                 var doughnutData = [
@@ -56,7 +61,7 @@
 
                             </script>
                         </div>
-                        <div class="col-lg-4">
+                        <div class="col-lg-6">
                             <table class="table table-bordered table-striped table-hover">
                                 <thead>
                                 <tr>
