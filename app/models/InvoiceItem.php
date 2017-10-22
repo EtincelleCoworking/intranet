@@ -66,6 +66,7 @@ class InvoiceItem extends Eloquent
 			{
 				$j->on('invoice_id', '=', 'invoices.id')->where('type', '=', 'F');
 			})
+            ->where('invoices.date_invoice', '>=', date('Y-m-d', Config::get('etincelle.activity_started')))
 			->select(
 				DB::raw('SUM(invoices_items.amount) as total')
 			)
@@ -118,7 +119,7 @@ class InvoiceItem extends Eloquent
 
 	public function scopeWithoutExceptionnals($query)
 	{
-		return $query->where('ressource_id', '<>', Ressource::TYPE_EXCEPTIONNAL);
+		return $query->where('ressources.ressource_kind_id', '<>', RessourceKind::TYPE_EXCEPTIONNAL);
 	}
 
 	public function scopePending($query)
