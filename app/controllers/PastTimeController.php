@@ -276,6 +276,13 @@ class PastTimeController extends BaseController
             $users[$item->user_id] = true;
             $user = $item->user()->getResults();
             $organisation = $user->organisations->first();
+            if(!$organisation){
+                $organisation = new Organisation();
+                $organisation->name = implode(' ', array($user->firstname, $user->lastname));
+                $organisation->country_id = Country::where('code', 'FR')->first()->id;
+                $organisation->save();
+                $user->organisations()->save($organisation);
+            }
             $organisations[$organisation->id] = $organisation;
         }
 
@@ -398,6 +405,25 @@ class PastTimeController extends BaseController
         return Redirect::route('pasttime_list')->with('mSuccess', 'Ces entrées ont étés confirmées');
     }
 
+    public function gift()
+    {
+        if (count(Input::get('items')) == 0) {
+            return Redirect::route('pasttime_list');
+        }
+        $items = PastTime::query()
+            ->whereIn('id', Input::get('items'))
+            ->get();
+
+        foreach ($items as $item) {
+            if ($item->date_past != date('Y-m-d')) {
+                $item->is_free = true;
+                $item->save();
+            }
+        }
+
+        return Redirect::route('pasttime_list')->with('mSuccess', 'Ces entrées ont étés notées commeoffertes');
+    }
+
     public function globalAction()
     {
         if (Input::has('invoice')) {
@@ -405,6 +431,9 @@ class PastTimeController extends BaseController
         }
         if (Input::has('confirm')) {
             return $this->confirmMultiple();
+        }
+        if (Input::has('gift')) {
+            return $this->gift();
         }
     }
 }

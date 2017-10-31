@@ -229,6 +229,8 @@
                             @if (Auth::user()->isSuperAdmin())
                                 <input type="submit" class="btn btn-default pull-right" name="invoice"
                                        value="Facturer"/>
+                                <input type="submit" class="btn btn-default pull-right" name="gift"
+                                       value="Offrir"/>
                             @endif
                             <input type="submit" class="btn btn-default pull-right" name="confirm" value="Confirmer"/>
                         </div>

@@ -178,9 +178,8 @@
                     <td><?php
                         if ($user->slack_invite_sent_at) {
                             echo date('d/m/Y', strtotime($user->slack_invite_sent_at));
-                        } else {
-                            printf('<a href="%s" class="btn btn-xs btn-primary slack-invite">Inviter</a>', URL::route('user_invite_slack', $user->id));
                         }
+                            printf('<a href="%s" class="btn btn-xs btn-primary slack-invite">Inviter</a>', URL::route('user_invite_slack', $user->id));
                         ?>
                     </td>
                 @endif
