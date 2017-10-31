@@ -74,8 +74,8 @@ class PastTimeController extends BaseController
             $date_filtre_start = Session::get('filtre_pasttime.start');
             $date_filtre_end = Session::get('filtre_pasttime.end');
         } else {
-            $date_filtre_start = date('Y-m-01') ;
-            $date_filtre_end = date('Y-m-t') ;
+            $date_filtre_start = date('Y-m-01');
+            $date_filtre_end = date('Y-m-t');
         }
 
 //        if (Session::has('filtre_pasttime.month')) {
@@ -276,7 +276,7 @@ class PastTimeController extends BaseController
             $users[$item->user_id] = true;
             $user = $item->user()->getResults();
             $organisation = $user->organisations->first();
-            if(!$organisation){
+            if (!$organisation) {
                 $organisation = new Organisation();
                 $organisation->name = implode(' ', array($user->firstname, $user->lastname));
                 $organisation->country_id = Country::where('code', 'FR')->first()->id;
@@ -311,7 +311,7 @@ class PastTimeController extends BaseController
         $invoice->address = $organisation->fulladdress;
         $invoice->date_invoice = new \DateTime();
         $invoice->deadline = new \DateTime(date('Y-m-d', strtotime('+1 month')));
-        $invoice->expected_payment_at = $invoice->deadline ;
+        $invoice->expected_payment_at = $invoice->deadline;
         $invoice->save();
         $vat = VatType::where('value', 20)->first();
 
@@ -324,22 +324,55 @@ class PastTimeController extends BaseController
             $invoice_line->amount = 0;
             $invoice_line->order_index = $orderIndex++;
             if ($ressource_id == Ressource::TYPE_COWORKING) {
-                $invoice_line->text = 'Coworking';
-                $sum_duration = 0;
-                foreach ($line as $item) {
-                    $duration = ceil(((strtotime($item->time_end) - strtotime($item->time_start)) / 3600) / self::COWORKING_HALF_DAY_MAX_DURATION);
-                    $sum_duration += $duration;
-                    $invoice_line->text .= sprintf("\n - %s de %s à %s (%s demi journée%s)", date('d/m/Y', strtotime($item->time_start)),
-                        date('H:i', strtotime($item->time_start)), date('H:i', strtotime($item->time_end)), $duration, ($duration > 1) ? 's' : '');
-                    if (count($users) > 1) {
-                        $invoice_line->text .= ' - ' . $item->user()->getResults()->fullname;
-                    }
-                    $invoice_line->amount += $duration * (self::COWORKING_HALF_DAY_PRICING / 1.2);
 
-                    $item->invoice_id = $invoice->id;
-                    $item->save();
+                $items_per_user = array();
+                foreach ($line as $item) {
+                    if (!$item->is_free) {
+                        if (!isset($items_per_user[$item->user->id])) {
+                            $items_per_user[$item->user->id] = array();
+                        }
+                        $items_per_user[$item->user->id][] = $item;
+                    }
                 }
-                $invoice_line->text .= sprintf("\nTotal : %s demi journée%s", $sum_duration, ($sum_duration > 1) ? 's' : '');
+                $item_group = array();
+                foreach ($items_per_user as $user_id => $sorted_items) {
+                    $previous_item = null;
+                    foreach ($sorted_items as $item) {
+                        $is_valid = true;
+                        if ($previous_item != null) {
+                            if ($previous_item->date_past == $item->date_past) {
+                                if ((strtotime($item->time_start) - strtotime($previous_item->time_end)) / 3600 <= self::COWORKING_HALF_DAY_MAX_DURATION) {
+                                    $previous_item->time_end = $item->time_end;
+                                    $item->delete();
+                                    $is_valid = false;
+                                }
+                            }
+                        }
+                        if ($is_valid) {
+                            $previous_item = $item;
+                            $item_group[$user_id][] = $item;
+                        }
+                    }
+                }
+                foreach ($item_group as $user_id => $line_content) {
+                    $invoice_line->text = 'Coworking';
+                    $sum_duration = 0;
+
+                    foreach ($line_content as $item) {
+                        $duration = max(2, ceil(((strtotime($item->time_end) - strtotime($item->time_start)) / 3600) / self::COWORKING_HALF_DAY_MAX_DURATION));
+                        $sum_duration += $duration;
+                        $invoice_line->text .= sprintf("\n - %s de %s à %s (%s demi journée%s)", date('d/m/Y', strtotime($item->time_start)),
+                            date('H:i', strtotime($item->time_start)), date('H:i', strtotime($item->time_end)), $duration, ($duration > 1) ? 's' : '');
+                        if (count($users) > 1) {
+                            $invoice_line->text .= ' - ' . $item->user()->getResults()->fullname;
+                        }
+                        $invoice_line->amount += $duration * (self::COWORKING_HALF_DAY_PRICING / 1.2);
+
+                        $item->invoice_id = $invoice->id;
+                        $item->save();
+                    }
+                    $invoice_line->text .= sprintf("\nTotal : %s demi journée%s\n\n", $sum_duration, ($sum_duration > 1) ? 's' : '');
+                }
             } else {
                 $invoice_line->text = sprintf('Location d\'espace de réunion - %s', $ressource->name);
                 foreach ($line as $item) {
@@ -357,14 +390,14 @@ class PastTimeController extends BaseController
             $invoice_line->save();
             $invoice_lines[] = $invoice_line;
         }
-/*
-        foreach ($organisation->invoicing_rules() as $rule) {
-            $processor = $rule->createProcessor();
-            if ($processor) {
-                $processor->execute($invoice_lines);
-            }
-        }
-*/
+        /*
+                foreach ($organisation->invoicing_rules() as $rule) {
+                    $processor = $rule->createProcessor();
+                    if ($processor) {
+                        $processor->execute($invoice_lines);
+                    }
+                }
+        */
         return Redirect::route('invoice_modify', $invoice->id)->with('mSuccess', 'La facture a bien été générée');
     }
 
