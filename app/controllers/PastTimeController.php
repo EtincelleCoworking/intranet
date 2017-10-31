@@ -359,7 +359,7 @@ class PastTimeController extends BaseController
                     $sum_duration = 0;
 
                     foreach ($line_content as $item) {
-                        $duration = max(2, ceil(((strtotime($item->time_end) - strtotime($item->time_start)) / 3600) / self::COWORKING_HALF_DAY_MAX_DURATION));
+                        $duration = min(2, ceil(((strtotime($item->time_end) - strtotime($item->time_start)) / 3600) / self::COWORKING_HALF_DAY_MAX_DURATION));
                         $sum_duration += $duration;
                         $invoice_line->text .= sprintf("\n - %s de %s à %s (%s demi journée%s)", date('d/m/Y', strtotime($item->time_start)),
                             date('H:i', strtotime($item->time_start)), date('H:i', strtotime($item->time_end)), $duration, ($duration > 1) ? 's' : '');
