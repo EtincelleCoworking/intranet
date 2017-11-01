@@ -415,9 +415,9 @@ order by kind ASC, `period` DESC
                 '2016-12' => 9280,
                 '2017-06' => 12500,
             ),
-            'Toulouse > Wilson III' => array(
+            'Toulouse > Espace W' => array(
                 '2017-08' => 300,
-                '2017-10' => 4400,
+                '2017-10' => 4000,
             ),
         );
 
