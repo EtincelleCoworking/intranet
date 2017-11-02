@@ -225,6 +225,7 @@
                 </div>
             </div>
 
+
             <div class="col-md-6">
                 <div class="ibox ">
                     <div class="ibox-title">
@@ -291,6 +292,83 @@
 
                 </div>
             </div>
+            @if($subscription_stats)
+                <div class="col-md-6">
+                    <div class="ibox ">
+                        <div class="ibox-title">
+                            <h5>Abonnements</h5>
+                        </div>
+
+                        <div class="ibox-content">
+                            <div class="row">
+                                <table class="table table-hover">
+                                    <thead>
+                                    <tr>
+                                        <th>Période</th>
+                                        <th>Usage</th>
+                                        <th>Depassement</th>
+                                    </tr>
+                                    </thead>
+                                    <tbody>
+                                    @foreach ($subscription_stats as $data)
+                                        <tr>
+                                            <td>
+                                                {{date('d/m/Y', strtotime($data->subscription_from ))}}
+                                                au {{date('d/m/Y', strtotime('-1 day', strtotime($data->subscription_to)))}}
+                                            </td>
+                                            <td>
+                                                @if($data->hours||$data->minutes)
+                                                    @if ($data->hours)
+                                                        {{ $data->hours }} h
+                                                    @endif
+                                                    @if ($data->minutes)
+                                                        {{ $data->minutes }} min
+                                                    @endif
+                                                @else
+                                                    0 h
+                                                @endif
+                                                @if($data->ordered > 0)
+                                                    / {{$data->ordered}} h
+                                                @else
+                                                    / Illimité
+                                                @endif
+                                                @if($data->ordered > 0)
+                                                    <div class="progress progress-mini">
+                                                        <div style="width: {{$data->ratio}}%;" class="progress-bar
+                                @if($data->ratio > 100)
+                                                                progress-bar-danger
+                                                                @elseif($data->ratio>80)
+                                                                progress-bar-warning
+
+                                                                @endif
+                                                                "></div>
+                                                    </div>
+                                                @endif
+                                            </td>
+                                            <td align="right">
+                                                @if($data->overuse>0)
+                                                    @if($data->overuse > 20)
+                                                        <span class="text-danger">
+                                        {{$data->overuse}}%
+                                                </span>
+                                                    @else
+                                                        {{$data->overuse}}%
+                                                    @endif
+                                                @else
+                                                    -
+                                                @endif
+                                            </td>
+                                        </tr>
+                                    @endforeach
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+
+
+                    </div>
+                </div>
+            @endif
         </div>
     @endif
 

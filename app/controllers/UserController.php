@@ -83,7 +83,30 @@ class UserController extends BaseController
             return Redirect::route('members')->with('mError', 'Cet utilisateur est introuvable !');
         }
 
-        return View::make('user.modify', array('user' => $user));
+        $subscription_stats = DB::select(DB::raw(sprintf('SELECT 
+round(((sum(time_to_sec(timediff(time_end, time_start )) / 3600) / invoices_items.`subscription_hours_quota`) - 1) * 100) as overuse,
+round((sum(time_to_sec(timediff(time_end, time_start )) / 3600) / invoices_items.`subscription_hours_quota`) * 100) as ratio,
+invoices.date_invoice, sum(time_to_sec(timediff(time_end, time_start )) / 3600) as used, invoices_items.`subscription_hours_quota` as ordered
+, invoices.id as invoice_id, invoices_items.`subscription_from`, invoices_items.`subscription_to`
+from past_times join invoices on invoices.id = past_times.invoice_id
+join invoices_items on invoices.id = invoices_items.invoice_id
+join users on past_times.user_id = users.id
+where users.id = %d
+and past_times.user_id = invoices_items.subscription_user_id
+# and past_times.time_start > "2017-01-01"
+and past_times.is_free = 0 
+group by invoices.id
+order by invoices.date_invoice desc
+', $id)));
+
+        foreach($subscription_stats as $index => $data){
+            $subscription_stats[$index]->hours = floor($data->used);
+            $subscription_stats[$index]->minutes = round(($data->used - floor($data->used)) * 60);
+        }
+
+        //var_dump($subscription_stats);exit;
+        return View::make('user.modify', array('user' => $user,
+            'subscription_stats' => $subscription_stats));
     }
 
     /**
@@ -523,7 +546,7 @@ class UserController extends BaseController
             join('locations', 'users.default_location_id', '=', 'locations.id')
             ->where('birthday', '!=', '0000-00-00')
             ->where('locations.city_id', '=', Auth::user()->location->city_id)
-            ->where('users.id', '!=', Auth::id())
+//            ->where('users.id', '!=', Auth::id())
             ->orderBy('users.is_member', 'DESC')
             ->orderBy('users.last_seen_at', 'DESC')
             ->distinct()
