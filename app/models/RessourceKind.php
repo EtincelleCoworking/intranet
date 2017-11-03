@@ -7,4 +7,8 @@ class RessourceKind extends Eloquent
     const TYPE_COWORKING = 1;
     const TYPE_EXCEPTIONNAL = 4;
 
+    public function __toString(){
+        return $this->name;
+    }
+
 }
