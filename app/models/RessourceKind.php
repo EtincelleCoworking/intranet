@@ -11,4 +11,11 @@ class RessourceKind extends Eloquent
         return $this->name;
     }
 
+    /**
+     * Get list of ressources
+     */
+    public function scopeSelectAll($query)
+    {
+        return $query->orderBy('order_index', 'ASC')->lists('name', 'id');
+    }
 }

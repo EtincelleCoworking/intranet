@@ -31,7 +31,7 @@
                         </div>
                         <div class="col-md-4">
                             {{ Form::label('kind', 'Type') }}
-                            <p>{{ Form::select('ressource_kind_id', RessourceKind::all(), null, array('class' => 'form-control')) }}</p>
+                            <p>{{ Form::select('ressource_kind_id', RessourceKind::SelectAll(), null, array('class' => 'form-control')) }}</p>
                         </div>
                         <div class="col-md-3">
                             {{ Form::label('amount', 'Valeur') }}
