@@ -311,7 +311,13 @@
                                     </thead>
                                     <tbody>
                                     @foreach ($subscription_stats as $data)
-                                        <tr>
+                                        <tr
+                                                @if($data->subscription_overuse_managed)
+                                                class="success"
+                                                @elseif($data->overuse > 20)
+                                                class="danger"
+                                                @endif
+                                        >
                                             <td>
                                                 {{date('d/m/Y', strtotime($data->subscription_from ))}}
                                                 au {{date('d/m/Y', strtotime('-1 day', strtotime($data->subscription_to)))}}

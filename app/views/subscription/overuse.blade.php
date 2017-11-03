@@ -90,7 +90,7 @@
                                     <td>
                                         @if(!$data->subscription_overuse_managed)
                                             <a class="btn btn-xs btn-default"
-                                               href="{{ URL::route('subscription_overuse_managed', $data->invoices_items_id) }}">Noter comme traitée</a>
+                                               href="{{ URL::route('subscription_overuse_managed', $data->invoices_items_id) }}">Noter comme traité</a>
                                             @endif
                                     </td>
                             @endforeach

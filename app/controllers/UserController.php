@@ -84,6 +84,7 @@ class UserController extends BaseController
         }
 
         $subscription_stats = DB::select(DB::raw(sprintf('SELECT 
+invoices_items.id as invoices_items_id, invoices_items.subscription_overuse_managed,
 round(((sum(time_to_sec(timediff(time_end, time_start )) / 3600) / invoices_items.`subscription_hours_quota`) - 1) * 100) as overuse,
 round((sum(time_to_sec(timediff(time_end, time_start )) / 3600) / invoices_items.`subscription_hours_quota`) * 100) as ratio,
 invoices.date_invoice, sum(time_to_sec(timediff(time_end, time_start )) / 3600) as used, invoices_items.`subscription_hours_quota` as ordered
