@@ -330,7 +330,9 @@ where subscription_hours_quota > 0
 and past_times.user_id = invoices_items.subscription_user_id
 # and past_times.time_start > "2017-10-01"
 and past_times.is_free = 0 
-group by invoices.id
+AND invoices_items.`subscription_from` != "0000-00-00 00:00:00"
+AND invoices_items.`subscription_to` != "0000-00-00 00:00:00"
+group by concat(invoices.id, "_", past_times.user_id)
 having used > ordered
 order by invoices_items.subscription_overuse_managed ASC, invoices_items.subscription_from DESC
 '));

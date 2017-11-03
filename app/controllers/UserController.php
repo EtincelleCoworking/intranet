@@ -89,13 +89,15 @@ round(((sum(time_to_sec(timediff(time_end, time_start )) / 3600) / invoices_item
 round((sum(time_to_sec(timediff(time_end, time_start )) / 3600) / invoices_items.`subscription_hours_quota`) * 100) as ratio,
 invoices.date_invoice, sum(time_to_sec(timediff(time_end, time_start )) / 3600) as used, invoices_items.`subscription_hours_quota` as ordered
 , invoices.id as invoice_id, invoices_items.`subscription_from`, invoices_items.`subscription_to`
-from past_times join invoices on invoices.id = past_times.invoice_id
-join invoices_items on invoices.id = invoices_items.invoice_id
-join users on past_times.user_id = users.id
-where users.id = %d
-and past_times.user_id = invoices_items.subscription_user_id
+from past_times 
+join invoices on invoices.id = past_times.invoice_id
+join invoices_items on invoices.id = invoices_items.invoice_id AND invoices_items.subscription_user_id = %1$d 
+where past_times.user_id = %1$d
+# and past_times.user_id = invoices_items.subscription_user_id
 # and past_times.time_start > "2017-01-01"
-and past_times.is_free = 0 
+and past_times.is_free = 0
+AND invoices_items.`subscription_from` != "0000-00-00 00:00:00"
+AND invoices_items.`subscription_to` != "0000-00-00 00:00:00"
 group by invoices.id
 order by invoices.date_invoice desc
 ', $id)));
