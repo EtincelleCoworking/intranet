@@ -313,6 +313,41 @@ class SubscriptionController extends BaseController
 
     }
 
+    public function overuse(){
+        $subscriptions = DB::select(DB::raw('SELECT 
+if(`locations`.`name` is null,cities.name,concat(cities.name, \' > \',  `locations`.`name`)) as location, 
+round(((sum(time_to_sec(timediff(time_end, time_start )) / 3600) / invoices_items.`subscription_hours_quota`) - 1) * 100) as overuse,
+round((sum(time_to_sec(timediff(time_end, time_start )) / 3600) / invoices_items.`subscription_hours_quota`) * 100) as ratio,
+invoices.date_invoice, concat(users.firstname, \' \', users.lastname) as username, users.id as user_id, sum(time_to_sec(timediff(time_end, time_start )) / 3600) as used, invoices_items.`subscription_hours_quota` as ordered
+, invoices.id as invoice_id, invoices_items.`subscription_from`, invoices_items.`subscription_to`
+from past_times join invoices on invoices.id = past_times.invoice_id
+join invoices_items on invoices.id = invoices_items.invoice_id
+join users on past_times.user_id = users.id
+join locations on locations.id = users.default_location_id
+join cities on cities.id = locations.city_id
+where subscription_hours_quota > 0
+and past_times.user_id = invoices_items.subscription_user_id
+# and past_times.time_start > "2017-10-01"
+and past_times.is_free = 0 
+group by invoices.id
+having used > ordered
+order by invoices_items.subscription_from DESC
+'));
+        foreach($subscriptions as $index => $data){
+            $subscriptions[$index]->hours = floor($data->used);
+            $subscriptions[$index]->minutes = round(($data->used - floor($data->used)) * 60);
+        }
+
+        //var_dump($subscriptions); exit;
+        return View::make('subscription.overuse', array(
+                'subscriptions' => $subscriptions
+            )
+        );
+
+
+
+    }
+
 //    /**
 //     * Modify vat (form)
 //     */

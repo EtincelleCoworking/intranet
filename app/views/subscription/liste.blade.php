@@ -11,7 +11,8 @@
         </div>
         <div class="col-sm-8">
             <div class="title-action">
-                <a href="{{ URL::route('subscription_add') }}" class="btn btn-default">Ajouter un abonnement</a>
+                <a href="{{ URL::route('subscription_add') }}" class="btn btn-primary">Ajouter un abonnement</a>
+                <a href="{{ URL::route('subscription_overuse') }}" class="btn btn-default">Dépassements</a>
             </div>
         </div>
     </div>
