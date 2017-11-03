@@ -189,6 +189,7 @@ Route::group(['before' => 'superadmin'], function() {
     Route::get('/subscription/renew/company/{id}', array('as' => 'subscription_renew_company', 'uses' => 'SubscriptionController@renewCompany'));
     Route::get('/subscription/reset-filter', array('as' => 'subscription_filter_reset', 'uses' => 'SubscriptionController@cancelFilter'));
     Route::get('/subscription/overuse', array('as' => 'subscription_overuse', 'uses' => 'SubscriptionController@overuse'));
+    Route::get('/subscription/overuse/managed/{id}', array('as' => 'subscription_overuse_managed', 'uses' => 'SubscriptionController@overuseManaged'));
 
     Route::get('/wall/delete/{id}', array('as' => 'wall_delete', 'uses' => 'WallPostController@delete'));
     Route::get('/wall/delete-reply/{id}', array('as' => 'wall_delete_reply', 'uses' => 'WallPostController@deleteReply'));

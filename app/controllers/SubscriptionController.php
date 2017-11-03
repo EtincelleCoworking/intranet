@@ -315,6 +315,7 @@ class SubscriptionController extends BaseController
 
     public function overuse(){
         $subscriptions = DB::select(DB::raw('SELECT 
+invoices_items.id as invoices_items_id, invoices_items.subscription_overuse_managed,
 if(`locations`.`name` is null,cities.name,concat(cities.name, \' > \',  `locations`.`name`)) as location, 
 round(((sum(time_to_sec(timediff(time_end, time_start )) / 3600) / invoices_items.`subscription_hours_quota`) - 1) * 100) as overuse,
 round((sum(time_to_sec(timediff(time_end, time_start )) / 3600) / invoices_items.`subscription_hours_quota`) * 100) as ratio,
@@ -331,7 +332,7 @@ and past_times.user_id = invoices_items.subscription_user_id
 and past_times.is_free = 0 
 group by invoices.id
 having used > ordered
-order by invoices_items.subscription_from DESC
+order by invoices_items.subscription_overuse_managed ASC, invoices_items.subscription_from DESC
 '));
         foreach($subscriptions as $index => $data){
             $subscriptions[$index]->hours = floor($data->used);
@@ -348,6 +349,11 @@ order by invoices_items.subscription_from DESC
 
     }
 
+    public function overuseManaged($id){
+        DB::statement(sprintf('UPDATE invoices_items SET subscription_overuse_managed = 1 WHERE id = %d', $id));
+        return Redirect::route('subscription_overuse')
+            ->with('mSuccess', 'Le dépassement a été noté comme traité');
+    }
 //    /**
 //     * Modify vat (form)
 //     */

@@ -34,11 +34,18 @@
                                 <th>Membre</th>
                                 <th>Usage</th>
                                 <th>Dépassement</th>
+                                <th>Actions</th>
                             </tr>
                             </thead>
                             <tbody>
                             @foreach ($subscriptions as $data)
-                                <tr>
+                                <tr
+                                        @if($data->subscription_overuse_managed)
+                                        class="text-muted"
+                                        @elseif($data->overuse > 20)
+                                        class="danger"
+                                        @endif
+                                >
                                     <td>{{$data->location}}</td>
 {{--
                                     <td>{{date('d/m/Y', strtotime($data->date_invoice))}}</td>
@@ -80,7 +87,12 @@
                                             -
                                         @endif
                                     </td>
-
+                                    <td>
+                                        @if(!$data->subscription_overuse_managed)
+                                            <a class="btn btn-xs btn-default"
+                                               href="{{ URL::route('subscription_overuse_managed', $data->invoices_items_id) }}">Noter comme traitée</a>
+                                            @endif
+                                    </td>
                             @endforeach
                             </tbody>
                         </table>
