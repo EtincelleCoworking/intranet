@@ -152,6 +152,7 @@ order by invoices.date_invoice desc
                 if (Auth::user()->isSuperAdmin()) {
                     $user->is_member = Input::get('is_member', false);
                     $user->is_student = Input::get('is_student', false);
+                    $user->free_coworking_time = Input::get('free_coworking_time', false);
                     $user->default_location_id = Input::get('default_location_id');
                 }
                 $user->slack_id = Input::get('slack_id');
@@ -455,6 +456,12 @@ order by invoices.date_invoice desc
             } else {
                 Session::put('filtre_user.member', false);
             }
+            if (Input::has('filtre_free_coworking_time')) {
+                Session::put('filtre_user.free_coworking_time', Input::get('filtre_free_coworking_time'));
+            } else {
+                Session::put('filtre_user.free_coworking_time', false);
+            }
+
             if (Input::has('filtre_subscription')) {
                 Session::put('filtre_user.subscription', Input::get('filtre_subscription'));
             } else {
@@ -471,6 +478,9 @@ order by invoices.date_invoice desc
         }
         if (Session::get('filtre_user.member')) {
             $users->where('users.is_member', '=', true);
+        }
+        if (Session::get('filtre_user.free_coworking_time')) {
+            $users->where('users.free_coworking_time', '=', true);
         }
         if (Session::get('filtre_user.subscription')) {
             $users->join('invoices_items', 'invoices_items.subscription_user_id', '=', 'users.id')
@@ -498,6 +508,7 @@ order by invoices.date_invoice desc
         Session::forget('filtre_user.user_id');
         Session::forget('filtre_user.subscription');
         Session::forget('filtre_user.member');
+        Session::forget('filtre_user.free_coworking_time');
         return Redirect::route('user_list');
     }
 

@@ -44,11 +44,11 @@
                             {{ Form::hidden('filtre_user_id', Auth::user()->id) }}
                         @endif
 
-                        <div class="col-md-2 input-group-sm">
+                        <div class="col-md-4 input-group-sm">
                             {{ Form::checkbox('filtre_member', true, Session::has('filtre_user.member') ? Session::get('filtre_user.member') : false) }}
-                            Membre
-                        </div>
-                        <div class="col-md-2 input-group-sm">
+                            Membre<br />
+                            {{ Form::checkbox('filtre_free_coworking_time', true, Session::has('filtre_user.free_coworking_time') ? Session::get('filtre_user.free_coworking_time') : false) }}
+                            Invité Coworking<br/>
                             {{ Form::checkbox('filtre_subscription', true, Session::has('filtre_user.subscription') ? Session::get('filtre_user.subscription') : false) }}
                             Souscription active
                         </div>
@@ -76,7 +76,8 @@
             @if(!empty($_ENV['slack_url']))
                 <th class="col-md-1">Slack</th>
             @endif
-            <th class="col-md-2">Temps passé</th>
+            <th class="col-md-1">Temps passé</th>
+            <th class="col-md-1">Invité Coworking</th>
             <th class="col-md-2">Actions</th>
         </tr>
         </thead>
@@ -201,7 +202,13 @@
                     }
                     ?>
                 </td>
-
+                <td>
+                    @if($user->free_coworking_time)
+                        Oui
+                        @else
+                    -
+                        @endif
+                </td>
                 <td>
                     <a href="{{ URL::route('user_profile', $user->id) }}"
                        class="btn btn-xs btn-primary">Voir</a>
