@@ -161,6 +161,10 @@
                                 {{ Form::checkbox('is_student', true) }}
                                 {{ Form::label('is_student', 'Etudiant') }}
                             </div>
+                            <div class="col-lg-12">
+                                {{ Form::checkbox('free_coworking_time', true) }}
+                                {{ Form::label('free_coworking_time', 'Offrir le temps en coworking') }}
+                            </div>
                         @endif
                     </div>
                 </div>

@@ -11,10 +11,6 @@
         </div>
         <div class="col-sm-8">
             <div class="title-action">
-                @if(Auth::user()->isSuperAdmin())
-                    <a href="{{ URL::route('pasttime_link_invoices') }}" class="btn btn-default">Associer aux
-                        factures</a>
-                @endif
                 <a href="{{ URL::route('pasttime_add') }}" class="btn btn-primary">Ajouter</a>
             </div>
         </div>

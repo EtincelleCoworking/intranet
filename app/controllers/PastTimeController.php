@@ -228,34 +228,6 @@ class PastTimeController extends BaseController
         return Redirect::route('pasttime_list');
     }
 
-    public function linkInvoices()
-    {
-        // TODO ne pas associer de facture pour les quotas dépassés
-        DB::statement('UPDATE past_times
-    SET invoice_id = (
-        SELECT invoices.id
-        FROM invoices
-            JOIN invoices_items ON invoices.id = invoices_items.invoice_id
-        WHERE invoices_items.ressource_id = past_times.ressource_id
-            AND invoices_items.subscription_user_id = past_times.user_id
-            AND invoices.type = "F"
-            AND past_times.date_past BETWEEN invoices_items.subscription_from AND invoices_items.subscription_to
-            AND past_times.invoice_id = 0
-        LIMIT 1
-    )
-    WHERE (invoice_id is null or invoice_id = 0)
-        AND ressource_id = 1');
-
-        DB::statement('UPDATE past_times
-    SET is_free = true
-    WHERE (invoice_id is null or invoice_id = 0)
-        AND ressource_id = 1
-        AND user_id in (SELECT id FROM users WHERE role = "superadmin")
-        ');
-
-        return Redirect::route('pasttime_list')->with('mSuccess', 'Les temps saisis ayant des abonnements actifs ont étés associés ensembles.');
-    }
-
     public function invoice()
     {
         $items = PastTime::query()
