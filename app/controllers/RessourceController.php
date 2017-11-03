@@ -62,6 +62,7 @@ class RessourceController extends BaseController
             $ressource->is_bookable = Input::get('is_bookable');
             $ressource->booking_background_color = Input::get('booking_background_color');
             $ressource->location_id = Input::get('location_id');
+            $ressource->ressource_kind_id = Input::get('ressource_kind_id');
 
             if ($ressource->save()) {
                 return Redirect::route('ressource_modify', $ressource->id)->with('mSuccess', 'La ressource a bien été ajoutée');
@@ -98,6 +99,7 @@ class RessourceController extends BaseController
             $ressource->is_bookable = Input::get('is_bookable');
             $ressource->booking_background_color = Input::get('booking_background_color');            $ressource->location_id = Input::get('location_id');
             $ressource->location_id = Input::get('location_id');
+            $ressource->ressource_kind_id = Input::get('ressource_kind_id');
 
             if ($ressource->save()) {
                 return Redirect::route('ressource_list')->with('mSuccess', 'Cette ressource a bien été modifiée');

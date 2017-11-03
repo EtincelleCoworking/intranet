@@ -26,6 +26,7 @@
                         <thead>
                         <tr>
                             <th>Site</th>
+                            <th>Type</th>
                             <th>Nom</th>
                             <th>Réservable</th>
                             <th>Prix horaire HT</th>
@@ -43,7 +44,16 @@
                                         echo '-';
 
                                     }
-                                            ?>
+                                    ?>
+                                </td>
+                                <td>
+                                    <?php if($ressource->kind){
+                                        echo $ressource->kind;
+                                    }else{
+                                        echo '-';
+
+                                    }
+                                    ?>
                                 </td>
                                 <td>
                                     <a href="{{ URL::route('ressource_modify', $ressource->id) }}">{{ $ressource->name }}</a>
