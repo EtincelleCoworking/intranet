@@ -882,7 +882,7 @@ ORDER BY room ASC , booking_item.start_at ASC ', $day, $day, $location)));
             $html .= '<table width="100%"><tbody>';
             foreach ($meetings as $timerange => $title) {
                 //$html .= sprintf('<tr><td width="1%%" nowrap="nowrap"><span style="color: #999999; font-size:30px;">%s&nbsp;</span></td><td><span style="font-size:60px;">%s</span></td></tr>', $timerange, $title);
-                $html .= sprintf('<tr><td><div style="color: #999999; font-size:30px; ">%s</div><div style="font-size:55px;text-overflow: ellipsis;">%s</div><hr style="border-top: dotted 1px;" /></td></tr>', $timerange, $title);
+                $html .= sprintf('<tr><td><div style="color: #999999; font-size:30px; ">%s</div><div style="font-size:55px;text-overflow: ellipsis;">%s</div><hr style="border-top: dashed 1px;" /></td></tr>', $timerange, $title);
                 //valign="top"
             }
             $html .= '</tbody></table>';

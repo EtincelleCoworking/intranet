@@ -211,6 +211,7 @@
             $('.datePicker').datepicker();
 
             var oldOrganisation = $('#oldOrganisation').val();
+            var oldContent = '';
 
             function getListOrganisations(id) {
                 var url = "{{ URL::route('user_json_organisations') }}";
@@ -235,11 +236,13 @@
             }
 
             $('#booking-user').on('change', function (e) {
+                oldContent = $('#booking-organisation').text();
                 getListOrganisations($(this).val());
             });
             $('#booking-organisation').on('change', function (e) {
-                if ($('#booking-title').val() == '') {
+                if ($('#booking-title').val() == '' || $('#booking-title').val() == oldContent) {
                     $('#booking-title').val($(this).text());
+                    oldContent = $(this).text();
                 }
             });
 

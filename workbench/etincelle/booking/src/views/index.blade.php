@@ -4,12 +4,20 @@
     Réservations
 @stop
 
+
 <?php $ressources = Ressource::whereIsBookable(true)
     ->join('locations', 'ressources.location_id', '=', 'locations.id')
     ->where('locations.city_id', '=', Auth::user()->location->city_id)
     ->select('ressources.*')
+    ->orderBy('locations.name', 'asc')
     ->orderBy('ressources.order_index', 'asc')
-    ->get(); ?>
+    ->get();
+
+$ressources_by_space = array();
+foreach ($ressources as $ressource) {
+    $ressources_by_space[$ressource->location->name][] = $ressource;
+}
+?>
 
 @section('breadcrumb')
     <div class="row wrapper border-bottom white-bg page-heading">
@@ -17,16 +25,18 @@
             <h2>Réservations</h2>
             @if(count($ressources)>1)
                 <form id="ressource_filter" action="#" autocomplete="off">
-                    Légende:
-                    @foreach($ressources as $ressource)
-                        <div class="label" style="{{$ressource->labelCss}}">
-                            <input type="checkbox" name="filter_ressource_{{$ressource->id}}"
-                                   id="filter_ressource_{{$ressource->id}}" value="{{$ressource->id}}"
-                                   checked="checked"/>
-                            <label for="filter_ressource_{{$ressource->id}}"
-                                   style="font-weight: 600;">{{$ressource->name}}</label>
-                        </div>
-                    @endforeach
+                    @if(count($ressources_by_space)>1)
+                        @foreach($ressources_by_space as $locationName => $ressources)
+                            <div class="col-md-6">
+                                <fieldset>
+                                    <legend>{{$locationName}}</legend>
+                                    @include('ressource._ressources', array('ressources' => $ressources))
+                                </fieldset>
+                            </div>
+                        @endforeach
+                    @else
+                        @include('ressource._ressources', array('ressources' => array_shift($ressources_by_space)))
+                    @endif
                 </form>
             @endif
         </div>
@@ -179,7 +189,7 @@
 
         @foreach($ressources as $ressource)
 
-.fc-event.booking-ofuscated-{{$ressource->id}}                              {
+.fc-event.booking-ofuscated-{{$ressource->id}}                                  {
             background: repeating-linear-gradient(
             135deg,
                     {{ adjustBrightness($ressource->booking_background_color, -32)}},
@@ -285,7 +295,7 @@
         Etincelle.Event.prototype.getLocation = function () {
             @foreach($ressources as $ressource)
             if ({{$ressource->id}} == this.ressource_id
-            )
+        )
             {
                 return '{{$ressource->name}}';
             }
@@ -357,7 +367,7 @@
             }
 
             @if (Auth::user()->isSuperAdmin())
-                $('#meeting-log-time').show();
+            $('#meeting-log-time').show();
             $('#meeting-quote').show();
             if (!this.is_confirmed) {
                 $('#meeting-confirm').show();
@@ -365,7 +375,7 @@
                 $('#meeting-confirm').hide();
             }
             @else
-                $('#meeting-log-time').hide();
+            $('#meeting-log-time').hide();
             $('#meeting-quote').hide();
             if (this.user_id == {{Auth::id()}}) {
                 if (!this.is_confirmed) {

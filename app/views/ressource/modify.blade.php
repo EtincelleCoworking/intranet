@@ -26,6 +26,10 @@
                             {{ Form::label('name', 'Nom de la ressource') }}
                             <p>{{ Form::text('name', null, array('class' => 'form-control')) }}</p>
                         </div>
+                        <div class="col-md-8">
+                            {{ Form::label('description', 'Description') }}
+                            <p>{{ Form::text('description', null, array('class' => 'form-control')) }}</p>
+                        </div>
                         <div class="col-md-4">
                             {{ Form::label('location', 'Site') }}
                             <p>{{ Form::select('location_id', Location::SelectAll(), null, array('class' => 'form-control')) }}</p>
@@ -34,19 +38,23 @@
                             {{ Form::label('kind', 'Type') }}
                             <p>{{ Form::select('ressource_kind_id', RessourceKind::SelectAll(), null, array('class' => 'form-control')) }}</p>
                         </div>
-                        <div class="col-md-3">
+                        <div class="col-md-2">
                             {{ Form::label('amount', 'Valeur') }}
                             <p>{{ Form::number('amount', null, array('class' => 'form-control')) }}</p>
-                        </div>
-                        <div class="col-md-3">
-                            {{ Form::label('order_index', 'Ordre d\'affichage') }}
-                            <p>{{ Form::number('order_index', null, array('class' => 'form-control', 'min' => 1)) }}</p>
                         </div>
                         <div class="col-md-2">
                             <p>
                                 {{ Form::checkbox('is_bookable', true) }}
                                 {{ Form::label('is_bookable', 'Réservable') }}
                             </p>
+                        </div>
+                        <div class="col-md-6">
+                            {{ Form::label('url', 'URL') }}
+                            <p>{{ Form::text('url', null, array('class' => 'form-control')) }}</p>
+                        </div>
+                        <div class="col-md-2">
+                            {{ Form::label('order_index', 'Ordre d\'affichage') }}
+                            <p>{{ Form::number('order_index', null, array('class' => 'form-control', 'min' => 1)) }}</p>
                         </div>
                         <div class="col-md-4">
                             {{ Form::label('booking_background_color', 'Couleur de fond') }}

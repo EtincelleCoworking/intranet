@@ -6,6 +6,7 @@ $events = BookingItem::where('start_at', '>', date('Y-m-d H:i:s'))
         ->where('start_at', '<', date('Y-m-d', strtotime('+2 weeks')))
         ->with('booking', 'ressource')
         ->orderBy('start_at', 'ASC')
+        ->groupBy('booking.id')
         ->select('booking_item.id', 'booking.title', 'booking_item.start_at')
         ->get();
 
