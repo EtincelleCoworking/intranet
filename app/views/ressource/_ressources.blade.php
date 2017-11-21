@@ -5,6 +5,7 @@
                checked="checked"/>
         <label for="filter_ressource_{{$ressource->id}}"
                style="font-weight: 600;" title="{{$ressource->description}}">{{$ressource->name}}
+            ({{ number_format($ressource->amount, 0, ',', '.') }}€ HT/h)
         </label>
 
         @if($ressource->url)

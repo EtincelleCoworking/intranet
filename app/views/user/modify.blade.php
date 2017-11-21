@@ -132,7 +132,7 @@
                 </div>
                 <div class="ibox-content">
                     {{ Form::label('bio_short', 'Métier') }}
-                    <p>{{Form::text('bio_short', null, array('class' => 'form-control')) }}</p>
+                    <p>{{Form::text('bio_short', null, array('class' => 'form-control', 'autocomplete' => 'off')) }}</p>
                     {{ Form::label('bio_long', 'Présentation') }}
                     <p>{{Form::textarea('bio_long', null, array('class' => 'form-control')) }}</p>
                 </div>
@@ -146,7 +146,7 @@
                     <div class="row">
                         <div class="col-lg-6">
                             {{ Form::label('password', 'Mot de passe') }}
-                            {{ Form::password('password', array('class' => 'form-control')) }}
+                            {{ Form::password('password', array('class' => 'form-control', 'autocomplete' => 'off')) }}
                         </div>
                         @if(Auth::user()->isSuperAdmin())
                             <div class="col-lg-6">
