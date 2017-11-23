@@ -26,6 +26,17 @@
                     <h5>Répartition de l'activité entre les différentes catégories</h5>
                 </div>
                 <div class="ibox-content">
+                    @foreach($locations as $id => $location_name)
+                        <a href="{{URL::route('stats_sales_per_category_and_location', array('location_id'=> $id, 'period' => date('Y-m-d', $period)))}}" class="btn btn-xs
+                         @if($id == $location_id)
+                         btn-primary
+@else
+                                btn-default
+                                @endif">
+                            {{$location_name}}
+                        </a>
+                        @endforeach
+
                     @include('stats._pie', array('data' => $data))
                 </div>
             </div>
