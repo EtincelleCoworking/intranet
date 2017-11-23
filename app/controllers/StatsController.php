@@ -395,7 +395,7 @@ order by kind ASC, `period` DESC
             'Albi' => array(
                 '2017-02' => 1350,
                 '2017-07' => 1870,
-                '2018-03' => 2500,
+                '2018-03' => 2550,
             ),
             'Montauban' => array(
                 '2015-09' => 2050,
@@ -406,18 +406,25 @@ order by kind ASC, `period` DESC
                 '2016-01' => 500,
                 '2016-04' => 3500,
                 '2016-09' => 10650,
+                '2017-12' => 11420,
             ),
             'Toulouse > Victor Hugo' => array(
-                '2016-09' => 3400
+                '2016-09' => 3400,
+                '2017-12' => 3720,
             ),
             'Toulouse > Wilson' => array(
                 '2015-01' => 7000,
                 '2016-12' => 9280,
                 '2017-06' => 12500,
+                '2017-12' => 15080,
             ),
             'Toulouse > Espace W' => array(
                 '2017-08' => 300,
-                '2017-10' => 4000,
+                '2017-10' => 4160,
+            ),
+            'Toulouse > Alsace Lorraine' => array(
+                '2017-12' => 2430,
+                '2018-02' => 5030,
             ),
         );
 
@@ -462,7 +469,9 @@ order by kind ASC, `period` DESC
                 '2017-11' => 550,
 
             ),
-            'Toulouse > Wilson III' => array()
+            'Toulouse > Espace W' => array(
+
+            ),
         );
 
         $this_month = date('Y-m');

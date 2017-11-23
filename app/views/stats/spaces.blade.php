@@ -121,6 +121,7 @@
                                 <tbody>
                                 <?php $cumul = 0; ?>
                                 @foreach($data as $period => $infos)
+                                    @if(isset($location_slugs[$location]))
                                     <?php $total_sales += $infos['sales']; ?>
                                     <?php $total_costs += $infos['cost']; ?>
                                     <tr>
@@ -153,6 +154,7 @@
                                             @endif
                                         </td>
                                     </tr>
+                                    @endif
                                 @endforeach
                                 </tbody>
                                     <tfoot>
