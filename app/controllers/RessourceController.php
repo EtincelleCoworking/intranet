@@ -55,6 +55,7 @@ class RessourceController extends BaseController
     {
         $validator = Validator::make(Input::all(), Ressource::$rulesAdd);
         if (!$validator->fails()) {
+            $location_id = Input::get('location_id');
             $ressource = new Ressource;
             $ressource->name = Input::get('name');
             $ressource->order_index = Input::get('order_index');
@@ -63,7 +64,7 @@ class RessourceController extends BaseController
             $ressource->url = Input::get('url');
             $ressource->is_bookable = (bool)Input::get('is_bookable');
             $ressource->booking_background_color = Input::get('booking_background_color');
-            $ressource->location_id = Input::get('location_id');
+            $ressource->location_id = $location_id?$location_id:null;
             $ressource->ressource_kind_id = Input::get('ressource_kind_id');
 
             if ($ressource->save()) {
@@ -95,6 +96,7 @@ class RessourceController extends BaseController
 
         $validator = Validator::make(Input::all(), Ressource::$rules);
         if (!$validator->fails()) {
+            $location_id = Input::get('location_id');
             $ressource->name = Input::get('name');
             $ressource->order_index = Input::get('order_index');
             $ressource->amount = Input::get('amount');
@@ -102,7 +104,7 @@ class RessourceController extends BaseController
             $ressource->url = Input::get('url');
             $ressource->is_bookable = (bool)Input::get('is_bookable');
             $ressource->booking_background_color = Input::get('booking_background_color');            $ressource->location_id = Input::get('location_id');
-            $ressource->location_id = Input::get('location_id');
+            $ressource->location_id = $location_id?$location_id:null;
             $ressource->ressource_kind_id = Input::get('ressource_kind_id');
 
             if ($ressource->save()) {
