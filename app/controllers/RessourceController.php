@@ -61,7 +61,7 @@ class RessourceController extends BaseController
             $ressource->amount = Input::get('amount');
             $ressource->description = Input::get('description');
             $ressource->url = Input::get('url');
-            $ressource->is_bookable = Input::get('is_bookable');
+            $ressource->is_bookable = (bool)Input::get('is_bookable');
             $ressource->booking_background_color = Input::get('booking_background_color');
             $ressource->location_id = Input::get('location_id');
             $ressource->ressource_kind_id = Input::get('ressource_kind_id');
@@ -100,7 +100,7 @@ class RessourceController extends BaseController
             $ressource->amount = Input::get('amount');
             $ressource->description = Input::get('description');
             $ressource->url = Input::get('url');
-            $ressource->is_bookable = Input::get('is_bookable');
+            $ressource->is_bookable = (bool)Input::get('is_bookable');
             $ressource->booking_background_color = Input::get('booking_background_color');            $ressource->location_id = Input::get('location_id');
             $ressource->location_id = Input::get('location_id');
             $ressource->ressource_kind_id = Input::get('ressource_kind_id');
