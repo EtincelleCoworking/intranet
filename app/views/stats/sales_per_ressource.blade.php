@@ -26,8 +26,8 @@
         <thead>
         <tr>
             <th>Période</th>
-            <th>Temps vendu</th>
             <th>Taux de remplissage</th>
+            <th>Temps vendu</th>
             <th>CA</th>
         </tr>
         </thead>
@@ -36,10 +36,25 @@
             <tr>
                 <td>{{ $data->occurs_at }}</td>
                 <td>
+                    <div class="progress">
+                        <div style="width: {{ number_format($data->busy_rate, 0, ',', '.') }}%" aria-valuemax="100" aria-valuemin="0" aria-valuenow="{{ number_format($data->busy_rate, 0, ',', '.') }}" role="progressbar" class="progress-bar
+@if($data->busy_rate > 60)
+                                progress-bar-primary
+@elseif($data->busy_rate > 30)
+                                progress-bar-warning
+@else
+                                progress-bar-danger
+@endif
+">
+                            <span class="sr-only">{{ number_format($data->busy_rate, 0, ',', '.') }}%</span>
+                    {{ number_format($data->busy_rate, 0, ',', '.') }}%
+                        </div>
+                    </div>
+                </td>
+                <td>
                     {{ number_format($data->sold_hours, 0, ',', '.') }} heures
                     ({{ number_format($data->sold_hours / 7, 2, ',', '.') }} jours / {{ number_format($data->working_days, 0, ',', '.') }} travaillés)
                 </td>
-                <td>{{ number_format($data->busy_rate, 0, ',', '.') }}%</td>
                 <td style="text-align:right">{{ number_format($data->amount, 0, ',', '.') }}€ HT</td>
             </tr>
         @endforeach
