@@ -26,6 +26,8 @@
         <thead>
         <tr>
             <th>Période</th>
+            <th>Temps vendu</th>
+            <th>Taux de remplissage</th>
             <th>CA</th>
         </tr>
         </thead>
@@ -33,6 +35,11 @@
         @foreach ($items as $data)
             <tr>
                 <td>{{ $data->occurs_at }}</td>
+                <td>
+                    {{ number_format($data->sold_hours, 0, ',', '.') }} heures
+                    ({{ number_format($data->sold_hours / 7, 2, ',', '.') }} jours / {{ number_format($data->working_days, 0, ',', '.') }} travaillés)
+                </td>
+                <td>{{ number_format($data->busy_rate, 0, ',', '.') }}%</td>
                 <td style="text-align:right">{{ number_format($data->amount, 0, ',', '.') }}€ HT</td>
             </tr>
         @endforeach
