@@ -480,6 +480,10 @@ order by kind ASC, `period` DESC
             'Toulouse > Espace W' => array(
 
             ),
+            'Albi' => array(
+                '2017-11' => -410,
+                '2017-12' => 410,
+            ),
         );
 
         $this_month = date('Y-m');
@@ -497,11 +501,12 @@ order by kind ASC, `period` DESC
                     if (isset($operations[$location][$period])) {
                         $result[$location][$period] += (float)$operations[$location][$period];
                     }
-                    if (!isset($datas[$location][substr($period, 0, 4)])) {
-                        $datas[$location][substr($period, 0, 4)] = array();
+                    $y = substr($period, 0, 4);
+                    if (!isset($datas[$location][$y])) {
+                        $datas[$location][$y] = array();
                     }
 
-                    $datas[$location][substr($period, 0, 4)][$period] = array(
+                    $datas[$location][$y][$period] = array(
                         'sales' => (float)$result[$location][$period],
                         'cost' => (float)$costs[$location][$period],
                         'balance' => (float)$result[$location][$period] - (float)$costs[$location][$period],

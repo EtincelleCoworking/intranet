@@ -220,6 +220,12 @@ class BookingController extends Controller
         $booking_item = BookingItem::find($booking_item_id);
         $ressource = $booking_item->ressource;
 
+        try {
+            $booking->checkBeDeletedBy(Auth::user());
+        } catch (\Exception $e) {
+            return Response::json(array('status' => 'KO', 'message' => $e->getMessage()));
+        }
+
         if ($booking->items()->count() == 1) {
             BookingItem::destroy($booking_item_id);
             Booking::destroy($booking_id);
@@ -292,6 +298,13 @@ class BookingController extends Controller
         }
 
         $booking = $booking_item->booking;
+
+        try {
+            $booking->checkBeDeletedBy(Auth::user());
+        } catch (\Exception $e) {
+            return Redirect::route('booking_list')->with('mError', $e->getMessage());
+        }
+
         $user = $booking->user;
         $ressource = $booking_item->ressource;
         $this->sendDeletedBookingNotification($booking_item, $ressource, $booking, $user);

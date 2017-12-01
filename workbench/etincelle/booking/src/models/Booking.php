@@ -82,4 +82,21 @@ class Booking extends Illuminate\Database\Eloquent\Model
         $this->is_private = Config::get('booking::default_is_private', true);
         parent::__construct($attributes);
     }
+
+    public function checkBeDeletedBy($user){
+        $start = new \DateTime($this->start_at);
+        $start2 = clone $start;
+        $start2->modify('-2 days');
+        if (!$user->isSuperAdmin()) {
+            if ($this->user_id == $user->id) {
+                if ($start2->format('Y-m-d') >= date('Y-m-d')) {
+                    throw new \Exception('Cette réservation ne peut pas être annulée');
+                }
+            } else {
+                throw new \Exception('Réservation inconnue');
+            }
+        }
+        return true;
+    }
+
 }
