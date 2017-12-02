@@ -3,8 +3,8 @@
     $sales = DB::table('invoices_items')->join('invoices', function ($join) {
         $join->on('invoices_items.invoice_id', '=', 'invoices.id')
                 ->where('invoices.type', '=', 'F')
-                ->where('invoices.on_hold', '=', false)
-                ->where('invoices.date_invoice', '>=', date('Y-m-d', Config::get('etincelle.activity_started')));
+                //->where('invoices.on_hold', '=', false)
+                ->where('invoices.date_invoice', '>=', date('Y-m-d', Config::get('etincelle.activity_period_started')));
     })->select(DB::raw('SUM(amount) as total'))->first();
 
     // CA par année:
@@ -19,12 +19,12 @@
                         </div>
                         --}}
             <div class="{{--col-xs-8--}} text-center">
-                <span> CA<small> (hors en compte)</small></span>
+                <span> CA {{date('Y', Config::get('etincelle.activity_period_started'))}}</span>
 
                 <h2 class="font-bold">
                     {{ number_format($sales ? $sales->total : 0, 0, ',', '.') }}&nbsp;€
                 </h2>
-                <small> {{  number_format(31 * 24 * 3600 * $sales->total / (strtotime('now') - Config::get('etincelle.activity_started')), 0, ',', '.') }}
+                <small> {{  number_format(31 * 24 * 3600 * $sales->total / (strtotime('now') - Config::get('etincelle.activity_period_started')), 0, ',', '.') }}
                     € /mois
                 </small>
             </div>

@@ -62,7 +62,7 @@ class InvoiceItem extends Eloquent
                 $j->on('invoice_id', '=', 'invoices.id')
                     ->where('type', '=', 'F');
             })
-            ->where('invoices.date_invoice', '>=', date('Y-m-d', Config::get('etincelle.activity_started')))
+            ->where('invoices.date_invoice', '>=', date('Y-m-d', Config::get('etincelle.activity_period_started')))
             ->select(
                 DB::raw('SUM(invoices_items.amount) as total')
             );
