@@ -2,6 +2,7 @@
 
 @section('content')
 
+            {{--
     @if (Auth::user()->isSuperAdmin())
         <div class="row">
             <div class="col-lg-2 col-md-4 col-sm-4 col-xs-4">
@@ -21,6 +22,7 @@
             </div>
         </div>
     @endif
+            --}}
 
     <div class="row">
         <div class="col-lg-9 col-md-8 col-sm-6 col-xs-8">

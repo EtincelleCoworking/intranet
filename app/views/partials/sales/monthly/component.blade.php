@@ -6,7 +6,7 @@
     } else {
         $target_days = substr($target_period, 0, 4) . substr($target_period, 5, 2);
     }
-    $totalMonth = DB::table('invoices_items')->join('invoices', function ($join) use($target_days) {
+    $totalMonth = DB::table('invoices_items')->join('invoices', function ($join) use ($target_days) {
         if (Auth::user()->isSuperAdmin()) {
             $join->on('invoices_items.invoice_id', '=', 'invoices.id')
                 ->where('invoices.type', '=', 'F')
@@ -17,7 +17,9 @@
                 ->where('invoices.user_id', '=', Auth::id())
                 ->where('invoices.days', '=', $target_days);
         }
-    })->select(DB::raw('SUM(amount) as total'))->groupBy('invoices.days')->first();
+    })->join('ressources', 'ressources.id', '=', 'invoices_items.ressource_id')
+        ->where('ressources.ressource_kind_id', '!=', RessourceKind::TYPE_EXCEPTIONNAL)
+        ->select(DB::raw('SUM(invoices_items.amount) as total'))->groupBy('invoices.days')->first();
 
     ?>
 

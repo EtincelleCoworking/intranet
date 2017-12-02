@@ -119,12 +119,15 @@
 
 
 
-    <li class="{{ Request::is('stats*') ? 'active' : '' }}">
+    <li class="{{ (Request::is('stats*') || Request::is('admin*')) ? 'active' : '' }}">
         <a href="{{ URL::route('stats_overview') }}"><i class="fa fa-bar-chart-o"></i> <span class="nav-label">Statistiques</span>
             <span class="fa arrow"></span></a>
         <ul class="nav nav-second-level {{  Request::is('stats*')? '' : 'collapse' }}">
+            <li{{ Request::is('admin*') ? ' class="active"' : '' }}>
+                <a href="{{ URL::route('admin_dashboard') }}">Vue d'ensemble</a>
+            </li>
             <li{{ Request::is('stats/overview') ? ' class="active"' : '' }}>
-                <a href="{{ URL::route('stats_overview') }}">Vue d'ensemble</a>
+                <a href="{{ URL::route('stats_overview') }}">Evolution CA</a>
             </li>
             <li{{ Request::is('stats/sales_per_category') ? ' class="active"' : '' }}>
                 <a href="{{ URL::route('stats_sales_per_category') }}">Par catégorie</a>
