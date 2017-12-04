@@ -202,6 +202,8 @@ class InvoiceController extends BaseController
             $invoice->details = Input::get('details');
             $invoice->on_hold = Input::get('on_hold');
             $invoice->is_lost = Input::get('is_lost');
+            $invoice->user_id = Input::get('user_id');
+            $invoice->organisation_id = Input::get('organisation_id');
 
             if ($invoice->save()) {
                 $feedback_message = 'La facture a bien été modifiée';

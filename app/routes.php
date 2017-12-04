@@ -200,6 +200,7 @@ Route::group(['before' => 'superadmin'], function() {
 
 // JSON
 Route::get('/user/organisations/{id}', array('as' => 'user_json_organisations', 'uses' => 'UserController@json_organisations'))->where(array('id' => '[0-9]+'));
+Route::get('/organisation/users/{id}', array('as' => 'organisation_json_users', 'uses' => 'OrganisationController@json_users'))->where(array('id' => '[0-9]+'));
 Route::get('/organisation/infos/{id}', array('as' => 'organisation_json_infos', 'uses' => 'OrganisationController@json_infos'))->where(array('id' => '[0-9]+'));
 Route::get('/tags/list', array('as' => 'tag_json_list', 'uses' => 'TagController@json_list'));
 Route::get('/organisations/list', array('as' => 'organisation_json_list', 'uses' => 'OrganisationController@json_list'));

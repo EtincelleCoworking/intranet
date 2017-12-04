@@ -351,4 +351,8 @@ class OrganisationController extends BaseController
         $organisation->save();
         return Redirect::route('invoice_unpaid')->with('mSuccess', sprintf('L\'organisation %s a été relancée (%s)', $organisation->name, $to));
     }
+
+    public function json_users($id){
+        return Response::json(User::SelectInOrganisation($id));
+    }
 }

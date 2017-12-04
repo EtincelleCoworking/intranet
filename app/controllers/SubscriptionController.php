@@ -9,6 +9,7 @@ class SubscriptionController extends BaseController
         Session::forget('filtre_subscription.city_id');
         return Redirect::route('subscription_list');
     }
+
     /**
      * List of vats
      */
@@ -51,8 +52,7 @@ class SubscriptionController extends BaseController
         $subscriptions = Subscription::orderBy('renew_at', 'ASC')
             ->join('users', 'subscription.user_id', '=', 'users.id')
             ->join('locations', 'users.default_location_id', '=', 'locations.id')
-            ->select('subscription.*')
-            //->join('cities', 'locations.city_id', '=', 'cities.id')
+            ->select('subscription.*')//->join('cities', 'locations.city_id', '=', 'cities.id')
         ;
         if (Session::has('filtre_subscription.user_id')) {
             $subscriptions->where('subscription.user_id', '=', Session::get('filtre_subscription.user_id'));
@@ -155,8 +155,12 @@ class SubscriptionController extends BaseController
 
         $invoice = new Invoice();
         $invoice->type = 'F';
-        $invoice->user_id = $subscription->user_id;
         $invoice->organisation_id = $subscription->organisation_id;
+        if ($subscription->organisation->accountant_id) {
+            $invoice->user_id = $subscription->organisation->accountant_id;
+        } else {
+            $invoice->user_id = $subscription->user_id;
+        }
         $invoice->days = date('Ym');
         $invoice->date_invoice = date('Y-m-d');
         $invoice->number = Invoice::next_invoice_number($invoice->type, $invoice->days);
@@ -313,7 +317,8 @@ class SubscriptionController extends BaseController
 
     }
 
-    public function overuse(){
+    public function overuse()
+    {
         $subscriptions = DB::select(DB::raw('SELECT 
 invoices_items.id as invoices_items_id, invoices_items.subscription_overuse_managed,
 if(`locations`.`name` is null,cities.name,concat(cities.name, \' > \',  `locations`.`name`)) as location, 
@@ -336,7 +341,7 @@ group by concat(invoices.id, "_", past_times.user_id)
 having used > ordered
 order by invoices_items.subscription_overuse_managed ASC, invoices_items.subscription_from DESC
 '));
-        foreach($subscriptions as $index => $data){
+        foreach ($subscriptions as $index => $data) {
             $subscriptions[$index]->hours = floor($data->used);
             $subscriptions[$index]->minutes = round(($data->used - floor($data->used)) * 60);
         }
@@ -348,10 +353,10 @@ order by invoices_items.subscription_overuse_managed ASC, invoices_items.subscri
         );
 
 
-
     }
 
-    public function overuseManaged($id){
+    public function overuseManaged($id)
+    {
         DB::statement(sprintf('UPDATE invoices_items SET subscription_overuse_managed = 1 WHERE id = %d', $id));
         return Redirect::route('subscription_overuse')
             ->with('mSuccess', 'Le dépassement a été noté comme traité');

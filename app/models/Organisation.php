@@ -38,6 +38,11 @@ class Organisation extends Eloquent
         return $this->belongsTo('User');
     }
 
+    public function invoicing_rules()
+    {
+        return $this->belongsTo('InvoicingRule');
+    }
+
     public function domiciliation_kind()
     {
         return $this->belongsTo('DomiciliationKind');

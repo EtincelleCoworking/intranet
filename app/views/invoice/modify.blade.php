@@ -67,9 +67,18 @@
                     {{ Form::model($invoice, array('route' => array('invoice_modify', $invoice->id))) }}
                     <div class="row">
                         <div class="col-md-6">
-
+                            {{ Form::label('organisation_id', 'Organisation') }}
+                            <p>{{ Form::select('organisation_id', Organisation::select(), $invoice->organisation_id, array('id' => 'selectOrganisationId', 'class' => 'form-control')) }}</p>
+                        </div>
+                        <div class="col-md-6">
+                            {{ Form::label('user_id', 'Utilisateur') }}
+                            <p>{{ Form::select('user_id', User::SelectInOrganisation($invoice->organisation_id), $invoice->user_id, array('id' => 'selectUserId', 'class' => 'form-control')) }}</p>
+                        </div>
+                        </div>
+                            <div class="row">
+                                <div class="col-md-6">
                             {{ Form::label('address', 'Adresse de facturation') }}
-                            <p>{{ Form::textarea('address', $invoice->address, array('class' => 'form-control', 'rows' => '5')) }}</p>
+                            <p>{{ Form::textarea('address', $invoice->address, array('id' => 'addressInvoice', 'class' => 'form-control', 'rows' => '5')) }}</p>
 
                             {{ Form::label('details', 'Détails') }}
                             <p>{{ Form::text('details', $invoice->details, array('class' => 'form-control')) }}</p>
@@ -310,7 +319,51 @@
 
 @section('javascript')
     <script type="text/javascript">
+
+        var oldUser;
+        var oldOrganisation;
+
+        function getDataOrganisation(id) {
+            oldOrganisation = id;
+
+            var url = "{{ URL::route('organisation_json_infos') }}";
+            var urlFinale = url.replace("%7Bid%7D", id);
+
+            $.getJSON(urlFinale, function (data) {
+                $.each(data, function (key, val) {
+                    $('#addressInvoice').html(val);
+                });
+            });
+        }
+
+        function refreshUserList(id){
+            var url = "{{ URL::route('organisation_json_users') }}";
+            var urlFinale = url.replace("%7Bid%7D", id);
+
+            oldUser = $('#selectUserId').val();
+
+            $('#selectUserId').html('');
+            $.getJSON(urlFinale, function (data) {
+                var items = '';
+                $.each(data, function (key, val) {
+                    if (oldUser == key) {
+                        items = items + '<option value="' + key + '" selected>' + val + '</option>';
+                    } else {
+                        items = items + '<option value="' + key + '">' + val + '</option>';
+                    }
+                });
+
+                $('#selectUserId')
+                    .html(items)
+                    .trigger("change");
+
+            });
+
+        }
+
         $().ready(function () {
+
+
             $('.datePicker').datepicker();
 
             $('.action-item-option-toggle').click(function () {
@@ -318,6 +371,15 @@
                 $('#item-option-' + $(this).attr('data-kind') + '-' + $(this).attr('data-id')).removeClass('hide');
                 return false;
             });
+
+            $('#selectOrganisationId').select2();
+            $('#selectOrganisationId').on('change', function (e) {
+                getDataOrganisation($(this).val());
+                refreshUserList($(this).val());
+            });
+
+            $('#selectUserId').select2();
+
         });
     </script>
 @stop
