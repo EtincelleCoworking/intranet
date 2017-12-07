@@ -10,14 +10,27 @@ class StatsController extends BaseController
     public function overview()
     {
         $charts = array();
-        foreach (InvoiceItem::TotalPerMonth()->WithoutStakeholders()->get() as $item) {
-            $charts['Produits (hors associés)'][$item->period] = $item->total;
+        foreach (InvoiceItem::TotalPerMonth()->WithoutExceptionnals()->get() as $item) {
+            $charts['Produits (hors exceptionnels)'][$item->period] = $item->total;
         }
 
         foreach (InvoiceItem::TotalPerMonth()->get() as $item) {
             $charts['Produits'][$item->period] = $item->total;
         }
 
+        $operations = Location::getOperationTweaks();
+        foreach($operations as $space_name => $data){
+            foreach($data as $period => $value){
+                if(!isset($charts['Produits'][$period])){
+                    $charts['Produits'][$period] = 0;
+                }
+                if(!isset($charts['Produits (hors exceptionnels)'][$period])){
+                    $charts['Produits (hors exceptionnels)'][$period] = 0;
+                }
+                $charts['Produits'][$period] += $value;
+                $charts['Produits (hors exceptionnels)'][$period] += $value;
+            }
+        }
 
         foreach ($charts as $name => $chart) {
             ksort($charts[$name]);

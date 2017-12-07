@@ -130,6 +130,44 @@ class Location extends Eloquent
 
     }
 
+    public static function getOperationTweaks(){
+        return array(
+            'Toulouse > Carmes' => array(
+                // etalement du paiement Carmes
+                '2016-03' => -5 * 9250,
+                '2016-04' => 9250,
+                '2016-05' => 9250,
+                '2016-06' => 9250,
+                '2016-07' => 9250,
+                '2016-08' => 9250,
+            ),
+            'Toulouse > Victor Hugo' => array(
+                // Loyer 12/2016 A. T.
+                '2016-11' => -1050,
+                '2016-12' => 1050,
+                // Loyer trimestriel > mensuel
+                '2017-03' => -2 * 550,
+                '2017-04' => 550,
+                '2017-05' => 550,
+                '2017-06' => -2 * 550,
+                '2017-07' => 550,
+                '2017-08' => 550,
+                '2017-09' => -2 * 550,
+                '2017-10' => 550,
+                '2017-11' => 550 - 3 * 550,
+                '2017-12' => 550,
+                '2018-01' => 550,
+                '2018-02' => 550,
+
+            ),
+            'Toulouse > Espace W' => array(),
+            'Albi' => array(
+                '2017-11' => -425,
+                '2017-12' => 425,
+            ),
+        );
+    }
+
     public static function getStats(){
         $items = DB::select(DB::raw('select 
 date_format(invoices.date_invoice, "%Y-%m") as period, 
@@ -193,43 +231,7 @@ order by kind ASC, `period` DESC
         }
 
         $costs = Location::getCostPerLocation();
-
-
-        $operations = array(
-            'Toulouse > Carmes' => array(
-                // etalement du paiement Carmes
-                '2016-03' => -5 * 9250,
-                '2016-04' => 9250,
-                '2016-05' => 9250,
-                '2016-06' => 9250,
-                '2016-07' => 9250,
-                '2016-08' => 9250,
-            ),
-            'Toulouse > Victor Hugo' => array(
-                // Loyer 12/2016 A. T.
-                '2016-11' => -1050,
-                '2016-12' => 1050,
-                // Loyer trimestriel > mensuel
-                '2017-03' => -2 * 550,
-                '2017-04' => 550,
-                '2017-05' => 550,
-                '2017-06' => -2 * 550,
-                '2017-07' => 550,
-                '2017-08' => 550,
-                '2017-09' => -2 * 550,
-                '2017-10' => 550,
-                '2017-11' => 550 - 3 * 550,
-                '2017-12' => 550,
-                '2018-01' => 550,
-                '2018-02' => 550,
-
-            ),
-            'Toulouse > Espace W' => array(),
-            'Albi' => array(
-                '2017-11' => -425,
-                '2017-12' => 425,
-            ),
-        );
+        $operations = self::getOperationTweaks();
 
         $this_month = date('Y-m');
 
