@@ -953,12 +953,19 @@ ORDER BY room ASC , booking_item.start_at ASC ', $day, $day, $location)));
             $current_booking_progress = 0;
 
             if ($next_booking_item) {
-                $free_duration = (strtotime($next_booking_item->start_at) - time()) / 60;
-                if ($free_duration > 1) {
-                    $free_duration = sprintf('%d minutes', $free_duration);
+                $free_duration_items = $this->secondsToTime(strtotime($next_booking_item->start_at) - time());
+                $tokens = array();
+                if ($free_duration_items['h'] > 1) {
+                    $tokens[] = sprintf('%d heures', $free_duration_items['h']);
                 } else {
-                    $free_duration = sprintf('%d minute', $free_duration);
+                    $tokens[] = sprintf('%d heure', $free_duration_items['h']);
                 }
+                if ($free_duration_items['m'] > 1) {
+                    $tokens[] = sprintf('%d minutes', $free_duration_items['m']);
+                } else {
+                    $tokens[] = sprintf('%d minute', $free_duration_items['m']);
+                }
+                $free_duration = implode(', ', $tokens);
             }
         }
 
@@ -972,6 +979,38 @@ ORDER BY room ASC , booking_item.start_at ASC ', $day, $day, $location)));
             'free_duration' => $free_duration,
             'bookings' => $bookings
         ));
+    }
+
+    protected  function secondsToTime($inputSeconds)
+    {
+
+        $secondsInAMinute = 60;
+        $secondsInAnHour = 60 * $secondsInAMinute;
+        $secondsInADay = 24 * $secondsInAnHour;
+
+        // extract days
+        $days = floor($inputSeconds / $secondsInADay);
+
+        // extract hours
+        $hourSeconds = $inputSeconds % $secondsInADay;
+        $hours = floor($hourSeconds / $secondsInAnHour);
+
+        // extract minutes
+        $minuteSeconds = $hourSeconds % $secondsInAnHour;
+        $minutes = floor($minuteSeconds / $secondsInAMinute);
+
+        // extract the remaining seconds
+        $remainingSeconds = $minuteSeconds % $secondsInAMinute;
+        $seconds = ceil($remainingSeconds);
+
+        // return the final array
+        $obj = array(
+            'd' => (int)$days,
+            'h' => (int)$hours,
+            'm' => (int)$minutes,
+            's' => (int)$seconds,
+        );
+        return $obj;
     }
 
 }

@@ -7,9 +7,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <META http-equiv="refresh" content="60">
     <title>
-        @section('meta_title')
-            Intranet {{ $_ENV['organisation_name'] }}
-        @show
+        {{$ressource->name}} - {{$ressource->location}}
     </title>
 
     {{ HTML::style('css/bootstrap.min.css') }}
@@ -63,7 +61,8 @@
             <div class="h1">Disponible</div>
             <div class="h2">
                 @if($next_booking_item)
-                    Jusqu'à {{date('H:i', strtotime($next_booking_item->start_at))}} ({{$free_duration}})
+                    Jusqu'à {{date('H:i', strtotime($next_booking_item->start_at))}}
+                    <small>({{$free_duration}})</small>
                 @else
                     Disponible toute la journée
                 @endif
