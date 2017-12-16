@@ -7,7 +7,7 @@ Route::get('/api/booking/{booking_item_id}/members', array('as' => 'api_booking_
 Route::get('/api/booking/{booking_item_id}/register/{user_id?}', array('as' => 'api_booking_register', 'uses' => 'BookingApiController@register'));
 Route::get('/api/booking/{booking_item_id}/unregister/{user_id?}', array('as' => 'api_booking_unregister', 'uses' => 'BookingApiController@unregister'));
 
-
+Route::get('/ressource/status/{id}', array('as' => 'ressource_status', 'uses' => 'BookingController@status'));
 
 Route::group(['before' => 'member'], function () {
     Route::get('/booking', array('as' => 'booking', 'uses' => 'BookingController@index'));

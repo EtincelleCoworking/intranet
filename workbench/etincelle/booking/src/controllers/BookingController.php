@@ -916,4 +916,9 @@ ORDER BY room ASC , booking_item.start_at ASC ', $day, $day, $location)));
         //attachment;
     }
 
+    public function status($id){
+        $ressource = Ressource::find($id);
+        return View::make('booking::status', array('ressource' => $ressource));
+    }
+
 }
