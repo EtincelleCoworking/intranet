@@ -22,7 +22,7 @@
 
 <body class="gray-bg">
 @if($current_booking)
-    <div class="border-left-right p-lg" style="border-color: #EF5352; border-width:50px; height: 100%;">
+    <div class="border-left-right p-lg" style="border-color: #a94442; border-width:50px; height: 100%; background-color: #f2dede">
         <div class="row">
             <div class="col-md-11 h3">{{$ressource->location}}</div>
             <div class="col-md-1 h3 text-right" id="time">{{date('H:i')}}</div>
@@ -35,12 +35,9 @@
                 -
                 {{date('H:i', strtotime($current_booking_item->start_at) + $current_booking_item->duration * 60)}}
             </div>
-            <div class="progress" style="height: 100px;">
+            <div class="progress" style="height: 100px">
                 <div style="width: {{$current_booking_progress}}%" aria-valuemax="100" aria-valuemin="0" aria-valuenow="{{$current_booking_progress}}" role="progressbar"
-                     class="progress-bar progress-bar-success">
-                </div>
-                <div style="width: {{100 - $current_booking_progress}}%" aria-valuemax="100" aria-valuemin="0" aria-valuenow="{{100 - $current_booking_progress}}" role="progressbar"
-                     class="progress-bar progress-bar-warning">
+                     class="progress-bar progress-bar-danger">
                 </div>
             </div>
         </div>
@@ -50,13 +47,13 @@
                     Prochaine réservation à {{date('H:i', strtotime($next_booking_item->start_at))}}
                     - {{$next_booking->title}}
                 @else
-                    Aucune réservation
+                    Pas d'autre réservation après celle là
                 @endif
             </div>
         </div>
     </div>
 @else
-    <div class="border-left-right p-lg" style="border-color: #1ab394; border-width:50px; height: 100%;">
+    <div class="border-left-right p-lg" style="border-color: #3c763d; border-width:50px; height: 100%; background-color: #dff0d8">
         <div class="row">
             <div class="col-md-11 h3">{{$ressource->location}}</div>
             <div class="col-md-1 h3 text-right" id="time">{{date('H:i')}}</div>
