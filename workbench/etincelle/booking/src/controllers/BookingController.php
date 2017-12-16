@@ -916,9 +916,62 @@ ORDER BY room ASC , booking_item.start_at ASC ', $day, $day, $location)));
         //attachment;
     }
 
-    public function status($id){
+    public function status($id)
+    {
         $ressource = Ressource::find($id);
-        return View::make('booking::status', array('ressource' => $ressource));
+
+        $bookings = Booking::whereHas('items', function ($query) use ($id) {
+            $query->where('start_at', '<', date('Y-m-d', strtotime('+1 day')))
+                ->where(DB::raw('DATE_ADD(start_at, INTERVAL duration MINUTE)'), '>', date('Y-m-d H:i:s'))
+                ->where('ressource_id', '=', $id)
+                ->orderBy('start_at', 'ASC')
+                ->orderBy('duration', 'desc');
+        })->with('items')->get();
+        $free_duration = null;
+        $current_booking = $bookings->first();
+
+        if (!empty($current_booking)
+            && isset($current_booking->items[0])
+            && ($current_booking->items[0]->start_at < date('Y-m-d H:i:s'))
+        ) {
+            $current_booking_item = $current_booking->items[0];
+
+            $spent_time = (time() - strtotime($current_booking->items[0]->start_at)) / 60;
+            $current_booking_progress = round(100 * $spent_time / $current_booking_item->duration);
+            //var_dump($current_booking_progress);
+            if ($current_booking_progress > 100) {
+                $current_booking_progress = 100;
+            }
+
+            $next_booking = $bookings->get(1);
+            $next_booking_item = isset($next_booking->items[0]) ? $next_booking->items[0] : null;
+        } else {
+            $next_booking = $current_booking;
+            $next_booking_item = isset($next_booking->items[0]) ? $next_booking->items[0] : null;
+            $current_booking = null;
+            $current_booking_item = null;
+            $current_booking_progress = 0;
+
+            if ($next_booking_item) {
+                $free_duration = (strtotime($next_booking_item->start_at) - time()) / 60;
+                if ($free_duration > 1) {
+                    $free_duration = sprintf('%d minutes', $free_duration);
+                } else {
+                    $free_duration = sprintf('%d minute', $free_duration);
+                }
+            }
+        }
+
+        return View::make('booking::status', array(
+            'ressource' => $ressource,
+            'current_booking' => $current_booking,
+            'current_booking_item' => $current_booking_item,
+            'current_booking_progress' => $current_booking_progress,
+            'next_booking' => $next_booking,
+            'next_booking_item' => $next_booking_item,
+            'free_duration' => $free_duration,
+            'bookings' => $bookings
+        ));
     }
 
 }

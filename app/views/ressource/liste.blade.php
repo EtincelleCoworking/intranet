@@ -74,6 +74,7 @@
                                 <td>
                                     <a href="{{ URL::route('ressource_modify', $ressource->id) }}" class="btn btn-primary btn-xs">Modifier</a>
                                     <a href="{{ URL::route('stats_sales_per_ressource', $ressource->id) }}" class="btn btn-default btn-xs">Stats</a>
+                                    <a href="{{ URL::route('ressource_status', $ressource->id) }}" class="btn btn-default btn-xs" target="_blank">Affichage</a>
                                 </td>
                             </tr>
                         @endforeach
