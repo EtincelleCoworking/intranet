@@ -919,6 +919,12 @@ ORDER BY room ASC , booking_item.start_at ASC ', $day, $day, $location)));
     public function status($id)
     {
         $ressource = Ressource::find($id);
+        if(!$ressource){
+            App::abort(404, 'Ressource inconnue');
+        }
+        if(!$ressource->is_bookable){
+            App::abort(404, 'La ressource n\'est pas réservable');
+        }
 
         $bookings = Booking::whereHas('items', function ($query) use ($id) {
             $query->where('start_at', '<', date('Y-m-d', strtotime('+1 day')))
@@ -955,15 +961,19 @@ ORDER BY room ASC , booking_item.start_at ASC ', $day, $day, $location)));
             if ($next_booking_item) {
                 $free_duration_items = $this->secondsToTime(strtotime($next_booking_item->start_at) - time());
                 $tokens = array();
-                if ($free_duration_items['h'] > 1) {
-                    $tokens[] = sprintf('%d heures', $free_duration_items['h']);
-                } else {
-                    $tokens[] = sprintf('%d heure', $free_duration_items['h']);
+                if ($free_duration_items['h']) {
+                    if ($free_duration_items['h'] > 1) {
+                        $tokens[] = sprintf('%d heures', $free_duration_items['h']);
+                    } else {
+                        $tokens[] = sprintf('%d heure', $free_duration_items['h']);
+                    }
                 }
-                if ($free_duration_items['m'] > 1) {
-                    $tokens[] = sprintf('%d minutes', $free_duration_items['m']);
-                } else {
-                    $tokens[] = sprintf('%d minute', $free_duration_items['m']);
+                if ($free_duration_items['m']) {
+                    if ($free_duration_items['m'] > 1) {
+                        $tokens[] = sprintf('%d minutes', $free_duration_items['m']);
+                    } else {
+                        $tokens[] = sprintf('%d minute', $free_duration_items['m']);
+                    }
                 }
                 $free_duration = implode(', ', $tokens);
             }
@@ -981,7 +991,7 @@ ORDER BY room ASC , booking_item.start_at ASC ', $day, $day, $location)));
         ));
     }
 
-    protected  function secondsToTime($inputSeconds)
+    protected function secondsToTime($inputSeconds)
     {
 
         $secondsInAMinute = 60;

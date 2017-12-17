@@ -10,9 +10,9 @@
             <h2>Liste des ressources</h2>
         </div>
         <div class="col-sm-8">
-                <div class="title-action">
-                    <a href="{{ URL::route('ressource_add') }}" class="btn btn-primary">Ajouter une ressource</a>
-                </div>
+            <div class="title-action">
+                <a href="{{ URL::route('ressource_add') }}" class="btn btn-primary">Ajouter une ressource</a>
+            </div>
         </div>
     </div>
 @stop
@@ -38,18 +38,18 @@
                         @foreach ($ressources as $n => $ressource)
                             <tr>
                                 <td>
-                                    <?php if($ressource->location){
+                                    <?php if ($ressource->location) {
                                         echo $ressource->location;
-                                    }else{
+                                    } else {
                                         echo '-';
 
                                     }
                                     ?>
                                 </td>
                                 <td>
-                                    <?php if($ressource->kind){
+                                    <?php if ($ressource->kind) {
                                         echo $ressource->kind;
-                                    }else{
+                                    } else {
                                         echo '-';
 
                                     }
@@ -72,9 +72,14 @@
                                     @endif
                                 </td>
                                 <td>
-                                    <a href="{{ URL::route('ressource_modify', $ressource->id) }}" class="btn btn-primary btn-xs">Modifier</a>
-                                    <a href="{{ URL::route('stats_sales_per_ressource', $ressource->id) }}" class="btn btn-default btn-xs">Stats</a>
-                                    <a href="{{ URL::route('ressource_status', $ressource->id) }}" class="btn btn-default btn-xs" target="_blank">Affichage</a>
+                                    <a href="{{ URL::route('ressource_modify', $ressource->id) }}"
+                                       class="btn btn-primary btn-xs">Modifier</a>
+                                    <a href="{{ URL::route('stats_sales_per_ressource', $ressource->id) }}"
+                                       class="btn btn-default btn-xs">Stats</a>
+                                    @if($ressource->is_bookable)
+                                        <a href="{{ URL::route('ressource_status', $ressource->id) }}"
+                                           class="btn btn-default btn-xs" target="_blank">Affichage</a>
+                                    @endif
                                 </td>
                             </tr>
                         @endforeach
