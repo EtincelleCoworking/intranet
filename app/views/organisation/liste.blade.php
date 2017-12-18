@@ -40,7 +40,7 @@
                     {{ Form::hidden('filtre_submitted', 1) }}
                     <div class="row">
                         <div class="col-md-6">
-                            {{ Form::select('filtre_organisation_id', Organisation::Select('Sélectionnez une société'), Session::get('filtre_organisation.organisation_id') ? Session::get('filtre_organisation.organisation_id') : null, array('id' => 'filter-organisation','class' => 'form-control')) }}
+                            {{ Form::select('filtre_organisation_id', Organisation::SelectAll('Sélectionnez une société'), Session::get('filtre_organisation.organisation_id') ? Session::get('filtre_organisation.organisation_id') : null, array('id' => 'filter-organisation','class' => 'form-control')) }}
                         </div>
                         <div class="col-md-3">
                             {{ Form::checkbox('filtre_domiciliation', null, Session::get('filtre_organisation.domiciliation') ? Session::get('filtre_organisation.domiciliation') : null, array('id' => 'filter-domiciliation')) }}

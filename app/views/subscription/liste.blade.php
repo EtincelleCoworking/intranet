@@ -37,7 +37,7 @@
                     {{ Form::hidden('filtre_submitted', 1) }}
                     <div class="row">
                         <div class="col-md-3">
-                            {{ Form::select('filtre_organisation_id', Organisation::Select('Sélectionnez une société'), Session::get('filtre_subscription.organisation_id') ? Session::get('filtre_subscription.organisation_id') : null, array('id' => 'filter-organisation','class' => 'form-control')) }}
+                            {{ Form::select('filtre_organisation_id', Organisation::SelectAll('Sélectionnez une société'), Session::get('filtre_subscription.organisation_id') ? Session::get('filtre_subscription.organisation_id') : null, array('id' => 'filter-organisation','class' => 'form-control')) }}
                         </div>
                         <div class="col-md-3">
                             {{ Form::select('filtre_user_id', User::Select('Sélectionnez un client'), Session::get('filtre_subscription.user_id') ? Session::get('filtre_subscription.user_id') : null, array('id' => 'filter-client','class' => 'form-control')) }}

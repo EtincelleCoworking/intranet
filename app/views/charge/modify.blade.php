@@ -48,7 +48,7 @@
                             {{ Form::label('tags', 'Ajouter des tags (séparés par ", ")') }}
                             <p>{{ Form::select('tags[]', array(), null, array('class' => 'form-control tagsGet', 'multiple' => 'multiple', 'data-tags' => true)) }}</p>
                             {{ Form::label('organisation_id', 'Société') }}
-                            <p>{{ Form::select('organisation_id', Organisation::Select('Sélectionnez une société'), $charge->organisation_id, array('class' => 'form-control organisationGet')) }}</p>
+                            <p>{{ Form::select('organisation_id', Organisation::SelectAll('Sélectionnez une société'), $charge->organisation_id, array('class' => 'form-control organisationGet')) }}</p>
                             {{ Form::label('document', 'Facture jointe') }}
                             <p>{{ Form::file('document', null, array('class' => 'form-control')) }}</p>
 

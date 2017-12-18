@@ -455,7 +455,7 @@ join `locations` on u.default_location_id = `locations`.`id`
 ';
 
             $where = sprintf(' AND locations.slug = "%s" ', $space_slug);
-        }else{
+        } else {
             $from = '';
             $where = '';
         }
@@ -490,6 +490,27 @@ order by older_invoice_at ASC';
             'locations' => Location::orderBy('name', 'asc')->get(),
         ));
 
+    }
+
+
+    public function invoicing()
+    {
+        $period_start = date('Y-m-01');
+        $period_end = date('Y-m-t');
+        $items = Organisation::join('organisation_user', 'organisation_user.organisation_id', '=', 'organisations.id')
+            ->join('past_times', 'past_times.user_id', '=', 'organisation_user.user_id')
+            ->where('past_times.invoice_id', '=', 0)
+            ->where('past_times.is_free', '<>', true)
+            ->whereBetween('past_times.date_past', array($period_start, $period_end))
+            ->select('organisations.*')
+            ->get();
+
+
+        return View::make('invoice.invoicing', array(
+            'items' => $items,
+            'period_start' => $period_start,
+            'period_end' => $period_end,
+        ));
     }
 
 

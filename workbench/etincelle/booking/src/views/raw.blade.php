@@ -44,8 +44,11 @@
                     </div>
                     @if (Auth::user()->isSuperAdmin())
                         <div class="row">
-                            <div class="col-md-6">
+                            <div class="col-md-3">
                                 {{ Form::select('filtre_user_id', User::Select('Sélectionnez un client'), Session::get('filtre_booking.user_id') ? Session::get('filtre_booking.user_id') : null, array('id' => 'filter-client','class' => 'form-control')) }}
+                            </div>
+                            <div class="col-md-3">
+                                {{ Form::select('organisation_id', Organisation::SelectAll('Sélectionnez une organisation'), Session::get('filtre_booking.organisation_id') ? Session::get('filtre_booking.organisation_id') : null, array('id' => 'filter-organisation','class' => 'form-control')) }}
                             </div>
 
                             <div class="col-md-3 input-group-sm">
@@ -178,6 +181,7 @@
         $().ready(function () {
             $('.datePicker').datepicker();
             $('#filter-client').select2();
+            $('#filter-organisation').select2();
 
             $('.action-booking-make-gift')
                 .click(function () {

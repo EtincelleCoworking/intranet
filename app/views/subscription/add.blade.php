@@ -44,7 +44,7 @@
                             </div>
                         <div class="col-md-6">
                             {{ Form::label('organisation_id', 'Organisation') }}
-                            <p>{{ Form::select('organisation_id', Organisation::Select('Sélectionnez une organisation'), isset($subscription)?$subscription->organisation_id:null, array('id' => 'selectOrganisationId', 'class' => 'form-control')) }}</p>
+                            <p>{{ Form::select('organisation_id', Organisation::SelectAll('Sélectionnez une organisation'), isset($subscription)?$subscription->organisation_id:null, array('id' => 'selectOrganisationId', 'class' => 'form-control')) }}</p>
                         </div>
                     </div>
                     <div class="row">

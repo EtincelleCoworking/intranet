@@ -39,7 +39,7 @@
                     @if (Auth::user()->isSuperAdmin())
                         <div class="row">
                             <div class="col-md-4">
-                                {{ Form::select('filtre_organisation_id', Organisation::Select('Sélectionnez une société'), Session::get('filtre_invoice.organisation_id') ? Session::get('filtre_invoice.organisation_id') : null, array('id' => 'filter-organisation','class' => 'form-control')) }}
+                                {{ Form::select('filtre_organisation_id', Organisation::SelectAll('Sélectionnez une société'), Session::get('filtre_invoice.organisation_id') ? Session::get('filtre_invoice.organisation_id') : null, array('id' => 'filter-organisation','class' => 'form-control')) }}
                             </div>
                             <div class="col-md-4">
                                 {{ Form::select('filtre_user_id', User::Select('Sélectionnez un client'), Session::get('filtre_invoice.user_id') ? Session::get('filtre_invoice.user_id') : null, array('id' => 'filter-client','class' => 'form-control')) }}

@@ -99,6 +99,7 @@ Route::group(['before' => 'superadmin'], function() {
 	Route::get('/invoice/send/{id}', array('as' => 'invoice_send', 'uses' => 'InvoiceController@send'))->where(array('id' => '[0-9]+'));
 	Route::get('/invoice/unpaid/{space_slug?}', array('as' => 'invoice_unpaid', 'uses' => 'InvoiceController@unpaid'));
 	Route::get('/invoice/paid/{id}', array('as' => 'invoice_paid', 'uses' => 'InvoiceController@paid'));
+	Route::get('/invoice/invoicing', array('as' => 'invoice_invoicing', 'uses' => 'InvoiceController@invoicing'));
 
 	Route::get('/ressources', array('as' => 'ressource_list', 'uses' => 'RessourceController@liste'));
 	Route::get('/ressource/add', array('as' => 'ressource_add', 'uses' => 'RessourceController@add'));

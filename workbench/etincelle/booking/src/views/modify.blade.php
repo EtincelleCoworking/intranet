@@ -63,7 +63,7 @@
                             </div>
                             <div>
                                 {{ Form::label('title', 'Organisation') }}
-                                <p>{{ Form::select('organisation_id', Organisation::Select('Sélectionnez une organisation'), $booking_item->booking->organisation_id, array('id' => 'booking-organisation','class' => 'form-control')) }}</p>
+                                <p>{{ Form::select('organisation_id', Organisation::SelectAll('Sélectionnez une organisation'), $booking_item->booking->organisation_id, array('id' => 'booking-organisation','class' => 'form-control')) }}</p>
                             </div>
                         @endif
 

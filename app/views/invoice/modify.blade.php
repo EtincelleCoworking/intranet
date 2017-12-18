@@ -68,7 +68,7 @@
                     <div class="row">
                         <div class="col-md-6">
                             {{ Form::label('organisation_id', 'Organisation') }}
-                            <p>{{ Form::select('organisation_id', Organisation::select(), $invoice->organisation_id, array('id' => 'selectOrganisationId', 'class' => 'form-control')) }}</p>
+                            <p>{{ Form::select('organisation_id', Organisation::selectAll(), $invoice->organisation_id, array('id' => 'selectOrganisationId', 'class' => 'form-control')) }}</p>
                         </div>
                         <div class="col-md-6">
                             {{ Form::label('user_id', 'Utilisateur') }}

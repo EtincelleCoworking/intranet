@@ -376,6 +376,9 @@ class BookingController extends Controller
             if (Input::has('filtre_user_id')) {
                 Session::put('filtre_booking.user_id', Input::get('filtre_user_id'));
             }
+            if (Input::has('filtre_organisation_id')) {
+                Session::put('filtre_booking.organisation_id', Input::get('filtre_organisation_id'));
+            }
             if (Input::has('filtre_ressource_id')) {
                 Session::put('filtre_booking.ressource_id', Input::get('filtre_ressource_id'));
             } else {
@@ -436,6 +439,9 @@ class BookingController extends Controller
                         ->where('user_id', '=', Session::get('filtre_booking.user_id'));
                 });
             }
+            if (Session::has('filtre_booking.organisation_id')) {
+                $q->where('organisation_id', '=', Session::get('filtre_booking.organisation_id'));
+            }
         } else {
             $q->join('booking', function ($j) {
                 $j->on('booking_id', '=', 'booking.id')
@@ -455,6 +461,7 @@ class BookingController extends Controller
     public function cancelFilter()
     {
         Session::forget('filtre_booking.user_id');
+        Session::forget('filtre_booking.organisation_id');
         Session::forget('filtre_booking.start');
         Session::forget('filtre_booking.end');
         Session::forget('filtre_booking.ressource_id');
@@ -919,10 +926,10 @@ ORDER BY room ASC , booking_item.start_at ASC ', $day, $day, $location)));
     public function status($id)
     {
         $ressource = Ressource::find($id);
-        if(!$ressource){
+        if (!$ressource) {
             App::abort(404, 'Ressource inconnue');
         }
-        if(!$ressource->is_bookable){
+        if (!$ressource->is_bookable) {
             App::abort(404, 'La ressource n\'est pas réservable');
         }
 

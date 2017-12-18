@@ -36,7 +36,7 @@
                     @if (Auth::user()->isSuperAdmin())
                         <div class="row">
                             <div class="col-md-5">
-                                {{ Form::select('filtre_organisation_id', Organisation::Select('Sélectionnez une organisation'), Session::get('filtre_pasttime.organisation_id') ? Session::get('filtre_pasttime.organisation_id') : null, array('id' => 'filter-organisation','class' => 'form-control')) }}
+                                {{ Form::select('filtre_organisation_id', Organisation::SelectAll('Sélectionnez une organisation'), Session::get('filtre_pasttime.organisation_id') ? Session::get('filtre_pasttime.organisation_id') : null, array('id' => 'filter-organisation','class' => 'form-control')) }}
                             </div>
                             <div class="col-md-5">
                                 {{ Form::select('filtre_user_id', User::Select('Sélectionnez un client'), Session::get('filtre_pasttime.user_id') ? Session::get('filtre_pasttime.user_id') : null, array('id' => 'filter-client','class' => 'form-control')) }}

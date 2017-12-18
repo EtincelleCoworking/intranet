@@ -105,7 +105,7 @@ class Organisation extends Eloquent
     /**
      * Get list of organisations
      */
-    public function scopeSelect($query, $title = "Select")
+    public function scopeSelectAll($query, $title = "Select")
     {
         $selectVals[''] = $title;
         $selectVals += $this->orderBy('name', 'ASC')->get()->lists('name', 'id');
@@ -115,5 +115,24 @@ class Organisation extends Eloquent
     public function scopeDomiciliation($query)
     {
         return $query->where('is_domiciliation', 1);
+    }
+
+    public function getNotYetCountedBookingCount(){
+        $sql = 'select count(booking_item.id) as cnt
+from booking_item 
+join booking on booking_item.booking_id = booking.id
+LEFT OUTER JOIN past_times 
+  ON past_times.user_id = booking.user_id 
+    AND past_times.ressource_id = booking_item.ressource_id
+    AND past_times.date_past = DATE_FORMAT(booking_item.start_at, "%Y-%m-%d")
+    AND past_times.time_start = booking_item.start_at
+    AND past_times.time_end = booking_item.start_at + INTERVAL booking_item.duration MINUTE
+WHERE booking_item.invoice_id IS NULL
+  AND past_times.is_free != true
+  AND booking_item.start_at BETWEEN "'.date('Y-m-01').'" AND "'.date('Y-m-t').'"
+  AND booking.organisation_id = '.$this->id;
+
+        $items = DB::select(DB::raw($sql));
+        return $items[0]->cnt;
     }
 }
