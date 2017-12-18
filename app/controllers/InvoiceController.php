@@ -502,7 +502,9 @@ order by older_invoice_at ASC';
             ->where('past_times.invoice_id', '=', 0)
             ->where('past_times.is_free', '<>', true)
             ->whereBetween('past_times.date_past', array($period_start, $period_end))
+            ->where('past_times.ressource_id', '<>', Ressource::TYPE_COWORKING)
             ->select('organisations.*')
+            ->groupBy('organisations.id')
             ->get();
 
 
