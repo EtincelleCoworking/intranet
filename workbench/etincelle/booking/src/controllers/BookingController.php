@@ -440,7 +440,10 @@ class BookingController extends Controller
                 });
             }
             if (Session::has('filtre_booking.organisation_id')) {
-                $q->where('organisation_id', '=', Session::get('filtre_booking.organisation_id'));
+                $q->join('booking', function ($j) {
+                    $j->on('booking_id', '=', 'booking.id')
+                        ->where('organisation_id', '=', Session::get('filtre_booking.organisation_id'));
+                });
             }
         } else {
             $q->join('booking', function ($j) {
