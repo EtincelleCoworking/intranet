@@ -38,7 +38,7 @@
                                 @foreach ($items as $organisation)
                                     <tr>
                                         <td>
-                                            <a href="{{ URL::route('organisation_modify', $organisation) }}">{{ $organisation->name }}</a>
+                                            <a href="{{ URL::route('organisation_modify', $organisation->id) }}">{{ $organisation->name }}</a>
                                         </td>
                                         <td>
                                             {{$organisation->getCountedBookingCount()}}
