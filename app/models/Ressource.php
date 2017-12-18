@@ -72,13 +72,19 @@ class Ressource extends Eloquent
         if (!empty($emptyCaption)) {
             $selectVals[0] = $emptyCaption;
         }
+        $commonKey = 'Services communs';
+        $selectVals[$commonKey] = array();
 
         foreach ($query->select('ressources.*')
-                     ->join('locations', 'ressources.location_id', '=', 'locations.id')
+                     ->join('locations', 'ressources.location_id', '=', 'locations.id', 'left outer')
                      ->orderBy('locations.name', 'asc')
                      ->orderBy('ressources.order_index', 'asc')
                      ->orderBy('order_index', 'ASC')->get() as $ressource) {
-            $selectVals[(string)$ressource->location][$ressource->id] = $ressource->name;
+            $location = (string)$ressource->location;
+            if(empty($location)){
+                $location = $commonKey;
+            }
+            $selectVals[$location][$ressource->id] = $ressource->name;
         }
         return $selectVals;
     }
@@ -92,13 +98,19 @@ class Ressource extends Eloquent
         if (!empty($emptyCaption)) {
             $selectVals[null] = $emptyCaption;
         }
+        $commonKey = 'Services communs';
+        $selectVals[$commonKey] = array();
         foreach ($query->whereIsBookable(true)
                      ->select('ressources.*')
                      ->join('locations', 'ressources.location_id', '=', 'locations.id')
                      ->orderBy('locations.name', 'asc')
                      ->orderBy('ressources.order_index', 'asc')
                      ->orderBy('order_index', 'ASC')->get() as $ressource) {
-            $selectVals[(string)$ressource->location][$ressource->id] = $ressource->name;
+            $location = (string)$ressource->location;
+            if(empty($location)){
+                $location = $commonKey;
+            }
+            $selectVals[$location][$ressource->id] = $ressource->name;
         }
         return $selectVals;
     }

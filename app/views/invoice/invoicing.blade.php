@@ -26,6 +26,7 @@
                 <div class="ibox">
                     <div class="ibox-content">
                         <div class="row">
+                            <p>Cette page liste les sociétés pour lesquelles des réservations sont en attente de facturation. Seules celles dont au moins une réservation a été comptabilisé mais non encore facturées sont listées ici.</p>
                             <table class="table table-striped table-hover">
                                 <thead>
                                 <tr>
@@ -45,7 +46,7 @@
                                             <?php
                                             $pending = $organisation->getNotYetCountedBookingCount();
                                             if ($pending) {
-                                                printf('<small>(+%d)</small>', $pending);
+                                                printf('<small>(+%d à compter)</small>', $pending);
                                             }
                                             ?>
                                         </td>
