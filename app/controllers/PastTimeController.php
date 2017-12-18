@@ -372,7 +372,8 @@ class PastTimeController extends BaseController
                     }
                 }
         */
-        return Redirect::route('invoice_modify', $invoice->id)->with('mSuccess', 'La facture a bien été générée');
+        return Redirect::route('invoice_modify', $invoice->id)->with('mSuccess',
+            sprintf('La facture a bien été générée <a href="%s" class="btn btn-primary pull-right">Envoyer</a>', URL::route('invoice_send', $invoice->id)));
     }
 
     public function confirm($id)
