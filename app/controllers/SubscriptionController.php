@@ -207,7 +207,9 @@ class SubscriptionController extends BaseController
         $subscription->renew_at = $date->format('Y-m-d');
         $subscription->save();
 
-        return Redirect::route('invoice_modify', $invoice->id)->with('mSuccess', 'La facture a été créée');
+        return Redirect::route('invoice_modify', $invoice->id)->with('mSuccess',
+            sprintf('La facture a été créée <a href="%s" class="btn btn-primary pull-right">Envoyer</a>', URL::route('invoice_send', $invoice->id)));
+
 
     }
 
@@ -285,7 +287,7 @@ class SubscriptionController extends BaseController
             $invoice_line->save();
 
             $date3 = new DateTime($subscription->renew_at);
-            $date3->modify('+1 month');
+            $date3->modify('+' . $subscription->kind->duration);
             $subscription->renew_at = $date3->format('Y-m-d');
             $subscription->save();
         }
@@ -313,7 +315,8 @@ class SubscriptionController extends BaseController
             $invoice_line->save();
         }
 
-        return Redirect::route('invoice_modify', $invoice->id)->with('mSuccess', 'La facture a été créée');
+        return Redirect::route('invoice_modify', $invoice->id)->with('mSuccess',
+            sprintf('La facture a été créée <a href="%s" class="btn btn-primary pull-right">Envoyer</a>', URL::route('invoice_send', $invoice->id)));
 
     }
 
