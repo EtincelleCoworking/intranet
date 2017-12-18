@@ -433,16 +433,16 @@ class BookingController extends Controller
             $q->where('is_free', false);
         }
         if (Auth::user()->isSuperAdmin()) {
-            if (Session::has('filtre_booking.user_id')) {
+            if ((Session::has('filtre_booking.user_id') && Session::get('filtre_booking.user_id'))
+                || (Session::has('filtre_booking.organisation_id') && Session::get('filtre_booking.organisation_id'))) {
                 $q->join('booking', function ($j) {
-                    $j->on('booking_id', '=', 'booking.id')
-                        ->where('user_id', '=', Session::get('filtre_booking.user_id'));
-                });
-            }
-            if (Session::has('filtre_booking.organisation_id')) {
-                $q->join('booking', function ($j) {
-                    $j->on('booking_id', '=', 'booking.id')
-                        ->where('organisation_id', '=', Session::get('filtre_booking.organisation_id'));
+                    $j->on('booking_id', '=', 'booking.id');
+                    if (Session::has('filtre_booking.user_id') && Session::get('filtre_booking.user_id')) {
+                        $j->where('user_id', '=', Session::get('filtre_booking.user_id'));
+                    }
+                    if (Session::has('filtre_booking.organisation_id')&& Session::get('filtre_booking.organisation_id')) {
+                        $j->where('organisation_id', '=', Session::get('filtre_booking.organisation_id'));
+                    }
                 });
             }
         } else {

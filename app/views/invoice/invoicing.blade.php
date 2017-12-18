@@ -44,9 +44,9 @@
                                             {{ $organisation->getNotYetCountedBookingCount() }}
                                         </td>
                                         <td>
-                                            <a href="{{ URL::route('pasttime_list') }}?filtre_submitted=1&filtre_organisation_id={{ $organisation->id }}&filtre_start={{date('d/m/Y', strtotime($period_start))}}&filtre_end={{date('d/m/Y', strtotime($period_end))}}"
+                                            <a href="{{ URL::route('pasttime_list') }}?filtre_submitted=1&filtre_organisation_id={{ $organisation->id }}&&filtre_user_id=0&filtre_start={{date('d/m/Y', strtotime($period_start))}}&filtre_end={{date('d/m/Y', strtotime($period_end))}}"
                                                class="btn btn-xs btn-primary">Temps passé</a>
-                                            <a href="{{ URL::route('booking_list') }}?filtre_submitted=1&filtre_organisation_id={{ $organisation->id }}"
+                                            <a href="{{ URL::route('booking_list') }}?filtre_submitted=1&filtre_organisation_id={{ $organisation->id }}&&filtre_user_id=0&filtre_start={{date('d/m/Y', strtotime($period_start))}}&filtre_end={{date('d/m/Y', strtotime($period_end))}}"
                                                class="btn btn-xs btn-default">Réservations</a>
                                         </td>
                                     </tr>
