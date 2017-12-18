@@ -66,10 +66,20 @@ class Ressource extends Eloquent
     /**
      * Get list of ressources
      */
-    public function scopeSelectAll($query)
+    public function scopeSelectAll($query, $emptyCaption = 'Aucune ressource')
     {
-        $selectVals[null] = 'Aucune ressource';
-        $selectVals += $query->orderBy('order_index', 'ASC')->lists('name', 'id');
+        $selectVals = array();
+        if (!empty($emptyCaption)) {
+            $selectVals[0] = $emptyCaption;
+        }
+
+        foreach ($query->select('ressources.*')
+                     ->join('locations', 'ressources.location_id', '=', 'locations.id')
+                     ->orderBy('locations.name', 'asc')
+                     ->orderBy('ressources.order_index', 'asc')
+                     ->orderBy('order_index', 'ASC')->get() as $ressource) {
+            $selectVals[(string)$ressource->location][$ressource->id] = $ressource->name;
+        }
         return $selectVals;
     }
 
@@ -82,7 +92,14 @@ class Ressource extends Eloquent
         if (!empty($emptyCaption)) {
             $selectVals[null] = $emptyCaption;
         }
-        $selectVals += $query->whereIsBookable(true)->orderBy('order_index', 'ASC')->lists('name', 'id');
+        foreach ($query->whereIsBookable(true)
+                     ->select('ressources.*')
+                     ->join('locations', 'ressources.location_id', '=', 'locations.id')
+                     ->orderBy('locations.name', 'asc')
+                     ->orderBy('ressources.order_index', 'asc')
+                     ->orderBy('order_index', 'ASC')->get() as $ressource) {
+            $selectVals[(string)$ressource->location][$ressource->id] = $ressource->name;
+        }
         return $selectVals;
     }
 
