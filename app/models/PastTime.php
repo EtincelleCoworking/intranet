@@ -47,6 +47,15 @@ class PastTime extends Eloquent
     }
 
     /**
+     * Relation BelongsTo (Invoices belongs to Organisation)
+     */
+    public function organisation()
+    {
+        return $this->belongsTo('Organisation');
+    }
+
+
+    /**
      * Past Time belongs to Ressource
      */
     public function ressource()

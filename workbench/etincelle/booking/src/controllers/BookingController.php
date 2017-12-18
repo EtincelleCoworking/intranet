@@ -329,6 +329,7 @@ class BookingController extends Controller
 
         $time = new PastTime();
         $time->user_id = $booking_item->booking->user_id;
+        $time->organisation_id = $booking_item->booking->organisation_id;
         $time->ressource_id = $booking_item->ressource_id;
         $time->location_id = $booking_item->ressource->location_id;
         $time->date_past = date('Y-m-d', strtotime($booking_item->start_at));

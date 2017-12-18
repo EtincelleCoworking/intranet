@@ -55,7 +55,11 @@
                                 {{ Form::label('user_id', 'Client') }}
                                 <p>{{ Form::select('user_id', User::Select('Sélectionnez un client'), Auth::id(), array('class' => 'form-control', 'id' => 'userSelector')) }}</p>
                             </div>
-                            <div class="col-md-4">
+                            <div class="col-md-6">
+                                {{ Form::label('organisation_id', 'Organisation') }}
+                                <p>{{ Form::select('organisation_id', Organisation::SelectAll('Sélectionnez une organisation'), null, array('class' => 'form-control', 'id' => 'organisationSelector')) }}</p>
+                            </div>
+                            <div class="col-md-6">
                                 {{ Form::label('invoice_id', 'Facture') }}
                                 <p>{{ Form::select('invoice_id', Invoice::SelectAll('Sélectionnez une facture'), null, array('class' => 'form-control')) }}</p>
                             </div>

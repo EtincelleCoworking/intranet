@@ -97,7 +97,7 @@ class PastTimeController extends BaseController
         if (Auth::user()->isSuperAdmin()) {
             if (Session::has('filtre_pasttime.user_id')) {
                 $recapFilter = Session::get('filtre_pasttime.user_id');
-                $q->whereUserId($recapFilter);
+                $q->where('past_times.user_id', '=', $recapFilter);
             } else {
                 $q->where('past_times.user_id', '>', 0);
             }
@@ -149,6 +149,7 @@ class PastTimeController extends BaseController
             }
             if (Auth::user()->isSuperAdmin()) {
                 $time->user_id = Input::get('user_id');
+                $time->organisation_id = Input::get('organisation_id');
                 $time->invoice_id = Input::get('invoice_id');
                 $time->is_free = Input::get('is_free', false);
             } else {
@@ -190,6 +191,7 @@ class PastTimeController extends BaseController
             }
             if (Auth::user()->isSuperAdmin()) {
                 $time->user_id = Input::get('user_id');
+                $time->organisation_id = Input::get('organisation_id');
                 $time->invoice_id = Input::get('invoice_id');
                 $time->is_free = Input::get('is_free');
             } else {

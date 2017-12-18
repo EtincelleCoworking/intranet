@@ -57,7 +57,11 @@
                                 {{ Form::label('user_id', 'Client') }}
                                 <p>{{ Form::select('user_id', User::Select('Sélectionnez un client'), $time->user_id, array('class' => 'form-control', 'id' => 'userSelector')) }}</p>
                             </div>
-                            <div class="col-md-4">
+                            <div class="col-md-6">
+                                {{ Form::label('organisation_id', 'Organisation') }}
+                                <p>{{ Form::select('organisation_id', Organisation::SelectAll('Sélectionnez une organisation'), $time->organisation_id, array('class' => 'form-control', 'id' => 'organisationSelector')) }}</p>
+                            </div>
+                            <div class="col-md-6">
                                 {{ Form::label('invoice_id', 'Facture') }}
                                 <p>{{ Form::select('invoice_id', Invoice::selectAll('Sélectionnez une facture', $time->user_id), $time->invoice_id, array('class' => 'form-control')) }}</p>
                             </div>
@@ -91,6 +95,7 @@
             $('.datePicker').datepicker();
             $('.timePicker').timepicker({'timeFormat': 'H:i', step: 5});
             $('#userSelector').select2();
+            $('#organisationSelector').select2();
         });
     </script>
 @stop

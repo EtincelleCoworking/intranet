@@ -127,8 +127,30 @@ LEFT OUTER JOIN past_times
     AND past_times.date_past = DATE_FORMAT(booking_item.start_at, "%Y-%m-%d")
     AND past_times.time_start = booking_item.start_at
     AND past_times.time_end = booking_item.start_at + INTERVAL booking_item.duration MINUTE
+    AND past_times.is_free != true
 WHERE booking_item.invoice_id IS NULL
-  AND past_times.is_free != true
+  AND past_times.id IS NULL
+  AND booking_item.start_at BETWEEN "'.date('Y-m-01').'" AND "'.date('Y-m-t').'"
+  AND booking.organisation_id = '.$this->id;
+
+        $items = DB::select(DB::raw($sql));
+        return $items[0]->cnt;
+    }
+
+
+    public function getCountedBookingCount(){
+        $sql = 'select count(booking_item.id) as cnt
+from booking_item 
+join booking on booking_item.booking_id = booking.id
+LEFT OUTER JOIN past_times 
+  ON past_times.user_id = booking.user_id 
+    AND past_times.ressource_id = booking_item.ressource_id
+    AND past_times.date_past = DATE_FORMAT(booking_item.start_at, "%Y-%m-%d")
+    AND past_times.time_start = booking_item.start_at
+    AND past_times.time_end = booking_item.start_at + INTERVAL booking_item.duration MINUTE
+    AND past_times.is_free != true
+WHERE booking_item.invoice_id IS NULL
+  AND past_times.id IS NOT NULL
   AND booking_item.start_at BETWEEN "'.date('Y-m-01').'" AND "'.date('Y-m-t').'"
   AND booking.organisation_id = '.$this->id;
 

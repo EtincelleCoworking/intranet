@@ -41,7 +41,13 @@
                                             <a href="{{ URL::route('organisation_modify', $organisation) }}">{{ $organisation->name }}</a>
                                         </td>
                                         <td>
-                                            {{ $organisation->getNotYetCountedBookingCount() }}
+                                            {{$organisation->getCountedBookingCount()}}
+                                            <?php
+                                            $pending = $organisation->getNotYetCountedBookingCount();
+                                            if ($pending) {
+                                                printf('<small>(+%d)</small>', $pending);
+                                            }
+                                            ?>
                                         </td>
                                         <td>
                                             <a href="{{ URL::route('pasttime_list') }}?filtre_submitted=1&filtre_organisation_id={{ $organisation->id }}&&filtre_user_id=0&filtre_start={{date('d/m/Y', strtotime($period_start))}}&filtre_end={{date('d/m/Y', strtotime($period_end))}}"
