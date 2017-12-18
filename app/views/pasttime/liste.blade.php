@@ -169,14 +169,19 @@
                                                     @else
                                                         {{ $time->organisation->name }}
                                                     @endif
+                                                        @if ($time->user)
+                                                            (<a href="{{ URL::route('user_modify', $time->user->id) }}">{{ $time->user->fullname }}</a>
+                                                            <a href="?filtre_submitted=1&filtre_user_id={{ $time->user->id }}"><i
+                                                                        class="fa fa-filter"></i></a>)
+                                                        @endif
                                                 @else
-                                                    -
+                                                    @if ($time->user)
+                                                        <a href="{{ URL::route('user_modify', $time->user->id) }}">{{ $time->user->fullname }}</a>
+                                                        <a href="?filtre_submitted=1&filtre_user_id={{ $time->user->id }}"><i
+                                                                    class="fa fa-filter"></i></a>
+                                                    @endif
                                                 @endif
-                                                @if ($time->user)
-                                                    (<a href="{{ URL::route('user_modify', $time->user->id) }}">{{ $time->user->fullname }}</a>
-                                                    <a href="?filtre_submitted=1&filtre_user_id={{ $time->user->id }}"><i
-                                                                class="fa fa-filter"></i></a>)
-                                                @endif
+
                                             </td>
                                         @endif
                                         <td>{{ $time->ressource->name }}</td>

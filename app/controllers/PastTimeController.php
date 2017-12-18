@@ -95,13 +95,13 @@ class PastTimeController extends BaseController
             $q->where('is_free', false);
         }
         if (Auth::user()->isSuperAdmin()) {
-            if (Session::has('filtre_pasttime.user_id')) {
+            if (Session::has('filtre_pasttime.user_id') && Session::get('filtre_pasttime.user_id')) {
                 $recapFilter = Session::get('filtre_pasttime.user_id');
                 $q->where('past_times.user_id', '=', $recapFilter);
             } else {
                 $q->where('past_times.user_id', '>', 0);
             }
-            if (Session::has('filtre_pasttime.organisation_id')) {
+            if (Session::has('filtre_pasttime.organisation_id') && Session::get('filtre_pasttime.organisation_id')) {
                 $recapFilter = Session::get('filtre_pasttime.organisation_id');
                 $q->join('organisation_user', 'past_times.user_id', '=', 'organisation_user.user_id');
                 $q->where('organisation_user.organisation_id', '=', $recapFilter);

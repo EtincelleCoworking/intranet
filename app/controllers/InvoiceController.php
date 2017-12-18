@@ -499,7 +499,7 @@ order by older_invoice_at ASC';
         $period_end = date('Y-m-t');
         $items = Organisation::join('past_times', 'past_times.organisation_id', '=', 'organisations.id')
             ->where('past_times.invoice_id', '=', 0)
-            ->where('past_times.is_free', '<>', true)
+            ->where('past_times.is_free', '=', 0)
             ->whereBetween('past_times.date_past', array($period_start, $period_end))
             ->where('past_times.ressource_id', '<>', Ressource::TYPE_COWORKING)
             ->select('organisations.*')
