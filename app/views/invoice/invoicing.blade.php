@@ -42,9 +42,9 @@
                                             <a href="{{ URL::route('organisation_modify', $organisation->id) }}">{{ $organisation->name }}</a>
                                         </td>
                                         <td>
-                                            {{$organisation->getCountedBookingCount()}}
+                                            {{$organisation->getCountedBookingCount($period_start, $period_end)}}
                                             <?php
-                                            $pending = $organisation->getNotYetCountedBookingCount();
+                                            $pending = $organisation->getNotYetCountedBookingCount($period_start, $period_end);
                                             if ($pending) {
                                                 printf('<small>(+%d à compter)</small>', $pending);
                                             }

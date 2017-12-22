@@ -496,6 +496,7 @@ order by older_invoice_at ASC';
     public function invoicing()
     {
         $period_start = date('Y-m-01');
+        $period_start = date('Y-m-d', Config::get('etincelle.activity_period_started'));
         $period_end = date('Y-m-t');
         $items = Organisation::join('past_times', 'past_times.organisation_id', '=', 'organisations.id')
             ->where('past_times.invoice_id', '=', 0)

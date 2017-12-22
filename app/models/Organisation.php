@@ -117,7 +117,7 @@ class Organisation extends Eloquent
         return $query->where('is_domiciliation', 1);
     }
 
-    public function getNotYetCountedBookingCount(){
+    public function getNotYetCountedBookingCount($period_start, $period_end){
         $sql = 'select count(booking_item.id) as cnt
 from booking_item 
 join booking on booking_item.booking_id = booking.id
@@ -130,7 +130,7 @@ LEFT OUTER JOIN past_times
     AND past_times.is_free != true
 WHERE booking_item.invoice_id IS NULL
   AND past_times.id IS NULL
-  AND booking_item.start_at BETWEEN "'.date('Y-m-01').'" AND "'.date('Y-m-t').'"
+  AND booking_item.start_at BETWEEN "'.$period_start.'" AND "'.$period_end.'"
   AND booking.organisation_id = '.$this->id;
 
         $items = DB::select(DB::raw($sql));
@@ -138,8 +138,8 @@ WHERE booking_item.invoice_id IS NULL
     }
 
 
-    public function getCountedBookingCount(){
-        $sql = 'select count(booking_item.id) as cnt
+    public function getCountedBookingCount($period_start, $period_end){
+        $sql = 'select count(past_times.id) as cnt
 from booking_item 
 join booking on booking_item.booking_id = booking.id
 LEFT OUTER JOIN past_times 
@@ -151,7 +151,7 @@ LEFT OUTER JOIN past_times
     AND past_times.is_free != true
 WHERE booking_item.invoice_id IS NULL
   AND past_times.id IS NOT NULL
-  AND booking_item.start_at BETWEEN "'.date('Y-m-01').'" AND "'.date('Y-m-t').'"
+  AND booking_item.start_at BETWEEN "'.$period_start.'" AND "'.$period_end.'"
   AND booking.organisation_id = '.$this->id;
 
         $items = DB::select(DB::raw($sql));
