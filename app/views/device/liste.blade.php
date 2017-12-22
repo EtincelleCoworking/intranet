@@ -11,7 +11,7 @@
         </div>
         <div class="col-sm-8">
             <div class="title-action">
-                <a href="{{ URL::route('device_add') }}" class="btn btn-default">Ajouter un périphérique</a>
+                <a href="{{ URL::route('device_add') }}" class="btn btn-primary">Ajouter un périphérique</a>
             </div>
         </div>
     </div>

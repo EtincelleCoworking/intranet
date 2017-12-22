@@ -48,7 +48,7 @@ class DeviceController extends BaseController
                 Session::forget('filtre_device.ip');
             }
         }
-            $sql = '';
+        $sql = '';
         if (Session::has('filtre_device.user_id')) {
             $sql .= sprintf(' AND devices.user_id = %d', Session::get('filtre_device.user_id'));
         }
@@ -80,7 +80,7 @@ LEFT OUTER join users on devices.user_id = users.id
 LEFT OUTER join devices_seen on devices.id = devices_seen.device_id AND devices.last_seen_at = devices_seen.last_seen_at
 LEFT OUTER join locations on devices_seen.location_id = locations.id
 LEFT OUTER join cities on locations.city_id = cities.id WHERE 1 '
-            .$sql
+            . $sql
             . sprintf('
 group by devices.id
 order by devices_seen.last_seen_at DESC
@@ -91,7 +91,7 @@ LIMIT %d, %d
 LEFT OUTER join devices_seen on devices.id = devices_seen.device_id AND devices.last_seen_at = devices_seen.last_seen_at
 LEFT OUTER join locations on devices_seen.location_id = locations.id
 WHERE 1 '
-            .$sql));
+            . $sql));
 
         //var_dump($devicesCount); exit;
         $pager = Paginator::make($devices, $devicesCount->cnt, $itemPerPage);
@@ -154,15 +154,20 @@ WHERE 1 '
      */
     public function add_check()
     {
-        $validator = Validator::make(Input::all(), Country::$rulesAdd);
+        $validator = Validator::make(Input::all(), Device::$rulesAdd);
         if (!$validator->fails()) {
             $device = new Device(Input::all());
             $device->mac = strtolower($device->mac);
-
-            if ($device->save()) {
-                return Redirect::route('device_list', $device->id)->with('mSuccess', 'Le périphérique a bien été modifié');
-            } else {
+            try {
+                if ($device->save()) {
+                    return Redirect::route('device_list', $device->id)->with('mSuccess', 'Le périphérique a bien été modifié');
+                }
                 return Redirect::route('device_add')->with('mError', 'Impossible de créer ce périphérique')->withInput();
+            } catch (\Illuminate\Database\QueryException $e) {
+                if (preg_match('/Duplicate entry/', $e->getMessage())) {
+                    $existing_device = Device::where('mac', strtolower(Input::get('mac')))->first();
+                    return Redirect::route('device_add')->with('mError', sprintf('Ce périphérique est déjà connu. <a href="%s" class="btn btn-danger">Cliquez ici pour le modifier</a>', URL::route('device_modify', $existing_device->id)))->withInput();
+                }
             }
         } else {
             return Redirect::route('device_add')->with('mError', 'Il y a des erreurs')->withErrors($validator->messages())->withInput();
