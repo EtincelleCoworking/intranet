@@ -329,7 +329,7 @@ class PastTimeController extends BaseController
                     }
                 }
                 foreach ($item_group as $user_id => $line_content) {
-                    $invoice_line->text = 'Coworking';
+                    $invoice_line->text .= 'Coworking';
                     $sum_duration = 0;
 
                     foreach ($line_content as $item) {
