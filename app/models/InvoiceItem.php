@@ -73,7 +73,7 @@ class InvoiceItem extends Eloquent
     {
         $query = $query
             ->join('ressources', 'ressource_id', '=', 'ressources.id', 'left outer')
-            ->join('ressource_kind', 'ressource_kind_id', '=', 'ressource_kind.id', 'left outer')
+            ->join('ressource_kind', 'ressources.ressource_kind_id', '=', 'ressource_kind.id', 'left outer')
             ->groupBy('ressource_kind.name')
             ->orderBy('ressource_kind.order_index', 'desc')
             ->addSelect('ressource_kind.name as kind');
@@ -92,7 +92,7 @@ class InvoiceItem extends Eloquent
                     })
                         ->orWhere(function ($query) use ($location_id) {
                             $query->where('ressource_id', '<>', Ressource::TYPE_COWORKING)
-                                ->where('location_id', '=', $location_id);
+                                ->where('ressources.location_id', '=', $location_id);
                         });
                 });
         }
@@ -128,8 +128,10 @@ class InvoiceItem extends Eloquent
     public function scopeWithoutExceptionnals($query)
     {
         return $query
-            ->join('ressources', 'ressource_id', '=', 'ressources.id', 'left outer')
-            ->where('ressources.ressource_kind_id', '<>', RessourceKind::TYPE_EXCEPTIONNAL);
+            ->join('ressources as scopeWithoutExceptionnals_ressources', 'ressource_id', '=', 'scopeWithoutExceptionnals_ressources.id', 'left outer')
+            ->where(function ($query) {
+                $query->where('scopeWithoutExceptionnals_ressources.ressource_kind_id', '<>', RessourceKind::TYPE_EXCEPTIONNAL);
+            });
     }
 
     public function scopePending($query)

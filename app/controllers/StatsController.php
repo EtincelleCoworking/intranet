@@ -152,7 +152,7 @@ GROUP BY locations.id, subscription_kind.id', Ressource::TYPE_COWORKING)));
         ));
     }
 
-    public function sales_per_category($location_id, $period)
+    public function sales_per_category($period = null, $location_id = null)
     {
         $colors = array();
         $colors[] = '#3f2860';
@@ -161,7 +161,10 @@ GROUP BY locations.id, subscription_kind.id', Ressource::TYPE_COWORKING)));
         $colors[] = '#ef6d3b';
 
         $data = array();
-        $query = InvoiceItem::withoutExceptionnals()->total()->byKind()->byLocation($location_id);
+        $query = InvoiceItem::withoutExceptionnals()->total()->byKind();
+        if($location_id){
+            $query->byLocation($location_id);
+        }
         if ($period) {
             $period = strtotime($period);
             $query->whereBetween('invoices.date_invoice', array(date('Y-m-01', $period), date('Y-m-t', $period)));

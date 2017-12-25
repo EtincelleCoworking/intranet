@@ -19,7 +19,7 @@ from `locations`
 left outer join cities on locations.city_id = cities.id
 join ressources on ressources.location_id = locations.id
 WHERE ressource_kind_id <> %d
-order by ressources.order_index asc', RessourceKind::TYPE_EXCEPTIONNAL)));
+order by ressource_kind_id asc, ressources.order_index asc', RessourceKind::TYPE_EXCEPTIONNAL)));
         foreach ($items as $item) {
             $ressources[$item->kind][$item->id] = $item->name;
         }
