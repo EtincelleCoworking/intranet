@@ -344,6 +344,7 @@ class BookingController extends Controller
                 ->where('time_end', $time->time_end)
                 ->count() > 0;
 
+
         if ($existing) {
             return Response::json(array('status' => 'KO',
                 'message' => sprintf('Un enregistrement similaire à %s est déjà présent', $booking_item->booking->title)));
@@ -943,7 +944,10 @@ ORDER BY room ASC , booking_item.start_at ASC ', $day, $day, $location)));
                 ->where('ressource_id', '=', $id)
                 ->orderBy('start_at', 'ASC')
                 ->orderBy('duration', 'desc');
-        })->with('items')->get();
+        })->join('booking_item', 'booking.id', '=', 'booking_item.booking_id')
+            ->orderBy('booking_item.start_at', 'ASC')
+            ->with('items')->get();
+
         $free_duration = null;
         $current_booking = $bookings->first();
 
