@@ -938,43 +938,34 @@ ORDER BY room ASC , booking_item.start_at ASC ', $day, $day, $location)));
             App::abort(404, 'La ressource n\'est pas réservable');
         }
 
-        $bookings = Booking::whereHas('items', function ($query) use ($id) {
-            $query->where('start_at', '<', date('Y-m-d', strtotime('+1 day')))
-                ->where(DB::raw('DATE_ADD(start_at, INTERVAL duration MINUTE)'), '>', date('Y-m-d H:i:s'))
-                ->where('ressource_id', '=', $id)
-                ->orderBy('start_at', 'ASC')
-                ->orderBy('duration', 'desc');
-        })->join('booking_item', 'booking.id', '=', 'booking_item.booking_id')
-            ->orderBy('booking_item.start_at', 'ASC')
-            ->with('items')->get();
+        $bookings = DB::select(DB::raw('SELECT booking.title, booking_item.start_at, booking_item.duration, DATE_ADD(booking_item.start_at, INTERVAL booking_item.duration MINUTE) as end_at
+        FROM booking join booking_item ON booking.id = booking_item.booking_id
+        WHERE (SELECT count(*) from booking_item WHERE booking_item.booking_id = booking.id and start_at < "'.date('Y-m-d', strtotime('+1 day')).'" and DATE_ADD(start_at, INTERVAL duration MINUTE) > "'.date('Y-m-d H:i:s').'" and ressource_id = '.$id.') >= 1 
+        ORDER BY booking_item.start_at ASC, booking_item.duration DESC 
+        '));
 
         $free_duration = null;
-        $current_booking = $bookings->first();
+        $current_booking = array_shift($bookings);
 
         if (!empty($current_booking)
-            && isset($current_booking->items[0])
-            && ($current_booking->items[0]->start_at < date('Y-m-d H:i:s'))
+            && ($current_booking['start_at'] < date('Y-m-d H:i:s'))
         ) {
-            $current_booking_item = $current_booking->items[0];
-
-            $spent_time = (time() - strtotime($current_booking->items[0]->start_at)) / 60;
-            $current_booking_progress = round(100 * $spent_time / $current_booking_item->duration);
+            $spent_time = (time() - strtotime($current_booking['start_at'])) / 60;
+            $current_booking_progress = round(100 * $spent_time / $current_booking['duration']);
             //var_dump($current_booking_progress);
             if ($current_booking_progress > 100) {
                 $current_booking_progress = 100;
             }
 
-            $next_booking = $bookings->get(1);
-            $next_booking_item = isset($next_booking->items[0]) ? $next_booking->items[0] : null;
+            $next_booking = array_shift($bookings);
         } else {
             $next_booking = $current_booking;
-            $next_booking_item = isset($next_booking->items[0]) ? $next_booking->items[0] : null;
             $current_booking = null;
             $current_booking_item = null;
             $current_booking_progress = 0;
 
-            if ($next_booking_item) {
-                $free_duration_items = $this->secondsToTime(strtotime($next_booking_item->start_at) - time());
+            if ($next_booking) {
+                $free_duration_items = $this->secondsToTime(strtotime($next_booking['start_at']) - time());
                 $tokens = array();
                 if ($free_duration_items['h']) {
                     if ($free_duration_items['h'] > 1) {
@@ -994,16 +985,16 @@ ORDER BY room ASC , booking_item.start_at ASC ', $day, $day, $location)));
             }
         }
 
-        return View::make('booking::status', array(
+        $attrs = array(
             'ressource' => $ressource,
             'current_booking' => $current_booking,
-            'current_booking_item' => $current_booking_item,
             'current_booking_progress' => $current_booking_progress,
             'next_booking' => $next_booking,
-            'next_booking_item' => $next_booking_item,
             'free_duration' => $free_duration,
             'bookings' => $bookings
-        ));
+        );
+
+        return View::make('booking::status', $attrs);
     }
 
     protected function secondsToTime($inputSeconds)
