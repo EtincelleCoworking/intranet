@@ -244,7 +244,7 @@ class ApiController extends BaseController
                     'id' => $invoice->id,
                     'reference' => $invoice->ident,
                     'created_at' => $invoice->created_at->format('Y-m-d H:i:s'),
-                    'paid_at' => is_object($invoice->date_payment) ? $invoice->date_payment->format('Y-m-d H:i:s') : null,
+                    'paid_at' => is_null($invoice->date_payment) ? null : $invoice->date_payment,
                     'raw_amount' => Invoice::TotalInvoice($invoice->items),
                     'amount' => Invoice::TotalInvoiceWithTaxes($invoice->items),
                     'url_edit' => URL::route('invoice_modify', $invoice->id),
@@ -262,7 +262,6 @@ class ApiController extends BaseController
                     'id' => $invoice->id,
                     'reference' => $invoice->ident,
                     'created_at' => $invoice->created_at->format('Y-m-d H:i:s'),
-                    'paid_at' => is_object($invoice->date_payment) ? $invoice->date_payment->format('Y-m-d H:i:s') : null,
                     'amount' => Invoice::TotalInvoice($invoice->items),
                     'url_edit' => URL::route('invoice_modify', $invoice->id),
                     'url_pdf' => URL::route('invoice_print_pdf', $invoice->id),
@@ -304,12 +303,15 @@ class ApiController extends BaseController
                 $data['subscription']['from'] = $subscription['subscription_from'];
                 $data['subscription']['to'] = $subscription['subscription_to'];
                 $data['subscription']['quota'] = $subscription['subscription_hours_quota'];
-                $data['subscription']['used'] = $user->getCoworkingTimeSpent($subscription['subscription_from'], $subscription['subscription_to']);
-                if ($data['subscription']['quota'] > 0) {
+                $data['subscription']['used'] = durationToHuman($user->getCoworkingTimeSpent($subscription['subscription_from'], $subscription['subscription_to']));
+                if ($data['subscription']['quota'] >= 0) {
                     $data['subscription']['ratio'] = round(100 * $data['subscription']['used'] / $data['subscription']['quota']);
+                    $data['subscription']['quota'] = sprintf('%d heures', $data['subscription']['quota']);
                 } else {
                     $data['subscription']['ratio'] = 0;
+                    $data['subscription']['quota'] = 'illimité';
                 }
+                $data['subscription']['status'] = sprintf('%s / %s', $data['subscription']['used'], $data['subscription']['quota']);
             } else {
                 $data['subscription']['active'] = false;
             }
