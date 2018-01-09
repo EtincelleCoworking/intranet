@@ -220,12 +220,14 @@ class ApiController extends BaseController
             $data['fullname'] = implode(' ', array($user->firstname, $user->lastname));
             $data['birthday'] = $user->birthday;
             $data['location'] = (string)$user->location;
+            $data['test_html'] = sprintf('<a href="http://www.google.com">google</a>');
             $data['phone'] = $user->phoneFmt;
             $data['organisations'] = array();
             foreach ($user->organisations as $organisation) {
                 $data['organisations'][] = array(
                     'id' => $organisation->id,
-                    'address' => $organisation->address,
+                    'address' => implode("\n", array($organisation->address, implode(' ', array($organisation->zipcode, $organisation->city)))),
+                    'street' => $organisation->address,
                     'zipcode' => $organisation->zipcode,
                     'city' => $organisation->city,
                     'domiciliation' => ($organisation->domiciliation_start_at != null)
