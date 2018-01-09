@@ -268,26 +268,29 @@ class ApiController extends BaseController
                 );
             }
 
+
             $data['bookings'] = array();
-            $data['bookings']['past'] = array();
-            $bookings = DB::select(DB::raw('SELECT booking_item.id, booking.title, booking_item.start_at, booking_item.duration, DATE_ADD(booking_item.start_at, INTERVAL booking_item.duration MINUTE) as end_at
-        FROM booking join booking_item ON booking.id = booking_item.booking_id
-        WHERE booking.user_id = ' . $user->id . ' 
-            AND booking_item.start_at BETWEEN DATE_SUB(now(), INTERVAL 3 MONTH) AND now()
-        ORDER BY booking_item.start_at ASC, booking_item.duration DESC 
-        '));
-            foreach ($bookings as $booking) {
-                $data['bookings']['past'][] = $booking;
-            }
-            $data['bookings']['upcoming'] = array();
-            $bookings = DB::select(DB::raw('SELECT booking_item.id, booking.title, booking_item.start_at, booking_item.duration, DATE_ADD(booking_item.start_at, INTERVAL booking_item.duration MINUTE) as end_at
-        FROM booking join booking_item ON booking.id = booking_item.booking_id
-        WHERE booking.user_id = ' . $user->id . ' 
-            AND booking_item.start_at > now()
-        ORDER BY booking_item.start_at ASC, booking_item.duration DESC 
-        '));
-            foreach ($bookings as $booking) {
-                $data['bookings']['upcoming'][] = $booking;
+            $map = array(
+                'past' => 'booking_item.start_at BETWEEN DATE_SUB(now(), INTERVAL 3 MONTH) AND now()',
+                'upcoming' => 'booking_item.start_at > now()',
+            );
+            foreach ($map as $key => $criteria) {
+                $data['bookings'][$key] = array();
+                $bookings = DB::select(DB::raw('SELECT booking_item.id, ressources.name as ressource, booking.title, booking_item.start_at, booking_item.duration, DATE_ADD(booking_item.start_at, INTERVAL booking_item.duration MINUTE) as end_at
+                      , concat(cities.name, " > ", IF(locations.name IS NULL, "", locations.name)) as location
+                    FROM booking 
+                      JOIN booking_item ON booking.id = booking_item.booking_id
+                      JOIN ressources ON ressources.id = booking_item.ressource_id
+                      JOIN locations ON locations.id = ressources.location_id
+                      JOIN cities ON cities.id = locations.city_id
+                    WHERE booking.user_id = ' . $user->id . ' AND ' . $criteria . '
+                    GROUP BY booking.id
+                    ORDER BY booking_item.start_at ASC, booking_item.duration DESC 
+                    '));
+                foreach ($bookings as $booking) {
+                    $booking->duration = durationToHuman($booking->duration);
+                    $data['bookings'][$key][] = $booking;
+                }
             }
 
             //region subscription
