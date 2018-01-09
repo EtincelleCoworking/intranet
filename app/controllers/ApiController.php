@@ -25,6 +25,28 @@ class ApiController extends BaseController
         return Redirect::route('dashboard');
     }
 
+
+    public function updateMetric($location_slug, $key, $metric_slug, $metric_value)
+    {
+        $location = Location::where('slug', '=', $location_slug)
+            ->where('key', '=', $key)
+            ->firstOrFail();
+
+        $metric = Metric::where('slug', '=', $metric_slug)
+            ->firstOrFail();
+
+        $data = new MetricValue();
+        $data->location_id = $location->id;
+        $data->metric_id = $metric->id;
+        $data->value = $metric_value;
+        $data->save();
+
+        if (Request::ajax()) {
+            return new Response('OK');
+        }
+        return Redirect::route('dashboard');
+    }
+
     protected function floorTime($value)
     {
         return floor(strtotime($value) / (5 * 60)) * 5 * 60;
@@ -180,5 +202,32 @@ class ApiController extends BaseController
             $mongoCode .= sprintf('db.users.insert(%s);', json_encode($user)) . "\n";
         }
         return new Response($mongoCode);
+    }
+
+    public function user($secure_key, $email){
+        if((Config::get('etincelle.api_secret') == '') || ($secure_key != Config::get('etincelle.api_secret'))){
+            App::abort(403, 'Unauthorized action.');
+        }
+
+        $data = array('email' => $email);
+
+        $user = User::where('email',  strtolower($email))->first();
+        if($user){
+            $data['firstname'] = $user->firstname;
+            $data['lastname'] = $user->lastname;
+            $data['phone'] = $user->phone;
+        }
+        $result = new Response();
+        $result->headers->set('Content-Type', 'application/json');
+        $result->setContent(json_encode($data));
+        return $result;
+
+
+        // réservation à venir
+        // abonnement
+        // - en cours (xx / total)
+        // - dernier
+        // factures dues
+        // devis en attente
     }
 }
