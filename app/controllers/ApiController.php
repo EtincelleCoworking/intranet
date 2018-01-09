@@ -220,13 +220,13 @@ class ApiController extends BaseController
             $data['fullname'] = implode(' ', array($user->firstname, $user->lastname));
             $data['birthday'] = $user->birthday;
             $data['location'] = (string)$user->location;
-            $data['test_html'] = sprintf('<a href="http://www.google.com">google</a>');
             $data['phone'] = $user->phoneFmt;
             $data['organisations'] = array();
             foreach ($user->organisations as $organisation) {
                 $data['organisations'][] = array(
                     'id' => $organisation->id,
-                    'address' => implode("\n", array($organisation->address, implode(' ', array($organisation->zipcode, $organisation->city)))),
+                    'address' => implode("\n", array($organisation->name, $organisation->address, implode(' ', array($organisation->zipcode, $organisation->city)))),
+                    'name' => $organisation->name,
                     'street' => $organisation->address,
                     'zipcode' => $organisation->zipcode,
                     'city' => $organisation->city,
@@ -237,9 +237,60 @@ class ApiController extends BaseController
                 );
             }
 
+            $data['due'] = 0;
             $data['invoices'] = array();
+            foreach (Invoice::InvoiceOnly()->invoicesDesc($user) as $invoice) {
+                $item = array(
+                    'id' => $invoice->id,
+                    'reference' => $invoice->ident,
+                    'created_at' => $invoice->created_at->format('Y-m-d H:i:s'),
+                    'paid_at' => is_object($invoice->date_payment) ? $invoice->date_payment->format('Y-m-d H:i:s') : null,
+                    'raw_amount' => Invoice::TotalInvoice($invoice->items),
+                    'amount' => Invoice::TotalInvoiceWithTaxes($invoice->items),
+                    'url_edit' => URL::route('invoice_modify', $invoice->id),
+                    'url_pdf' => URL::route('invoice_print_pdf', $invoice->id),
+                );
+                $data['invoices'][] = $item;
+                if (null == $invoice->date_payment) {
+                    $data['due'] += $item['amount'];
+                }
+            }
+
             $data['quotes'] = array();
+            foreach (Invoice::QuoteOnly('valid')->invoicesDesc($user) as $invoice) {
+                $data['quotes'][] = array(
+                    'id' => $invoice->id,
+                    'reference' => $invoice->ident,
+                    'created_at' => $invoice->created_at->format('Y-m-d H:i:s'),
+                    'paid_at' => is_object($invoice->date_payment) ? $invoice->date_payment->format('Y-m-d H:i:s') : null,
+                    'amount' => Invoice::TotalInvoice($invoice->items),
+                    'url_edit' => URL::route('invoice_modify', $invoice->id),
+                    'url_pdf' => URL::route('invoice_print_pdf', $invoice->id),
+                );
+            }
+
             $data['bookings'] = array();
+            $data['bookings']['past'] = array();
+            $bookings = DB::select(DB::raw('SELECT booking_item.id, booking.title, booking_item.start_at, booking_item.duration, DATE_ADD(booking_item.start_at, INTERVAL booking_item.duration MINUTE) as end_at
+        FROM booking join booking_item ON booking.id = booking_item.booking_id
+        WHERE booking.user_id = ' . $user->id . ' 
+            AND booking_item.start_at BETWEEN DATE_SUB(now(), INTERVAL 3 MONTH) AND now()
+        ORDER BY booking_item.start_at ASC, booking_item.duration DESC 
+        '));
+            foreach ($bookings as $booking) {
+                $data['bookings']['past'][] = $booking;
+            }
+            $data['bookings']['upcoming'] = array();
+            $bookings = DB::select(DB::raw('SELECT booking_item.id, booking.title, booking_item.start_at, booking_item.duration, DATE_ADD(booking_item.start_at, INTERVAL booking_item.duration MINUTE) as end_at
+        FROM booking join booking_item ON booking.id = booking_item.booking_id
+        WHERE booking.user_id = ' . $user->id . ' 
+            AND booking_item.start_at > now()
+        ORDER BY booking_item.start_at ASC, booking_item.duration DESC 
+        '));
+            foreach ($bookings as $booking) {
+                $data['bookings']['upcoming'][] = $booking;
+            }
+
             //region subscription
             $data['subscription'] = array();
             $subscription = InvoiceItem::where('subscription_from', '<>', '0000-00-00 00:00:00')
@@ -269,13 +320,5 @@ class ApiController extends BaseController
         $result->headers->set('Content-Type', 'application/json');
         $result->setContent(json_encode($data));
         return $result;
-
-
-        // réservation à venir
-        // abonnement
-        // - en cours (xx / total)
-        // - dernier
-        // factures dues
-        // devis en attente
     }
 }
