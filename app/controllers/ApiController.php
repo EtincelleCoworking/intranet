@@ -204,18 +204,64 @@ class ApiController extends BaseController
         return new Response($mongoCode);
     }
 
-    public function user($secure_key, $email){
-        if((Config::get('etincelle.api_secret') == '') || ($secure_key != Config::get('etincelle.api_secret'))){
+    public function user($secure_key, $email)
+    {
+        if ((Config::get('etincelle.api_secret') == '') || ($secure_key != Config::get('etincelle.api_secret'))) {
             App::abort(403, 'Unauthorized action.');
         }
 
         $data = array('email' => $email);
 
-        $user = User::where('email',  strtolower($email))->first();
-        if($user){
+        $user = User::where('email', strtolower($email))->first();
+        if ($user) {
+            $data['id'] = $user->id;
             $data['firstname'] = $user->firstname;
             $data['lastname'] = $user->lastname;
-            $data['phone'] = $user->phone;
+            $data['fullname'] = implode(' ', array($user->firstname, $user->lastname));
+            $data['birthday'] = $user->birthday;
+            $data['location'] = (string)$user->location;
+            $data['phone'] = $user->phoneFmt;
+            $data['organisations'] = array();
+            foreach ($user->organisations as $organisation) {
+                $data['organisations'][] = array(
+                    'id' => $organisation->id,
+                    'address' => $organisation->address,
+                    'zipcode' => $organisation->zipcode,
+                    'city' => $organisation->city,
+                    'domiciliation' => ($organisation->domiciliation_start_at != null)
+                        && (($organisation->domiciliation_end_at == null) || ($organisation->domiciliation_end_at > date('Y-m-d'))),
+                    'domiciliation_start_at' => $organisation->domiciliation_start_at,
+                    'domiciliation_end_at' => $organisation->domiciliation_end_at,
+                );
+            }
+
+            $data['invoices'] = array();
+            $data['quotes'] = array();
+            $data['bookings'] = array();
+            //region subscription
+            $data['subscription'] = array();
+            $subscription = InvoiceItem::where('subscription_from', '<>', '0000-00-00 00:00:00')
+                ->where('subscription_user_id', $user->id)
+                ->orderBy('subscription_to', 'DESC')
+                ->select('subscription_from', 'subscription_to', 'subscription_hours_quota', 'invoice_id')
+                ->first();
+            if ($subscription) {
+                $data['subscription']['active'] = true;
+                $data['subscription']['invoice_id'] = $subscription['invoice_id'];
+                $data['subscription']['from'] = $subscription['subscription_from'];
+                $data['subscription']['to'] = $subscription['subscription_to'];
+                $data['subscription']['quota'] = $subscription['subscription_hours_quota'];
+                $data['subscription']['used'] = $user->getCoworkingTimeSpent($subscription['subscription_from'], $subscription['subscription_to']);
+                if ($data['subscription']['quota'] > 0) {
+                    $data['subscription']['ratio'] = round(100 * $data['subscription']['used'] / $data['subscription']['quota']);
+                } else {
+                    $data['subscription']['ratio'] = 0;
+                }
+            } else {
+                $data['subscription']['active'] = false;
+            }
+            //endregion
+
         }
         $result = new Response();
         $result->headers->set('Content-Type', 'application/json');

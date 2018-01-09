@@ -182,7 +182,7 @@ class User extends Eloquent implements UserInterface, RemindableInterface
     {
         $result = preg_replace('/[^0-9]/', '', $this->phone);
         $result = preg_replace('/([0-9]{2})/', '\1 ', $result);
-        return $result;
+        return trim($result);
     }
 
     public function getAvatarUrlAttribute()
@@ -309,7 +309,7 @@ class User extends Eloquent implements UserInterface, RemindableInterface
 
     public function getCoworkingTimeSpent($from, $to)
     {
-        return PastTime::where('user_id', $this->id)
+        return (int)PastTime::where('user_id', $this->id)
             ->whereBetween('date_past', array($from, $to))
             ->where('ressource_id', Ressource::TYPE_COWORKING)
             ->select(DB::raw('sum((TIME_TO_SEC(past_times.time_end) - TIME_TO_SEC(past_times.time_start)) / 60) as amount'))
