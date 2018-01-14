@@ -5,4 +5,5 @@ return array(
     'activity_period_started' => strtotime('2017-01-01'), // Config::get('etincelle.activity_period_started')
     'slack_general' => '', // Config::get('etincelle.slack_general')
     'api_secret' => '', // Config::get('etincelle.api_secret')
+    'default_user_password' => '', // Config::get('etincelle.default_user_password')
 );

@@ -212,71 +212,73 @@ class ApiController extends BaseController
 
         $data = array('email' => $email);
 
-        $user = User::where('email', strtolower($email))->first();
-        if ($user) {
-            $data['id'] = $user->id;
-            $data['firstname'] = $user->firstname;
-            $data['lastname'] = $user->lastname;
-            $data['fullname'] = implode(' ', array($user->firstname, $user->lastname));
-            $data['birthday'] = $user->birthday;
-            $data['location'] = (string)$user->location;
-            $data['phone'] = $user->phoneFmt;
-            $data['organisations'] = array();
-            foreach ($user->organisations as $organisation) {
-                $data['organisations'][] = array(
-                    'id' => $organisation->id,
-                    'address' => implode("\n", array($organisation->name, $organisation->address, implode(' ', array($organisation->zipcode, $organisation->city)))),
-                    'name' => $organisation->name,
-                    'street' => $organisation->address,
-                    'zipcode' => $organisation->zipcode,
-                    'city' => $organisation->city,
-                    'domiciliation' => ($organisation->domiciliation_start_at != null)
-                        && (($organisation->domiciliation_end_at == null) || ($organisation->domiciliation_end_at > date('Y-m-d'))),
-                    'domiciliation_start_at' => $organisation->domiciliation_start_at,
-                    'domiciliation_end_at' => $organisation->domiciliation_end_at,
-                );
-            }
-
-            $data['due'] = 0;
-            $data['invoices'] = array();
-            foreach (Invoice::InvoiceOnly()->invoicesDesc($user) as $invoice) {
-                $item = array(
-                    'id' => $invoice->id,
-                    'reference' => $invoice->ident,
-                    'created_at' => $invoice->created_at->format('Y-m-d H:i:s'),
-                    'paid_at' => is_null($invoice->date_payment) ? null : $invoice->date_payment,
-                    'raw_amount' => Invoice::TotalInvoice($invoice->items),
-                    'amount' => Invoice::TotalInvoiceWithTaxes($invoice->items),
-                    'url_edit' => URL::route('invoice_modify', $invoice->id),
-                    'url_pdf' => URL::route('invoice_print_pdf', $invoice->id),
-                );
-                $data['invoices'][] = $item;
-                if (null == $invoice->date_payment) {
-                    $data['due'] += $item['amount'];
+        if (!empty($email)) {
+            $user = User::where('email', strtolower($email))->first();
+            if ($user) {
+                $data['id'] = $user->id;
+                $data['firstname'] = $user->firstname;
+                $data['lastname'] = $user->lastname;
+                $data['fullname'] = implode(' ', array($user->firstname, $user->lastname));
+                $data['birthday'] = $user->birthday;
+                $data['location'] = (string)$user->location;
+                $data['phone'] = $user->phoneFmt;
+                $data['organisations'] = array();
+                foreach ($user->organisations as $organisation) {
+                    $data['organisations'][] = array(
+                        'id' => $organisation->id,
+                        'address' => implode("\n", array($organisation->name, $organisation->address, implode(' ', array($organisation->zipcode, $organisation->city)))),
+                        'name' => $organisation->name,
+                        'street' => $organisation->address,
+                        'zipcode' => $organisation->zipcode,
+                        'city' => $organisation->city,
+                        'domiciliation' => ($organisation->domiciliation_start_at != null)
+                            && (($organisation->domiciliation_end_at == null) || ($organisation->domiciliation_end_at > date('Y-m-d'))),
+                        'domiciliation_start_at' => $organisation->domiciliation_start_at,
+                        'domiciliation_end_at' => $organisation->domiciliation_end_at,
+                    );
                 }
-            }
 
-            $data['quotes'] = array();
-            foreach (Invoice::QuoteOnly('valid')->invoicesDesc($user) as $invoice) {
-                $data['quotes'][] = array(
-                    'id' => $invoice->id,
-                    'reference' => $invoice->ident,
-                    'created_at' => $invoice->created_at->format('Y-m-d H:i:s'),
-                    'amount' => Invoice::TotalInvoice($invoice->items),
-                    'url_edit' => URL::route('invoice_modify', $invoice->id),
-                    'url_pdf' => URL::route('invoice_print_pdf', $invoice->id),
+                $data['due'] = 0;
+                $data['invoices'] = array();
+                foreach (Invoice::InvoiceOnly()->invoicesDesc($user) as $invoice) {
+                    $item = array(
+                        'id' => $invoice->id,
+                        'reference' => $invoice->ident,
+                        'created_at' => $invoice->created_at->format('Y-m-d H:i:s'),
+                        'paid_at' => is_null($invoice->date_payment) ? null : $invoice->date_payment,
+                        'raw_amount' => Invoice::TotalInvoice($invoice->items),
+                        'amount' => Invoice::TotalInvoiceWithTaxes($invoice->items),
+                        'url_edit' => URL::route('invoice_modify', $invoice->id),
+                        'url_pdf' => URL::route('invoice_print_pdf', $invoice->id),
+                    );
+                    $data['invoices'][] = $item;
+                    if (null == $invoice->date_payment) {
+                        $data['due'] += $item['amount'];
+                    }
+                }
+
+                $data['quotes'] = array();
+                foreach (Invoice::QuoteOnly('valid')->invoicesDesc($user) as $invoice) {
+                    $data['quotes'][] = array(
+                        'id' => $invoice->id,
+                        'reference' => $invoice->ident,
+                        'created_at' => $invoice->created_at->format('Y-m-d H:i:s'),
+                        'raw_amount' => Invoice::TotalInvoice($invoice->items),
+                        'amount' => Invoice::TotalInvoiceWithTaxes($invoice->items),
+                        'url_edit' => URL::route('invoice_modify', $invoice->id),
+                        'url_pdf' => URL::route('invoice_print_pdf', $invoice->id),
+                    );
+                }
+
+
+                $data['bookings'] = array();
+                $map = array(
+                    'past' => 'booking_item.start_at BETWEEN DATE_SUB(now(), INTERVAL 3 MONTH) AND now()',
+                    'upcoming' => 'booking_item.start_at > now()',
                 );
-            }
-
-
-            $data['bookings'] = array();
-            $map = array(
-                'past' => 'booking_item.start_at BETWEEN DATE_SUB(now(), INTERVAL 3 MONTH) AND now()',
-                'upcoming' => 'booking_item.start_at > now()',
-            );
-            foreach ($map as $key => $criteria) {
-                $data['bookings'][$key] = array();
-                $bookings = DB::select(DB::raw('SELECT booking_item.id, ressources.name as ressource, booking.title, booking_item.start_at, booking_item.duration, DATE_ADD(booking_item.start_at, INTERVAL booking_item.duration MINUTE) as end_at
+                foreach ($map as $key => $criteria) {
+                    $data['bookings'][$key] = array();
+                    $bookings = DB::select(DB::raw('SELECT booking_item.id, ressources.name as ressource, booking.title, booking_item.start_at, booking_item.duration, DATE_ADD(booking_item.start_at, INTERVAL booking_item.duration MINUTE) as end_at
                       , concat(cities.name, " > ", IF(locations.name IS NULL, "", locations.name)) as location
                     FROM booking 
                       JOIN booking_item ON booking.id = booking_item.booking_id
@@ -287,39 +289,46 @@ class ApiController extends BaseController
                     GROUP BY booking.id
                     ORDER BY booking_item.start_at ASC, booking_item.duration DESC 
                     '));
-                foreach ($bookings as $booking) {
-                    $booking->duration = durationToHuman($booking->duration);
-                    $data['bookings'][$key][] = $booking;
+                    foreach ($bookings as $booking) {
+                        $booking->duration = durationToHuman($booking->duration);
+                        $data['bookings'][$key][] = $booking;
+                    }
                 }
-            }
 
-            //region subscription
-            $data['subscription'] = array();
-            $subscription = InvoiceItem::where('subscription_from', '<>', '0000-00-00 00:00:00')
-                ->where('subscription_user_id', $user->id)
-                ->orderBy('subscription_to', 'DESC')
-                ->select('subscription_from', 'subscription_to', 'subscription_hours_quota', 'invoice_id')
-                ->first();
-            if ($subscription) {
-                $data['subscription']['active'] = true;
-                $data['subscription']['invoice_id'] = $subscription['invoice_id'];
-                $data['subscription']['from'] = $subscription['subscription_from'];
-                $data['subscription']['to'] = $subscription['subscription_to'];
-                $data['subscription']['quota'] = $subscription['subscription_hours_quota'];
-                $data['subscription']['used'] = durationToHuman($user->getCoworkingTimeSpent($subscription['subscription_from'], $subscription['subscription_to']));
-                if ($data['subscription']['quota'] >= 0) {
-                    $data['subscription']['ratio'] = round(100 * $data['subscription']['used'] / $data['subscription']['quota']);
-                    $data['subscription']['quota'] = sprintf('%d heures', $data['subscription']['quota']);
+                //region subscription
+                $data['subscription'] = array();
+                $subscription = InvoiceItem::where('subscription_from', '<>', '0000-00-00 00:00:00')
+                    ->where('subscription_user_id', $user->id)
+                    ->orderBy('subscription_to', 'DESC')
+                    ->select('subscription_from', 'subscription_to', 'subscription_hours_quota', 'invoice_id')
+                    ->first();
+                if ($subscription) {
+                    $data['subscription']['active'] = true;
+                    $data['subscription']['invoice_id'] = $subscription['invoice_id'];
+                    $data['subscription']['from'] = $subscription['subscription_from'];
+                    $data['subscription']['to'] = $subscription['subscription_to'];
+                    $data['subscription']['quota'] = $subscription['subscription_hours_quota'];
+                    $data['subscription']['used'] = durationToHuman($user->getCoworkingTimeSpent($subscription['subscription_from'], $subscription['subscription_to']));
+                    if ($data['subscription']['quota'] >= 0) {
+                        $data['subscription']['ratio'] = round(100 * $data['subscription']['used'] / $data['subscription']['quota']);
+                        $data['subscription']['quota'] = sprintf('%d heures', $data['subscription']['quota']);
+                    } else {
+                        $data['subscription']['ratio'] = 0;
+                        $data['subscription']['quota'] = 'illimité';
+                    }
+                    $data['subscription']['status'] = sprintf('%s / %s', $data['subscription']['used'], $data['subscription']['quota']);
                 } else {
-                    $data['subscription']['ratio'] = 0;
-                    $data['subscription']['quota'] = 'illimité';
+                    $data['subscription']['active'] = false;
                 }
-                $data['subscription']['status'] = sprintf('%s / %s', $data['subscription']['used'], $data['subscription']['quota']);
-            } else {
-                $data['subscription']['active'] = false;
+                //endregion
+            }else{
+                $user = new User();
+                $user->email = $email;
+                $user->firstname = Input::get('firstname');
+                $user->lastname = Input::get('lastname');
+                $user->password = Hash::make(Config::get('etincelle.default_user_password'));
+                $user->save();
             }
-            //endregion
-
         }
         $result = new Response();
         $result->headers->set('Content-Type', 'application/json');
