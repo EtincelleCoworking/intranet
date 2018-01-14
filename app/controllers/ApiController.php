@@ -323,9 +323,13 @@ class ApiController extends BaseController
                 //endregion
             }else{
                 $user = new User();
-                $user->email = $email;
-                $user->firstname = Input::get('firstname');
-                $user->lastname = Input::get('lastname');
+                if(Input::get('firstname') && empty($user->firstname)){
+                    $user->firstname = Input::get('firstname');
+                }
+                if(Input::get('lastname') && empty($user->lastname)){
+                    $user->lastname = Input::get('lastname');
+                }
+                $user->populateFromEmail($email);
                 $user->password = Hash::make(Config::get('etincelle.default_user_password'));
                 $user->save();
             }

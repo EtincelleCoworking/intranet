@@ -137,7 +137,7 @@ class User extends Eloquent implements UserInterface, RemindableInterface
         }
         $result = $this->firstname . ' ' . $this->lastname;
         if (!empty($organisation) && ($result != $organisation)) {
-            $result = $organisation. ' (' . $result . ')';
+            $result = $organisation . ' (' . $result . ')';
         }
         return $result;
     }
@@ -351,19 +351,55 @@ class User extends Eloquent implements UserInterface, RemindableInterface
         $days = time() - strtotime($this->last_seen_at);
         $days /= 24 * 60 * 60;
         $weeks = round($days / 7);
-        switch($weeks){
-            case 0: return 'opacity100';
-            case 1: return 'opacity90';
-            case 2: return 'opacity80';
-            case 3: return 'opacity70';
-            case 4: return 'opacity60';
-            case 5: return 'opacity50';
-            case 6: return 'opacity40';
-            case 7: return 'opacity30';
-            case 8: return 'opacity20';
-            case 9: return 'opacity10';
+        switch ($weeks) {
+            case 0:
+                return 'opacity100';
+            case 1:
+                return 'opacity90';
+            case 2:
+                return 'opacity80';
+            case 3:
+                return 'opacity70';
+            case 4:
+                return 'opacity60';
+            case 5:
+                return 'opacity50';
+            case 6:
+                return 'opacity40';
+            case 7:
+                return 'opacity30';
+            case 8:
+                return 'opacity20';
+            case 9:
+                return 'opacity10';
             default:
                 return 'opacity10';
+        }
+    }
+
+    public function populateFromEmail($email)
+    {
+        $this->email = strtolower($email);
+        $tokens = explode('@', $email);
+        $items = preg_split('/[._-]/', $tokens[0]);
+        switch (count(count($items))) {
+            case 2:
+                if (empty($this->firstname)) {
+                    $this->firstname = ucfirst($items[0]);
+                }
+                if (empty($this->lastname)) {
+                    $this->lastname = ucfirst($items[1]);
+                }
+                break;
+            case 1:
+                if (empty($this->lastname)) {
+                    $this->lastname = ucfirst($items[0]);
+                }
+                break;
+            default:
+                if (empty($this->lastname)) {
+                    $this->lastname = ucfirst($tokens[0]);
+                }
         }
     }
 }
