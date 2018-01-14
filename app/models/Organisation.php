@@ -139,7 +139,7 @@ WHERE booking_item.invoice_id IS NULL
 
 
     public function getCountedBookingCount($period_start, $period_end){
-        $sql = 'select w
+        $sql = 'select count(past_times.id) as cnt
 from booking_item 
 join booking on booking_item.booking_id = booking.id
 LEFT OUTER JOIN past_times 
