@@ -77,6 +77,7 @@ class Location extends Eloquent
                 '2015-09' => 2050,
                 '2016-12' => 3870,
                 '2017-11' => 2430,
+                '2018-04' => 1850,
             ),
             'Toulouse > Carmes' => array(
                 '2016-01' => 500,
@@ -87,6 +88,7 @@ class Location extends Eloquent
             'Toulouse > Victor Hugo' => array(
                 '2016-09' => 3400,
                 '2017-12' => 3720,
+                '2018-01' => 3550,
             ),
             'Toulouse > Wilson' => array(
                 '2015-01' => 7000,
@@ -94,10 +96,11 @@ class Location extends Eloquent
                 '2017-06' => 12500,
                 '2017-09' => 14150,
                 '2017-12' => 15080,
+                '2018-02' => 17550,
             ),
             'Toulouse > Espace W' => array(
                 '2017-08' => 300,
-                '2017-10' => 4490,
+                '2017-10' => 4480,
             ),
             'Toulouse > Alsace Lorraine' => array(
                 '2017-12' => 2170,
