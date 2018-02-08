@@ -25,8 +25,8 @@
                     <table class="table table-striped table-hover">
                         <thead>
                         <tr>
-                            <th>Site</th>
                             <th>Type</th>
+                            <th>Site</th>
                             <th>Nom</th>
                             <th>Client</th>
                             <!--
@@ -51,20 +51,20 @@
                             >
                                 <td>
                                     <small>
-                                    <?php if ($ressource->location) {
-                                        echo $ressource->location;
+                                    <?php if ($ressource->kind) {
+                                        echo $ressource->kind;
                                     } else {
                                         echo '-';
-
                                     }
                                     ?></small>
                                 </td>
                                 <td>
                                     <small>
-                                    <?php if ($ressource->kind) {
-                                        echo $ressource->kind;
+                                    <?php if ($ressource->location) {
+                                        echo $ressource->location;
                                     } else {
                                         echo '-';
+
                                     }
                                     ?></small>
                                 </td>
@@ -96,10 +96,12 @@
                                     </td>
 -->
                                 <td>
+                                    <!--
                                     <a href="{{ URL::route('ressource_modify', $ressource->id) }}"
                                        class="btn btn-primary btn-xs">Modifier</a>
+                                       -->
                                     <a href="{{ URL::route('stats_sales_per_ressource', $ressource->id) }}"
-                                       class="btn btn-default btn-xs">Stats</a>
+                                       class="btn btn-primary btn-xs">Stats</a>
                                     @if($ressource->is_bookable)
                                         <a href="{{ URL::route('ressource_status', $ressource->id) }}"
                                            class="btn btn-default btn-xs" target="_blank">Affichage</a>

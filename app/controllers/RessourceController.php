@@ -19,7 +19,7 @@ class RessourceController extends BaseController
 
     public function liste()
     {
-        $ressources = Ressource::orderBy('location_id', 'ASC')->orderBy('order_index', 'ASC')->paginate(20);
+        $ressources = Ressource::orderBy('ressource_kind_id', 'ASC')->orderBy('location_id', 'ASC')->orderBy('order_index', 'ASC')->paginate(20);
         $getLast = Ressource::orderBy('order_index', 'DESC')->first();
         if ($getLast) {
             $last = $getLast->order_index;
