@@ -12,7 +12,7 @@ class DashboardController extends BaseController
         }
         $ressources = array();
         $items = DB::select(DB::raw(sprintf('select 
-ressources.id, ressources.name,
+ressources.id, ressources.name, ressources.is_bookable,ressources.ressource_kind_id,
 if(`locations`.`name` is null,cities.name,concat(cities.name, \' > \',  `locations`.`name`)) as `kind` 
 
 from `locations` 
@@ -21,7 +21,11 @@ join ressources on ressources.location_id = locations.id
 WHERE ressource_kind_id <> %d
 order by ressource_kind_id asc, ressources.order_index asc', RessourceKind::TYPE_EXCEPTIONNAL)));
         foreach ($items as $item) {
-            $ressources[$item->kind][$item->id] = $item->name;
+            $ressources[$item->kind][$item->id] = array(
+                'name' => $item->name,
+                'is_bookable' => $item->is_bookable,
+                'ressource_kind_id' => $item->ressource_kind_id,
+            );
         }
 
         $datas = Location::getStats();

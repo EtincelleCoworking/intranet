@@ -6,6 +6,7 @@ class RessourceKind extends Eloquent
 
     const TYPE_COWORKING = 1;
     const TYPE_EXCEPTIONNAL = 4;
+    const TYPE_MEETING_ROOM = 2;
 
     public function __toString(){
         return $this->name;

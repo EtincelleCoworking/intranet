@@ -84,11 +84,13 @@ class Location extends Eloquent
                 '2016-04' => 3500,
                 '2016-09' => 10650,
                 '2017-12' => 11730,
+                '2018-02' => 10320,
             ),
             'Toulouse > Victor Hugo' => array(
                 '2016-09' => 3400,
                 '2017-12' => 3720,
                 '2018-01' => 3550,
+                '2018-02' => 3685,
             ),
             'Toulouse > Wilson' => array(
                 '2015-01' => 7000,
@@ -96,7 +98,7 @@ class Location extends Eloquent
                 '2017-06' => 12500,
                 '2017-09' => 14150,
                 '2017-12' => 15080,
-                '2018-02' => 17550,
+                '2018-02' => 17685,
             ),
             'Toulouse > Espace W' => array(
                 '2017-08' => 300,
@@ -104,7 +106,7 @@ class Location extends Eloquent
             ),
             'Toulouse > Alsace Lorraine' => array(
                 '2017-12' => 2170,
-                '2018-02' => 4750,
+                '2018-02' => 6025,
             ),
         );
         $periods = array();
