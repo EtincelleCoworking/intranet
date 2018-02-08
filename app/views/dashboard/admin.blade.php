@@ -56,9 +56,9 @@ $target_year = substr($target_period, 0, 4);
                                     foreach($ressources[$location] as $ressource_id => $ressource_data){
                                     $ressource_stats = Ressource::getStatForRessource($ressource_id);
                                     if(
-                                    (($ressource_data['ressource_kind_id'] == RessourceKind::TYPE_MEETING_ROOM)
+                                    (in_array($ressource_data['ressource_kind_id'], array(RessourceKind::TYPE_MEETING_ROOM, RessourceKind::TYPE_PRIVATE_OFFICE))
                                         && ($ressource_data['is_bookable'] || ($data->amount != 0)))
-                                    || ($ressource_data['ressource_kind_id'] != RessourceKind::TYPE_MEETING_ROOM)){
+                                    || !in_array($ressource_data['ressource_kind_id'], array(RessourceKind::TYPE_MEETING_ROOM, RessourceKind::TYPE_PRIVATE_OFFICE))){
                                     $data = array_shift($ressource_stats);
                                     while (is_object($data) && ($data->occurs_at != $target_period && (count($ressource_stats) > 0))) {
                                         $data = array_shift($ressource_stats);
@@ -74,7 +74,8 @@ $target_year = substr($target_period, 0, 4);
                                         <td class="col-md-6">{{ $ressource_data['name'] }}</td>
                                         <td class="col-md-3">
                                             @if($ressource_data['ressource_kind_id'] == RessourceKind::TYPE_MEETING_ROOM)
-                                                <div class="progress"><div style="width: {{ number_format($data->busy_rate, 0, ',', '.') }}%"
+                                                <div class="progress">
+                                                    <div style="width: {{ number_format($data->busy_rate, 0, ',', '.') }}%"
                                                          aria-valuemax="100" aria-valuemin="0"
                                                          aria-valuenow="{{ number_format($data->busy_rate, 0, ',', '.') }}"
                                                          role="progressbar" class="progress-bar
@@ -89,7 +90,8 @@ $target_year = substr($target_period, 0, 4);
                                                         <span class="sr-only">{{ number_format($data->busy_rate, 0, ',', '.') }}
                                                             %</span>
                                                         {{ number_format($data->busy_rate, 0, ',', '.') }}%
-                                                    </div></div>
+                                                    </div>
+                                                </div>
                                             @else
                                                 -
                                             @endif

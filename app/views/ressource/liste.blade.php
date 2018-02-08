@@ -73,7 +73,7 @@
                                 </td>
                                 <td>
                                     @if($ressource->subscription)
-                                        {{$ressource->subscription->organisation->name}}
+                                        <a href="{{ URL::route('organisation_modify', $ressource->subscription->organisation->id) }}">{{ $ressource->subscription->organisation->name }}</a>
                                     @else
                                         -
                                     @endif

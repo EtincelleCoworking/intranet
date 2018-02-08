@@ -32,7 +32,7 @@
                         </div>
                         <div class="col-md-4">
                             {{ Form::label('location', 'Site') }}
-                            <p>{{ Form::select('location_id', Location::SelectAll(), null, array('class' => 'form-control')) }}</p>
+                            <p>{{ Form::select('location_id', Location::SelectAll('-', true), null, array('class' => 'form-control')) }}</p>
                         </div>
                         <div class="col-md-8">
                             {{ Form::label('subscription', 'Abonnement') }}
