@@ -24,7 +24,7 @@ foreach ($ressources as $ressource) {
         <div class="col-sm-10">
             <h2>Réservations</h2>
             @if(count($ressources)>1)
-                <form id="ressource_filter" action="#" autocomplete="off">
+                <form id="ressource_filter" action="#" autocomplete="false">
                     @if(count($ressources_by_space)>1)
                         @foreach($ressources_by_space as $locationName => $ressources)
                             <div class="col-md-6">

@@ -122,7 +122,7 @@
 
                 </div>
                 <div class="ibox-content">
-                    {{ Form::model($invoice->items, array('route' => array('invoice_item_modify', $invoice->id), 'autocomplete' => 'off')) }}
+                    {{ Form::model($invoice->items, array('route' => array('invoice_item_modify', $invoice->id), 'autocomplete' => 'new-password')) }}
                     <table class="table table-striped table-hover">
                         <thead>
                         <tr>

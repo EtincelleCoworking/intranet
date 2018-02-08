@@ -29,7 +29,10 @@ class UserController extends BaseController
         );
 
         if (Auth::attempt($user, Input::get('remember'))) {
+            if(Auth::user()->enabled){
             return Redirect::intended(URL::route('dashboard'));
+            }
+            return Redirect::route('user_login')->with('mError', 'Connexion impossible, merci de contacter un administrateur')->withInput();
         } else {
             return Redirect::route('user_login')->with('mError', 'Connexion impossible, merci de vérifier vos informations')->withInput();
         }
@@ -156,6 +159,7 @@ order by invoices.date_invoice desc
                     $user->is_student = Input::get('is_student', false);
                     $user->free_coworking_time = Input::get('free_coworking_time', false);
                     $user->default_location_id = Input::get('default_location_id');
+                    $user->is_enabled = Input::get('is_enabled');
                 }
                 $user->slack_id = Input::get('slack_id');
 

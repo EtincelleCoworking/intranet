@@ -67,6 +67,9 @@
                                             <span style="color: green">{{ number_format( $infos['balance'], 0, ',', '.') }}
                                                 €</span>
                                         @endif
+                                            @if($infos['cost'])
+                                                <small> ({{ round(100 * $infos['balance'] / $infos['cost'], 2) }}%)</small>
+                                            @endif
                                     </td>
                                     <?php $cumul += $infos['balance']; ?>
                                     <td style="text-align: right">
@@ -92,6 +95,9 @@
                                     @else
                                         <span style="color: green">{{ number_format( $total_sales - $total_costs, 0, ',', '.') }}€</span>
                                     @endif
+                                        @if($infos['cost'])
+                                            <small> ({{ round(100 * ($total_sales - $total_costs) / $total_costs, 2) }}%)</small>
+                                        @endif
                                 </th>
                                 <td style="text-align: right" width="20%"></td>
                             </tr>

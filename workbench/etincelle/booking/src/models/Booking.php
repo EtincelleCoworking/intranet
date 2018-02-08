@@ -33,6 +33,7 @@ class Booking extends Illuminate\Database\Eloquent\Model
     {
         return $this->belongsTo('User');
     }
+
     public function organisation()
     {
         return $this->belongsTo('Organisation');
@@ -83,20 +84,21 @@ class Booking extends Illuminate\Database\Eloquent\Model
         parent::__construct($attributes);
     }
 
-    public function checkBeDeletedBy($user){
-        $start = new \DateTime($this->start_at);
-        $start2 = clone $start;
-        $start2->modify('-2 days');
-        if (!$user->isSuperAdmin()) {
-            if ($this->user_id == $user->id) {
-                if ($start2->format('Y-m-d') >= date('Y-m-d')) {
-                    throw new \Exception('Cette réservation ne peut pas être annulée');
-                }
-            } else {
-                throw new \Exception('Réservation inconnue');
-            }
+    public function checkBeDeletedBy($user)
+    {
+        if ($user->isSuperAdmin()) {
+            return true;
         }
-        return true;
+        if ($this->user_id == $user->id) {
+            $start = new \DateTime($this->start_at);
+            $start2 = clone $start;
+            $start2->modify('-2 days');
+            if ($start2->format('Y-m-d H:i:s') <= date('Y-m-d H:i:s')) {
+                throw new \Exception('Cette réservation ne peut pas être annulée');
+            }
+        } else {
+            throw new \Exception('Réservation inconnue');
+        }
     }
 
 }

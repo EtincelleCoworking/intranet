@@ -46,7 +46,7 @@
 
                         <div class="col-md-4 input-group-sm">
                             {{ Form::checkbox('filtre_member', true, Session::has('filtre_user.member') ? Session::get('filtre_user.member') : false) }}
-                            Membre<br />
+                            Membre<br/>
                             {{ Form::checkbox('filtre_free_coworking_time', true, Session::has('filtre_user.free_coworking_time') ? Session::get('filtre_user.free_coworking_time') : false) }}
                             Invité Coworking<br/>
                             {{ Form::checkbox('filtre_subscription', true, Session::has('filtre_user.subscription') ? Session::get('filtre_user.subscription') : false) }}
@@ -83,8 +83,17 @@
         </thead>
         <tbody>
         @foreach ($users as $user)
-            <tr>
+            <tr
+                    @if(!$user->is_enabled)
+                    class="text-muted"
+                    @endif
+            >
                 <td>
+                    @if(!$user->is_enabled)
+                        <i class="fa fa-ban" title="Compte désactivé"></i>
+                    @endif
+
+
                     <?php
                     switch ($user->gender) {
                         case 'F':
@@ -165,11 +174,11 @@
                             $duration = $user->getCoworkingTimeSpent($subscription['subscription_from'], $subscription['subscription_to']);
                             if ($subscription['subscription_hours_quota'] != -1) {
                                 $ratio = sprintf(' (%d%%)',
-                                        100 * $duration / ($subscription['subscription_hours_quota'] * 60));
+                                    100 * $duration / ($subscription['subscription_hours_quota'] * 60));
                             }
                         }
                         printf('<span class="%s">%s</span>%s', $status,
-                                date('d/m/Y', strtotime($subscription['subscription_to'])), $ratio);
+                            date('d/m/Y', strtotime($subscription['subscription_to'])), $ratio);
 
                     }
 
@@ -180,7 +189,7 @@
                         if ($user->slack_invite_sent_at) {
                             echo date('d/m/Y', strtotime($user->slack_invite_sent_at));
                         }
-                            printf('<a href="%s" class="btn btn-xs btn-primary slack-invite">Inviter</a>', URL::route('user_invite_slack', $user->id));
+                        printf('<a href="%s" class="btn btn-xs btn-primary slack-invite">Inviter</a>', URL::route('user_invite_slack', $user->id));
                         ?>
                     </td>
                 @endif
@@ -205,9 +214,9 @@
                 <td>
                     @if($user->free_coworking_time)
                         Oui
-                        @else
-                    -
-                        @endif
+                    @else
+                        -
+                    @endif
                 </td>
                 <td>
                     <a href="{{ URL::route('user_profile', $user->id) }}"

@@ -132,7 +132,7 @@
                 </div>
                 <div class="ibox-content">
                     {{ Form::label('bio_short', 'Métier') }}
-                    <p>{{Form::text('bio_short', null, array('class' => 'form-control', 'autocomplete' => 'off')) }}</p>
+                    <p>{{Form::text('bio_short', null, array('class' => 'form-control', 'autocomplete' => 'new-password')) }}</p>
                     {{ Form::label('bio_long', 'Présentation') }}
                     <p>{{Form::textarea('bio_long', null, array('class' => 'form-control')) }}</p>
                 </div>
@@ -146,12 +146,16 @@
                     <div class="row">
                         <div class="col-lg-6">
                             {{ Form::label('password', 'Mot de passe') }}
-                            {{ Form::password('password', array('class' => 'form-control', 'autocomplete' => 'off')) }}
+                            {{ Form::password('password', array('class' => 'form-control', 'autocomplete' => 'new-password')) }}
                         </div>
                         @if(Auth::user()->isSuperAdmin())
                             <div class="col-lg-6">
                                 {{ Form::label('default_location_id', 'Espace habituel') }}
                                 {{ Form::select('default_location_id', Location::SelectAll(false), $user->default_location_id, array('class' => 'form-control')) }}
+                            </div>
+                            <div class="col-lg-12">
+                                {{ Form::checkbox('is_enabled', true) }}
+                                {{ Form::label('is_enabled', 'Actif') }}
                             </div>
                             <div class="col-lg-12">
                                 {{ Form::checkbox('is_member', true) }}
