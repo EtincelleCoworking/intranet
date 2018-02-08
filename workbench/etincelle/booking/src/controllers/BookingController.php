@@ -393,9 +393,11 @@ class BookingController extends Controller
                 } else {
                     Session::put('filtre_booking.start', false);
                 }
-                if (!Input::has('filtre_user_id')) {
+/*
+                 if (!Input::has('filtre_user_id')) {
                     Session::forget('filtre_booking.user_id');
                 }
+*/
             } else {
                 Session::put('filtre_booking.end', date('Y-m-t'));
             }

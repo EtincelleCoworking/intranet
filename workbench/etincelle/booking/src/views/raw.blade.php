@@ -48,7 +48,7 @@
                                 {{ Form::select('filtre_user_id', User::Select('Sélectionnez un client'), Session::get('filtre_booking.user_id') ? Session::get('filtre_booking.user_id') : null, array('id' => 'filter-client','class' => 'form-control')) }}
                             </div>
                             <div class="col-md-3">
-                                {{ Form::select('organisation_id', Organisation::SelectAll('Sélectionnez une organisation'), Session::get('filtre_booking.organisation_id') ? Session::get('filtre_booking.organisation_id') : null, array('id' => 'filter-organisation','class' => 'form-control')) }}
+                                {{ Form::select('filtre_organisation_id', Organisation::SelectAll('Sélectionnez une organisation'), Session::get('filtre_booking.organisation_id') ? Session::get('filtre_booking.organisation_id') : null, array('id' => 'filter-organisation','class' => 'form-control')) }}
                             </div>
 
                             <div class="col-md-3 input-group-sm">
