@@ -950,10 +950,10 @@ ORDER BY room ASC , booking_item.start_at ASC ', $day, $day, $location)));
         $current_booking = array_shift($bookings);
 
         if (!empty($current_booking)
-            && ($current_booking['start_at'] < date('Y-m-d H:i:s'))
+            && ($current_booking->start_at < date('Y-m-d H:i:s'))
         ) {
-            $spent_time = (time() - strtotime($current_booking['start_at'])) / 60;
-            $current_booking_progress = round(100 * $spent_time / $current_booking['duration']);
+            $spent_time = (time() - strtotime($current_booking->start_at)) / 60;
+            $current_booking_progress = round(100 * $spent_time / $current_booking->duration);
             //var_dump($current_booking_progress);
             if ($current_booking_progress > 100) {
                 $current_booking_progress = 100;
@@ -967,7 +967,7 @@ ORDER BY room ASC , booking_item.start_at ASC ', $day, $day, $location)));
             $current_booking_progress = 0;
 
             if ($next_booking) {
-                $free_duration_items = $this->secondsToTime(strtotime($next_booking['start_at']) - time());
+                $free_duration_items = $this->secondsToTime(strtotime($next_booking->start_at) - time());
                 $tokens = array();
                 if ($free_duration_items['h']) {
                     if ($free_duration_items['h'] > 1) {
