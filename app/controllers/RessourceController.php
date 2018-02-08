@@ -106,6 +106,7 @@ class RessourceController extends BaseController
             $ressource->booking_background_color = Input::get('booking_background_color');            $ressource->location_id = Input::get('location_id');
             $ressource->location_id = $location_id?$location_id:null;
             $ressource->ressource_kind_id = Input::get('ressource_kind_id');
+            $ressource->subscription_id = Input::get('subscription_id')?Input::get('subscription_id'):null;
 
             if ($ressource->save()) {
                 return Redirect::route('ressource_list')->with('mSuccess', 'Cette ressource a bien été modifiée');

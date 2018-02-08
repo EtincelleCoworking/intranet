@@ -111,4 +111,20 @@ class Subscription extends Eloquent
 //        $selectVals = $this->orderBy('value', 'DESC')->lists('value', 'id');
 //        return $selectVals;
 //    }
+
+    public function scopeSelectPrivateOffices($query)
+    {
+        $result = array(0 => '-');
+        $data = $query
+            ->select('subscription.*')
+            ->join('subscription_kind', 'subscription_kind_id', '=', 'subscription_kind.id')
+            ->join('ressources', 'ressource_id', '=', 'ressources.id')
+            ->where('ressources.ressource_kind_id', RessourceKind::TYPE_PRIVATE_OFFICE)
+            ->orderBy('subscription_kind_id', 'ASC')->get();
+        foreach ($data as $item) {
+            $result[$item->id] = $item->formattedName();
+        }
+        return $result;
+    }
+
 }

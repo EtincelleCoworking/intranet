@@ -66,6 +66,7 @@ class UserController extends BaseController
     public function members()
     {
         $users = User::where('is_member', true)
+            ->where('is_enabled', true)
 //            ->where('default_location_id', '=', Auth::user()->default_location_id)
             ->orderBy('last_seen_at', 'desc')
             ->orderBy('lastname', 'asc')

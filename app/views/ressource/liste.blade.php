@@ -28,15 +28,27 @@
                             <th>Site</th>
                             <th>Type</th>
                             <th>Nom</th>
+                            <th>Client</th>
+                            <!--
                             <th>Réservable</th>
-                            <th>Prix horaire HT</th>
+                            -->
+                            <th>Prix HT</th>
+                            <!--
                             <th>Ordre</th>
+                            -->
                             <th>Actions</th>
                         </tr>
                         </thead>
                         <tbody>
                         @foreach ($ressources as $n => $ressource)
-                            <tr>
+                            <tr
+                            <?php
+                                if ($ressource->ressource_kind_id == RessourceKind::TYPE_MEETING_ROOM
+                                && !$ressource->is_bookable) {
+                                    echo ' class="text-muted"';
+                                }
+                                    ?>
+                            >
                                 <td>
                                     <?php if ($ressource->location) {
                                         echo $ressource->location;
@@ -51,26 +63,36 @@
                                         echo $ressource->kind;
                                     } else {
                                         echo '-';
-
                                     }
                                     ?>
                                 </td>
                                 <td>
                                     <a href="{{ URL::route('ressource_modify', $ressource->id) }}">{{ $ressource->name }}</a>
                                 </td>
-                                <td>{{ $ressource->is_bookable?'Oui':'Non' }}</td>
-                                <td align="right">{{ $ressource->amount }}€</td>
                                 <td>
-                                    @if ($ressource->order_index > 1)
-                                        <a href="{{ URL::route('ressource_order_up', $ressource->id) }}"><i
-                                                    class="fa fa-caret-square-o-up"></i></a>
-                                    @endif
-                                    {{ $ressource->order_index }}
-                                    @if ($ressource->order_index < $last)
-                                        <a href="{{ URL::route('ressource_order_down', $ressource->id) }}"><i
-                                                    class="fa fa-caret-square-o-down"></i></a>
+                                    @if($ressource->subscription)
+                                        {{$ressource->subscription->organisation->name}}
+                                    @else
+                                        -
                                     @endif
                                 </td>
+                            <!--
+                                <td>{{ $ressource->is_bookable?'Oui':'Non' }}</td>
+                                -->
+                                <td align="right">{{ $ressource->amount }}€</td>
+                            <!--
+                                <td>
+                                    @if ($ressource->order_index > 1)
+                                <a href="{{ URL::route('ressource_order_up', $ressource->id) }}"><i
+                                                    class="fa fa-caret-square-o-up"></i></a>
+                                    @endif
+                            {{ $ressource->order_index }}
+                            @if ($ressource->order_index < $last)
+                                <a href="{{ URL::route('ressource_order_down', $ressource->id) }}"><i
+                                                    class="fa fa-caret-square-o-down"></i></a>
+                                    @endif
+                                    </td>
+-->
                                 <td>
                                     <a href="{{ URL::route('ressource_modify', $ressource->id) }}"
                                        class="btn btn-primary btn-xs">Modifier</a>

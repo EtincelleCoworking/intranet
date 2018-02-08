@@ -39,6 +39,10 @@ class Ressource extends Eloquent
         return $this->belongsTo('RessourceKind', 'ressource_kind_id');
     }
 
+    public function subscription()
+    {
+        return $this->belongsTo('Subscription');
+    }
 
     /**
      * Rules
