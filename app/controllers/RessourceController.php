@@ -1,7 +1,8 @@
 <?php
+
 /**
-* Ressource Controller
-*/
+ * Ressource Controller
+ */
 class RessourceController extends BaseController
 {
     /**
@@ -19,15 +20,20 @@ class RessourceController extends BaseController
 
     public function liste()
     {
-        $ressources = Ressource::orderBy('ressource_kind_id', 'ASC')->orderBy('location_id', 'ASC')->orderBy('order_index', 'ASC')->paginate(20);
-        $getLast = Ressource::orderBy('order_index', 'DESC')->first();
-        if ($getLast) {
-            $last = $getLast->order_index;
-        } else {
-            $last = 0;
+        $ressources = Ressource::join('locations', 'location_id', '=', 'locations.id')
+            ->join('cities', 'city_id', '=', 'cities.id')
+            ->join('ressource_kind', 'ressource_kind_id', '=', 'ressource_kind.id')
+            ->orderBy('ressource_kind.order_index', 'ASC')
+            ->orderBy('cities.name', 'ASC')
+            ->orderBy('locations.name', 'ASC')
+            ->orderBy('order_index', 'ASC')
+            ->select('ressources.*')
+            ->get();
+        $data = array();
+        foreach ($ressources as $ressource) {
+            $data[$ressource->kind->name][] = $ressource;
         }
-
-        return View::make('ressource.liste', array('ressources' => $ressources, 'last' => $last));
+        return View::make('ressource.liste', array('data' => $data));
     }
 
     /**
@@ -61,7 +67,7 @@ class RessourceController extends BaseController
             $ressource->url = Input::get('url');
             $ressource->is_bookable = (bool)Input::get('is_bookable');
             $ressource->booking_background_color = Input::get('booking_background_color');
-            $ressource->location_id = $location_id?$location_id:null;
+            $ressource->location_id = $location_id ? $location_id : null;
             $ressource->ressource_kind_id = Input::get('ressource_kind_id');
 
             if ($ressource->save()) {
@@ -100,10 +106,11 @@ class RessourceController extends BaseController
             $ressource->description = Input::get('description');
             $ressource->url = Input::get('url');
             $ressource->is_bookable = (bool)Input::get('is_bookable');
-            $ressource->booking_background_color = Input::get('booking_background_color');            $ressource->location_id = Input::get('location_id');
-            $ressource->location_id = $location_id?$location_id:null;
+            $ressource->booking_background_color = Input::get('booking_background_color');
+            $ressource->location_id = Input::get('location_id');
+            $ressource->location_id = $location_id ? $location_id : null;
             $ressource->ressource_kind_id = Input::get('ressource_kind_id');
-            $ressource->subscription_id = Input::get('subscription_id')?Input::get('subscription_id'):null;
+            $ressource->subscription_id = Input::get('subscription_id') ? Input::get('subscription_id') : null;
 
             if ($ressource->save()) {
                 return Redirect::route('ressource_list')->with('mSuccess', 'Cette ressource a bien été modifiée');
@@ -115,45 +122,4 @@ class RessourceController extends BaseController
         }
     }
 
-    /**
-     * Order UP
-     */
-    public function order_up($ressource)
-    {
-        $ressource = $this->dataExist($ressource);
-
-        $ressource->order_index -= 1;
-        $precedent = Ressource::whereOrderIndex($ressource->order_index)->first();
-
-        if ($ressource->order_index > 0) {
-            if ($ressource->save()) {
-                $precedent->order_index += 1;
-                $precedent->save();
-                return Redirect::route('ressource_list');
-            } else {
-                return Redirect::route('ressource_list')->with('mError', 'Impossible de monter cette ressource');
-            }
-        } else {
-            return Redirect::route('ressource_list')->with('mError', 'Impossible de monter cette ressource');
-        }
-    }
-
-    /**
-     * Order DOWN
-     */
-    public function order_down($ressource)
-    {
-        $ressource = $this->dataExist($ressource);
-
-        $ressource->order_index += 1;
-        $next = Ressource::whereOrderIndex($ressource->order_index)->first();
-
-        if ($ressource->save()) {
-            $next->order_index -= 1;
-            $next->save();
-            return Redirect::route('ressource_list');
-        } else {
-            return Redirect::route('ressource_list')->with('mError', 'Impossible de descendre cette ressource');
-        }
-    }
 }
