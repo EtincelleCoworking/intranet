@@ -50,21 +50,23 @@
                                     ?>
                             >
                                 <td>
+                                    <small>
                                     <?php if ($ressource->location) {
                                         echo $ressource->location;
                                     } else {
                                         echo '-';
 
                                     }
-                                    ?>
+                                    ?></small>
                                 </td>
                                 <td>
+                                    <small>
                                     <?php if ($ressource->kind) {
                                         echo $ressource->kind;
                                     } else {
                                         echo '-';
                                     }
-                                    ?>
+                                    ?></small>
                                 </td>
                                 <td>
                                     <a href="{{ URL::route('ressource_modify', $ressource->id) }}">{{ $ressource->name }}</a>
