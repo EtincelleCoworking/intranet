@@ -32,8 +32,10 @@ class City extends Eloquent
      */
     public function scopeSelectAll($query)
     {
-        $result = $query->lists('name', 'id');
-        array_unshift($result, '-');
+        $result = array(0 => '-');
+        foreach($query->lists('name', 'id') as $id => $name){
+            $result[$id] = $name;
+        }
         return $result;
     }
 
