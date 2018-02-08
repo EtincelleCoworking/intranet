@@ -48,7 +48,7 @@
                         </div>
                         <div class="col-md-2">
                             {{ Form::label('amount', 'Valeur') }}
-                            <p>{{ Form::number('amount', null, array('class' => 'form-control')) }}</p>
+                            <p>{{ Form::text('amount', null, array('class' => 'form-control')) }}</p>
                         </div>
                         <div class="col-md-2">
                             <p>

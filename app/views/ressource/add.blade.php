@@ -53,7 +53,7 @@
                         </div>
                         <div class="col-md-2">
                             {{ Form::label('order_index', 'Ordre d\'affichage') }}
-                            <p>{{ Form::number('order_index', null, array('class' => 'form-control', 'min' => 1)) }}</p>
+                            <p>{{ Form::text('order_index', null, array('class' => 'form-control', 'min' => 1)) }}</p>
                         </div>
                         <div class="col-md-4">
                             {{ Form::label('booking_background_color', 'Couleur de fond') }}
