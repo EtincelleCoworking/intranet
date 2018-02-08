@@ -382,7 +382,7 @@ class User extends Eloquent implements UserInterface, RemindableInterface
         $this->email = strtolower($email);
         $tokens = explode('@', $email);
         $items = preg_split('/[._-]/', $tokens[0]);
-        switch (count(count($items))) {
+        switch (count($items)) {
             case 2:
                 if (empty($this->firstname)) {
                     $this->firstname = ucfirst($items[0]);
