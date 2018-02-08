@@ -43,8 +43,8 @@
                         @foreach ($ressources as $n => $ressource)
                             <tr
                             <?php
-                                if ($ressource->ressource_kind_id == RessourceKind::TYPE_MEETING_ROOM
-                                && !$ressource->is_bookable) {
+                                if (in_array($ressource->ressource_kind_id, array(RessourceKind::TYPE_MEETING_ROOM, RessourceKind::TYPE_PRIVATE_OFFICE))
+                                && (!$ressource->is_bookable && !$ressource->subscription_id)) {
                                     echo ' class="text-muted"';
                                 }
                                     ?>
@@ -102,9 +102,9 @@
                                        -->
                                     <a href="{{ URL::route('stats_sales_per_ressource', $ressource->id) }}"
                                        class="btn btn-primary btn-xs">Stats</a>
-                                    @if($ressource->is_bookable)
+                                    @if($ressource->is_bookable && $ressource->ressource_kind_id == RessourceKind::TYPE_MEETING_ROOM)
                                         <a href="{{ URL::route('ressource_status', $ressource->id) }}"
-                                           class="btn btn-default btn-xs" target="_blank">Affichage</a>
+                                           class="btn btn-default btn-xs" target="_blank">iPad</a>
                                     @endif
                                 </td>
                             </tr>
