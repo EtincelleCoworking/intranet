@@ -20,7 +20,19 @@
             <div class="col-lg-12">
                 <div class="ibox ">
                     <div class="ibox-title">
-                        <h5>{{$user->fullname}}</h5>
+                        <h5>{{$user->fullname}}
+                            <div class="pull-right">
+                            @if(!empty($devices[$user_id]))
+                                    @foreach($devices[$user_id] as $data)
+                                        <span class="label
+@if($data['active'])
+                                                label-primary
+                                                @endif
+">{{$data['mac']}}</span>
+                                    @endforeach
+                                @endif
+                            </div>
+                        </h5>
                     </div>
                     <div class="ibox-content">
                         <div class="row">

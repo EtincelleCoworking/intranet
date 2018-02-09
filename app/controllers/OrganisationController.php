@@ -414,12 +414,26 @@ group by booking.user_id, booking_item.ressource_id
             );
         }
 
+
+        $stats = DB::select(DB::raw(sprintf('SELECT 
+devices.mac, devices.user_id, devices.last_seen_at
+from devices 
+join organisation_user on organisation_user.user_id = devices.user_id
+where organisation_user.organisation_id = %1$d
+group by devices.user_id
+', $id)));
+        $devices= array();
+        foreach ($stats as $item) {
+            $devices[$item->user_id][] = array('mac' => $item->mac, 'active' => !empty($item->last_seen_at));
+        }
+
         return View::make('organisation.usage', array(
             'organisation' => $organisation,
             'users' => $users,
             'period' => $period,
             'coworking' => $coworking,
             'rooms' => $rooms,
+            'devices' => $devices,
         ));
     }
 }
