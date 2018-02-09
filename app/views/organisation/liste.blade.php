@@ -120,12 +120,14 @@
                                         @endif
                                     </td>
                                     <td>
-                                        <a href="{{ URL::route('organisation_modify', $organisation->id) }}"" class="btn
+                                        <a href="{{ URL::route('organisation_modify', $organisation->id) }}" class="btn
                                         btn-xs btn-default">Modifier</a>
                                         <a href="{{ URL::route('invoice_add_organisation', array('D', $organisation->id)) }}"
                                            class="btn btn-xs btn-default btn-outline">Ajouter un devis</a>
                                         <a href="{{ URL::route('invoice_add_organisation', array('F', $organisation->id)) }}"
                                            class="btn btn-xs btn-default btn-outline">Ajouter une facture</a>
+                                        <a href="{{ URL::route('organisation_usage', $organisation->id) }}" class="btn
+                                        btn-xs btn-default">Consommations</a>
                                     </td>
                                 </tr>
                             @endforeach

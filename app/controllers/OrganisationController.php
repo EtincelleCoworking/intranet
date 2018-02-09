@@ -352,7 +352,74 @@ class OrganisationController extends BaseController
         return Redirect::route('invoice_unpaid')->with('mSuccess', sprintf('L\'organisation %s a été relancée (%s)', $organisation->name, $to));
     }
 
-    public function json_users($id){
+    public function json_users($id)
+    {
         return Response::json(User::SelectInOrganisation($id));
+    }
+
+    public function usage($id, $period = null)
+    {
+        if (null == $period) {
+            $period = date('Y-m');
+        }
+        $start_at = $period . '-01 00:00:00';
+        $end_at = date('Y-m-t 23:59:59', strtotime($start_at));
+        $organisation = Organisation::find($id);
+        $data = User::join('organisation_user', 'users.id', '=', 'organisation_user.user_id')
+            ->where('organisation_user.organisation_id', $id)
+            ->orderBy('users.lastname', 'ASC')
+            ->get()
+        ;
+        $users = array();
+        foreach($data as $user){
+            $users[$user->user_id] = $user;
+        }
+
+        $stats = DB::select(DB::raw(sprintf('SELECT 
+past_times.user_id,
+sum(time_to_sec(timediff(time_end, time_start )) / 3600) as used 
+from past_times
+join organisation_user on organisation_user.user_id = past_times.user_id 
+where organisation_user.organisation_id = %1$d
+# and past_times.is_free = 0
+and past_times.time_start BETWEEN "%2$s" AND "%3$s"
+group by past_times.user_id
+', $id, $start_at, $end_at)));
+        $coworking = array();
+        foreach ($stats as $item) {
+            $coworking[$item->user_id] = array(
+                'hours' => floor($item->used),
+                'minutes' => round(($item->used - floor($item->used)) * 60),
+            );
+        }
+
+
+        $stats = DB::select(DB::raw(sprintf('SELECT 
+booking.user_id,
+ressources.name,
+sum(booking_item.duration) / 60 as used 
+from booking_item 
+join booking on booking.id = booking_item.booking_id
+join organisation_user on organisation_user.user_id = booking.user_id
+join ressources on ressources.id = booking_item.ressource_id 
+where organisation_user.organisation_id = %1$d
+and booking_item.start_at BETWEEN "%2$s" AND "%3$s"
+group by booking.user_id, booking_item.ressource_id
+', $id, $start_at, $end_at)));
+        $rooms = array();
+        foreach ($stats as $item) {
+            $rooms[$item->user_id][$item->name] = array(
+                'hours' => floor($item->used),
+                'minutes' => round(($item->used - floor($item->used)) * 60),
+            );
+        }
+
+        return View::make('organisation.usage', array(
+            'organisation' => $organisation,
+            'users' => $users,
+            'period' => $period,
+            'coworking' => $coworking,
+            'rooms' => $rooms,
+        ));
     }
 }
