@@ -8,6 +8,14 @@
     <div class="row wrapper border-bottom white-bg page-heading">
         <div class="col-sm-12">
             <h2>Activité de la société {{$organisation->name}} sur la période {{$period}}</h2>
+            <?php
+            for ($i = 11; $i >= 0; $i--) {
+                $when = strtotime(sprintf('-%d month', $i));
+                $target_period = date('Y-m', $when);
+                $activeStr = ($target_period == $period) ? ' btn-primary' : ' btn-default';
+                printf('<a href="%s" class="btn btn-xs%s">%s</a>'."\n", URL::route('organisation_usage', array('id' => $organisation->id, 'period' => $target_period)), $activeStr, date('m/Y', $when));
+            }
+            ?>
         </div>
 
     </div>
@@ -21,18 +29,18 @@
                 <div class="ibox ">
                     <div class="ibox-title">
                         <h5>{{$user->fullname}}
-                            <div class="pull-right">
-                            @if(!empty($devices[$user_id]))
-                                    @foreach($devices[$user_id] as $data)
-                                        <span class="label
-@if($data['active'])
-                                                label-primary
-                                                @endif
-">{{$data['mac']}}</span>
-                                    @endforeach
-                                @endif
-                            </div>
                         </h5>
+                        <div class="pull-right">
+                            @if(!empty($devices[$user_id]))
+                                @foreach($devices[$user_id] as $data)
+                                    <span class="label
+@if($data['active'])
+                                            label-primary
+@endif
+                                            ">{{$data['mac']}}</span>
+                                @endforeach
+                            @endif
+                        </div>
                     </div>
                     <div class="ibox-content">
                         <div class="row">
@@ -55,26 +63,32 @@
                                 @endif
                             </div>
                             <div class="col-lg-6">
-                                Location de salles:
                                 @if(!empty($rooms[$user_id]))
-                                    <ul>
+                                    <table class="table table-bordered">
+                                        <thead>
+                                        <tr>
+                                            <th>Location de salle</th>
+                                            <th>Durée</th>
+                                        </tr>
+                                        </thead>
                                         @foreach($rooms[$user_id] as $room_name => $room_usage)
-                                            <li>{{$room_name}}:
-                                                @if($room_usage['hours']||$room_usage['minutes'])
-                                                    @if ($room_usage['hours'])
-                                                        {{ $room_usage['hours'] }} h
+                                            <tr>
+                                                <td>{{$room_name}}</td>
+                                                <td>
+                                                    @if($room_usage['hours']||$room_usage['minutes'])
+                                                        @if ($room_usage['hours'])
+                                                            {{ $room_usage['hours'] }} h
+                                                        @endif
+                                                        @if ($room_usage['minutes'])
+                                                            {{ $room_usage['minutes'] }} min
+                                                        @endif
+                                                    @else
+                                                        0 h
                                                     @endif
-                                                    @if ($room_usage['minutes'])
-                                                        {{ $room_usage['minutes'] }} min
-                                                    @endif
-                                                @else
-                                                    0 h
-                                                @endif
-                                            </li>
+                                                </td>
+                                            </tr>
                                         @endforeach
-                                    </ul>
-                                @else
-                                    -
+                                    </table>
                                 @endif
                             </div>
                         </div>

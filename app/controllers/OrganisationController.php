@@ -368,11 +368,14 @@ class OrganisationController extends BaseController
         $data = User::join('organisation_user', 'users.id', '=', 'organisation_user.user_id')
             ->where('organisation_user.organisation_id', $id)
             ->orderBy('users.lastname', 'ASC')
-            ->get()
-        ;
+            ->get();
         $users = array();
-        foreach($data as $user){
+        foreach ($data as $user) {
             $users[$user->user_id] = $user;
+        }
+
+        if (!isset($users[Auth::id()]) && !Auth::user()->isSuperAdmin()) {
+            return Redirect::route('dashboard')->with('mError', 'Accès refusé');
         }
 
         $stats = DB::select(DB::raw(sprintf('SELECT 
@@ -420,9 +423,8 @@ devices.mac, devices.user_id, devices.last_seen_at
 from devices 
 join organisation_user on organisation_user.user_id = devices.user_id
 where organisation_user.organisation_id = %1$d
-group by devices.user_id
 ', $id)));
-        $devices= array();
+        $devices = array();
         foreach ($stats as $item) {
             $devices[$item->user_id][] = array('mac' => $item->mac, 'active' => !empty($item->last_seen_at));
         }
