@@ -386,8 +386,9 @@ join organisation_user on organisation_user.user_id = past_times.user_id
 where organisation_user.organisation_id = %1$d
 # and past_times.is_free = 0
 and past_times.time_start BETWEEN "%2$s" AND "%3$s"
+and past_times.ressource_id = %4$d
 group by past_times.user_id
-', $id, $start_at, $end_at)));
+', $id, $start_at, $end_at, Ressource::TYPE_COWORKING)));
         $coworking = array();
         foreach ($stats as $item) {
             $coworking[$item->user_id] = array(
@@ -404,11 +405,12 @@ sum(booking_item.duration) / 60 as used
 from booking_item 
 join booking on booking.id = booking_item.booking_id
 join organisation_user on organisation_user.user_id = booking.user_id
-join ressources on ressources.id = booking_item.ressource_id 
+join ressources on ressources.id = booking_item.ressource_id
 where organisation_user.organisation_id = %1$d
 and booking_item.start_at BETWEEN "%2$s" AND "%3$s"
+and ressources.ressource_kind_id = %4$d
 group by booking.user_id, booking_item.ressource_id
-', $id, $start_at, $end_at)));
+', $id, $start_at, $end_at, RessourceKind::TYPE_MEETING_ROOM)));
         $rooms = array();
         foreach ($stats as $item) {
             $rooms[$item->user_id][$item->name] = array(
