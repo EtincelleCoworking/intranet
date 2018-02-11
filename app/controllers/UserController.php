@@ -630,7 +630,7 @@ IF(past_times.time_start BETWEEN "%3$s" AND DATE_ADD("%3$s", INTERVAL %4$d MONTH
                 );
             }
         }
-        ksort($items);
+        krsort($items);
         return View::make('user.affiliate', array(
             'godfather' => $godfather,
             'items' => $items,
