@@ -83,7 +83,7 @@
 
                                                     $style = '';
                                                 }
-                                                printf('<td><small><span class="label %3$s">%2$s€ <i title="Commission = %1$s€" class="fa fa-info-circle"></i></span></small></td>', number_format($data[$user->id][$i]['fees'], 2, ',', ' '), number_format($data[$user->id][$i]['sales'], 2, ',', ' '), $style);
+                                                printf('<td><small><span class="label %3$s" title="CA = %2$s€">%1$s€ <i class="fa fa-info-circle"></i></span></small></td>', number_format($data[$user->id][$i]['fees'], 2, ',', ' '), number_format($data[$user->id][$i]['sales'], 2, ',', ' '), $style);
                                                 $total_per_month[$i] += $data[$user->id][$i]['fees'];
                                             } else {
                                                 printf('<td>-</td>');
