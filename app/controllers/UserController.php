@@ -617,8 +617,9 @@ order by invoices.date_invoice desc
           AND past_times.user_id = %2$d
         GROUP BY y, m', RessourceKind::TYPE_MEETING_ROOM,
                 $user->id, $user->created_at->format('Y-m-d'), $godfather->affiliation_duration);
+            printf('<pre>%s</pre>', $sql);
             foreach (DB::select(DB::raw($sql)) as $data) {
-                $items[$data->y][$user->id][$data->m] = $data->amount;
+                $items[$data->y][$user->id][(int)$data->m] = $data->amount;
             }
         }
         ksort($items);

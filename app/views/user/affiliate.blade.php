@@ -16,8 +16,14 @@
 
 @section('content')
 
-    <?php $total_per_month = array(); ?>
     @foreach($items as $year => $data)
+        <?php
+        $total_per_month = array();
+        for ($i = 1; $i <= 12; $i++) {
+            $total_per_month[$i] = 0;
+        }
+        ?>
+
         <div class="row">
             <div class="col-lg-12">
                 @if(count($users))
@@ -70,9 +76,6 @@
                                         <?php for ($i = 1; $i <= 12; $i++) {
                                             if (isset($data[$user->id][$i])) {
                                                 printf('<td><small>%s€</small></td>', number_format($data[$user->id][$i], 2, ',', ' '));
-                                                if (!isset($total_per_month[$i])) {
-                                                    $total_per_month[$i] = 0;
-                                                }
                                                 $total_per_month[$i] += $data[$user->id][$i];
                                             } else {
                                                 printf('<td>-</td>');
@@ -87,9 +90,6 @@
                                 <th colspan="2"></th>
                                 <?php
                                 for ($i = 1; $i <= 12; $i++) {
-                                    if (!isset($total_per_month[$i])) {
-                                        $total_per_month[$i] = 0;
-                                    }
                                     if ($total_per_month[$i]) {
                                         printf('<th><small>%s€</small></th>', number_format($total_per_month[$i], 2, ',', ' '));
                                     } else {
