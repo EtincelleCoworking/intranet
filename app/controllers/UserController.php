@@ -611,6 +611,20 @@ order by invoices.date_invoice desc
         foreach (User::where('affiliate_user_id', '=', $godfather->id)->orderBy('created_at', 'DESC')->get() as $user) {
             $users[$user->id] = $user;
         }
+
+        $sql = sprintf('SELECT distinct(past_times.invoice_id) as id 
+             FROM past_times 
+               JOIN ressources on ressources.id = past_times.ressource_id
+               JOIN users ON past_times.user_id = users.id
+           WHERE ressources.ressource_kind_id = %1$d
+             AND users.affiliate_user_id = %2$d
+             AND past_times.invoice_id > 0
+          ', RessourceKind::TYPE_MEETING_ROOM, $godfather->id);
+        $invoice_ids = array();
+        foreach (DB::select(DB::raw($sql)) as $data) {
+            $invoice_ids[] = $data->id;
+        }
+
         $sql = sprintf('SELECT invoices.date_invoice, DATE_FORMAT(invoices.date_invoice, "%%Y") as y, 
               DATE_FORMAT(invoices.date_invoice, "%%m") as m, 
               invoices_items.amount as amount,
@@ -620,15 +634,7 @@ order by invoices.date_invoice desc
           JOIN ressources on ressources.id = invoices_items.ressource_id
         WHERE ressources.ressource_kind_id = %1$d
           AND invoices.date_invoice > "2017-10-01"
-          AND invoices.id IN 
-          (SELECT distinct(past_times.invoice_id) 
-             FROM past_times 
-               JOIN ressources on ressources.id = past_times.ressource_id
-               JOIN users ON past_times.user_id = users.id
-           WHERE ressources.ressource_kind_id = %1$d
-             AND users.affiliate_user_id = %2$d
-          )', RessourceKind::TYPE_MEETING_ROOM,
-            $godfather->id);
+          AND invoices.id IN (%2$s)', RessourceKind::TYPE_MEETING_ROOM, implode(', ', $invoice_ids));
 
         $items = array();
         foreach (DB::select(DB::raw($sql)) as $data) {
