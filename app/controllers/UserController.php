@@ -607,23 +607,28 @@ order by invoices.date_invoice desc
 
         $items = array();
         foreach ($users as $user) {
-            $sql = sprintf('SELECT DATE_FORMAT(invoices.date_invoice, "%%Y") as y, DATE_FORMAT(invoices.date_invoice, "%%m") as m, 0.15 * sum(invoices_items.amount) as amount
+            $sql = sprintf('SELECT DATE_FORMAT(invoices.date_invoice, "%%Y") as y, DATE_FORMAT(invoices.date_invoice, "%%m") as m, sum(invoices_items.amount) as amount,
+IF(past_times.time_start BETWEEN "%3$s" AND DATE_ADD("%3$s", INTERVAL %4$d MONTH), 1, 0) as concerned
         FROM invoices_items
           JOIN invoices ON invoices.id = invoices_items.invoice_id
           JOIN ressources on ressources.id = invoices_items.ressource_id
           JOIN past_times on past_times.invoice_id = invoices_items.invoice_id
         WHERE ressources.ressource_kind_id = %1$d
-          AND past_times.time_start BETWEEN "%3$s" AND DATE_ADD("%3$s", INTERVAL %4$d MONTH)
           AND past_times.user_id = %2$d
         GROUP BY y, m', RessourceKind::TYPE_MEETING_ROOM,
                 $user->id, $user->created_at->format('Y-m-d'), $godfather->affiliation_duration);
-            printf('<pre>%s</pre>', $sql);
+            //printf('<pre>%s</pre>', $sql);
             foreach (DB::select(DB::raw($sql)) as $data) {
-                $items[$data->y][$user->id][(int)$data->m] = $data->amount;
+                $items[$data->y][$user->id][(int)$data->m] = array(
+                    'sales' => $data->amount,
+                    'concerned' => $data->concerned,
+                    'fees' => $data->concerned ? $godfather->affiliation_fees/100 * $data->amount : 0
+                );
             }
         }
         ksort($items);
         return View::make('user.affiliate', array(
+            'godfather' => $godfather,
             'items' => $items,
             'users' => $users,
         ));

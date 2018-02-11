@@ -1,13 +1,15 @@
 @extends('layouts.master')
 
 @section('meta_title')
-    Utilisateurs
+    Affiliation - {{$godfather->fullname}}
 @stop
 
 @section('breadcrumb')
     <div class="row wrapper border-bottom white-bg page-heading">
         <div class="col-sm-8">
-            <h2>Affiliation - {{Auth::user()->fullname}}</h2>
+            <h2>Affiliation - {{$godfather->fullname}}</h2>
+            <p>{{$godfather->affiliation_fees}}% du chiffre d'affaire généré par vos filleuls pendant les {{$godfather->affiliation_duration}}
+                premiers mois de collaboration.</p>
         </div>
         <div class="col-sm-4">
         </div>
@@ -38,7 +40,7 @@
                                     <th class="" width="30%">Nom</th>
                                     <th class="" width="10%">Créé le</th>
                                     <?php for ($i = 1; $i <= 12; $i++) {
-                                        printf('<th class="" width="5%%">%02d</th>', $i);
+                                        printf('<th class="" width="5%%">%02d/%02d</th>', $i, $year - 2000);
                                     }
                                     ?>
                                 </tr>
@@ -68,15 +70,21 @@
                                                     echo '<i class="fa fa-question"></i>';
                                             }
                                             ?>
-                                            <a href="{{ URL::route('user_modify', $user->id) }}">{{ $user->fullnameOrga }}</a>
+                                            <a href="{{ URL::route('user_modify', $user->id) }}">{{ $user->fullname }}</a>
                                         </td>
                                         <td>
-                                            {{$user->created_at->format('d/m/Y')}}
+                                            <small>{{$user->created_at->format('d/m/y')}}</small>
                                         </td>
                                         <?php for ($i = 1; $i <= 12; $i++) {
-                                            if (isset($data[$user->id][$i])) {
-                                                printf('<td><small>%s€</small></td>', number_format($data[$user->id][$i], 2, ',', ' '));
-                                                $total_per_month[$i] += $data[$user->id][$i];
+                                            if (isset($data[$user->id][$i]['sales'])) {
+                                                if ($data[$user->id][$i]['concerned']) {
+                                                    $style = 'label-primary';
+                                                } else {
+
+                                                    $style = '';
+                                                }
+                                                printf('<td><small><span class="label %3$s">%2$s€ <i title="Commission = %1$s€" class="fa fa-info-circle"></i></span></small></td>', number_format($data[$user->id][$i]['fees'], 2, ',', ' '), number_format($data[$user->id][$i]['sales'], 2, ',', ' '), $style);
+                                                $total_per_month[$i] += $data[$user->id][$i]['fees'];
                                             } else {
                                                 printf('<td>-</td>');
                                             }
@@ -87,7 +95,8 @@
                                 @endforeach
                                 </tbody>
                                 <tfoot>
-                                <th colspan="2"></th>
+
+                                <th colspan="2">Commission</th>
                                 <?php
                                 for ($i = 1; $i <= 12; $i++) {
                                     if ($total_per_month[$i]) {
