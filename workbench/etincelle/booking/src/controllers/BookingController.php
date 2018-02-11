@@ -221,7 +221,7 @@ class BookingController extends Controller
         $ressource = $booking_item->ressource;
 
         try {
-            $booking->checkBeDeletedBy(Auth::user());
+            $booking_item->checkBeDeletedBy(Auth::user());
         } catch (\Exception $e) {
             return Response::json(array('status' => 'KO', 'message' => $e->getMessage()));
         }
@@ -300,7 +300,7 @@ class BookingController extends Controller
         $booking = $booking_item->booking;
 
         try {
-            $booking->checkBeDeletedBy(Auth::user());
+            $booking_item->checkBeDeletedBy(Auth::user());
         } catch (\Exception $e) {
             return Redirect::route('booking_list')->with('mError', $e->getMessage());
         }

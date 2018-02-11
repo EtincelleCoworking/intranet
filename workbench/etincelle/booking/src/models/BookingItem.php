@@ -153,4 +153,22 @@ class BookingItem extends Illuminate\Database\Eloquent\Model
             'className' => $className
         );
     }
+
+
+    public function checkBeDeletedBy($user)
+    {
+        if ($user->isSuperAdmin()) {
+            return true;
+        }
+        if ($this->booking->user_id == $user->id) {
+            $start = new \DateTime($this->start_at);
+            $start2 = clone $start;
+            $start2->modify('-2 days');
+            if ($start2->format('Y-m-d H:i:s') <= date('Y-m-d H:i:s')) {
+                throw new \Exception(sprintf('Cette réservation ne peut pas être annulée (%s - %s)', $start2->format('Y-m-d H:i:s'), date('Y-m-d H:i:s')));
+            }
+        } else {
+            throw new \Exception('Réservation inconnue');
+        }
+    }
 }
