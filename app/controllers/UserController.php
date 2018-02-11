@@ -619,11 +619,10 @@ order by invoices.date_invoice desc
           JOIN ressources on ressources.id = invoices_items.ressource_id
         WHERE ressources.ressource_kind_id = %1$d
           AND invoices.date_invoice > "2017-10-01"
-          AND invoices_items.id IN 
-          (SELECT distinct(invoices_items.id) 
-             FROM invoices_items 
-               JOIN ressources on ressources.id = invoices_items.ressource_id
-               JOIN past_times on past_times.invoice_id = invoices_items.invoice_id
+          AND invoices.id IN 
+          (SELECT distinct(past_times.invoice_id) 
+             FROM past_times 
+               JOIN ressources on ressources.id = past_times.ressource_id
            WHERE ressources.ressource_kind_id = %1$d
              AND past_times.user_id = %2$d
           )', RessourceKind::TYPE_MEETING_ROOM,
