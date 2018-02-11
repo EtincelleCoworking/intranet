@@ -226,6 +226,8 @@
                     <a href="{{URL::route('user_login_as', $user->id)}}"
                        title="Se connecter en tant que {{$user->fullname}}"
                        class="btn btn-xs btn-default"><i class="fa fa-user-secret"></i></a>
+                    <a href="{{ URL::route('user_affiliate', $user->id) }}"
+                       class="btn btn-xs btn-default">Parrainage</a>
                 </td>
             </tr>
         @endforeach

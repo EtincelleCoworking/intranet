@@ -149,13 +149,25 @@
                             {{ Form::password('password', array('class' => 'form-control', 'autocomplete' => 'new-password')) }}
                         </div>
                         @if(Auth::user()->isSuperAdmin())
-                            <div class="col-lg-6">
-                                {{ Form::label('default_location_id', 'Espace habituel') }}
-                                {{ Form::select('default_location_id', Location::SelectAll(false), $user->default_location_id, array('class' => 'form-control')) }}
-                            </div>
                             <div class="col-lg-12">
                                 {{ Form::checkbox('is_enabled', true) }}
                                 {{ Form::label('is_enabled', 'Actif') }}
+                            </div>
+                        @endif
+                    </div>
+                </div>
+            </div>
+            @if(Auth::user()->isSuperAdmin())
+                <div class="ibox ">
+                    <div class="ibox-title">
+                        <h5>Administration</h5>
+                    </div>
+                    <div class="ibox-content">
+
+                        <div class="row">
+                            <div class="col-lg-6">
+                                {{ Form::label('default_location_id', 'Espace habituel') }}
+                                {{ Form::select('default_location_id', Location::SelectAll(false), $user->default_location_id, array('class' => 'form-control')) }}
                             </div>
                             <div class="col-lg-12">
                                 {{ Form::checkbox('is_member', true) }}
@@ -169,10 +181,15 @@
                                 {{ Form::checkbox('free_coworking_time', true) }}
                                 {{ Form::label('free_coworking_time', 'Offrir le temps en coworking') }}
                             </div>
-                        @endif
+                            <div class="col-lg-12">
+                                {{ Form::label('affiliate_user_id', 'Parrain') }}
+                                <p>{{ Form::select('affiliate_user_id', User::select('-'), $user->affiliate_user_id, array('class' => 'form-control')) }}</p>
+                            </div>
+
+                        </div>
                     </div>
                 </div>
-            </div>
+            @endif
         </div>
 
     </div>
@@ -394,6 +411,7 @@
         $().ready(function () {
             $('.datePicker').datepicker();
             $('#organisation_selector').select2();
+            $('#affiliate_user_id').select2();
         });
     </script>
 @stop

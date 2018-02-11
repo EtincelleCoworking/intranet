@@ -59,6 +59,11 @@ class User extends Eloquent implements UserInterface, RemindableInterface
         return $this->hasMany('Invoice');
     }
 
+    public function affiliateUser()
+    {
+        return $this->belongsTo('User', 'affiliate_user_id');
+    }
+
     /**
      * Relation One To Many (User has many Invoices)
      */

@@ -29,8 +29,8 @@ class UserController extends BaseController
         );
 
         if (Auth::attempt($user, Input::get('remember'))) {
-            if(Auth::user()->enabled){
-            return Redirect::intended(URL::route('dashboard'));
+            if (Auth::user()->enabled) {
+                return Redirect::intended(URL::route('dashboard'));
             }
             return Redirect::route('user_login')->with('mError', 'Connexion impossible, merci de contacter un administrateur')->withInput();
         } else {
@@ -106,7 +106,7 @@ group by invoices.id
 order by invoices.date_invoice desc
 ', $id)));
 
-        foreach($subscription_stats as $index => $data){
+        foreach ($subscription_stats as $index => $data) {
             $subscription_stats[$index]->hours = floor($data->used);
             $subscription_stats[$index]->minutes = round(($data->used - floor($data->used)) * 60);
         }
@@ -161,6 +161,7 @@ order by invoices.date_invoice desc
                     $user->free_coworking_time = Input::get('free_coworking_time', false);
                     $user->default_location_id = Input::get('default_location_id');
                     $user->is_enabled = Input::get('is_enabled');
+                    $user->affiliate_user_id = Input::get('affiliate_user_id') ? Input::get('affiliate_user_id') : null;
                 }
                 $user->slack_id = Input::get('slack_id');
 
@@ -562,7 +563,7 @@ order by invoices.date_invoice desc
     public function birthday()
     {
         $users = User::
-            join('locations', 'users.default_location_id', '=', 'locations.id')
+        join('locations', 'users.default_location_id', '=', 'locations.id')
             ->where('birthday', '!=', '0000-00-00')
             ->where('locations.city_id', '=', Auth::user()->location->city_id)
 //            ->where('users.id', '!=', Auth::id())
@@ -570,10 +571,9 @@ order by invoices.date_invoice desc
             ->orderBy('users.last_seen_at', 'DESC')
             ->distinct()
             //->select('users.id', 'users.birthday', 'users.firstname', 'users.lastname', 'users.email')
-            ->get(array('users.*'))
-        ;
+            ->get(array('users.*'));
         $items = array();
-            //var_dump($users);exit;
+        //var_dump($users);exit;
         foreach ($users as $user) {
             $items[date('m', strtotime($user->birthday))][] = $user;
         }
@@ -595,6 +595,36 @@ order by invoices.date_invoice desc
         return View::make('user.birthday', array(
             'months' => $months,
             'users' => $items
+        ));
+    }
+
+
+    public function affiliate($id)
+    {
+        $godfather = User::find($id);
+        // Liste des utilisateurs
+        $users = User::where('affiliate_user_id', '=', $id)->orderBy('lastname', 'ASC')->get();
+
+        $items = array();
+        foreach ($users as $user) {
+            $sql = sprintf('SELECT DATE_FORMAT(invoices.date_invoice, "%%Y") as y, DATE_FORMAT(invoices.date_invoice, "%%m") as m, 0.15 * sum(invoices_items.amount) as amount
+        FROM invoices_items
+          JOIN invoices ON invoices.id = invoices_items.invoice_id
+          JOIN ressources on ressources.id = invoices_items.ressource_id
+          JOIN past_times on past_times.invoice_id = invoices_items.invoice_id
+        WHERE ressources.ressource_kind_id = %1$d
+          AND past_times.time_start BETWEEN "%3$s" AND DATE_ADD("%3$s", INTERVAL %4$d MONTH)
+          AND past_times.user_id = %2$d
+        GROUP BY y, m', RessourceKind::TYPE_MEETING_ROOM,
+                $user->id, $user->created_at->format('Y-m-d'), $godfather->affiliation_duration);
+            foreach (DB::select(DB::raw($sql)) as $data) {
+                $items[$data->y][$user->id][$data->m] = $data->amount;
+            }
+        }
+        ksort($items);
+        return View::make('user.affiliate', array(
+            'items' => $items,
+            'users' => $users,
         ));
     }
 }
