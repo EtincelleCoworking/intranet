@@ -606,7 +606,6 @@ order by invoices.date_invoice desc
         } else {
             $godfather = Auth::user();
         }
-        // Liste des utilisateurs
         $users = array();
         foreach (User::where('affiliate_user_id', '=', $godfather->id)->orderBy('created_at', 'DESC')->get() as $user) {
             $users[$user->id] = $user;
@@ -625,7 +624,9 @@ order by invoices.date_invoice desc
             $invoice_ids[] = $data->id;
         }
 
-        $sql = sprintf('SELECT invoices.date_invoice, DATE_FORMAT(invoices.date_invoice, "%%Y") as y, 
+        $items = array();
+        if (count($invoice_ids)) {
+            $sql = sprintf('SELECT invoices.date_invoice, DATE_FORMAT(invoices.date_invoice, "%%Y") as y, 
               DATE_FORMAT(invoices.date_invoice, "%%m") as m, 
               invoices_items.amount as amount,
               invoices.user_id
@@ -636,28 +637,27 @@ order by invoices.date_invoice desc
           AND invoices.date_invoice > "2017-10-01"
           AND invoices.id IN (%2$s)', RessourceKind::TYPE_MEETING_ROOM, implode(', ', $invoice_ids));
 
-        $items = array();
-        foreach (DB::select(DB::raw($sql)) as $data) {
-            $user = $users[$data->user_id];
-            $concerned_period_start = $user->created_at;
-            $concerned_period_end = $concerned_period_start->add(DateInterval::createFromDateString(sprintf('%d month', $godfather->affiliation_duration)))->format('Y-m-d');
+            foreach (DB::select(DB::raw($sql)) as $data) {
+                $user = $users[$data->user_id];
+                $concerned_period_start = $user->created_at;
+                $concerned_period_end = $concerned_period_start->add(DateInterval::createFromDateString(sprintf('%d month', $godfather->affiliation_duration)))->format('Y-m-d');
 
-            $concerned = $data->date_invoice < $concerned_period_end;
-            if (!isset($items[$data->y][$user->id][(int)$data->m])) {
-                $items[$data->y][$user->id][(int)$data->m] = array(
-                    'sales' => 0,
-                    'concerned' => false,
-                    'fees' => 0
-                );
+                $concerned = $data->date_invoice < $concerned_period_end;
+                if (!isset($items[$data->y][$user->id][(int)$data->m])) {
+                    $items[$data->y][$user->id][(int)$data->m] = array(
+                        'sales' => 0,
+                        'concerned' => false,
+                        'fees' => 0
+                    );
+                }
+                $items[$data->y][$user->id][(int)$data->m]['sales'] += $data->amount;
+                $items[$data->y][$user->id][(int)$data->m]['concerned'] += $concerned;
+                if ($concerned) {
+                    $items[$data->y][$user->id][(int)$data->m]['fees'] += $godfather->affiliation_fees / 100 * $data->amount;
+                }
             }
-            $items[$data->y][$user->id][(int)$data->m]['sales'] += $data->amount;
-            $items[$data->y][$user->id][(int)$data->m]['concerned'] += $concerned;
-            if ($concerned) {
-                $items[$data->y][$user->id][(int)$data->m]['fees'] += $godfather->affiliation_fees / 100 * $data->amount;
-            }
+            krsort($items);
         }
-        krsort($items);
-
         return View::make('user.affiliate', array(
             'godfather' => $godfather,
             'items' => $items,
