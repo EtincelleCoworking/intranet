@@ -6,15 +6,13 @@
 
 @section('breadcrumb')
     <div class="row wrapper border-bottom white-bg page-heading">
-        <div class="col-sm-8">
+        <div class="col-sm-12">
             <h2>Affiliation - {{$godfather->fullname}}</h2>
-            <p>{{$godfather->affiliation_fees}}% du chiffre d'affaire généré par vos filleuls pendant
+            <p>{{$godfather->affiliation_fees}}% du chiffre d'affaire généré par vos filleuls sur des locations de salles pendant
                 les {{$godfather->affiliation_duration}}
                 premiers mois de collaboration.</p>
 
             <p>Si certains de vos filleuls manquent dans la liste, <a href="mailto:support@etincelle-coworking.com?subject=Affiliation">contactez-nous</a> pour les rajouter.</p>
-        </div>
-        <div class="col-sm-4">
         </div>
     </div>
 @stop
@@ -89,7 +87,7 @@
 
                                                     $style = '';
                                                 }
-                                                printf('<td><small><span class="label %3$s" title="CA = %2$s€">%1$s€ <i class="fa fa-info-circle"></i></span></small></td>', number_format($data[$user->id][$i]['fees'], 2, ',', ' '), number_format($data[$user->id][$i]['sales'], 2, ',', ' '), $style);
+                                                printf('<td><small><span class="label %3$s" title="CA = %2$s€HT / Commission = %1$s€HT">%1$s€ <i class="fa fa-info-circle"></i></span></small></td>', number_format($data[$user->id][$i]['fees'], 2, ',', ' '), number_format($data[$user->id][$i]['sales'], 2, ',', ' '), $style);
                                                 $total_per_month[$i] += $data[$user->id][$i]['fees'];
                                             } else {
                                                 printf('<td>-</td>');
