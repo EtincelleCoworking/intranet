@@ -599,11 +599,15 @@ order by invoices.date_invoice desc
     }
 
 
-    public function affiliate($id)
+    public function affiliate($id = null)
     {
-        $godfather = User::find($id);
+        if ($id && Auth::user()->isSuperAdmin()) {
+            $godfather = User::find($id);
+        }else{
+            $godfather = Auth::user();
+        }
         // Liste des utilisateurs
-        $users = User::where('affiliate_user_id', '=', $id)->orderBy('lastname', 'ASC')->get();
+        $users = User::where('affiliate_user_id', '=', $godfather->id)->orderBy('lastname', 'ASC')->get();
 
         $items = array();
         foreach ($users as $user) {
@@ -622,7 +626,7 @@ IF(past_times.time_start BETWEEN "%3$s" AND DATE_ADD("%3$s", INTERVAL %4$d MONTH
                 $items[$data->y][$user->id][(int)$data->m] = array(
                     'sales' => $data->amount,
                     'concerned' => $data->concerned,
-                    'fees' => $data->concerned ? $godfather->affiliation_fees/100 * $data->amount : 0
+                    'fees' => $data->concerned ? $godfather->affiliation_fees / 100 * $data->amount : 0
                 );
             }
         }

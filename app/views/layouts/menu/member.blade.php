@@ -28,7 +28,7 @@
                     class="nav-label">Tableau de bord</span></a>
     </li>
 
-    <li{{ (Request::is('user*') ||  Request::is('profile*')) ? ' class="active"' : '' }}>
+    <li{{ ((Request::is('user*')  && !Request::is('user/affiliate'))||  Request::is('profile*')) ? ' class="active"' : '' }}>
         <a href="{{ URL::route('members') }}"><i class="fa fa-user"></i> <span class="nav-label">Membres</span></a>
     </li>
 
@@ -49,6 +49,10 @@
     <li{{ Request::is('pasttime*') ? ' class="active"' : '' }}>
         <a href="{{ URL::route('pasttime_list') }}"><i class="fa fa-clock-o"></i> <span
                     class="nav-label">Temps passé</span></a>
+    </li>
+    <li{{ Request::is('user/affiliate') ? ' class="active"' : '' }}>
+        <a href="{{ URL::route('user_affiliate') }}"><i class="fa fa-users"></i> <span
+                    class="nav-label">Affiliation</span></a>
     </li>
     @if (Auth::user()->hasQuotes())
     <li{{ Request::is('quote*') ? ' class="active"' : '' }}>

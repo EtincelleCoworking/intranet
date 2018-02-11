@@ -38,6 +38,8 @@ Route::group(['before' => 'member'], function() {
 
 	Route::get('/users', array('as' => 'members', 'uses' => 'UserController@members'));
 
+    Route::get('/user/affiliate/{id?}', array('as' => 'user_affiliate', 'uses' => 'UserController@affiliate'));
+
     Route::get('/organisation/{id}/usage/{period?}', array('as' => 'organisation_usage', 'uses' => 'OrganisationController@usage'))->where(array('id' => '[0-9]+', 'period' => '^[0-9]{4}-[0-9]{2}$'));
 
 
@@ -87,7 +89,6 @@ Route::group(['before' => 'superadmin'], function() {
 	Route::post('/user/list', array('as' => 'user_filter', 'uses' => 'UserController@liste'));
 	Route::get('/user/reset', array('as' => 'user_filter_reset', 'uses' => 'UserController@cancelFilter'));
 	Route::get('/user/slack/{id}', array('as' => 'user_invite_slack', 'uses' => 'UserController@slackInvite'));
-	Route::get('/user/affiliate/{id}', array('as' => 'user_affiliate', 'uses' => 'UserController@affiliate'));
 
 
     Route::get('/invoice/add/{type}', array('as' => 'invoice_add', 'uses' => 'InvoiceController@add'))->where(array('type' => '[A-Z]{1}'));

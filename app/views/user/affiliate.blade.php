@@ -8,8 +8,11 @@
     <div class="row wrapper border-bottom white-bg page-heading">
         <div class="col-sm-8">
             <h2>Affiliation - {{$godfather->fullname}}</h2>
-            <p>{{$godfather->affiliation_fees}}% du chiffre d'affaire généré par vos filleuls pendant les {{$godfather->affiliation_duration}}
+            <p>{{$godfather->affiliation_fees}}% du chiffre d'affaire généré par vos filleuls pendant
+                les {{$godfather->affiliation_duration}}
                 premiers mois de collaboration.</p>
+
+            <p>Si certains de vos filleuls manquent dans la liste, <a href="mailto:support@etincelle-coworking.com?subject=Affiliation">contactez-nous</a> pour les rajouter.</p>
         </div>
         <div class="col-sm-4">
         </div>
@@ -17,18 +20,17 @@
 @stop
 
 @section('content')
+    @if(count($users))
+        @foreach($items as $year => $data)
+            <?php
+            $total_per_month = array();
+            for ($i = 1; $i <= 12; $i++) {
+                $total_per_month[$i] = 0;
+            }
+            ?>
 
-    @foreach($items as $year => $data)
-        <?php
-        $total_per_month = array();
-        for ($i = 1; $i <= 12; $i++) {
-            $total_per_month[$i] = 0;
-        }
-        ?>
-
-        <div class="row">
-            <div class="col-lg-12">
-                @if(count($users))
+            <div class="row">
+                <div class="col-lg-12">
                     <div class="ibox">
                         <div class="ibox-title">
                             <h5>{{$year}}</h5>
@@ -70,7 +72,11 @@
                                                     echo '<i class="fa fa-question"></i>';
                                             }
                                             ?>
-                                            <a href="{{ URL::route('user_modify', $user->id) }}">{{ $user->fullname }}</a>
+                                            @if(Auth::user()->isSuperAdmin())
+                                                <a href="{{ URL::route('user_modify', $user->id) }}">{{ $user->fullname }}</a>
+                                            @else
+                                                {{ $user->fullname }}
+                                            @endif
                                         </td>
                                         <td>
                                             <small>{{$user->created_at->format('d/m/y')}}</small>
@@ -109,12 +115,12 @@
                             </table>
                         </div>
                     </div>
-                @else
-                    <p>Aucun affilié</p>
-                @endif
+                </div>
             </div>
-        </div>
-    @endforeach
+        @endforeach
+    @else
+        <p>Aucun affilié</p>
+    @endif
 @stop
 
 @section('javascript')
