@@ -4,7 +4,6 @@
     $on_hold = InvoiceItem::OnHold();
     ?>
     <div class="widget style2 yellow-bg">
-        <div class="row">
             <div class=" text-center">
                 <span> Encours Clients</span>
 
@@ -15,6 +14,5 @@
                     <small>+ {{ number_format($on_hold['total'], 0, ',', '.') }}€ en compte</small>
                 @endif
             </div>
-        </div>
     </div>
 @endif

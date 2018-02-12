@@ -11,17 +11,12 @@
         $total_cost += $data[$target_period];
     }
     ?>
-
-    <div class="widget style2 blue-bg">
-        <div class="row">
-            <div class="{{-- col-xs-8 --}}text-center">
-                <span> Coûts du mois </span>
-
-                <h2 class="font-bold">
-                    {{ number_format($total_cost , 0, ',', '.') }} €
-                </h2>
-                <small>&nbsp;</small>
-            </div>
+    <div class="ibox">
+        <div class="ibox-content">
+            <h5>Charges du mois</h5>
+            <h1 class="no-margins">
+                {{ number_format($total_cost , 0, ',', '.') }} €
+            </h1>
         </div>
     </div>
 @endif
