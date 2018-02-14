@@ -172,9 +172,9 @@ foreach ($ressources as $ressource) {
 
 
 @section('stylesheets')
-    {{ HTML::style('css/fullcalendar.css') }}
-    {{ HTML::style('css/scheduler.css') }}
-    {{ HTML::style('css/fullcalendar.print.css', array('media'=> 'print')) }}
+    {{ HTML::style('css/plugins/fullcalendar/fullcalendar.min.css') }}
+    {{ HTML::style('css/plugins/fullcalendar/fullcalendar.print.min.css', array('media'=> 'print')) }}
+    {{ HTML::style('css/scheduler.min.css') }}
 
     <style type="text/css">
         .fc-event.booking-confirmed {
@@ -189,7 +189,7 @@ foreach ($ressources as $ressource) {
 
         @foreach($ressources as $ressource)
 
-.fc-event.booking-ofuscated-{{$ressource->id}}                                  {
+.fc-event.booking-ofuscated-{{$ressource->id}}                                     {
             background: repeating-linear-gradient(
             135deg,
                     {{ adjustBrightness($ressource->booking_background_color, -32)}},
@@ -215,8 +215,8 @@ foreach ($ressources as $ressource) {
 
 @section('javascript')
 
-    {{ HTML::script('js/fullcalendar.min.js') }}
-    <?php /* HTML::script('js/scheduler.min.js') */ ?>
+    {{ HTML::script('js/plugins/fullcalendar/fullcalendar.min.js') }}
+    {{ HTML::script('js/scheduler.min.js') }}
     {{ HTML::script('js/locale/fr.js') }}
 
     <script type="text/javascript">
@@ -531,23 +531,39 @@ foreach ($ressources as $ressource) {
 
 
             $('#calendar').fullCalendar({
-                defaultView: 'agendaWeek', //timelineDay
+                schedulerLicenseKey: 'CC-Attribution-NonCommercial-NoDerivatives',
+                defaultView: 'timelineDay', // agendaWeek
                 defaultDate: '{{$now}}',
                 header: {
                     left: 'prev,next today',
                     center: 'title',
-                    right: 'month,basicWeek,basicDay' // month,basicWeek,basicDay,
+                    right: 'agendaWeek,timelineDay' // month,basicWeek,basicDay,
                     //right: 'agendaWeek,agendaDay,timelineDay' // month,basicWeek,basicDay,
                 },
                 resourceGroupField: 'location',
                 resources: [
+                        @foreach($ressources_by_space as $location => $ressources)
                         @foreach($ressources as $ressource)
                     {
                         id: 'res{{$ressource->id}}',
-                        location: '{{$ressource->location->name}}',
-                        title: '{{$ressource->name}}', eventColor: '{{$ressource->labelCss}}'
+                        location: '{{$location}}',
+                        title: '{{$ressource->name}}', eventColor: '{{$ressource->labelCss}}',
+                        price: '{{(int)$ressource->amount}}€/h'
                     },
                     @endforeach
+                    @endforeach
+                ],
+                resourceColumns: [
+                    {
+                        labelText: 'Salle',
+                        field: 'title',
+                        width: '40%'
+                    },
+                    {
+                        labelText: 'Tarif',
+                        field: 'price',
+                        width: '10%'
+                    }
                 ],
                 eventRender: function (event, element) {
                     if (event.is_private) {
@@ -638,7 +654,7 @@ foreach ($ressources as $ressource) {
 //                        revertFunc();
 //                    }
 //
-
+                    var new_ressource_id = event.resourceId.replace('res', '');
                     $.ajax({
                         dataType: 'json',
                         url: '{{ URL::route('booking_ajax_update') }}',
@@ -646,7 +662,8 @@ foreach ($ressources as $ressource) {
                         data: {
                             id: event.id,
                             start: event.start.format(),
-                            end: event.end.format()
+                            end: event.end.format(),
+                            ressource_id: new_ressource_id
                         },
                         success: function (data) {
                             if (data.status == 'KO') {
@@ -654,6 +671,7 @@ foreach ($ressources as $ressource) {
                                 revertFunc();
                             } else {
                                 // ok
+
                             }
                         },
                         error: function (data) {
@@ -663,6 +681,9 @@ foreach ($ressources as $ressource) {
                     });
                 },
                 eventDrop: function (event, delta, revertFunc) {
+                    var e = event;
+                    console.log(event);
+                    var new_ressource_id = event.resourceId.replace('res', '');
                     $.ajax({
                         dataType: 'json',
                         url: '{{ URL::route('booking_ajax_update') }}',
@@ -670,14 +691,29 @@ foreach ($ressources as $ressource) {
                         data: {
                             id: event.id,
                             start: event.start.format(),
-                            end: event.end.format()
+                            end: event.end.format(),
+                            ressource_id: new_ressource_id
                         },
                         success: function (data) {
+                            console.log(data);
                             if (data.status == 'KO') {
                                 alert(data.message);
                                 revertFunc();
                             } else {
                                 // ok
+                                if (new_ressource_id != e.ressource_id) {
+                                    var index = event.className.indexOf('booking-' + e.ressource_id);
+                                    if (index !== -1) {
+                                        e.className.splice(index, 1);
+                                    }
+                                    e.className = data.data.className.split(' ');
+                                    e.ressource_id = data.data.ressource_id;
+                                    e.backgroundColor = data.data.backgroundColor;
+                                    e.borderColor = data.data.borderColor;
+                                    e.textColor = data.data.textColor;
+                                    console.log(e);
+                                    $('#calendar').fullCalendar('updateEvent', e);
+                                }
                             }
                         },
                         error: function (data) {

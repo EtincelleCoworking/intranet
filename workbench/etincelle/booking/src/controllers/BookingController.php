@@ -275,6 +275,9 @@ class BookingController extends Controller
 
         $booking_item->start_at = Input::get('start');
         $booking_item->duration = floor((strtotime(Input::get('end')) - strtotime(Input::get('start'))) / 60);
+        if ($booking_item->ressource_id != Input::get('ressource_id')) {
+            $booking_item->ressource_id = Input::get('ressource_id');
+        }
         $booking_item->save();
 
         $new = $this->extractPublicProperties($booking_item);
@@ -284,9 +287,7 @@ class BookingController extends Controller
 
         }
 
-        return Response::json(array('status' => 'OK',
-            'id' => $booking_item_id,
-            'duration' => $booking_item->duration));
+        return Response::json(array('status' => 'OK', 'data' => $booking_item->toJsonEvent()));
     }
 
 
@@ -393,11 +394,11 @@ class BookingController extends Controller
                 } else {
                     Session::put('filtre_booking.start', false);
                 }
-/*
-                 if (!Input::has('filtre_user_id')) {
-                    Session::forget('filtre_booking.user_id');
-                }
-*/
+                /*
+                                 if (!Input::has('filtre_user_id')) {
+                                    Session::forget('filtre_booking.user_id');
+                                }
+                */
             } else {
                 Session::put('filtre_booking.end', date('Y-m-t'));
             }
@@ -444,7 +445,7 @@ class BookingController extends Controller
                     if (Session::has('filtre_booking.user_id') && Session::get('filtre_booking.user_id')) {
                         $j->where('user_id', '=', Session::get('filtre_booking.user_id'));
                     }
-                    if (Session::has('filtre_booking.organisation_id')&& Session::get('filtre_booking.organisation_id')) {
+                    if (Session::has('filtre_booking.organisation_id') && Session::get('filtre_booking.organisation_id')) {
                         $j->where('organisation_id', '=', Session::get('filtre_booking.organisation_id'));
                     }
                 });
@@ -942,7 +943,7 @@ ORDER BY room ASC , booking_item.start_at ASC ', $day, $day, $location)));
 
         $bookings = DB::select(DB::raw('SELECT booking.title, booking_item.start_at, booking_item.duration, DATE_ADD(booking_item.start_at, INTERVAL booking_item.duration MINUTE) as end_at
         FROM booking join booking_item ON booking.id = booking_item.booking_id
-        WHERE (SELECT count(*) from booking_item WHERE booking_item.booking_id = booking.id and start_at < "'.date('Y-m-d', strtotime('+1 day')).'" and DATE_ADD(start_at, INTERVAL duration MINUTE) > "'.date('Y-m-d H:i:s').'" and ressource_id = '.$id.') >= 1 
+        WHERE (SELECT count(*) from booking_item WHERE booking_item.booking_id = booking.id and start_at < "' . date('Y-m-d', strtotime('+1 day')) . '" and DATE_ADD(start_at, INTERVAL duration MINUTE) > "' . date('Y-m-d H:i:s') . '" and ressource_id = ' . $id . ') >= 1 
         ORDER BY booking_item.start_at ASC, booking_item.duration DESC 
         '));
 
