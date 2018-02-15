@@ -532,7 +532,7 @@ foreach ($ressources as $ressource) {
 
             $('#calendar').fullCalendar({
                 schedulerLicenseKey: 'CC-Attribution-NonCommercial-NoDerivatives',
-                defaultView: 'timelineDay', // agendaWeek
+                defaultView: 'agendaWeek', // agendaWeek
                 defaultDate: '{{$now}}',
                 header: {
                     left: 'prev,next today',
