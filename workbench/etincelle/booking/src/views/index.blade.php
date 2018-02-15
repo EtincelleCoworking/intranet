@@ -534,6 +534,7 @@ foreach ($ressources as $ressource) {
                 schedulerLicenseKey: 'CC-Attribution-NonCommercial-NoDerivatives',
                 defaultView: 'agendaWeek', // agendaWeek
                 defaultDate: '{{$now}}',
+                nowIndicator: true,
                 header: {
                     left: 'prev,next today',
                     center: 'title',
