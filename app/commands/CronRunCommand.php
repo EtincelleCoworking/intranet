@@ -163,7 +163,131 @@ where  subscription_user_id is null;');
         });
         //endregion
 
+        $this->everyFiveMinutes($this->sendSmsNotificationForCloseMeetings);
+
         $this->finish();
+    }
+
+    protected function sendSmsNotificationForCloseMeetings()
+    {
+        Log::info('Cron: Send SMS notification to close meetings');
+        $sql = 'SELECT users.id as user_id, users.firstname, users.lastname, users.email, users.phone,
+        booking.id as booking_id, booking_item.id as booking_item_id, booking.title as booking_title, booking_item.start_at, DATE_ADD(booking_item.start_at, INTERVAL booking_item.duration MINUTE) as end_at, booking.sms_uid,
+        if(`locations`.`name` is null,cities.name,concat(cities.name, \' > \',  `locations`.`name`)) as `kind`,
+        ressources.id as ressource_id, ressources.name as ressource_name
+        FROM booking join booking_item ON booking.id = booking_item.booking_id
+join ressources on ressources.id = booking_item.ressource_id
+join locations on ressources.location_id = locations.id
+        join cities on locations.city_id = cities.id
+join users on booking.user_id = users.id
+        WHERE start_at BETWEEN "' . date('Y-m-d') . ' 00:00:00" AND  "' . date('Y-m-d') . ' 23:59:59"
+and locations.city_id = 1
+group by booking.id
+        ORDER BY ressources.id ASC, booking_item.start_at ASC, booking_item.duration DESC';
+        $ressources = array();
+        $items = DB::select(DB::raw($sql));
+        foreach ($items as $item) {
+            if (!isset($ressources[$item->ressource_id])) {
+                $ressources[$item->ressource_id] = array();
+                $ressources[$item->ressource_id]['name'] = $item->ressource_name;
+                $ressources[$item->ressource_id]['location'] = $item->kind;
+                $ressources[$item->ressource_id]['bookings'] = array();
+            }
+            $ressources[$item->ressource_id]['bookings'][] = array(
+                'user' => array(
+                    'id' => $item->user_id,
+                    'firstname' => $item->firstname,
+                    'lastname' => $item->lastname,
+                    'email' => $item->email,
+                    'phone' => '0625024411'//$item->phone,
+                ),
+                'id' => $item->booking_id,
+                'item_id' => $item->booking_item_id,
+                'title' => $item->booking_title,
+                'start_at' => $item->start_at,
+                'end_at' => $item->end_at,
+                'sms_uid' => $item->sms_uid,
+            );
+        }
+
+        $only_if_after = new DateTime();
+        $only_if_after->add(new DateInterval('PT30M'));
+        $only_if_after = $only_if_after->format('Y-m-d H:i:s');
+        $now = date('Y-m-d H:i:s');
+
+        $client = null;
+        $warningDelay = 60;
+        foreach ($ressources as $ressource_id => $data) {
+
+            $previous = array_shift($data['bookings']);
+            while (count($data['bookings']) > 0) {
+                $current = array_shift($data['bookings']);
+
+                $current_start_at = strtotime($current['start_at']);
+                $previous_ends_at = strtotime($previous['end_at']);
+
+                $gap = ($current_start_at - $previous_ends_at) / 60;
+
+                if ($gap > $warningDelay) {
+                    // enough time
+                    Log::debug('enough time');
+                } elseif ($previous['user']['id'] == $current['user']['id']) {
+                    // same user, do no notify
+                    Log::debug('same user, do no notify');
+                } else {
+                    $phone = CronRunCommand::getPhoneNumberFormattedForSms($previous['user']['phone']);
+                    if (!$phone) {
+                        // pas de téléphone renseigné ou pas un portable ou pas au bon format
+                        Log::debug('pas de téléphone renseigné ou pas un portable ou pas au bon format');
+                    } elseif (!empty($previous['sms_uid'])) {
+                        Log::debug('sms déjà envoyé');
+                        // sms déjà envoyé
+                    } elseif ($previous['start_at'] > $only_if_after) {
+                        Log::debug('trop tôt');
+                    } elseif ($current['start_at'] < $now) {
+                        Log::debug('autre réservation déjà commencée en théorie');
+                    } else {
+                        $twilio_number = Config::get('etincelle.twilio_sms_number');
+                        if (null == $client) {
+                            $account_sid = Config::get('etincelle.twilio_account_sid');
+                            $auth_token = Config::get('etincelle.twilio_auth_token');
+
+                            $client = new \Twilio\Rest\Client($account_sid, $auth_token);
+                        }
+                        $message_content = sprintf('Bonjour, "%1$s" est réservé à %2$s. Merci de libérer la salle avant %4$s comme prévu. @Etincelle',
+                            $data['name'],
+                            date('H\hi', $current_start_at),
+                            date('H\hi', strtotime($previous['start_at'])),
+                            date('H\hi', $previous_ends_at));
+                        Log::debug($message_content);
+                        $result = $client->messages->create(
+                            $phone,
+                            array(
+                                'from' => $twilio_number,
+                                'body' => $message_content
+                            )
+                        );
+                        $sql = sprintf('UPDATE booking SET sms_uid = "%s" WHERE id = %d', $result->sid, $previous['id']);
+                        DB::statement($sql);
+                    }
+                }
+
+                $previous = $current;
+            }
+        }
+    }
+
+    static function getPhoneNumberFormattedForSms($data)
+    {
+        $data = preg_replace('/[^0-9]/', '', $data);
+        if (strlen($data) != 10) {
+            return false;
+        }
+        if (!in_array(substr($data, 0, 2), array('06', '07'))) {
+            return false;
+        }
+
+        return '+33' . substr($data, 1);
     }
 
     protected function finish()
