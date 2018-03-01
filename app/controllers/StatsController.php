@@ -417,10 +417,74 @@ AND locations.slug = "%s"
 
     public function sales_per_ressource($ressource_id)
     {
+        $from = date('Y-m-01', strtotime('-6 months'));
+        $to = date('Y-m-d');
+        $ressources = array($ressource_id);
+
+
+        $sql = sprintf('select 
+organisations.name, sum(invoices_items.amount) as amount
+from `invoices_items` 
+  inner join `invoices` on `invoice_id` = `invoices`.`id` and `type` = \'F\' 
+  inner join `organisations` on `organisation_id` = `organisations`.`id` 
+where invoices.id IN 
+  (SELECT DISTINCT(invoices_items.invoice_id) 
+    FROM invoices_items
+      JOIN invoices on invoice_id = invoices.id
+      JOIN past_times ON past_times.invoice_id = invoices.id
+  WHERE invoices_items.ressource_id IN ('.implode(', ', $ressources).')
+    AND past_times.date_past BETWEEN "'.$from.'" AND "'.$to.'"
+  )
+GROUP BY organisations.id ORDER by amount DESC');
+        $items = DB::select(DB::raw($sql));
+        $result = array();
+        foreach ($items as $item) {
+            $result[$item->name] = array('amount' => $item->amount);
+        }
+
         $ressource = Ressource::where('id', $ressource_id)->first();
         return View::make('stats.sales_per_ressource', array(
                 'ressource' => $ressource,
-                'items' => $ressource->getStats()
+                'items' => $ressource->getStats(),
+                'top_customers' => $result,
+                'top_customers_from' => $from,
+                'top_customers_to' => $to,
+            )
+        );
+    }
+
+
+    public function top_customers(){
+        $from = date('Y-m-d', strtotime('-3 months'));
+        $to = date('Y-m-d');
+        $ressources = array(31);
+
+$sql = sprintf('select 
+organisations.name, sum(invoices_items.amount) as amount
+from `invoices_items` 
+inner join `invoices` on `invoice_id` = `invoices`.`id` and `type` = \'F\' 
+left outer join `organisations` on `organisation_id` = `organisations`.`id` 
+where invoices.id IN 
+  (SELECT DISTINCT(invoices_items.invoice_id) 
+    FROM invoices_items
+      JOIN invoices on invoice_id = invoices.id
+      JOIN past_times ON past_times.invoice_id = invoices.id
+  WHERE invoices_items.ressource_id IN ('.implode(', ', $ressources).')
+    AND past_times.date_past BETWEEN "'.$from.'" AND "'.$to.'"
+  )
+GROUP BY organisations.id ORDER by amount DESC');
+echo $sql;
+        $items = DB::select(DB::raw($sql));
+        $result = array();
+        foreach ($items as $item) {
+            $result[$item->name] = $item->amount;
+        }
+
+        var_dump($result);
+        exit;
+
+        return View::make('stats.top_customers', array(
+                'items' => $result
             )
         );
     }
