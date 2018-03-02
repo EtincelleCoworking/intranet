@@ -238,7 +238,7 @@ group by booking.id
                     $phone = CronRunCommand::getPhoneNumberFormattedForSms($previous['user']['phone']);
                     if (!$phone) {
                         // pas de téléphone renseigné ou pas un portable ou pas au bon format
-                        Log::info('pas de téléphone renseigné ou pas un portable ou pas au bon format');
+                        Log::info(sprintf('pas de téléphone renseigné ou pas un portable ou pas au bon format (%s)', $previous['user']['phone']));
                     } elseif (!empty($previous['sms_uid'])) {
                         Log::info('sms déjà envoyé');
                         // sms déjà envoyé
