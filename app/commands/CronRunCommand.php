@@ -163,7 +163,7 @@ where  subscription_user_id is null;');
         });
         //endregion
 
-        $this->everyFiveMinutes($this->sendSmsNotificationForCloseMeetings);
+        $this->everyFiveMinutes(array($this, 'sendSmsNotificationForCloseMeetings'));
 
         $this->finish();
     }
@@ -199,7 +199,7 @@ group by booking.id
                     'firstname' => $item->firstname,
                     'lastname' => $item->lastname,
                     'email' => $item->email,
-                    'phone' => '0625024411'//$item->phone,
+                    'phone' => $item->phone,
                 ),
                 'id' => $item->booking_id,
                 'item_id' => $item->booking_item_id,
@@ -230,22 +230,22 @@ group by booking.id
 
                 if ($gap > $warningDelay) {
                     // enough time
-                    Log::debug('enough time');
+                    Log::info('enough time');
                 } elseif ($previous['user']['id'] == $current['user']['id']) {
                     // same user, do no notify
-                    Log::debug('same user, do no notify');
+                    Log::info('same user, do no notify');
                 } else {
                     $phone = CronRunCommand::getPhoneNumberFormattedForSms($previous['user']['phone']);
                     if (!$phone) {
                         // pas de téléphone renseigné ou pas un portable ou pas au bon format
-                        Log::debug('pas de téléphone renseigné ou pas un portable ou pas au bon format');
+                        Log::info('pas de téléphone renseigné ou pas un portable ou pas au bon format');
                     } elseif (!empty($previous['sms_uid'])) {
-                        Log::debug('sms déjà envoyé');
+                        Log::info('sms déjà envoyé');
                         // sms déjà envoyé
                     } elseif ($previous['start_at'] > $only_if_after) {
-                        Log::debug('trop tôt');
+                        Log::info('trop tôt');
                     } elseif ($current['start_at'] < $now) {
-                        Log::debug('autre réservation déjà commencée en théorie');
+                        Log::info('autre réservation déjà commencée en théorie');
                     } else {
                         $twilio_number = Config::get('etincelle.twilio_sms_number');
                         if (null == $client) {
@@ -254,12 +254,23 @@ group by booking.id
 
                             $client = new \Twilio\Rest\Client($account_sid, $auth_token);
                         }
+
                         $message_content = sprintf('Bonjour, "%1$s" est réservé à %2$s. Merci de libérer la salle avant %4$s comme prévu. @Etincelle',
                             $data['name'],
                             date('H\hi', $current_start_at),
                             date('H\hi', strtotime($previous['start_at'])),
                             date('H\hi', $previous_ends_at));
-                        Log::debug($message_content);
+
+                        $this->slack(Config::get('etincelle.slack_staff_toulouse'), array(
+                            'text' => sprintf('SMS envoyé à %s %s <%s> au ', $current['user']['firstname'], $current['user']['lastname'], $current['user']['email'], $phone),
+                            'attachments' => array(
+                                array(
+                                    "text" => $message_content
+                                )),
+                            'link_names' => 1,
+                            //'attachments' => $attachments
+                        ));
+                        Log::info($message_content);
                         $result = $client->messages->create(
                             $phone,
                             array(
@@ -442,6 +453,46 @@ group by booking.id
     protected function yearly(callable $callback)
     {
         if (date('m', $this->timestamp) === '01' && date('d', $this->timestamp) === '01' && date('H:i', $this->timestamp) === $this->runAt) call_user_func($callback);
+    }
+
+
+    protected function slack($endpoint, $data)
+    {
+//        $data = array();
+//        $data['text'] = $message;
+//        if($icon){
+//            $data['icon_emoji'] = $icon;
+//        }
+//
+//        array(
+//            "text"          =>  $message,
+//            "icon_emoji"    =>  ':white_check_mark:',
+//            'attachments'=> array(
+//                array(
+//                    'title'=>'title',
+//                    'title_link'=>'https://frenchwork.fr',
+//                    'text'=>'text',
+//                )
+//            )
+//        )
+        $ch = curl_init($endpoint);
+        curl_setopt($ch, CURLOPT_CUSTOMREQUEST, "POST");
+
+        curl_setopt($ch, CURLOPT_HTTPHEADER, array('Content-Type: application/x-www-form-urlencoded'));
+        curl_setopt($ch, CURLOPT_POSTFIELDS, "payload=" . urlencode(json_encode($data)));
+        curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+        $result = curl_exec($ch);
+
+        $errors = curl_error($ch);
+        if ($errors) {
+            Log::error($errors, array('context' => 'user.shown'));
+        }
+        $responseCode = curl_getinfo($ch, CURLINFO_HTTP_CODE);
+        Log::info(sprintf('Slack payload: %s', json_encode($data)), array('context' => 'user.shown'));
+        Log::info(sprintf('Slack response (HTTP Code: %s): %s', $responseCode, $result), array('context' => 'user.shown'));
+        curl_close($ch);
+
+        return $result;
     }
 
 }
