@@ -25,7 +25,8 @@
     "guzzlehttp/guzzle": "~6.0",
     "guzzlehttp/oauth-subscriber": "*",
     "maatwebsite/excel": "~1.3.0",
-    "asgrim/ofxparser": "^1.2"
+    "asgrim/ofxparser": "^1.2",
+    "twilio/sdk": "^5.0"
   },
   "autoload": {
     "classmap": [
@@ -59,5 +60,12 @@
       "name": "Sébastien Hordeaux",
       "email": "sebastien@etincelle-coworking.com"
     }
+  ],
+  "repositories": [
+    {
+      "type": "composer",
+      "url": "https://packagist.org"
+    },
+    { "packagist": false }
   ]
 }
