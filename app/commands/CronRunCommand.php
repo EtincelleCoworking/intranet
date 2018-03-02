@@ -262,7 +262,7 @@ group by booking.id
                             date('H\hi', $previous_ends_at));
 
                         $this->slack(Config::get('etincelle.slack_staff_toulouse'), array(
-                            'text' => sprintf('SMS envoyé à %s %s <%s> au ', $current['user']['firstname'], $current['user']['lastname'], $current['user']['email'], $phone),
+                            'text' => sprintf('SMS envoyé à %s %s <%s> au ', $previous['user']['firstname'], $previous['user']['lastname'], $previous['user']['email'], $phone),
                             'attachments' => array(
                                 array(
                                     "text" => $message_content
@@ -291,8 +291,14 @@ group by booking.id
     static function getPhoneNumberFormattedForSms($data)
     {
         $data = preg_replace('/[^0-9]/', '', $data);
-        if (strlen($data) != 10) {
-            return false;
+        switch (strlen($data)) {
+            case 9:
+                $data = '0' . $data;
+                break;
+            case 10:
+                break;
+            default:
+                return false;
         }
         if (!in_array(substr($data, 0, 2), array('06', '07'))) {
             return false;
