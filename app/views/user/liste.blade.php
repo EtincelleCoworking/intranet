@@ -68,7 +68,7 @@
     <table class="table table-striped table-hover">
         <thead>
         <tr>
-            <th class="col-md-3">Nom</th>
+            <th class="col-md-2">Nom</th>
             <th class="col-md-1">Espace</th>
             <th class="col-md-1">Membre</th>
             <th class="col-md-1">Périphériques</th>
