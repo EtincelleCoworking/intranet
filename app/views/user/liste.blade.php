@@ -69,6 +69,7 @@
         <thead>
         <tr>
             <th class="col-md-3">Nom</th>
+            <th class="col-md-1">Espace</th>
             <th class="col-md-1">Membre</th>
             <th class="col-md-1">Périphériques</th>
             <th class="col-md-1">Date de naissance</th>
@@ -107,6 +108,15 @@
                     }
                     ?>
                     <a href="{{ URL::route('user_modify', $user->id) }}">{{ $user->fullnameOrga }}</a>
+                </td>
+                <td>
+                    <?php
+                    if ($user->default_location_id) {
+                        echo $user->location->full_name;
+                    } else {
+                        echo '-';
+                    }
+                    ?>
                 </td>
                 <td>
                     <?php
