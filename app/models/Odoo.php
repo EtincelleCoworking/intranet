@@ -54,4 +54,23 @@ class Odoo extends Ripcord
                 'phone' => $phone,
             )));
     }
+
+    public function getUnassignedOpenOrder($occurs_at)
+    {
+        $result = $this->client->execute_kw($this->db, $this->uid, $this->password,
+            'pos.order', 'search_read',
+            array(
+                array(
+                    array('pricelist_id', '=', 3),
+                    array('partner_id', '=', false),
+                    array('session_id.stop_at', '>=', "$occurs_at 00:00:00"),
+                    array('session_id.stop_at', '<=', "$occurs_at 23:59:59"),
+                )
+            ),
+            array(
+                'fields' => array('name')
+            )
+        );
+        return $result;
+    }
 }

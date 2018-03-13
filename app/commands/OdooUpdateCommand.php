@@ -4,7 +4,7 @@ use Illuminate\Console\Command;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Input\InputArgument;
 
-class UpdateOdooCommand extends Command
+class OdooUpdateCommand extends Command
 {
 
     /**
@@ -12,7 +12,7 @@ class UpdateOdooCommand extends Command
      *
      * @var string
      */
-    protected $name = 'etincelle:update-odoo';
+    protected $name = 'odoo:update';
 
     /**
      * The console command description.
@@ -39,6 +39,11 @@ class UpdateOdooCommand extends Command
     public function fire()
     {
         $xmlrpc = new Odoo();
+
+
+        $result = $xmlrpc->getUnassignedOpenOrder(date('Y-m-d'));
+        print_r($result);
+        exit;
 
         $result = $xmlrpc->getKnownUsers();
 
@@ -88,26 +93,6 @@ class UpdateOdooCommand extends Command
         }
 
         printf("\n\nSkipped: %d, Updated: %d, Created: %d\n", $skipped_count, $updated_count, $created_count);
-
-        /*
-        id
-        phone
-        mobile
-        display_name
-        email
-        active
-        function
-        is_company
-        ref
-
-        company_name
-        street
-        street2
-        city
-        vat
-
-         *
-         */
     }
 
     /**
