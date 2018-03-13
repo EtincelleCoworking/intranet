@@ -164,6 +164,9 @@ where  subscription_user_id is null;');
         //endregion
 
         $this->everyFiveMinutes(array($this, 'sendSmsNotificationForCloseMeetings'));
+        $this->hourly(function (){
+            Artisan::call('etincelle:update-odoo');
+        });
 
         $this->finish();
     }
