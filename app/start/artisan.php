@@ -16,4 +16,5 @@ Artisan::add(new AccountingExportCommand);
 Artisan::add(new BirthdayPostCommand);
 Artisan::add(new UpdateMemberStatusCommand);
 Artisan::add(new CronRunCommand);
+Artisan::add(new UpdateOdooCommand);
 //Artisan::add(new CatalyzCashflowSyncCommand);
