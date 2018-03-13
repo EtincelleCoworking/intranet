@@ -39,8 +39,14 @@ class OdooGetUnassignedOpenOrderCommand extends Command
     public function fire()
     {
         $xmlrpc = new Odoo();
-        $result = $xmlrpc->getUnassignedOpenOrder($this->option('occurs_at'));
-        print_r($result);
+        $items = $xmlrpc->getUnassignedOpenOrder($this->option('occurs_at'));
+        if (count($items) == 0) {
+            $this->line('No items.');
+        } else {
+            foreach ($items as $item) {
+                $this->line($item['name']);
+            }
+        }
     }
 
     /**
@@ -61,7 +67,7 @@ class OdooGetUnassignedOpenOrderCommand extends Command
     protected function getOptions()
     {
         return array(
-            array('occurs_at', date('Y-m-d'), InputOption::VALUE_OPTIONAL, 'Related date (YYYY-MM-DD)', null),
+            array('occurs_at', null, InputOption::VALUE_OPTIONAL, 'Related date', date('Y-m-d')),
         );
     }
 
