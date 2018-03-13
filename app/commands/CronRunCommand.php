@@ -165,7 +165,7 @@ where  subscription_user_id is null;');
 
         $this->everyFiveMinutes(array($this, 'sendSmsNotificationForCloseMeetings'));
         $this->hourly(function (){
-            Artisan::call('etincelle:update-odoo');
+            Artisan::call('odoo:update');
         });
 
         $this->finish();
