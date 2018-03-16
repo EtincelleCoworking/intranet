@@ -165,7 +165,11 @@ where  subscription_user_id is null;');
 
         $this->everyFiveMinutes(array($this, 'sendSmsNotificationForCloseMeetings'));
         $this->hourly(function (){
-            Artisan::call('odoo:update');
+            Artisan::call('odoo:update', array('--users' => true));
+        });
+
+        $this->dailyAt('23:00', function (){
+            Artisan::call('odoo:update', array('--pending-pos-to-orders' => true));
         });
 
         $this->finish();

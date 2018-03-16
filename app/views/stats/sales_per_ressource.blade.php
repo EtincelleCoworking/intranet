@@ -90,7 +90,7 @@
                                 <thead>
                                 <tr>
                                     <th>#</th>
-                                    <th>Top Clients ({{date('m/Y', strtotime($top_customers_from))}} - {{date('m/Y', strtotime($top_customers_to))}})</th>
+                                    <th>Top Clients ({{date('d/m/Y', strtotime($top_customers_from))}} - {{date('d/m/Y', strtotime($top_customers_to))}})</th>
                                     <th>Montant</th>
                                 </tr>
                                 </thead>

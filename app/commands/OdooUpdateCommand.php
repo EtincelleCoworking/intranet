@@ -38,13 +38,33 @@ class OdooUpdateCommand extends Command
      */
     public function fire()
     {
+        if ($this->option('users')) {
+            $this->updateUsers($this->option('force'));
+        }
+
+        if ($this->option('pending-pos-to-orders')) {
+            $occurs_at = date('Y-m-d');
+            if ($occurs_at > '2018-03-16') {
+                $this->createOrderFromPendingPosSales($occurs_at);
+            }
+        }
+        /*
+                $result = $xmlrpc->getUnassignedOpenOrder(date('Y-m-d'));
+                print_r($result);
+                exit;
+        */
+    }
+
+
+    protected function createOrderFromPendingPosSales($occurs_at)
+    {
         $xmlrpc = new Odoo();
+        $xmlrpc->createOrderFromPendingPosSales($occurs_at);
+    }
 
-
-        $result = $xmlrpc->getUnassignedOpenOrder(date('Y-m-d'));
-        print_r($result);
-        exit;
-
+    protected function updateUsers($force = false)
+    {
+        $xmlrpc = new Odoo();
         $result = $xmlrpc->getKnownUsers();
 
         $odoo_datas = array();
@@ -71,7 +91,10 @@ class OdooUpdateCommand extends Command
                     $needs_update = ($odoo_datas[$item->id]['name'] != $item->name)
                         || ($odoo_datas[$item->id]['email'] != $item->email)
                         || ($odoo_datas[$item->id]['phone'] != $item->phone);
-                    if ($needs_update) {
+                    if ($needs_update || $force) {
+                        if ($force) {
+                            printf("(FORCED)\n");
+                        }
                         printf("- name: [%s] / [%s] %s\n", $odoo_datas[$item->id]['name'], $item->name, ($odoo_datas[$item->id]['name'] != $item->name) ? '<--' : '');
                         printf("- email: [%s] / [%s] %s\n", $odoo_datas[$item->id]['email'], $item->email, ($odoo_datas[$item->id]['email'] != $item->email) ? '<--' : '');
                         printf("- phone: [%s] / [%s] %s\n", $odoo_datas[$item->id]['phone'], $item->phone, ($odoo_datas[$item->id]['phone'] != $item->phone) ? '<--' : '');
@@ -93,6 +116,7 @@ class OdooUpdateCommand extends Command
         }
 
         printf("\n\nSkipped: %d, Updated: %d, Created: %d\n", $skipped_count, $updated_count, $created_count);
+
     }
 
     /**
@@ -112,7 +136,11 @@ class OdooUpdateCommand extends Command
      */
     protected function getOptions()
     {
-        return array();
+        return array(
+            array('users', null, InputOption::VALUE_NONE),
+            array('force', null, InputOption::VALUE_NONE),
+            array('pending-pos-to-orders', null, InputOption::VALUE_NONE),
+        );
     }
 
 }
