@@ -32,7 +32,7 @@ class Odoo extends Ripcord
                 )
             ),
             array(
-                'fields' => array('name', 'phone', 'ref', 'email')
+                'fields' => array('name', 'phone', 'ref', 'email', 'barcode')
             )
         );
         return $result;
@@ -51,7 +51,7 @@ class Odoo extends Ripcord
             )));
     }
 
-    protected function getUserBarcode($id)
+    public function getUserBarcode($id)
     {
         return sprintf('042%07d', $id);
     }

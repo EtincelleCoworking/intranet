@@ -90,7 +90,8 @@ class OdooUpdateCommand extends Command
                     // exist remotely
                     $needs_update = ($odoo_datas[$item->id]['name'] != $item->name)
                         || ($odoo_datas[$item->id]['email'] != $item->email)
-                        || ($odoo_datas[$item->id]['phone'] != $item->phone);
+                        || ($odoo_datas[$item->id]['phone'] != $item->phone)
+                        || ($odoo_datas[$item->id]['barcode'] != $xmlrpc->getUserBarcode($item->id));
                     if ($needs_update || $force) {
                         if ($force) {
                             printf("(FORCED)\n");
@@ -98,8 +99,12 @@ class OdooUpdateCommand extends Command
                         printf("- name: [%s] / [%s] %s\n", $odoo_datas[$item->id]['name'], $item->name, ($odoo_datas[$item->id]['name'] != $item->name) ? '<--' : '');
                         printf("- email: [%s] / [%s] %s\n", $odoo_datas[$item->id]['email'], $item->email, ($odoo_datas[$item->id]['email'] != $item->email) ? '<--' : '');
                         printf("- phone: [%s] / [%s] %s\n", $odoo_datas[$item->id]['phone'], $item->phone, ($odoo_datas[$item->id]['phone'] != $item->phone) ? '<--' : '');
+                        printf("- barcode: [%s] / [%s] %s\n", $odoo_datas[$item->id]['barcode'],$xmlrpc->getUserBarcode($item->id), ($odoo_datas[$item->id]['barcode'] != $xmlrpc->getUserBarcode($item->id)) ? '<--' : '');
 
-                        $xmlrpc->updateUser($odoo_datas[$item->id]['ref'], $item->id, $item->name, $item->email, $item->phone);
+                        $result = $xmlrpc->updateUser($odoo_datas[$item->id]['id'], $item->id, $item->name, $item->email, $item->phone);
+                        if (is_array($result)) {
+                            var_dump($result);
+                        }
                         printf('Updated %s <%s>, Remote ID = %d' . "\n", $item->name, $item->email, $odoo_datas[$item->id]['ref']);
                         $updated_count++;
                     } else {
