@@ -17,9 +17,14 @@ class Odoo extends Ripcord
         ));
     }
 
+    protected function execute_kw($p1, $p2, $p3 = null, $p4 = null)
+    {
+        return $this->client->execute_kw($this->db, $this->uid, $this->password, $p1, $p2, $p3, $p4);
+    }
+
     public function getKnownUsers()
     {
-        $result = $this->client->execute_kw($this->db, $this->uid, $this->password,
+        $result = $this->execute_kw(
             'res.partner', 'search_read',
             array(
                 array(
@@ -35,7 +40,7 @@ class Odoo extends Ripcord
 
     public function createUser($id, $name, $email, $phone)
     {
-        return $this->client->execute_kw($this->db, $this->uid, $this->password,
+        return $this->execute_kw(
             'res.partner', 'create',
             array(array(
                 'ref' => $id,
@@ -53,7 +58,7 @@ class Odoo extends Ripcord
 
     public function updateUser($remote_id, $id, $name, $email, $phone)
     {
-        return $this->client->execute_kw($this->db, $this->uid, $this->password,
+        return $this->execute_kw(
             'res.partner', 'write',
             array(array($remote_id), array(
                 'ref' => $id,
@@ -66,7 +71,7 @@ class Odoo extends Ripcord
 
     public function getUnassignedOpenOrder($occurs_at)
     {
-        $result = $this->client->execute_kw($this->db, $this->uid, $this->password,
+        $result = $this->execute_kw(
             'pos.order', 'search_read',
             array(
                 array(
@@ -85,7 +90,7 @@ class Odoo extends Ripcord
 
     public function getOpenOrderProducts($occurs_at)
     {
-        $result = $this->client->execute_kw($this->db, $this->uid, $this->password,
+        $result = $this->execute_kw(
             'pos.order.line', 'search_read',
             array(
                 array(
@@ -104,7 +109,7 @@ class Odoo extends Ripcord
 
     public function createOrderFromPendingPosSales($occurs_at)
     {
-        $data = $this->client->execute_kw($this->db, $this->uid, $this->password,
+        $data = $this->execute_kw(
             'pos.order', 'search_read',
             array(
                 array(
@@ -125,7 +130,7 @@ class Odoo extends Ripcord
             $session_ids[$item['session_id'][0]] = $item['session_id'][1];
         }
         if (count($session_ids) > 0) {
-            $sessions_datas = $this->client->execute_kw($this->db, $this->uid, $this->password,
+            $sessions_datas = $this->execute_kw(
                 'pos.session', 'read',
                 array_keys($session_ids),
                 array(
@@ -157,7 +162,7 @@ class Odoo extends Ripcord
             }
 //print_r($orders);exit;
             if (count($orders) > 0) {
-                $lines = $this->client->execute_kw($this->db, $this->uid, $this->password,
+                $lines = $this->execute_kw(
                     'pos.order.line', 'search_read',
                     array(
                         array(
@@ -178,7 +183,7 @@ class Odoo extends Ripcord
                         'qty' => $line['qty'],
                         'product_id' => $line['product_id'][0],
                         'order_id' => $line['order_id'][0],
-                        'tax_id' => $line['tax_ids'][0],
+                        'tax_id' => $line['tax_ids'],
                     );
                 }
 
@@ -201,7 +206,7 @@ class Odoo extends Ripcord
                                     'pricelist_id' => self::PRICELIST_COWORKERS,
                                     'invoice_status' => 'to invoice',
                                 );
-                                $order_id = $this->client->execute_kw($this->db, $this->uid, $this->password,
+                                $order_id = $this->execute_kw(
                                     'sale.order', 'create',
                                     array($params));
                                 if (is_array($order_id)) {
@@ -212,14 +217,14 @@ class Odoo extends Ripcord
                                 printf("New Order: %s\n", $order_id);
                             }
                             $name = sprintf('%s (%s)', $products[$line['product_id']], date('d/m/Y H:i', strtotime($orders[$line['order_id']]['date_order'])));
-                            $order_line_id = $this->client->execute_kw($this->db, $this->uid, $this->password,
+                            $order_line_id = $this->execute_kw(
                                 'sale.order.line', 'create',
                                 array(array(
                                     'order_id' => $order_id,
                                     'product_id' => $line['product_id'],
                                     'product_uom_qty' => $line['qty'],
                                     'name' => $name,
-                                    'tax_id' => array($line['tax_id']),
+                                    'tax_id' => array(array(6, 0, $line['tax_id'])),
                                 )));
                             if (is_array($order_line_id)) {
                                 print_r($order_line_id);
@@ -233,5 +238,46 @@ class Odoo extends Ripcord
                 }
             }
         }
+    }
+
+    public function getPosCustomersIds($start_at, $end_at = null)
+    {
+        if (null == $end_at) {
+            $end_at = date('Y-m-d 23:59:59');
+        }
+        $orders = $this->execute_kw('pos.order', 'search_read',
+            array(
+                array(
+                    array('partner_id', '!=', false),
+                    array('date_order', '>=', $start_at),
+                    array('date_order', '<=', $end_at)
+                )
+            ),
+            array(
+                'fields' => array('partner_id')
+            )
+        );
+
+        $result = array();
+        foreach ($orders as $order) {
+            $result[$order['partner_id'][0]] = true;
+        }
+
+        $items = $this->execute_kw('res.partner', 'search_read',
+            array(
+                array(
+                    array('id', 'in', array_keys($result))
+                )
+            ),
+            array(
+                'fields' => array('ref')
+            )
+        );
+
+        $result = array();
+        foreach ($items as $item) {
+            $result[$item['ref']] = true;
+        }
+        return array_keys($result);
     }
 }
