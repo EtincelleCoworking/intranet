@@ -4,8 +4,16 @@ use Illuminate\Http\Response;
 use Illuminate\Support\Facades\Input;
 use Illuminate\Support\Facades\Request;
 
+
 class ApiController extends BaseController
 {
+
+    public function test()
+    {
+
+
+    }
+
     public function updateLocationIp($location_slug, $key)
     {
         $location = Location::where('slug', '=', $location_slug)
@@ -57,7 +65,6 @@ class ApiController extends BaseController
         return ceil(strtotime($value) / (5 * 60)) * 5 * 60;
     }
 
-
     public function offixUpload($location_slug, $key)
     {
         $location = Location::where('slug', '=', $location_slug)
@@ -66,10 +73,14 @@ class ApiController extends BaseController
 
         $json = json_decode(Request::getContent(), true);
         $macs = array();
+        $emails = array();
         if (is_array($json)) {
             foreach ($json as $item) {
                 if ($item['lastSeen'] > date('Y-m-d')) {
                     $macs[] = strtolower($item['mac']);
+                    if (isset($item['email'])) {
+                        $emails[] = strtolower($item['email']);
+                    }
                 }
             }
         } else {
@@ -80,6 +91,11 @@ class ApiController extends BaseController
         foreach (Device::whereIn('mac', $macs)->get() as $device) {
             $devices[$device->mac] = $device;
         }
+
+        $users = array();
+        foreach (User::whereIn('email', $emails)->get() as $user) {
+            $users[$user->email] = $user;
+        }
         // var_dump(array_keys($devices));
         $notified_users = array();
         $updated_users = array();
@@ -87,25 +103,36 @@ class ApiController extends BaseController
         foreach ($json as $item) {
             $item['mac'] = strtolower($item['mac']);
             if (!isset($devices[$item['mac']])) {
+                // Create the device because it is connected to the WIFI
+                $device = new Device();
+                $device->mac = $item['mac'];
                 if (isset($item['name'])) {
-                    // Create the device because it is connected to the WIFI
-                    $device = new Device();
-                    $device->mac = $item['mac'];
-                    if (isset($item['name'])) {
-                        $device->name = $item['name'];
-                    }
-                    if (isset($item['brand']) && ($item['brand'] != 'Unknown')) {
-                        $device->brand = $item['brand'];
-                    }
-                    if (isset($item['ip'])) {
-                        $device->ip = $item['ip'];
-                    }
-                    $device->save();
-                    $devices[$item['mac']] = $device;
+                    $device->name = $item['name'];
                 }
+                if (isset($item['brand']) && ($item['brand'] != 'Unknown')) {
+                    $device->brand = $item['brand'];
+                }
+                if (isset($item['ip'])) {
+                    $device->ip = $item['ip'];
+                }
+                if (isset($item['email'])) {
+                    if (isset($users[$item['email']])) {
+                        $device->user_id = $users[$item['email']]->id;
+                    }else{
+                        // user has been logged but do not exist in the database, Voucher?
+                    }
+                }
+                $device->save();
+                $devices[$item['mac']] = $device;
             }
             if (isset($devices[$item['mac']])) {
                 $device = $devices[$item['mac']];
+                if (isset($item['email']) && empty($device->user_id)) {
+                    if (isset($users[$item['email']])) {
+                        $device->user_id = $users[$item['email']]->id;
+                        $device->save();
+                    }
+                }
                 if ($device->tracking_enabled) {
                     if (!isset($updated_users[(int)$device->user_id])) {
                         $updated_users[(int)$device->user_id] = true;
@@ -321,12 +348,12 @@ class ApiController extends BaseController
                     $data['subscription']['active'] = false;
                 }
                 //endregion
-            }else{
+            } else {
                 $user = new User();
-                if(Input::get('firstname') && empty($user->firstname)){
+                if (Input::get('firstname') && empty($user->firstname)) {
                     $user->firstname = Input::get('firstname');
                 }
-                if(Input::get('lastname') && empty($user->lastname)){
+                if (Input::get('lastname') && empty($user->lastname)) {
                     $user->lastname = Input::get('lastname');
                 }
                 $user->populateFromEmail($email);

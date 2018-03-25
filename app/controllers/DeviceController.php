@@ -116,7 +116,7 @@ WHERE 1 '
     {
         $device = $this->dataExist($id);
 
-        $validator = Validator::make(Input::all(), Country::$rules);
+        $validator = Validator::make(Input::all(), Device::$rules);
         if (!$validator->fails()) {
             $update_previous_timeslots = !$device->user_id;
             if (Input::get('user_id')) {
