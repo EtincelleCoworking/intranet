@@ -101,100 +101,102 @@ class ApiController extends BaseController
         $updated_users = array();
 
         foreach ($json as $item) {
-            $item['mac'] = strtolower($item['mac']);
-            if (!isset($devices[$item['mac']])) {
-                // Create the device because it is connected to the WIFI
-                $device = new Device();
-                $device->mac = $item['mac'];
-                if (isset($item['name'])) {
-                    $device->name = $item['name'];
-                }
-                if (isset($item['brand']) && ($item['brand'] != 'Unknown')) {
-                    $device->brand = $item['brand'];
-                }
-                if (isset($item['ip'])) {
-                    $device->ip = $item['ip'];
-                }
-                if (isset($item['email'])) {
-                    if (isset($users[$item['email']])) {
-                        $device->user_id = $users[$item['email']]->id;
-                    }else{
-                        // user has been logged but do not exist in the database, Voucher?
+            if (!empty($item['mac']) && ($item['lastSeen'] > date('Y-m-d'))) {
+                $item['mac'] = strtolower($item['mac']);
+                if (!isset($devices[$item['mac']])) {
+                    // Create the device because it is connected to the WIFI
+                    $device = new Device();
+                    $device->mac = $item['mac'];
+                    if (isset($item['name'])) {
+                        $device->name = $item['name'];
                     }
-                }
-                $device->save();
-                $devices[$item['mac']] = $device;
-            }
-            if (isset($devices[$item['mac']])) {
-                $device = $devices[$item['mac']];
-                if (isset($item['email']) && empty($device->user_id)) {
-                    if (isset($users[$item['email']])) {
-                        $device->user_id = $users[$item['email']]->id;
-                        $device->save();
+                    if (isset($item['brand']) && ($item['brand'] != 'Unknown')) {
+                        $device->brand = $item['brand'];
                     }
+                    if (isset($item['ip'])) {
+                        $device->ip = $item['ip'];
+                    }
+                    if (isset($item['email'])) {
+                        if (isset($users[$item['email']])) {
+                            $device->user_id = $users[$item['email']]->id;
+                        } else {
+                            // user has been logged but do not exist in the database, Voucher?
+                        }
+                    }
+                    $device->save();
+                    $devices[$item['mac']] = $device;
                 }
-                if ($device->tracking_enabled) {
-                    if (!isset($updated_users[(int)$device->user_id])) {
-                        $updated_users[(int)$device->user_id] = true;
-                        $timeslot = PastTime::where('user_id', '=', (int)$device->user_id)
-                            ->where('date_past', '=', date('Y-m-d', strtotime($item['lastSeen'])))
-                            ->where('time_start', '<', date('Y-m-d H:i:s', strtotime($item['lastSeen'])))
-                            ->where('location_id', '=', $location->id)
-                            ->where(function ($query) use ($item) {
-                                $query->where('time_end', '>', date('Y-m-d H:i:s', strtotime('-60 minutes', strtotime($item['lastSeen']))))
-                                    ->orWhereNull('time_end');
-                            })
-                            ->orderBy('time_start', 'DESC')
+                if (isset($devices[$item['mac']])) {
+                    $device = $devices[$item['mac']];
+                    if (isset($item['email']) && empty($device->user_id)) {
+                        if (isset($users[$item['email']])) {
+                            $device->user_id = $users[$item['email']]->id;
+                            $device->save();
+                        }
+                    }
+                    if ($device->tracking_enabled) {
+                        if (!isset($updated_users[(int)$device->user_id])) {
+                            $updated_users[(int)$device->user_id] = true;
+                            $timeslot = PastTime::where('user_id', '=', (int)$device->user_id)
+                                ->where('date_past', '=', date('Y-m-d', strtotime($item['lastSeen'])))
+                                ->where('time_start', '<', date('Y-m-d H:i:s', strtotime($item['lastSeen'])))
+                                ->where('location_id', '=', $location->id)
+                                ->where(function ($query) use ($item) {
+                                    $query->where('time_end', '>', date('Y-m-d H:i:s', strtotime('-60 minutes', strtotime($item['lastSeen']))))
+                                        ->orWhereNull('time_end');
+                                })
+                                ->orderBy('time_start', 'DESC')
+                                ->first();
+                            $triggerUserShown = !$timeslot;
+                            if (!$timeslot) {
+                                $timeslot = new PastTime();
+                                $timeslot->user_id = $device->user_id ? $device->user_id : 0;
+                                $timeslot->ressource_id = Ressource::TYPE_COWORKING;
+                                $timeslot->location_id = $location->id;
+                                $timeslot->date_past = date('Y-m-d');
+                                $timeslot->time_start = date('Y-m-d H:i:s', $this->floorTime($item['lastSeen']));
+                            }
+                            $timeslot->device_id = $device->id;
+                            $date_end = date('Y-m-d H:i:s', $this->ceilTime($item['lastSeen']) + 10 * 60);
+                            if ($timeslot->time_end < $date_end) {
+                                $timeslot->time_end = $date_end;
+                            }
+                            $timeslot->save();
+
+                            if ($timeslot->user_id && $triggerUserShown && !isset($notified_users[$timeslot->user_id])) {
+                                $notified_users[$timeslot->user_id] = true;
+                                Log::info(sprintf('%s est là', $timeslot->user->fullname), array('context' => 'user.shown'));
+                                Event::fire('user.shown', array($timeslot->user, $timeslot, $location));
+                            }
+                        }
+                        $device_seen = DeviceSeen::where('device_id', '=', $device->id)
+                            ->where('last_seen_at', '=', date('Y-m-d H:i:s', strtotime($item['lastSeen'])))
                             ->first();
-                        $triggerUserShown = !$timeslot;
-                        if (!$timeslot) {
-                            $timeslot = new PastTime();
-                            $timeslot->user_id = $device->user_id ? $device->user_id : 0;
-                            $timeslot->ressource_id = Ressource::TYPE_COWORKING;
-                            $timeslot->location_id = $location->id;
-                            $timeslot->date_past = date('Y-m-d');
-                            $timeslot->time_start = date('Y-m-d H:i:s', $this->floorTime($item['lastSeen']));
-                        }
-                        $timeslot->device_id = $device->id;
-                        $date_end = date('Y-m-d H:i:s', $this->ceilTime($item['lastSeen']) + 10 * 60);
-                        if ($timeslot->time_end < $date_end) {
-                            $timeslot->time_end = $date_end;
-                        }
-                        $timeslot->save();
-
-                        if ($timeslot->user_id && $triggerUserShown && !isset($notified_users[$timeslot->user_id])) {
-                            $notified_users[$timeslot->user_id] = true;
-                            Log::info(sprintf('%s est là', $timeslot->user->fullname), array('context' => 'user.shown'));
-                            Event::fire('user.shown', array($timeslot->user, $timeslot, $location));
+                        if (!$device_seen) {
+                            $device_seen = new DeviceSeen();
+                            $device_seen->device_id = $device->id;
+                            $device_seen->location_id = $location->id;
+                            $device_seen->last_seen_at = date('Y-m-d H:i:s', strtotime($item['lastSeen']));
+                            $device_seen->save();
                         }
                     }
-                    $device_seen = DeviceSeen::where('device_id', '=', $device->id)
-                        ->where('last_seen_at', '=', date('Y-m-d H:i:s', strtotime($item['lastSeen'])))
-                        ->first();
-                    if (!$device_seen) {
-                        $device_seen = new DeviceSeen();
-                        $device_seen->device_id = $device->id;
-                        $device_seen->location_id = $location->id;
-                        $device_seen->last_seen_at = date('Y-m-d H:i:s', strtotime($item['lastSeen']));
-                        $device_seen->save();
+                    $device->last_seen_at = max($device->last_seen_at, date('Y-m-d H:i:s', strtotime($item['lastSeen'])));
+                    if (isset($item['name'])) {
+                        $device->name = $item['name'];
                     }
-                }
-                $device->last_seen_at = max($device->last_seen_at, date('Y-m-d H:i:s', strtotime($item['lastSeen'])));
-                if (isset($item['name'])) {
-                    $device->name = $item['name'];
-                }
-                if (isset($item['brand']) && ($item['brand'] != 'Unknown')) {
-                    $device->brand = $item['brand'];
-                }
-                if (isset($item['ip'])) {
-                    $device->ip = $item['ip'];
-                }
+                    if (isset($item['brand']) && ($item['brand'] != 'Unknown')) {
+                        $device->brand = $item['brand'];
+                    }
+                    if (isset($item['ip'])) {
+                        $device->ip = $item['ip'];
+                    }
 
-                $device->save();
-                if ($device->user_id) {
-                    $user = $device->user;
-                    $user->last_seen_at = date('Y-m-d H:i:s', strtotime($item['lastSeen']));
-                    $user->save();
+                    $device->save();
+                    if ($device->user_id) {
+                        $user = $device->user;
+                        $user->last_seen_at = date('Y-m-d H:i:s', strtotime($item['lastSeen']));
+                        $user->save();
+                    }
                 }
             }
         }
