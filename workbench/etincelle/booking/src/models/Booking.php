@@ -84,5 +84,35 @@ class Booking extends Illuminate\Database\Eloquent\Model
         parent::__construct($attributes);
     }
 
+    const ONE_DAY = 24 * 60 * 60;
+
+    public static function generateVoucher($voucher_endpoint, $voucher_key, $voucher_secret, $occurs_at, $validity = self::ONE_DAY)
+    {
+        $curl = curl_init();
+        curl_setopt($curl, CURLOPT_HTTPAUTH, CURLAUTH_BASIC);
+        curl_setopt($curl, CURLOPT_USERPWD, $voucher_key . ':' . $voucher_secret);
+        curl_setopt($curl, CURLOPT_POST, 1);
+        curl_setopt($curl, CURLOPT_POSTFIELDS, array(
+            'count' => 1,
+            'validity' => $validity,
+            'expirytime' => 0, // amount in sec
+            'vouchergroup' => date('Ymd', strtotime($occurs_at)),
+        ));
+        curl_setopt($curl, CURLOPT_URL, $voucher_endpoint);
+        curl_setopt($curl, CURLOPT_RETURNTRANSFER, 1);
+        $result = json_decode(curl_exec($curl));
+        curl_close($curl);
+
+        $voucher = array_pop($result);
+        if (is_object($voucher)) {
+            return array(
+                'username' => $voucher->username,
+                'password' => $voucher->password,
+            );
+            return true;
+        }
+
+        return false;
+    }
 
 }

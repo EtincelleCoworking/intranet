@@ -212,7 +212,7 @@
                                             @endif
                                         </td>
                                         <td>
-                                            @if ($time->invoice_id)
+                                            @if ($time->invoice_id && is_object($time->invoice))
                                                 <a target="_blank"
                                                    href="{{ URL::route('invoice_print_pdf', $time->invoice->id) }}">{{ $time->invoice->ident }}</a>
                                             @else

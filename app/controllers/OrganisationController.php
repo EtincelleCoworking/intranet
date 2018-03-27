@@ -183,7 +183,7 @@ class OrganisationController extends BaseController
                 $add->organisation_id = Input::get('organisation_id');
 
                 if ($add->save()) {
-                    return Redirect::route('user_modify', $id)->with('mSuccess', 'Cet utilisateur a bien été associé à la osciété');
+                    return Redirect::route('user_modify', $id)->with('mSuccess', 'Cet utilisateur a bien été associé à la société');
                 } else {
                     return Redirect::route('user_modify', $id)->with('mError', 'Il y a des erreurs')->withErrors('Impossible d\'associer cet utilisateur à cette société')->withInput();
                 }

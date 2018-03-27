@@ -54,15 +54,48 @@
 
 @section('content')
 
-
     <div class="row">
-        <div class="col-lg-12">
-            <div class="ibox">
-                <div class="ibox-content">
-                    {{$booking_item->booking->content}}
+        @if (Auth::user()->isSuperAdmin())
+            <div class="col-lg-8">
+                <div class="ibox">
+                    <div class="ibox-content">
+                        {{$booking_item->booking->content}}
+                    </div>
                 </div>
             </div>
-        </div>
+            <div class="col-lg-4">
+                <div class="ibox">
+                    <div class="ibox-content">
+                        <table class="table table-bordered">
+                            <thead>
+                            <th colspan="2">WIFI</th>
+                            </thead>
+                            <tbody>
+                            <tr>
+                                <th width="50%">Identifiant</th>
+                                <td>{{$booking_item->booking->wifi_login}}</td>
+                            </tr>
+                            <tr>
+                                <th>Mot de passe</th>
+                                <td>{{$booking_item->booking->wifi_password}}</td>
+                            </tr>
+                            </tbody>
+                        </table>
+
+                    </div>
+                </div>
+            </div>
+        @else
+            <div class="col-lg-12">
+                <div class="ibox">
+                    <div class="ibox-content">
+                        {{$booking_item->booking->content}}
+                    </div>
+                </div>
+            </div>
+        @endif
+
+
 
     </div>
 

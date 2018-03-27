@@ -6,6 +6,7 @@ use Illuminate\Support\Facades\Response;
 
 class BookingController extends Controller
 {
+
     public function index($now = false)
     {
         $params = array();
@@ -733,6 +734,20 @@ class BookingController extends Controller
         if (!$booking->organisation_id) {
             $booking->organisation_id = null;
         }
+
+        $ressources = Input::get('rooms');
+        $ressource = Ressource::where('id', '=', array_pop($ressources))->first();
+        $location = $ressource->location;
+        if ($location->voucher_endpoint) {
+            $voucher = Booking::generateVoucher($location->voucher_endpoint, $location->voucher_key, $location->voucher_secret, $start_at->format('Y-m-d H:i'));
+            if ($voucher) {
+                $booking->wifi_login = $voucher['username'];
+                $booking->wifi_password = $voucher['password'];
+            } else {
+                // log error ?
+            }
+        }
+
         $booking->save();
 
         $doConfirmation = Input::get('is_confirmed', Config::get('booking::default_is_confirmed', true));
@@ -866,7 +881,7 @@ class BookingController extends Controller
         $datas = DB::select(DB::raw(sprintf('SELECT ressources.name AS room, concat(date_format( booking_item.start_at, "%%H:%%i" ) , " - ", date_format( booking_item.start_at + INTERVAL booking_item.duration
 MINUTE , "%%H:%%i" )) AS timerange, booking.title, 
 concat( users.firstname, " ", users.lastname ) AS contact,
-organisations.name as organisation
+organisations.name as organisation, booking.wifi_login, booking.wifi_password
 FROM `booking_item`
 JOIN ressources ON booking_item.ressource_id = ressources.id
 JOIN locations ON ressources.location_id = locations.id
@@ -893,7 +908,11 @@ ORDER BY room ASC , booking_item.start_at ASC ', $day, $day, $location)));
             if (empty($title)) {
                 $title = $data->contact;
             }
-            $bookings[$data->room][$data->timerange] = $title;
+            $bookings[$data->room][$data->timerange] = array(
+                'title' => $title,
+                'wifi_login' => $data->wifi_login,
+                'wifi_password' => $data->wifi_password,
+            );
         }
         $pages = array();
         foreach ($bookings as $room => $meetings) {
@@ -906,11 +925,15 @@ ORDER BY room ASC , booking_item.start_at ASC ', $day, $day, $location)));
             <body>
             ';
             $html .= '<div class="page">';
-            $html .= sprintf('<table width="100%%"><tr><td width="50%%">%s</td><td width="50%%" align="right">%s</td></tr>', $room, date('d/m/Y', strtotime($day)));
+            $html .= sprintf('<table width="100%%"><tr><td width="50%%">%s</td><td width="50%%" align="right">%s</td></tr></table>', $room, date('d/m/Y', strtotime($day)));
             $html .= '<table width="100%"><tbody>';
-            foreach ($meetings as $timerange => $title) {
+            foreach ($meetings as $timerange => $meeting_data) {
                 //$html .= sprintf('<tr><td width="1%%" nowrap="nowrap"><span style="color: #999999; font-size:30px;">%s&nbsp;</span></td><td><span style="font-size:60px;">%s</span></td></tr>', $timerange, $title);
-                $html .= sprintf('<tr><td><div style="color: #999999; font-size:30px; ">%s</div><div style="font-size:55px;text-overflow: ellipsis;">%s</div><hr style="border-top: dashed 1px;" /></td></tr>', $timerange, $title);
+                $html .= sprintf('<tr><td><div style="color: #999999; font-size:30px; ">%s</div><div style="font-size:55px;text-overflow: ellipsis;">%s</div>', $timerange, $title);
+                if ($meeting_data['wifi_login']) {
+                    //$html .= sprintf('<p><b>WIFI</b> Identifiant: %s Mot de passe: %s</p>', $meeting_data['wifi_login'], $meeting_data['wifi_password']);
+                }
+                $html .= '<hr style="border-top: dashed 1px;" /></td></tr>';
                 //valign="top"
             }
             $html .= '</tbody></table>';
@@ -920,7 +943,8 @@ ORDER BY room ASC , booking_item.start_at ASC ', $day, $day, $location)));
             $pages[] = $html;
         }
 
-
+        echo $pages[0];
+        exit;
         $pdf = App::make('snappy.pdf');
         $output = $pdf->getOutputFromHtml($pages,
             array('orientation' => 'Landscape',

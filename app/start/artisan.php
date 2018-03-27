@@ -18,4 +18,5 @@ Artisan::add(new UpdateMemberStatusCommand);
 Artisan::add(new CronRunCommand);
 Artisan::add(new OdooUpdateCommand);
 Artisan::add(new OdooGetUnassignedOpenOrderCommand);
+Artisan::add(new GenerateMissingVoucherCommand);
 //Artisan::add(new CatalyzCashflowSyncCommand);
