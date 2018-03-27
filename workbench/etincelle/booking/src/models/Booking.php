@@ -84,9 +84,7 @@ class Booking extends Illuminate\Database\Eloquent\Model
         parent::__construct($attributes);
     }
 
-    const ONE_DAY = 24 * 60 * 60;
-
-    public static function generateVoucher($voucher_endpoint, $voucher_key, $voucher_secret, $occurs_at, $validity = self::ONE_DAY)
+    public static function generateVoucher($voucher_endpoint, $voucher_key, $voucher_secret, $occurs_at, $validity = 86400 /* ONE DAY */)
     {
         $curl = curl_init();
         curl_setopt($curl, CURLOPT_HTTPAUTH, CURLAUTH_BASIC);
