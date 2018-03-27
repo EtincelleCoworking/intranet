@@ -64,7 +64,7 @@
             </div>
         </div>
     </div>
-
+    {{ Form::open(array('route' => array('booking_global_action'))) }}
     <div class="row">
         <div class="col-lg-12">
             <div class="ibox">
@@ -77,6 +77,7 @@
 
                             <tr>
                                 @if (Auth::user()->isSuperAdmin())
+                                    <th>{{ Form::checkbox('checkall', false, false, array('id' => 'checkall')) }}</th>
                                     <th>Utilisateur</th>
                                 @endif
                                 <th>Date</th>
@@ -94,6 +95,9 @@
                             @foreach($items as $item)
                                 <tr>
                                     @if (Auth::user()->isSuperAdmin())
+                                        <th>
+                                            {{ Form::checkbox('items[]', $item->id, false, array('class' => 'check')) }}
+                                        </th>
                                         <td>
                                             <a href="{{ route('user_modify', $item->booking->user->id) }}">{{ $item->booking->user->fullname }}</a>
                                             <a href="?filtre_submitted=1&filtre_user_id={{ $item->booking->user->id }}"><i
@@ -164,12 +168,19 @@
                             @endforeach
                             </tbody>
                         </table>
-                        {{ $items->links() }}
+                        @if($pagination_count)
+                            {{ $items->links() }}
+                        @endif
+                        @if (Auth::user()->isSuperAdmin())
+                            <input type="submit" class="btn btn-default" name="quote"
+                                   value="Faire un devis"/>
+                        @endif
                     @endif
                 </div>
             </div>
         </div>
     </div>
+    {{ Form::close() }}
 @stop
 
 
@@ -228,6 +239,10 @@
                     });
                     return false;
                 });
+
+            $('#checkall').click(function () {
+                $('input.check').prop('checked', $(this).prop('checked'));
+            });
 
 
         });

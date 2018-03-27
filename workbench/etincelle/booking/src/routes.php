@@ -34,7 +34,10 @@ Route::group(['before' => 'member'], function () {
     Route::get('/booking/quote/{booking_item_id}', array('as' => 'booking_quote', 'uses' => 'BookingController@createQuoteFromBookingItem'));
 });
 
+
 Route::group(['before' => 'superadmin'], function () {
+    Route::post('/booking/global-action', array('as' => 'booking_global_action', 'uses' => 'BookingController@globalAction'));
+
     Route::get('/booking/log-time/{id}', array('as' => 'booking_log_time_ajax', 'uses' => 'BookingController@logTimeAjax'));
     Route::get('/booking/make-gift/{id}', array('as' => 'booking_make_gift', 'uses' => 'BookingController@makeGift'));
     Route::get('/booking/daily-pdf/{location}/{day?}', array('as' => 'booking_daily_pdf', 'uses' => 'BookingController@dailyPdf'));

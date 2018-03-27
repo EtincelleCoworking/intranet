@@ -376,10 +376,9 @@ class BookingController extends Controller
 
     public function raw()
     {
+        $pagination_count = 15;
         if (Input::has('filtre_submitted')) {
-            if (Input::has('filtre_user_id')) {
-                Session::put('filtre_booking.user_id', Input::get('filtre_user_id'));
-            }
+
             if (Input::has('filtre_organisation_id')) {
                 Session::put('filtre_booking.organisation_id', Input::get('filtre_organisation_id'));
             }
@@ -400,8 +399,8 @@ class BookingController extends Controller
                                     Session::forget('filtre_booking.user_id');
                                 }
                 */
-            } else {
-                Session::put('filtre_booking.end', date('Y-m-t'));
+//            } else {
+//                Session::put('filtre_booking.end', date('Y-m-t'));
             }
             if (Input::has('filtre_end')) {
                 $date_end_explode = explode('/', Input::get('filtre_end'));
@@ -418,18 +417,32 @@ class BookingController extends Controller
             } else {
                 Session::put('filtre_booking.toinvoice', false);
             }
+            if (Input::has('filtre_user_id')) {
+                Session::put('filtre_booking.user_id', Input::get('filtre_user_id'));
+                Session::put('filtre_booking.start', date('Y-m-d'));
+                Session::put('filtre_booking.end', false);
+                $pagination_count = null;
+            }
         }
+
+
         if (Session::has('filtre_booking.start')) {
             $date_filtre_start = Session::get('filtre_booking.start');
             $date_filtre_end = Session::get('filtre_booking.end');
         } else {
             $date_filtre_start = date('Y-m-d');
-            $date_filtre_end = date('Y-m-t');
+            //$date_filtre_end = date('Y-m-t');
+            $date_filtre_end = Session::get('filtre_booking.end');
         }
 
+
         $q = BookingItem::query();
-        if ($date_filtre_start && $date_filtre_end) {
-            $q->whereBetween('start_at', array($date_filtre_start, $date_filtre_end));
+        if ($date_filtre_start) {
+            if ($date_filtre_end) {
+                $q->whereBetween('start_at', array($date_filtre_start, $date_filtre_end));
+            } else {
+                $q->where('start_at', '>', $date_filtre_start);
+            }
         }
         if (Session::get('filtre_booking.ressource_id')) {
             $q->whereRessourceId(Session::get('filtre_booking.ressource_id'));
@@ -463,7 +476,13 @@ class BookingController extends Controller
         $q->with('booking.user', 'ressource', 'booking');
 
         $params = array();
-        $params['items'] = $q->paginate(15, array('booking_item.*'));
+        $params['pagination_count'] = $pagination_count;
+        if ($pagination_count) {
+            $params['items'] = $q->paginate($pagination_count, array('booking_item.*'));
+        } else {
+            $params['items'] = $q->select('booking_item.*')->get();
+
+        }
         return View::make('booking::raw', $params);
     }
 
@@ -810,6 +829,14 @@ class BookingController extends Controller
         if (!$booking_item) {
             return Redirect::route('quote_list')->with('mError', 'Réservation inconnue');
         }
+        $invoice = $this->createQuoteFromBookingItems(array($booking_item));
+
+        return Redirect::route('invoice_modify', $invoice->id)->with('mSuccess', 'Le devis a été créé');
+    }
+
+    protected function createQuoteFromBookingItems($booking_items)
+    {
+        $booking_item = $booking_items[0];
 
         $organisation = $booking_item->booking->organisation;
         $user = $booking_item->booking->user;
@@ -834,27 +861,40 @@ class BookingController extends Controller
         $invoice->expected_payment_at = $invoice->deadline;
         $invoice->save();
 
-        $ressource = $booking_item->ressource;
-        $invoice_line = new InvoiceItem();
-        $invoice_line->order_index = 1;
-        $invoice_line->invoice_id = $invoice->id;
-        $invoice_line->ressource_id = $booking_item->ressource_id;
-
-
         $vat = VatType::where('value', 20)->first();
+        $by_ressources = array();
 
-        $start = new DateTime($booking_item->start_at);
-        $end = new DateTime($booking_item->start_at);
-        $end->modify(sprintf('+%d minutes', $booking_item->duration));
+        foreach ($booking_items as $booking_item) {
+            if (!isset($by_ressources[$booking_item->ressource_id])) {
+                $by_ressources[$booking_item->ressource_id] = array();
+            }
+            $by_ressources[$booking_item->ressource_id][] = $booking_item;
+        }
 
-        $invoice_line->text = sprintf('Location d\'espace de réunion - %s', $ressource->name);
-        $invoice_line->text .= sprintf("\n - %s de %s à %s", $start->format('d/m/Y'), $start->format('H:i'), $end->format('H:i'));
-        $invoice_line->amount += min(7, $booking_item->duration / 60) * $ressource->amount;
-        $invoice_line->invoice_id = $invoice->id;
-        $invoice_line->vat_types_id = $vat->id;
-        $invoice_line->save();
+        $line_index = 1;
+        foreach ($by_ressources as $ressource_id => $booking_items) {
+//            $booking_item = $booking_items[0];
+            $ressource = $booking_item->ressource;
+            $invoice_line = new InvoiceItem();
 
-        return Redirect::route('invoice_modify', $invoice->id)->with('mSuccess', 'Le devis a été créé');
+            $invoice_line->order_index = $line_index++;
+            $invoice_line->invoice_id = $invoice->id;
+            $invoice_line->ressource_id = $ressource_id;
+
+            $invoice_line->text = sprintf('Location d\'espace de réunion - %s', $ressource->name);
+            foreach ($booking_items as $booking_item) {
+                $start = new DateTime($booking_item->start_at);
+                $end = new DateTime($booking_item->start_at);
+                $end->modify(sprintf('+%d minutes', $booking_item->duration));
+                $invoice_line->text .= sprintf("\n - %s de %s à %s", $start->format('d/m/Y'), $start->format('H:i'), $end->format('H:i'));
+                $invoice_line->amount += min(7, $booking_item->duration / 60) * $ressource->amount;
+            }
+            $invoice_line->invoice_id = $invoice->id;
+            $invoice_line->vat_types_id = $vat->id;
+            $invoice_line->save();
+        }
+
+        return $invoice;
     }
 
     public function confirm($id)
@@ -1054,6 +1094,33 @@ ORDER BY room ASC , booking_item.start_at ASC ', $day, $day, $location)));
             's' => (int)$seconds,
         );
         return $obj;
+    }
+
+
+    public function globalAction()
+    {
+        if (Input::has('quote')) {
+            return $this->quoteMultiple();
+        }
+//        if (Input::has('confirm')) {
+//            return $this->confirmMultiple();
+//        }
+
+    }
+
+    public function quoteMultiple()
+    {
+        if (count(Input::get('items')) == 0) {
+            return Redirect::route('booking_list');
+        }
+        $items = BookingItem::query()
+            ->whereIn('id', Input::get('items'))
+            ->with('booking')
+            ->get();
+
+        $invoice = $this->createQuoteFromBookingItems($items);
+
+        return Redirect::route('invoice_modify', $invoice->id)->with('mSuccess', 'Le devis a été créé');
     }
 
 }
