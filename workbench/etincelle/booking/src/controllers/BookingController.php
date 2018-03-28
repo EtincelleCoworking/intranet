@@ -838,6 +838,21 @@ class BookingController extends Controller
     {
         $booking_item = $booking_items[0];
 
+        $by_ressources = array();
+        $users_ids = array();
+
+        foreach ($booking_items as $booking_item) {
+            if (!isset($by_ressources[$booking_item->ressource_id])) {
+                $by_ressources[$booking_item->ressource_id] = array();
+            }
+            $by_ressources[$booking_item->ressource_id][] = $booking_item;
+            $users_ids[$booking_item->booking->user_id] = true;
+        }
+
+        if (count($users_ids) > 1) {
+            throw new \Exception('Toutes les réservations doivent être associées au même utilisateur pour faire un devis.');
+        }
+
         $organisation = $booking_item->booking->organisation;
         $user = $booking_item->booking->user;
 
@@ -862,14 +877,7 @@ class BookingController extends Controller
         $invoice->save();
 
         $vat = VatType::where('value', 20)->first();
-        $by_ressources = array();
 
-        foreach ($booking_items as $booking_item) {
-            if (!isset($by_ressources[$booking_item->ressource_id])) {
-                $by_ressources[$booking_item->ressource_id] = array();
-            }
-            $by_ressources[$booking_item->ressource_id][] = $booking_item;
-        }
 
         $line_index = 1;
         foreach ($by_ressources as $ressource_id => $booking_items) {
@@ -969,7 +977,7 @@ ORDER BY room ASC , booking_item.start_at ASC ', $day, $day, $location)));
             $html .= '<table width="100%"><tbody>';
             foreach ($meetings as $timerange => $meeting_data) {
                 //$html .= sprintf('<tr><td width="1%%" nowrap="nowrap"><span style="color: #999999; font-size:30px;">%s&nbsp;</span></td><td><span style="font-size:60px;">%s</span></td></tr>', $timerange, $title);
-                $html .= sprintf('<tr><td><div style="color: #999999; font-size:30px; ">%s</div><div style="font-size:55px;text-overflow: ellipsis;">%s</div>', $timerange, $title);
+                $html .= sprintf('<tr><td><div style="color: #999999; font-size:30px; ">%s</div><div style="font-size:55px;text-overflow: ellipsis;">%s</div>', $timerange, $meeting_data['title']);
                 if ($meeting_data['wifi_login']) {
                     //$html .= sprintf('<p><b>WIFI</b> Identifiant: %s Mot de passe: %s</p>', $meeting_data['wifi_login'], $meeting_data['wifi_password']);
                 }
@@ -983,8 +991,7 @@ ORDER BY room ASC , booking_item.start_at ASC ', $day, $day, $location)));
             $pages[] = $html;
         }
 
-        echo $pages[0];
-        exit;
+
         $pdf = App::make('snappy.pdf');
         $output = $pdf->getOutputFromHtml($pages,
             array('orientation' => 'Landscape',
@@ -1116,9 +1123,13 @@ ORDER BY room ASC , booking_item.start_at ASC ', $day, $day, $location)));
         $items = BookingItem::query()
             ->whereIn('id', Input::get('items'))
             ->with('booking')
+            ->orderBy('start_at', 'ASC')
             ->get();
-
-        $invoice = $this->createQuoteFromBookingItems($items);
+        try {
+            $invoice = $this->createQuoteFromBookingItems($items);
+        } catch (\Exception $e) {
+            return Redirect::route('booking_list')->with('mError', $e->getMessage());
+        }
 
         return Redirect::route('invoice_modify', $invoice->id)->with('mSuccess', 'Le devis a été créé');
     }
