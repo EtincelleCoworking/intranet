@@ -15,7 +15,7 @@
                 @if(Auth::id() == $user->id)
                     Mon profil
                 @else
-                    Modification de {{ $user->fullname }}
+                    Modification de {{ $user->fullname }} &lt;{{ $user->email }}&gt;
                 @endif
             </h2>
         </div>
