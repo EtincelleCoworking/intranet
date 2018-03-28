@@ -72,7 +72,7 @@ class PastTimeController extends BaseController
         }
         if (Session::has('filtre_pasttime.start')) {
             $date_filtre_start = Session::get('filtre_pasttime.start');
-            $date_filtre_end = Session::get('filtre_pasttime.end');
+            $date_filtre_end = Session::get('filtre_pasttime.end', date('Y-m-t'));
         } else {
             $date_filtre_start = date('Y-m-01');
             $date_filtre_end = date('Y-m-t');
