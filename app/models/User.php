@@ -410,9 +410,9 @@ class User extends Eloquent implements UserInterface, RemindableInterface
 
     public static function SplitNameEmail($data)
     {
-        if (preg_match('/^(.+)\s+([a-zA-Z0-9_.+-]+@[a-zA-Z0-9-]+.[a-zA-Z]+)$/', trim($data), $tokens)) {
-            $result = self::SplitName($tokens[1]);
-            $result['email'] = strtolower($tokens[2]);
+        if (preg_match('/^((.+)\s+)?<?([a-zA-Z0-9_.+-]+@[a-zA-Z0-9-]+.[a-zA-Z]+)>?$/', trim($data), $tokens)) {
+            $result = self::SplitName($tokens[2]);
+            $result['email'] = strtolower($tokens[3]);
             return $result;
         }
         return false;

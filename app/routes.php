@@ -86,6 +86,7 @@ Route::group(['before' => 'superadmin'], function() {
     Route::get('/admin/{target_period?}', array('as' => 'admin_dashboard', 'uses' => 'DashboardController@admin'))->where(array('target_period' => '^[0-9]{4}-[0-9]{2}$'));
 
     Route::get('/user/add', array('as' => 'user_add', 'uses' => 'UserController@add'));
+    Route::post('/user/add_raw', array('as' => 'user_add_raw', 'uses' => 'UserController@add_raw'));
 	Route::get('/user/login-as/{id}', array('as' => 'user_login_as', 'uses' => 'UserController@login_as'));
 	Route::post('/user/add', array('as' => 'user_add_check', 'uses' => 'UserController@add_check'));
 	Route::get('/user/list', array('as' => 'user_list', 'uses' => 'UserController@liste'));

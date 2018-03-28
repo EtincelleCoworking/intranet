@@ -6,13 +6,20 @@
 
 @section('breadcrumb')
     <div class="row wrapper border-bottom white-bg page-heading">
-        <div class="col-sm-4">
+        <div class="col-sm-6">
             <h2>Utilisateurs</h2>
         </div>
-        <div class="col-sm-8">
+        <div class="col-sm-6">
             @if (Auth::user()->isSuperAdmin())
                 <div class="title-action">
-                    <a href="{{ URL::route('user_add') }}" class="btn btn-primary">Ajouter un utilisateur</a>
+                    {{ Form::open(array('route' => array('user_add_raw'))) }}
+                    <div class="input-group">
+                        {{ Form::text('content', null, array('class' => 'form-control')) }}
+                        <span class="input-group-btn">
+                                {{ Form::submit('Ajouter', array('class' => 'btn btn-primary')) }}
+                                </span>
+                    </div>
+                    {{ Form::close() }}
                 </div>
             @endif
         </div>

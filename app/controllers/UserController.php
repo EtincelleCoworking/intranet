@@ -217,6 +217,27 @@ order by invoices.date_invoice desc
         return View::make('user.add');
     }
 
+    public function add_raw()
+    {
+        $data = User::SplitNameEmail(Input::get('content'));
+        if(!$data){
+            return Redirect::route('user_add');
+        }
+        $email = strtolower($data['email']);
+        $user = User::where('email', '=', $email)->first();
+        if ($user) {
+            return Redirect::route('user_modify', $user->id)->with('mError', 'Un utilisateur existe déjà avec cette email');
+        }
+        $user = new User();
+        $user->firstname = $data['firstname'];
+        $user->lastname = $data['lastname'];
+        $user->email = $data['email'];
+        $user->password = Hash::make('etincelle');
+        $user->default_location_id = Auth::user()->default_location_id;
+        $user->save();
+        return Redirect::route('user_modify', $user->id)->with('mSuccess', 'Cet utilisateur a bien été ajouté');
+    }
+
     /**
      * Add User check
      */
