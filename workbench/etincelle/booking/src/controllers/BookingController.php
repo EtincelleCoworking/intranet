@@ -881,7 +881,7 @@ class BookingController extends Controller
 
         $line_index = 1;
         foreach ($by_ressources as $ressource_id => $booking_items) {
-//            $booking_item = $booking_items[0];
+            $booking_item = $booking_items[0];
             $ressource = $booking_item->ressource;
             $invoice_line = new InvoiceItem();
 
