@@ -48,118 +48,6 @@ class BookingController extends Controller
         return View::make('booking::modify', array('booking_item' => $item));
     }
 
-//    public function create()
-//    {
-//        $id = Input::get('id');
-//        $messages = array();
-//        if (!preg_match('#^[0-9]{2}/[0-9]{2}/[0-9]{4}$#', Input::get('date'))) {
-//            $messages['date'] = 'La date doit être renseignée';
-//        }
-//        if (!preg_match('#^[0-9]{2}:[0-9]{2}$#', Input::get('start'))) {
-//            $messages['start'] = 'L\'heure de début doit être renseignée';
-//        }
-//        if (!preg_match('#^[0-9]{2}:[0-9]{2}$#', Input::get('end'))) {
-//            $messages['end'] = 'L\'heure de fin doit être renseignée';
-//        }
-//        $rooms = Input::get('rooms');
-//        if (empty($rooms)) {
-//            $messages['rooms'] = 'La salle doit être renseignée';
-//        } else {
-//            if (!Auth::user()->isSuperAdmin()) {
-//                $start = newDateTime(Input::get('date'), Input::get('start'));
-//                $end = newDateTime(Input::get('date'), Input::get('end'));
-//
-//                $items = BookingItem::where('start_at', '<', $end->format('Y-m-d H:i:s'))
-//                    ->where(DB::raw('DATE_ADD(start_at, INTERVAL duration MINUTE)'), '>', $start->format('Y-m-d H:i:s'))
-//                    ->whereIn('ressource_id', Input::get('rooms'))
-//                    ->where('id', '!=', $id)
-//                    ->get();
-//                foreach ($items as $conflict) {
-//                    if (!isset($messages['start'])) {
-//                        $messages['start'] = '';
-//                    }
-//                    $messages['start'] .= sprintf('La salle %s est déjà réservée sur ce créneau' . "\n", $conflict->ressource->name);
-//                }
-//            }
-//        }
-//        $start_at = newDateTime(Input::get('date'), Input::get('start'));
-//        if (!Auth::user()->isSuperAdmin() && ($start_at->format('Y-m-d H:i:s') < (new \DateTime())->format('Y-m-d H:i:s'))) {
-//            $messages['start'] = 'Vous ne pouvez pas réserver une salle dans le passé';
-//        }
-//        if (count($messages)) {
-//            return Response::json(array(
-//                'status' => 'KO',
-//                'messages' => $messages
-//            ));
-//
-//        }
-//
-//        $booking_items = array();
-//        if ($id) {
-//            $booking_item = BookingItem::whereId($id)->with('booking')->first();
-//            if (!$booking_item) {
-//                App::abort(404);
-//            }
-//            $booking = $booking_item->booking;
-//            if (!Auth::user()->isSuperAdmin() && (Auth::id() != $booking->user_id)) {
-//                App::abort(403);
-//            }
-//            foreach ($booking->items()->where('start_at', '=', $booking_item->start_at)->get() as $item) {
-//                $booking_items[$item->ressource_id] = $item;
-//            }
-//            $is_new = false;
-//        } else {
-//            $booking = new Booking();
-//            $is_new = true;
-//        }
-//
-//        $booking->title = Input::get('title');
-//        $booking->content = Input::get('description');
-//        if (Auth::user()->isSuperAdmin()) {
-//            $booking->user_id = Input::get('user_id');
-//            $booking->organisation_id = Input::get('organisation_id');
-//            if (empty($booking->user_id)) {
-//                $booking->user_id = Auth::id();
-//            }
-//        } else {
-//            $booking->user_id = Auth::id();
-//        }
-//        $booking->is_private = Input::get('is_private', false);
-//
-//        if (!$booking->organisation_id) {
-//            $booking->organisation_id = null;
-//        }
-//        $booking->save();
-//
-//        $result = array();
-//        foreach (Input::get('rooms') as $ressource_id) {
-//            if (isset($booking_items[$ressource_id])) {
-//                $booking_item = $booking_items[$ressource_id];
-//                unset($booking_items[$ressource_id]);
-//            } else {
-//                $booking_item = new BookingItem();
-//                $booking_item->booking_id = $booking->id;
-//                $booking_item->ressource_id = $ressource_id;
-//            }
-//            $booking_item->start_at = $start_at;
-//            $booking_item->duration = getDuration(Input::get('start'), Input::get('end'));
-//            $booking_item->is_open_to_registration = Input::get('is_open_to_registration', false);
-//            $booking_item->save();
-//
-//            $result[] = $booking_item->toJsonEvent();
-//        }
-//        foreach ($booking_items as $booking_item) {
-//            $booking_item->delete();
-//        }
-//        try {
-//            $this->sendNewBookingNotification($booking, $is_new);
-//        } catch (\Exception $e) {
-//
-//        }
-//        return Response::json(array('status' => 'OK', 'events' => $result));
-//    }
-
-
     public function listAjax()
     {
         $result = array();
@@ -419,7 +307,7 @@ class BookingController extends Controller
             }
             if (Input::has('filtre_user_id')) {
                 Session::put('filtre_booking.user_id', Input::get('filtre_user_id'));
-                Session::put('filtre_booking.start', date('Y-m-d'));
+                Session::put('filtre_booking.start', Session::get('filtre_booking.start', date('Y-m-d')));
                 Session::put('filtre_booking.end', false);
                 $pagination_count = null;
             }
