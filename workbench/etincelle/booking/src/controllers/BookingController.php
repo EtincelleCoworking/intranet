@@ -864,11 +864,20 @@ class BookingController extends Controller
         $invoice->number = Invoice::next_invoice_number($invoice->type, $invoice->days);
         if ($organisation) {
             $invoice->organisation_id = $organisation->id;
-            $invoice->address = $organisation->fulladdress;
         } else {
-            $invoice->organisation_id = null;
-            $invoice->address = $user->fullname;
+            $organisation = new Organisation();
+            $organisation->name = $user->fullname;
+            $organisation->country_id = Country::where('name', '=', 'France')->first()->id;
+
+            $organisation->save();
+            $invoice->organisation_id = $organisation->id;
+
+            $link = new OrganisationUser();
+            $link->organisation_id = $organisation->id;
+            $link->user_id = $user->id;
+            $link->save();
         }
+        $invoice->address = $organisation->fulladdress;
 
         $date = new DateTime($invoice->date_invoice);
         $date->modify('+1 month');
