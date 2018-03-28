@@ -61,7 +61,7 @@ class PastTimeController extends BaseController
                     $date_end_explode = explode('/', Input::get('filtre_end'));
                     Session::put('filtre_pasttime.end', $date_end_explode[2] . '-' . $date_end_explode[1] . '-' . $date_end_explode[0]);
                 } else {
-                    Session::put('filtre_pasttime.end', date('Y-m-d'));
+                    Session::put('filtre_pasttime.end', date('Y-m-t'));
                 }
                 if (Input::has('filtre_toinvoice')) {
                     Session::put('filtre_pasttime.filtre_toinvoice', Input::get('filtre_toinvoice'));
@@ -72,7 +72,7 @@ class PastTimeController extends BaseController
         }
         if (Session::has('filtre_pasttime.start')) {
             $date_filtre_start = Session::get('filtre_pasttime.start');
-            $date_filtre_end = Session::get('filtre_pasttime.end', date('Y-m-t'));
+            $date_filtre_end = Session::get('filtre_pasttime.end');
         } else {
             $date_filtre_start = date('Y-m-01');
             $date_filtre_end = date('Y-m-t');
