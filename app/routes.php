@@ -12,11 +12,14 @@
 */
 Route::get('/', array('as' => 'dashboard', 'uses' => 'UserController@dashboard'));
 
+Route::get('/api/test', array('as' => 'api_test', 'uses' => 'ApiController@test'));
+
 Route::get('/api/1.0/location/{location_slug}/{key}', array('as' => 'api_location_update', 'uses' => 'ApiController@updateLocationIp'));
 //Route::get('/api/1.0/metric/{location_slug}/{key}/{metric_slug}/{metric_value}', array('as' => 'api_metric_update', 'uses' => 'ApiController@updateMetric'));
 Route::post('/api/1.0/offix/{location_slug}/{key}', array('as' => 'api_offix', 'uses' => 'ApiController@offixUpload'));
 Route::get('/api/1.0/offix/{secure_key}', array('as' => 'api_offix', 'uses' => 'ApiController@offixDownload'));
 Route::get('/api/1.0/user/{secure_key}/{email}', array('as' => 'api_user', 'uses' => 'ApiController@user'));
+
 
 Route::get('/login', array('as' => 'user_login', 'uses' => 'UserController@login'));
 Route::post('/login_check', array('before' => 'csrf', 'as' => 'user_login_check', 'uses' => 'UserController@login_check'));
@@ -123,6 +126,7 @@ Route::group(['before' => 'superadmin'], function() {
 	Route::get('/organisation/modify/{id}', array('as' => 'organisation_modify', 'uses' => 'OrganisationController@modify'))->where(array('id' => '[0-9]+'));
 	Route::post('/organisation/modify/{id}', array('as' => 'organisation_modify_check', 'uses' => 'OrganisationController@modify_check'))->where(array('id' => '[0-9]+'));
     Route::post('/organisation/{id}/add/user', array('as' => 'organisation_add_user', 'uses' => 'OrganisationController@add_user'))->where(array('id' => '[0-9]+'));
+    Route::post('/organisation/{id}/add/users', array('as' => 'organisation_add_users', 'uses' => 'OrganisationController@add_users'))->where(array('id' => '[0-9]+'));
 	Route::post('/organisation/user/add/{id}', array('as' => 'organisation_user_add', 'uses' => 'OrganisationController@user_add'))->where(array('id' => '[0-9]+'));
 	Route::get('/organisation/{organisation}/delete/user/{id}', array('as' => 'organisation_delete_user', 'uses' => 'OrganisationController@delete_user'))->where(array('organisation' => '[0-9]+', 'id' => '[0-9]+'));
     Route::get('/organisation/{id}/remind', array('as' => 'organisation_remind', 'uses' => 'OrganisationController@remind'))->where(array('id' => '[0-9]+'));
@@ -166,6 +170,7 @@ Route::group(['before' => 'superadmin'], function() {
     Route::get('/stats/spaces', array('as' => 'stats_spaces', 'uses' => 'StatsController@spaces'));
     Route::get('/stats/spaces/{space_slug}/{period}', array('as' => 'stats_spaces_details', 'uses' => 'StatsController@spaces_details'));
     Route::get('/stats/ressource/{ressource_id}', array('as' => 'stats_sales_per_ressource', 'uses' => 'StatsController@sales_per_ressource'));
+    Route::get('/stats/top_customers', array('as' => 'stats_top_customers', 'uses' => 'StatsController@top_customers'));
 
     Route::get('/tags', array('as' => 'tag_list', 'uses' => 'TagController@liste'));
     Route::get('/tag/add', array('as' => 'tag_add', 'uses' => 'TagController@add'));

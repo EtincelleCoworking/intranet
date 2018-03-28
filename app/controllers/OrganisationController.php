@@ -171,6 +171,50 @@ class OrganisationController extends BaseController
         }
     }
 
+    public function add_users($id)
+    {
+        $organisation = $this->dataExist($id);
+
+        if (Input::get('content')) {
+            foreach (explode("\n", Input::get('content')) as $line) {
+                $data = User::SplitNameEmail($line);
+                $email = strtolower($data['email']);
+                $user = User::where('email', '=', $email)->first();
+                if (!$user) {
+                    $user = new User();
+                    $user->firstname = $data['firstname'];
+                    $user->lastname = $data['lastname'];
+                    $user->email = $data['email'];
+                    $user->password = Hash::make('etincelle');
+                    $user->default_location_id = Auth::user()->default_location_id;
+                    $user->save();
+                }
+                $users[$user->id] = $user;
+            }
+
+            $already_linked = OrganisationUser::whereIn('user_id', array_keys($users))->where('organisation_id', $organisation->id)->get();
+            foreach ($already_linked as $linked_user) {
+                unset($users[$linked_user->user_id]);
+            }
+            $count = 0;
+            foreach ($users as $user) {
+                $link = new OrganisationUser();
+                $link->user_id = $user->id;
+                $link->organisation_id = $organisation->id;
+                $link->save();
+                $count++;
+            }
+
+            if ($count) {
+                return Redirect::route('organisation_modify', $organisation->id)->with('mSuccess', sprintf('%d utilisateur(s) ont étés ajoutés', $count));
+            }
+            return Redirect::route('organisation_modify', $organisation->id)->withErrors('Aucun utilisateur trouvé')->withInput();
+
+        } else {
+            return Redirect::route('organisation_modify', $organisation->id)->withInput();
+        }
+    }
+
     /**
      * User add
      */

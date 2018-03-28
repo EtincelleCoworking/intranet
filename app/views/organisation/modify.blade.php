@@ -127,6 +127,13 @@
                         </tfoot>
                     </table>
                     {{ Form::close() }}
+
+                    {{ Form::model($organisation, array('route' => array('organisation_add_users', $organisation->id))) }}
+                    {{ Form::label('content', 'Ajout rapide d\'utilisateurs') }}
+                    <p class="text-muted">Ajouter rapidement des utilisateurs dans l'intranet et les associée à cette organisation. <br />Format (1 par ligne): [prénom] [nom] [email]</p>
+                    {{ Form::textarea('content', null, array('class' => 'form-control')) }}
+                    {{ Form::submit('Ajouter', array('class' => 'btn btn-default')) }}
+                    {{ Form::close() }}
                 </div>
             </div>
         </div>

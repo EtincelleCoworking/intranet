@@ -83,6 +83,8 @@ class Ressource extends Eloquent
                      ->join('locations', 'ressources.location_id', '=', 'locations.id', 'left outer')
                      ->orderBy('locations.name', 'asc')
                      ->orderBy('ressources.order_index', 'asc')
+                     ->with('location')
+                     ->with('location.city')
                      ->orderBy('order_index', 'ASC')->get() as $ressource) {
             $location = (string)$ressource->location;
             if(empty($location)){

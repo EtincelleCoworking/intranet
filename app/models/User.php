@@ -407,4 +407,20 @@ class User extends Eloquent implements UserInterface, RemindableInterface
                 }
         }
     }
+
+    public static function SplitNameEmail($data)
+    {
+        if (preg_match('/^(.+)\s+([a-zA-Z0-9_.+-]+@[a-zA-Z0-9-]+.[a-zA-Z]+)$/', trim($data), $tokens)) {
+            $result = self::SplitName($tokens[1]);
+            $result['email'] = strtolower($tokens[2]);
+            return $result;
+        }
+        return false;
+    }
+
+    public static function SplitName($name)
+    {
+        $data = preg_split('/\s/', trim($name));
+        return array('firstname' => array_shift($data), 'lastname' => implode(' ', $data));
+    }
 }
