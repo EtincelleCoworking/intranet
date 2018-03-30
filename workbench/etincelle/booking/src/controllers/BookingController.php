@@ -888,6 +888,62 @@ ORDER BY room ASC , booking_item.start_at ASC ', $day, $day, $location)));
             $pages[] = $html;
         }
 
+        $pdf = App::make('snappy.pdf');
+        $output = $pdf->getOutputFromHtml($pages,
+            array('orientation' => 'Landscape',
+                'default-header' => false));;
+        return new \Illuminate\Http\Response($output, 200, array(
+            'Content-Type' => 'application/pdf',
+            'Content-Disposition' => sprintf('filename="%s_%s.pdf"', $day, $location)));
+        //attachment;
+    }
+
+    public function dailyPdfWifi($location, $day = null)
+    {
+        if (null == $day) {
+            $day = date('Y-m-d');
+        }
+
+
+        $datas = DB::select(DB::raw(sprintf('SELECT ressources.name AS room, concat(date_format( booking_item.start_at, "%%H:%%i" ) , " - ", date_format( booking_item.start_at + INTERVAL booking_item.duration
+MINUTE , "%%H:%%i" )) AS timerange, booking.title, 
+concat( users.firstname, " ", users.lastname ) AS contact,
+organisations.name as organisation, booking.wifi_login, booking.wifi_password
+FROM `booking_item`
+JOIN ressources ON booking_item.ressource_id = ressources.id
+JOIN locations ON ressources.location_id = locations.id
+JOIN booking ON booking_item.booking_id = booking.id
+JOIN users ON users.id = booking.user_id
+LEFT OUTER JOIN organisations on organisations.id = booking.organisation_id 
+WHERE booking_item.start_at > "%s 00:00:00"
+AND booking_item.start_at <= "%s 23:59:59"
+AND locations.slug = "%s"
+ORDER BY room ASC , booking_item.start_at ASC ', $day, $day, $location)));
+
+        $bookings = array();
+        //var_dump($datas); exit;
+
+        foreach ($datas as $data) {
+
+            $title = trim($data->title);
+            if (empty($title)) {
+                $title = $data->organisation;
+                if (!empty($title) && trim($data->contact) != '') {
+                    $title .= sprintf(' (%s)', $data->contact);
+                }
+            }
+            if (empty($title)) {
+                $title = $data->contact;
+            }
+            $bookings[$data->room][$data->timerange] = array(
+                'title' => $title,
+                'wifi_login' => $data->wifi_login,
+                'wifi_password' => $data->wifi_password,
+            );
+        }
+        $pages = array();
+
+
         foreach ($bookings as $room => $meetings) {
             foreach ($meetings as $timerange => $meeting_data) {
                 if ($meeting_data['wifi_login']) {
@@ -909,20 +965,20 @@ ORDER BY room ASC , booking_item.start_at ASC ', $day, $day, $location)));
                     $html .= '<p>&nbsp;</p>';
                     $html .= '<p>&nbsp;</p>';
                     $html .= '<p>&nbsp;</p>';
-                    $html .= sprintf('<p style="color: #cacaca">%s - %s</p>', $room, date('d/m/Y H:i', strtotime($day)));
+                    $html .= '<p>&nbsp;</p>';
+                    $html .= sprintf('<p style="color: #cacaca">%s - %s</p>', $room, date('d/m/Y ', strtotime($day)).$timerange);
                     $html .= '</div>';
                     $html .= '</body>';
                     $html .= '</html>';
                     $pages[] = $html;
-                    echo $html; exit;
                 }
             }
         }
 
-
         $pdf = App::make('snappy.pdf');
         $output = $pdf->getOutputFromHtml($pages,
-            array('orientation' => 'Landscape',
+            array(
+                //'orientation' => 'Landscape',
                 'default-header' => false));;
         return new \Illuminate\Http\Response($output, 200, array(
             'Content-Type' => 'application/pdf',
