@@ -888,6 +888,37 @@ ORDER BY room ASC , booking_item.start_at ASC ', $day, $day, $location)));
             $pages[] = $html;
         }
 
+        foreach ($bookings as $room => $meetings) {
+            foreach ($meetings as $timerange => $meeting_data) {
+                if ($meeting_data['wifi_login']) {
+                    $html = '
+        <html>
+            <head>
+                <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/></head>
+                <title>' . $location . ' - ' . $room . ' - ' . $day . '</title>
+            </head>
+            <body>
+            ';
+                    $html .= '<div class="page">';
+                    $html .= '<h1>Bienvenue chez Etincelle Coworking</h1>';
+                    $html .= '<p>Pour vous connecter au WIFI, sélectionnez le réseau "EtincelleCoworking" et utilisez les informations suivantes pour vous connecter:</p>';
+                    $html .= sprintf('<table><tr><td width="150">Identifiant</td><td>%s</td></tr>', $meeting_data['wifi_login']);
+                    $html .= sprintf('<tr><td width="150">Mot de passe</td><td>%s</td></tr></table>', $meeting_data['wifi_password']);
+                    $html .= '<p>Si vous rencontrez le moindre soucis de connexion, contactez nous au niveau de la zone d’accueil, un membre de l’équipe vous aidera à réussir cette opération.</p>';
+                    $html .= '<p>&nbsp;</p>';
+                    $html .= '<p>&nbsp;</p>';
+                    $html .= '<p>&nbsp;</p>';
+                    $html .= '<p>&nbsp;</p>';
+                    $html .= sprintf('<p style="color: #cacaca">%s - %s</p>', $room, date('d/m/Y H:i', strtotime($day)));
+                    $html .= '</div>';
+                    $html .= '</body>';
+                    $html .= '</html>';
+                    $pages[] = $html;
+                    echo $html; exit;
+                }
+            }
+        }
+
 
         $pdf = App::make('snappy.pdf');
         $output = $pdf->getOutputFromHtml($pages,

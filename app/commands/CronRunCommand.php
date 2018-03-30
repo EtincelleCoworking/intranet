@@ -164,6 +164,7 @@ where  subscription_user_id is null;');
         //endregion
 
         $this->everyFiveMinutes(array($this, 'sendSmsNotificationForCloseMeetings'));
+        $this->daily(array($this, 'generateMissingBookingKeyForUsers'));
         $this->hourly(function (){
             Artisan::call('odoo:update', array('--users' => true));
         });
@@ -508,4 +509,7 @@ group by booking.id
         return $result;
     }
 
+    protected function generateMissingBookingKeyForUsers(){
+        DB::statement('UPDATE users SET booking_key = md5(UUID())  WHERE booking_key IS NULL');
+    }
 }
