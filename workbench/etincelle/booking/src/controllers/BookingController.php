@@ -965,12 +965,12 @@ ORDER BY room ASC , booking_item.start_at ASC ', $day, $day, $location)));
 </ol></p>
 <table>
     <tr>
-        <td>Identifiant&nbsp;:&nbsp;</td>
-        <td>%wifi_login%</td>
+        <td style="font-size: 18pt">Identifiant&nbsp;:&nbsp;</td>
+        <td style="font-size: 18pt">%wifi_login%</td>
     </tr>
     <tr>
-        <td>Mot de passe&nbsp;:&nbsp;</td>
-        <td>%wifi_password%</td>
+        <td style="font-size: 18pt">Mot de passe&nbsp;:&nbsp;</td>
+        <td style="font-size: 18pt">%wifi_password%</td>
     </tr>
 </table>
 
@@ -978,8 +978,16 @@ ORDER BY room ASC , booking_item.start_at ASC ', $day, $day, $location)));
 <p>Si vous rencontrez le moindre souci de connexion, contactez un membre de l'équipe dans la zone d’accueil ou au 05 64 88 01 30 (renvoyé sur nos téléphones portables).</p>
 
 <p>&nbsp;</p>
+<p>Si tout fonctionne correctement, vous pouvez : 
+<ul>
+    <li>Aimer notre page Facebook: http://fb.me/EtincelleCoworking</li>
+    <li>Nous suivre sur Twitter: https://twitter.com/etincelle_tls</li>
+    <li>Laisser un avis sur Google: https://goo.gl/maps/GWtkDYT87JS2</li>
+    <li>Nous contacter par email via support@etincelle-coworking.com</li>
+</ul>
+</p>
 <p>&nbsp;</p>
-<p>&nbsp;</p>
+<p>Nous vous souhaitons une excellente réunion!</p>
 <p><small style="color: #999999">%room% - %day% %timeslot%</small></p>
 
 </div>
@@ -996,6 +1004,8 @@ EOS;
                     );
                     $html = str_replace(array_keys($macros), array_values($macros), $html);
                     $pages[] = $html;
+
+                    echo $html; exit;
                 }
             }
         }
