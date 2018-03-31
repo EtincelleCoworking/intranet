@@ -949,59 +949,73 @@ ORDER BY room ASC , booking_item.start_at ASC ', $day, $day, $location)));
                 if ($meeting_data['wifi_login']) {
                     $html = <<<EOS
 <html>
-            <head>
-                <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/></head>
-                <title>%location% - %room% - %day%</title>
-                <style type="text/css">
-                .footer {
-                position: absolute;
-                right: 0;
-                bottom: 0;
-                left: 0;
-                padding: 1rem;
-                background-color: #efefef;
-                text-align: right;
-            }
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/></head>
+    <title>%location% - %room% - %day%</title>
+    <style type="text/css">
+    .header {
+/*
+        position: absolute;
+        right: 0;
+        top: 0;
+        left: 0;
+*/
+        padding: 1rem;
+        background-color: #efefef;
+        text-align: left;
+    }
+    .footer {
+        position: absolute;
+        right: 0;
+        bottom: 0;
+        left: 0;
+        padding: 1rem;
+        background-color: #efefef;
+        text-align: right;
+    }
 </style>
-            </head>
-            <body>
-            <div class="page">
-<h1>Bienvenue chez Etincelle Coworking</h1>
-<h2>%title%</h2>
-<p>Pour vous connecter au WIFI:
-<ol>
-    <li>Sélectionnez le réseau "EtincelleCoworking" (réseau ouvert, sans mot de passe) </li>
-    <li>Une page d’identification devrait s’afficher avec le logo Etincelle Coworking. Si ce n’est pas le cas, ouvrez un navigateur internet et allez à l’adresse http://192.168.2.1:8000/</li>
-    <li>Utilisez les informations de connexion ci-dessous en respectant les majuscules et les minuscules.</li>
-</ol></p>
-<table>
-    <tr>
-        <td style="font-size: 18pt">Identifiant&nbsp;:&nbsp;</td>
-        <td style="font-size: 18pt">%wifi_login%</td>
-    </tr>
-    <tr>
-        <td style="font-size: 18pt">Mot de passe&nbsp;:&nbsp;</td>
-        <td style="font-size: 18pt">%wifi_password%</td>
-    </tr>
-</table>
-
-<p>NB: Cet accès est valable aujourd'hui uniquement (%day%).</p>
-<p>Si vous avez besoin d\'aide, contactez un membre de l'équipe dans la zone d’accueil ou au 05 64 88 01 30 (renvoyé sur nos téléphones portables).</p>
-
-<p>&nbsp;</p>
-<p>Si tout fonctionne correctement, vous pouvez : 
-<ul>
-    <li>Aimer notre page Facebook: http://fb.me/EtincelleCoworking</li>
-    <li>Nous suivre sur Twitter: https://twitter.com/etincelle_tls</li>
-    <li>Laisser un avis sur Google: https://goo.gl/maps/GWtkDYT87JS2</li>
-    <li>Nous contacter par email via support@etincelle-coworking.com</li>
-</ul>
-</p>
-<p>&nbsp;</p>
-<p>Nous vous souhaitons une excellente réunion!</p>
+</head>
+<body>
+<div class="header">
+    <img src="http://www.coworking-toulouse.com/wp-content/uploads/2015/04/etincelle-coworking-400x400.gif" height="85" width="85" style="float: right" />
+    <h1>%title%</h1>
+</div>
+<div class="page">
+    <h2>Bienvenue chez Etincelle Coworking</h2>
+    <p>Pour vous connecter au WIFI:
+    <ol>
+        <li>Sélectionnez le réseau "EtincelleCoworking" (réseau ouvert, sans mot de passe) </li>
+        <li>Une page d’identification devrait s’afficher avec le logo Etincelle Coworking. Si ce n’est pas le cas, ouvrez un navigateur internet et allez à l’adresse http://192.168.2.1:8000/</li>
+        <li>Utilisez les informations de connexion ci-dessous en respectant les majuscules et les minuscules.</li>
+    </ol></p>
+    <table>
+        <tr>
+            <td style="font-size: 18pt">Identifiant&nbsp;:&nbsp;</td>
+            <td style="font-size: 18pt">%wifi_login%</td>
+        </tr>
+        <tr>
+            <td style="font-size: 18pt">Mot de passe&nbsp;:&nbsp;</td>
+            <td style="font-size: 18pt">%wifi_password%</td>
+        </tr>
+    </table>
+    
+    <p>NB: Cet accès est valable aujourd'hui uniquement (%day%).</p>
+    <p>Si vous avez besoin d'aide, contactez un membre de l'équipe dans la zone d’accueil ou au 05 64 88 01 30 (renvoyé sur nos téléphones portables).</p>
+    
+    <p>&nbsp;</p>
+    <p>Si tout fonctionne correctement, vous pouvez : 
+    <ul>
+        <li>Aimer notre page Facebook: http://fb.me/EtincelleCoworking</li>
+        <li>Nous suivre sur Twitter: https://twitter.com/etincelle_tls</li>
+        <li>Laisser un avis sur Google: https://goo.gl/maps/GWtkDYT87JS2</li>
+        <li>Nous contacter par email via support@etincelle-coworking.com</li>
+    </ul>
+    </p>
+    <p>&nbsp;</p>
+    <p>Nous vous souhaitons une excellente réunion!</p>
 </div>
 <div class="footer">
-    <p><small style="color: #999999">%room% - %day% %timeslot%</small></p>
+    <small>%room% - %day% %timeslot%</small>
 </div>
 <div class="page-break"></div>
 </body></html>
