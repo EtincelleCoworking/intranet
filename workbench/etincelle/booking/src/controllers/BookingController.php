@@ -989,7 +989,7 @@ EOS;
                         '%location%' => $location,
                         '%room%' => $room,
                         '%day%' => date('d/m/Y', strtotime($day)),
-                        '%title%' => $title,
+                        '%title%' => $meeting_data['title'],
                         '%wifi_login%' => $meeting_data['wifi_login'],
                         '%wifi_password%' => $meeting_data['wifi_password'],
                         '%timeslot%' => $timerange,
