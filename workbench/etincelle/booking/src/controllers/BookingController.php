@@ -1005,10 +1005,9 @@ ORDER BY room ASC , booking_item.start_at ASC ', $day, $day, $location)));
     <p>&nbsp;</p>
     <p>Si tout fonctionne correctement, vous pouvez : 
     <ul>
-        <li>Aimer notre page Facebook: http://fb.me/EtincelleCoworking</li>
-        <li>Nous suivre sur Twitter: https://twitter.com/etincelle_tls</li>
-        <li>Laisser un avis sur Google: https://goo.gl/maps/GWtkDYT87JS2</li>
-        <li>Nous contacter par email via support@etincelle-coworking.com</li>
+        <li>Aimer notre page Facebook : http://fb.me/EtincelleCoworking</li>
+        <li>Nous suivre sur Twitter : https://twitter.com/etincelle_tls</li>
+        <li>Laisser un avis sur Google : https://goo.gl/4aavWs</li>
     </ul>
     </p>
     <p>&nbsp;</p>
