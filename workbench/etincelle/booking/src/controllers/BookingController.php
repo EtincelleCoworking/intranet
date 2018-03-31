@@ -977,30 +977,25 @@ ORDER BY room ASC , booking_item.start_at ASC ', $day, $day, $location)));
 <p>NB: Cet accès est valable aujourd'hui uniquement (%day%).</p>
 <p>Si vous rencontrez le moindre souci de connexion, contactez un membre de l'équipe dans la zone d’accueil ou au 05 64 88 01 30 (renvoyé sur nos téléphones portables).</p>
 
-<table>
-    <tr>
-        <td>Réservation&nbsp;:&nbsp;</td>
-        <td>%day% %timeslot%</td>
-    </tr>
-    <tr>
-        <td>Salle&nbsp;:&nbsp;</td>
-        <td>%room%</td>
-    </tr>
-</table>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<p><small style="color: #999999">%room% - %day% %timeslot%</small></p>
 
 </div>
+</body></html>
 EOS;
                     $macros = array(
                         '%location%' => $location,
                         '%room%' => $room,
-                        '%day%' => $day,
+                        '%day%' => date('d/m/Y', strtotime($day)),
+                        '%title%' => $title,
                         '%wifi_login%' => $meeting_data['wifi_login'],
                         '%wifi_password%' => $meeting_data['wifi_password'],
                         '%timeslot%' => $timerange,
                     );
                     $html = str_replace(array_keys($macros), array_values($macros), $html);
                     $pages[] = $html;
-
                 }
             }
         }
