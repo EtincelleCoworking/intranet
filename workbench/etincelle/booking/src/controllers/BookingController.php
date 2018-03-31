@@ -952,6 +952,17 @@ ORDER BY room ASC , booking_item.start_at ASC ', $day, $day, $location)));
             <head>
                 <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/></head>
                 <title>%location% - %room% - %day%</title>
+                <style type="text/css">
+                .footer {
+                position: absolute;
+                right: 0;
+                bottom: 0;
+                left: 0;
+                padding: 1rem;
+                background-color: #efefef;
+                text-align: right;
+            }
+</style>
             </head>
             <body>
             <div class="page">
@@ -975,7 +986,7 @@ ORDER BY room ASC , booking_item.start_at ASC ', $day, $day, $location)));
 </table>
 
 <p>NB: Cet accès est valable aujourd'hui uniquement (%day%).</p>
-<p>Si vous rencontrez le moindre souci de connexion, contactez un membre de l'équipe dans la zone d’accueil ou au 05 64 88 01 30 (renvoyé sur nos téléphones portables).</p>
+<p>Si vous avez besoin d\'aide, contactez un membre de l'équipe dans la zone d’accueil ou au 05 64 88 01 30 (renvoyé sur nos téléphones portables).</p>
 
 <p>&nbsp;</p>
 <p>Si tout fonctionne correctement, vous pouvez : 
@@ -988,9 +999,11 @@ ORDER BY room ASC , booking_item.start_at ASC ', $day, $day, $location)));
 </p>
 <p>&nbsp;</p>
 <p>Nous vous souhaitons une excellente réunion!</p>
-<p><small style="color: #999999">%room% - %day% %timeslot%</small></p>
-
 </div>
+<div class="footer">
+    <p><small style="color: #999999">%room% - %day% %timeslot%</small></p>
+</div>
+<div class="page-break"></div>
 </body></html>
 EOS;
                     $macros = array(
