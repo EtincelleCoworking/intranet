@@ -1004,8 +1004,6 @@ EOS;
                     );
                     $html = str_replace(array_keys($macros), array_values($macros), $html);
                     $pages[] = $html;
-
-                    echo $html; exit;
                 }
             }
         }
