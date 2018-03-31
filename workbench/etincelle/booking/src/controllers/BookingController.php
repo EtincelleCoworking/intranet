@@ -947,30 +947,60 @@ ORDER BY room ASC , booking_item.start_at ASC ', $day, $day, $location)));
         foreach ($bookings as $room => $meetings) {
             foreach ($meetings as $timerange => $meeting_data) {
                 if ($meeting_data['wifi_login']) {
-                    $html = '
-        <html>
+                    $html = <<<EOS
+<html>
             <head>
                 <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/></head>
-                <title>' . $location . ' - ' . $room . ' - ' . $day . '</title>
+                <title>%location% - %room% - %day%</title>
             </head>
             <body>
-            ';
-                    $html .= '<div class="page">';
-                    $html .= '<h1>Bienvenue chez Etincelle Coworking</h1>';
-                    $html .= '<p>Pour vous connecter au WIFI, sélectionnez le réseau "EtincelleCoworking" et utilisez les informations suivantes pour vous connecter:</p>';
-                    $html .= sprintf('<table><tr><td width="150">Identifiant</td><td>%s</td></tr>', $meeting_data['wifi_login']);
-                    $html .= sprintf('<tr><td width="150">Mot de passe</td><td>%s</td></tr></table>', $meeting_data['wifi_password']);
-                    $html .= '<p>Si vous rencontrez le moindre soucis de connexion, contactez nous au niveau de la zone d’accueil, un membre de l’équipe vous aidera à réussir cette opération.</p>';
-                    $html .= '<p>&nbsp;</p>';
-                    $html .= '<p>&nbsp;</p>';
-                    $html .= '<p>&nbsp;</p>';
-                    $html .= '<p>&nbsp;</p>';
-                    $html .= '<p>&nbsp;</p>';
-                    $html .= sprintf('<p style="color: #cacaca">%s - %s</p>', $room, date('d/m/Y ', strtotime($day)).$timerange);
-                    $html .= '</div>';
-                    $html .= '</body>';
-                    $html .= '</html>';
+            <div class="page">
+<h1>Bienvenue chez Etincelle Coworking</h1>
+<h2>%title%</h2>
+<p>Pour vous connecter au WIFI:
+<ol>
+    <li>Sélectionnez le réseau "EtincelleCoworking" (réseau ouvert, sans mot de passe) </li>
+    <li>Une page d’identification devrait s’afficher avec le logo Etincelle Coworking. Si ce n’est pas le cas, ouvrez un navigateur internet et allez à l’adresse http://192.168.2.1:8000/</li>
+    <li>Utilisez les informations de connexion ci-dessous en respectant les majuscules et les minuscules.</li>
+</ol></p>
+<table>
+    <tr>
+        <td>Identifiant&nbsp;:&nbsp;</td>
+        <td>%wifi_login%</td>
+    </tr>
+    <tr>
+        <td>Mot de passe&nbsp;:&nbsp;</td>
+        <td>%wifi_password%</td>
+    </tr>
+</table>
+
+<p>NB: Cet accès est valable aujourd'hui uniquement (%day%).</p>
+<p>Si vous rencontrez le moindre souci de connexion, contactez un membre de l'équipe dans la zone d’accueil ou au 05 64 88 01 30 (renvoyé sur nos téléphones portables).</p>
+
+<table>
+    <tr>
+        <td>Réservation&nbsp;:&nbsp;</td>
+        <td>%day% %timeslot%</td>
+    </tr>
+    <tr>
+        <td>Salle&nbsp;:&nbsp;</td>
+        <td>%room%</td>
+    </tr>
+</table>
+
+</div>
+EOS;
+                    $macros = array(
+                        '%location%' => $location,
+                        '%room%' => $room,
+                        '%day%' => $day,
+                        '%wifi_login%' => $meeting_data['wifi_login'],
+                        '%wifi_password%' => $meeting_data['wifi_password'],
+                        '%timeslot%' => $timerange,
+                    );
+                    $html = str_replace(array_keys($macros), array_values($macros), $html);
                     $pages[] = $html;
+
                 }
             }
         }
