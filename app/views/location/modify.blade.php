@@ -42,7 +42,12 @@
                             {{ Form::label('sales_presentation', 'Présentation commerciale') }}
                             <p>{{ Form::textarea('sales_presentation', null, array('class' => 'form-control', 'rows' => '15')) }}</p>
                         </div>
-
+                        <div class="col-md-6">
+                            <p>
+                                {{ Form::checkbox('enabled', true) }}
+                                {{ Form::label('enabled', 'Actif') }}
+                            </p>
+                        </div>
                     </div>
                     <div class="hr-line-dashed"></div>
                     <div class="form-group">

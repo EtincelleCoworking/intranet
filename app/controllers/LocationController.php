@@ -48,6 +48,8 @@ class LocationController extends BaseController
             $location->coworking_capacity = Input::get('coworking_capacity');
             $location->default_business_terms = Input::get('default_business_terms');
             $location->sales_presentation = Input::get('sales_presentation');
+            $location->enabled = (bool)Input::get('enabled');
+
             if ($location->save()) {
                 return Redirect::route('location_list')->with('mSuccess', 'Ce site a bien été modifiée');
             } else {

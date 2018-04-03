@@ -6,10 +6,22 @@ $target_year = substr($target_period, 0, 4);
 @section('content')
 
     @if (Auth::user()->isSuperAdmin())
+
+        <div class="row">
+            <div class="col-lg-12">
+                <?php
+                for ($i = 11; $i >= 0; $i--) {
+                    $when = strtotime(sprintf('-%d month', $i));
+                    $period = date('Y-m', $when);
+                    $activeStr = ($target_period == $period) ? ' btn-primary' : ' btn-default';
+                    printf('<a href="%s" class="btn btn-xs%s">%s</a>' . "\n", URL::route('admin_dashboard', array('target_period' => $period)), $activeStr, date('m/Y', $when));
+                }
+                ?>
+            </div>
+        </div>
         <div class="row">
             <div class="col-lg-3 col-md-4 col-sm-4 col-xs-4"></div>
             <div class="col-lg-3 col-md-4 col-sm-4 col-xs-4"></div>
-
             <div class="col-lg-3 col-md-4 col-sm-4 col-xs-4">
                 @include('partials.pending.component', array('target_period' => $target_period))
             </div>
@@ -174,73 +186,94 @@ $target_year = substr($target_period, 0, 4);
 
 
                         </div>
-                        <div class="row">
-                            @if(isset($ressources[$location]))
-                                <?php
-                                foreach($ressources[$location] as $ressource_id => $ressource_data){
-                                $ressource_stats = Ressource::getStatForRessource($ressource_id);
-                                if(
-                                (in_array($ressource_data['ressource_kind_id'], array(RessourceKind::TYPE_MEETING_ROOM, RessourceKind::TYPE_PRIVATE_OFFICE))
-                                    && ($ressource_data['is_bookable'] || ($data->amount != 0)))
-                                || !in_array($ressource_data['ressource_kind_id'], array(RessourceKind::TYPE_MEETING_ROOM, RessourceKind::TYPE_PRIVATE_OFFICE))){
-                                $data = array_shift($ressource_stats);
-                                while (is_object($data) && ($data->occurs_at != $target_period && (count($ressource_stats) > 0))) {
-                                    $data = array_shift($ressource_stats);
-                                }
-                                if (!is_object($data) || ($data->occurs_at != $target_period)) {
-                                    $data = new stdClass();
-                                    $data->busy_rate = 0;
-                                    $data->amount = 0;
-                                }
-                                ?>
-                                <div class="col-lg-4">
-                                    <div class="panel panel-default">
-                                        <div class="panel-heading">
-                                            {{ $ressource_data['name'] }}
-                                        </div>
-                                        <div class="panel-body">
-                                            <h2>{{ number_format($data->busy_rate, 0, ',', '.') }}%</h2>
-                                            <div class="progress progress-mini">
-                                                @if($ressource_data['ressource_kind_id'] == RessourceKind::TYPE_MEETING_ROOM)
-                                                    <div class="progress">
-                                                        <div style="width: {{ number_format($data->busy_rate, 0, ',', '.') }}%"
-                                                             aria-valuemax="100" aria-valuemin="0"
-                                                             aria-valuenow="{{ number_format($data->busy_rate, 0, ',', '') }}"
-                                                             role="progressbar" class="progress-bar
+                        <div class="panel panel-default">
+                            <div class="panel-heading">
+                                Coworking
+                            </div>
+                            <div class="panel-body">
+                            </div>
+                        </div>
+                        <div class="panel panel-default">
+                            <div class="panel-heading">
+                                Location de salle
+                            </div>
+                            <div class="panel-body">
+
+                                <div class="row">
+                                    @if(isset($ressources[$location]))
+                                        <?php
+                                        foreach($ressources[$location] as $ressource_id => $ressource_data){
+                                        $ressource_stats = Ressource::getStatForRessource($ressource_id);
+                                        if(
+                                        (in_array($ressource_data['ressource_kind_id'], array(RessourceKind::TYPE_MEETING_ROOM, RessourceKind::TYPE_PRIVATE_OFFICE))
+                                            && ($ressource_data['is_bookable']/* || ($data->amount != 0)*/))
+                                        || !in_array($ressource_data['ressource_kind_id'], array(RessourceKind::TYPE_MEETING_ROOM, RessourceKind::TYPE_PRIVATE_OFFICE))){
+                                        $data = array_shift($ressource_stats);
+                                        while (is_object($data) && ($data->occurs_at != $target_period && (count($ressource_stats) > 0))) {
+                                            $data = array_shift($ressource_stats);
+                                        }
+                                        if (!is_object($data) || ($data->occurs_at != $target_period)) {
+                                            $data = new stdClass();
+                                            $data->busy_rate = 0;
+                                            $data->amount = 0;
+                                        }
+                                        ?>
+                                        <div class="col-lg-4">
+                                            <div class="panel panel-default">
+                                                <div class="panel-heading">
+                                                    {{ $ressource_data['name'] }}
+                                                </div>
+                                                <div class="panel-body">
+                                                    <h2>{{ number_format($data->busy_rate, 0, ',', '.') }}%</h2>
+                                                    <div class="progress progress-mini">
+                                                        @if($ressource_data['ressource_kind_id'] == RessourceKind::TYPE_MEETING_ROOM)
+                                                            <div class="progress">
+                                                                <div style="width: {{ number_format($data->busy_rate, 0, ',', '.') }}%"
+                                                                     aria-valuemax="100" aria-valuemin="0"
+                                                                     aria-valuenow="{{ number_format($data->busy_rate, 0, ',', '') }}"
+                                                                     role="progressbar" class="progress-bar
 @if($data->busy_rate > 60)
-                                                                progress-bar-primary
+                                                                        progress-bar-primary
 @elseif($data->busy_rate > 30)
-                                                                progress-bar-warning
+                                                                        progress-bar-warning
 @else
-                                                                progress-bar-danger
+                                                                        progress-bar-danger
 @endif
-                                                                "><span class="sr-only">{{ number_format($data->busy_rate, 0, ',', '.') }}
-                                                                %</span>
-                                                            {{ number_format($data->busy_rate, 0, ',', '.') }}%
-                                                        </div>
+                                                                        "><span class="sr-only">{{ number_format($data->busy_rate, 0, ',', '.') }}
+                                                                        %</span>
+                                                                    {{ number_format($data->busy_rate, 0, ',', '.') }}%
+                                                                </div>
+                                                            </div>
+                                                        @else
+                                                            -
+                                                        @endif
                                                     </div>
-                                                @else
-                                                    -
-                                                @endif
+                                                </div>
+                                                <div class="panel-footer">
+                                                    {{ number_format($data->amount, 0, ',', '.') }}€ HT
+                                                </div>
+
+
                                             </div>
+
+
                                         </div>
-                                        <div class="panel-footer">
-                                            {{ number_format($data->amount, 0, ',', '.') }}€ HT
-                                        </div>
-
-
-                                    </div>
-
+                                        <?php
+                                        }
+                                        }
+                                        ?>
+                                    @endif
 
                                 </div>
-                                <?php
-                                }
-                                }
-                                ?>
-                            @endif
-
+                            </div>
                         </div>
-
+                        <div class="panel panel-default">
+                            <div class="panel-heading">
+                                Bureaux privatifs
+                            </div>
+                            <div class="panel-body">
+                            </div>
+                        </div>
                     </div>
                 </div>
             @endforeach

@@ -73,12 +73,10 @@
                                 </td>
                                 <td class="col-md-1" align="right">{{ $ressource->amount }}€</td>
                                 <td class="col-md-2">
-                                    <!--
                                     <a href="{{ URL::route('ressource_modify', $ressource->id) }}"
                                        class="btn btn-primary btn-xs">Modifier</a>
-                                       -->
                                     <a href="{{ URL::route('stats_sales_per_ressource', $ressource->id) }}"
-                                       class="btn btn-primary btn-xs">Stats</a>
+                                       class="btn btn-default btn-xs">Stats</a>
                                     @if($ressource->is_bookable && $ressource->ressource_kind_id == RessourceKind::TYPE_MEETING_ROOM)
                                         <a href="{{ URL::route('ressource_status', $ressource->id) }}"
                                            class="btn btn-default btn-xs" target="_blank">iPad</a>
