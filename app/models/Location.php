@@ -9,14 +9,12 @@ class Location extends Eloquent
      * Rules
      */
     public static $rules = array(
-        'name' => 'required|min:1'
     );
 
     /**
      * Rules Add
      */
     public static $rulesAdd = array(
-        'name' => 'required|min:1|unique:Location'
     );
 
     public function ips()
