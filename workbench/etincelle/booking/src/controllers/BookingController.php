@@ -816,33 +816,37 @@ class BookingController extends Controller
                 $invoice_line->invoice_id = $invoice->id;
                 $invoice_line->ressource_id = $ressource_id;
 
-                $map = array();
-                $map['%ressource.name%'] = $ressource->name;
-                $map['%ressource.description%'] = $ressource->description;
-                $map['%ressource.sales_presentation%'] = $ressource->sales_presentation;
 
-                $template = '<p><b>%ressource.name%</b> %ressource.description%<br />%ressource.sales_presentation%</p>';
 
-                $invoice_line->text = str_replace(array_keys($map), array_values($map), $template);
-
+                $booking_text = '';
                 if (count($booking_items) == 1) {
                     $booking_item = array_shift($booking_items);
                     $start = new DateTime($booking_item->start_at);
                     $end = new DateTime($booking_item->start_at);
                     $end->modify(sprintf('+%d minutes', $booking_item->duration));
-                    $invoice_line->text .= sprintf("<p><b>Réservation le %s de %s à %s.</b>", $start->format('d/m/Y'), $start->format('H:i'), $end->format('H:i'));
+                    $booking_text = sprintf("<p><b>Réservation le %s de %s à %s.</b>", $start->format('d/m/Y'), $start->format('H:i'), $end->format('H:i'));
                     $invoice_line->amount += min(7, $booking_item->duration / 60) * $ressource->amount;
                 } else {
-                    $invoice_line->text .= '<p><b>Réservation des créneaux suivants :<ul>';
+                    $booking_text = '<p><b>Réservation des créneaux suivants :<ul>';
                     foreach ($booking_items as $booking_item) {
                         $start = new DateTime($booking_item->start_at);
                         $end = new DateTime($booking_item->start_at);
                         $end->modify(sprintf('+%d minutes', $booking_item->duration));
-                        $invoice_line->text .= sprintf("<li>%s de %s à %s</li>", $start->format('d/m/Y'), $start->format('H:i'), $end->format('H:i'));
+                        $booking_text .= sprintf("<li>%s de %s à %s</li>", $start->format('d/m/Y'), $start->format('H:i'), $end->format('H:i'));
                         $invoice_line->amount += min(7, $booking_item->duration / 60) * $ressource->amount;
                     }
-                    $invoice_line->text .= '</ul></b></p>';
+                    $booking_text .= '</ul></b></p>';
                 }
+
+                $map = array();
+                $map['%ressource.name%'] = $ressource->name;
+                $map['%ressource.description%'] = $ressource->description;
+                $map['%ressource.sales_presentation%'] = $ressource->sales_presentation;
+                $map['%booking_text%'] = $booking_text;
+
+                $template = '<b>%ressource.name%</b> %ressource.description%%booking_text%<p>%ressource.sales_presentation%</p>';
+
+                $invoice_line->text = str_replace(array_keys($map), array_values($map), $template);
                 $invoice_line->vat_types_id = $vat->id;
                 $invoice_line->save();
             }
