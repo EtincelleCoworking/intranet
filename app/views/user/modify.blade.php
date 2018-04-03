@@ -317,7 +317,7 @@
 
                 </div>
             </div>
-            @if($subscription_stats)
+            @if(isset($subscription_stats))
                 <div class="col-md-6">
                     <div class="ibox ">
                         <div class="ibox-title">
