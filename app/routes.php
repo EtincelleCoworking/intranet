@@ -94,6 +94,10 @@ Route::group(['before' => 'superadmin'], function() {
 	Route::get('/user/reset', array('as' => 'user_filter_reset', 'uses' => 'UserController@cancelFilter'));
 	Route::get('/user/slack/{id}', array('as' => 'user_invite_slack', 'uses' => 'UserController@slackInvite'));
 
+    Route::get('/locations', array('as' => 'location_list', 'uses' => 'LocationController@liste'));
+    Route::get('/location/modify/{id}', array('as' => 'location_modify', 'uses' => 'LocationController@modify'))->where(array('id' => '[0-9]+'));
+    Route::post('/location/modify/{id}', array('as' => 'location_modify_check', 'uses' => 'LocationController@modify_check'))->where(array('id' => '[0-9]+'));
+
 
     Route::get('/invoice/add/{type}', array('as' => 'invoice_add', 'uses' => 'InvoiceController@add'))->where(array('type' => '[A-Z]{1}'));
 	Route::get('/invoice/add/{type}/{organisation}', array('as' => 'invoice_add_organisation', 'uses' => 'InvoiceController@add'))->where(array('type' => '[A-Z]{1}', 'organisation' => '[0-9]+'));

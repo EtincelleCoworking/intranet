@@ -32,4 +32,10 @@ class LocationIp extends Eloquent
     {
         return $this->belongsTo('Location', 'id');
     }
+
+    public function getAge(){
+        $days = time() - strtotime($this->updated_at);
+        $days /= 24 * 60 * 60;
+        return $days;
+    }
 }

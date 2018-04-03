@@ -168,6 +168,7 @@
                     class="nav-label">Configuration</span> <span class="fa arrow"></span></a>
         <ul class="nav nav-second-level {{ ((Request::is('ressource*') || Request::is('country*') || Request::is('vat*') || Request::is('tag*')) ? '' : 'collapse') }}">
             <li{{ Request::is('ressource*') ? ' class="active"' : '' }}><a href="{{ URL::route('ressource_list') }}">Ressources</a>
+            <li{{ Request::is('location*') ? ' class="active"' : '' }}><a href="{{ URL::route('location_list') }}">Sites</a>
             </li>
             <li{{ (Request::is('country*') or Request::is('countries*')) ? ' class="active"' : '' }}><a
                         href="{{ URL::route('country_list') }}">Pays</a></li>

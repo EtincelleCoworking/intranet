@@ -19,6 +19,11 @@ class Location extends Eloquent
         'name' => 'required|min:1|unique:Location'
     );
 
+    public function ips()
+    {
+        return $this->hasMany('LocationIp', 'id')->orderBy('updated_at', 'DESC');
+    }
+
     /**
      * Get list of ressources
      */

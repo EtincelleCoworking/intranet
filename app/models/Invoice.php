@@ -239,6 +239,15 @@ class Invoice extends Eloquent
         if (!empty($_ENV['organisation_status']) && !empty($_ENV['organisation_capital'])) {
             $html .= '<br />' . $_ENV['organisation_status'] . ' au capital de ' . $_ENV['organisation_capital'];
         }
+        if (!empty($_ENV['organisation_phone']) && !empty($_ENV['organisation_phone'])) {
+            $html .= '<br />Téléphone : ' . $_ENV['organisation_phone'];
+        }
+        if (!empty($_ENV['organisation_email']) && !empty($_ENV['organisation_email'])) {
+            $html .= '<br />Email : ' . $_ENV['organisation_email'];
+        }
+        if (!empty($_ENV['organisation_url']) && !empty($_ENV['organisation_url'])) {
+            $html .= '<br />Web : ' . $_ENV['organisation_url'];
+        }
         $html .= '</td>
                             <td stle="width:50%;" valign="top">
                                 <div style="border:1px solid #666; border-radius: 6px; -moz-border-radius: 6px; background-color: #ccc; vertical-align: middle; text-align: center; width: 205px; height: 20px; padding-top:4px; margin-left:130px;">' . (($this->type == 'F') ? 'Facture' : 'Devis') . ' en € n° ' . $this->ident . '</div>
@@ -261,9 +270,9 @@ class Invoice extends Eloquent
                                     <table cellpading="0" cellspacing="0" style="font-size:11px; width:100%; border:1px solid #666;">
                                         <thead>
                                             <tr>
-                                                <th style="width:500px;">DESIGNATION</th>
-                                                <th style="border-left:1px solid #666">TVA</th>
-                                                <th style="border-left:1px solid #666">MONTANT HT</th>
+                                                <th style="width:500px;" width="70%">DESIGNATION</th>
+                                                <th style="border-left:1px solid #666" width="15%">TVA</th>
+                                                <th style="border-left:1px solid #666" width="15%">MONTANT HT</th>
                                             </tr>
                                         </thead>
                                         <tbody>';
@@ -285,14 +294,24 @@ class Invoice extends Eloquent
             $vats[$item->vat->id]['montant'] += $calc_vat;
             $vat_total['ht'] += $item->amount;
             $vat_total['vat'] += $calc_vat;
+if($item->ressource_id){
 
             $html .= '
                                             <tr valign="top">
-                                                <td style="border-top:1px solid #666; padding:5px">' . nl2br($item->text) . '</td>
+                                                <td style="border-top:1px solid #666; padding:5px">' . $item->text . '</td>
                                                 <td style="border-top:1px solid #666; border-left:1px solid #666; text-align:right; padding:5px">' . $item->vat->value . '%</td>
                                                 <td style="border-top:1px solid #666; border-left:1px solid #666; text-align:right; padding:5px">' . sprintf('%0.2f', $item->amount) . '€</td>
                                             </tr>
                                             ';
+        }else{
+    $html .= '
+                                            <tr valign="top">
+                                                <td style="border-top:1px solid #666; padding:5px">' . nl2br($item->text) . '</td>
+                                                <td style="border-top:1px solid #666; border-left:1px solid #666; ">&nbsp;</td>
+                                                <td style="border-top:1px solid #666; border-left:1px solid #666; ">&nbsp;</td>
+                                            </tr>
+                                            ';
+    }
         }
         $html .= '
                                         </tbody>
@@ -338,8 +357,8 @@ class Invoice extends Eloquent
                                                     <table cellpading="0" cellspacing="0" style="font-size:11px; width:100%; border-radius: 6px; -moz-border-radius: 6px; border: 1px solid #666; padding:5px;">
                                                         <tbody>
                                                             <tr>
-                                                                <th style="width: 60%; text-align:left; border-right:1px solid #666;">Total HT</th>
-                                                                <td style="padding-left:5px; text-align:right; border-bottom:1px dashed #666">' . sprintf('%0.2f', $vat_total['ht']) . '€</td>
+                                                                <th style="width: 60%; text-align:left; border-right:1px solid #666;" width="50%">Total HT</th>
+                                                                <td style="padding-left:5px; text-align:right; border-bottom:1px dashed #666" width="50%">' . sprintf('%0.2f', $vat_total['ht']) . '€</td>
                                                             </tr>
                                                             <tr>
                                                                 <th style="text-align:left; border-right:1px solid #666;">Montant TVA</th>
@@ -365,11 +384,11 @@ class Invoice extends Eloquent
                         </tr>
                     </tbody>
                 </table>
-                <div style="position:absolute; bottom:0; width:100%;">
+                <div style="font-size:12px;">'.$this->business_terms.'</div>
                     <table cellpading="0" cellspacing="0" style="width:100%">
                         <tr>
                             <td style="width:45%" valign="top">
-                                <table cellpading="0" cellspacing="0" style="width:98%; font-size:11px; border-radius: 6px; -moz-border-radius: 6px; border: 1px solid #666; padding:5px;">
+                                <table cellpading="0" cellspacing="0" style="wwidth:98%; font-size:11px; border-radius: 6px; -moz-border-radius: 6px; border: 1px solid #666; padding:5px;">
                                     <thead>
                                         <tr>
                                             <th colspan="4" style="text-transform:uppercase">Relevé d\'Identité Bancaire</th>
@@ -425,7 +444,8 @@ class Invoice extends Eloquent
         return $html;
     }
 
-    public function __toString(){
+    public function __toString()
+    {
         return sprintf('<a href="%s">%s</a>',
             URL::route('invoice_modify', $this->id), $this->ident);
     }

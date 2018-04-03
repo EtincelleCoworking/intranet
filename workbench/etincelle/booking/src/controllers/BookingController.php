@@ -726,14 +726,27 @@ class BookingController extends Controller
     {
         $booking_item = $booking_items[0];
 
+        $ressources = array();
+        foreach (Ressource::with('location')->get() as $ressource) {
+            $ressources[$ressource->id] = $ressource;
+        }
+
+        $locations = array();
+        foreach (Location::get() as $location) {
+            $locations[$location->id] = $location;
+        }
+
         $by_ressources = array();
         $users_ids = array();
-
         foreach ($booking_items as $booking_item) {
-            if (!isset($by_ressources[$booking_item->ressource_id])) {
-                $by_ressources[$booking_item->ressource_id] = array();
+            $ressource = $ressources[$booking_item->ressource_id];
+            if (!isset($by_ressources[$ressource->location_id])) {
+                $by_ressources[$ressource->location_id] = array();
             }
-            $by_ressources[$booking_item->ressource_id][] = $booking_item;
+            if (!isset($by_ressources[$ressource->location_id][$booking_item->ressource_id])) {
+                $by_ressources[$ressource->location_id][$booking_item->ressource_id] = array();
+            }
+            $by_ressources[$ressource->location_id][$booking_item->ressource_id][] = $booking_item;
             $users_ids[$booking_item->booking->user_id] = true;
         }
 
@@ -777,26 +790,62 @@ class BookingController extends Controller
 
 
         $line_index = 1;
-        foreach ($by_ressources as $ressource_id => $booking_items) {
-            $booking_item = $booking_items[0];
-            $ressource = $booking_item->ressource;
+        foreach ($by_ressources as $location_id => $ressources_map) {
             $invoice_line = new InvoiceItem();
-
             $invoice_line->order_index = $line_index++;
             $invoice_line->invoice_id = $invoice->id;
-            $invoice_line->ressource_id = $ressource_id;
-
-            $invoice_line->text = sprintf('Location d\'espace de réunion - %s', $ressource->name);
-            foreach ($booking_items as $booking_item) {
-                $start = new DateTime($booking_item->start_at);
-                $end = new DateTime($booking_item->start_at);
-                $end->modify(sprintf('+%d minutes', $booking_item->duration));
-                $invoice_line->text .= sprintf("\n - %s de %s à %s", $start->format('d/m/Y'), $start->format('H:i'), $end->format('H:i'));
-                $invoice_line->amount += min(7, $booking_item->duration / 60) * $ressource->amount;
-            }
-            $invoice_line->invoice_id = $invoice->id;
+//            $invoice_line->ressource_id = $ressource_id;
+            $invoice_line->vat_types_id = null;
+            $invoice_line->text = $locations[$location_id]->sales_presentation;
             $invoice_line->vat_types_id = $vat->id;
             $invoice_line->save();
+
+            foreach ($ressources_map as $ressource_id => $booking_items) {
+                $booking_item = $booking_items[0];
+                $ressource = $ressources[$booking_item->ressource_id];
+                $invoice_line = new InvoiceItem();
+
+                if (empty($invoice->business_terms)) {
+                    if (!empty($ressource->location->default_business_terms)) {
+                        $invoice->business_terms = $ressource->location->default_business_terms;
+                        $invoice->save();
+                    }
+                }
+
+                $invoice_line->order_index = $line_index++;
+                $invoice_line->invoice_id = $invoice->id;
+                $invoice_line->ressource_id = $ressource_id;
+
+                $map = array();
+                $map['%ressource.name%'] = $ressource->name;
+                $map['%ressource.description%'] = $ressource->description;
+                $map['%ressource.sales_presentation%'] = $ressource->sales_presentation;
+
+                $template = '<p><b>%ressource.name%</b> %ressource.description%<br />%ressource.sales_presentation%</p>';
+
+                $invoice_line->text = str_replace(array_keys($map), array_values($map), $template);
+
+                if (count($booking_items) == 1) {
+                    $booking_item = array_shift($booking_items);
+                    $start = new DateTime($booking_item->start_at);
+                    $end = new DateTime($booking_item->start_at);
+                    $end->modify(sprintf('+%d minutes', $booking_item->duration));
+                    $invoice_line->text .= sprintf("<p><b>Réservation le %s de %s à %s.</b>", $start->format('d/m/Y'), $start->format('H:i'), $end->format('H:i'));
+                    $invoice_line->amount += min(7, $booking_item->duration / 60) * $ressource->amount;
+                } else {
+                    $invoice_line->text .= '<p><b>Réservation des créneaux suivants :<ul>';
+                    foreach ($booking_items as $booking_item) {
+                        $start = new DateTime($booking_item->start_at);
+                        $end = new DateTime($booking_item->start_at);
+                        $end->modify(sprintf('+%d minutes', $booking_item->duration));
+                        $invoice_line->text .= sprintf("<li>%s de %s à %s</li>", $start->format('d/m/Y'), $start->format('H:i'), $end->format('H:i'));
+                        $invoice_line->amount += min(7, $booking_item->duration / 60) * $ressource->amount;
+                    }
+                    $invoice_line->text .= '</ul></b></p>';
+                }
+                $invoice_line->vat_types_id = $vat->id;
+                $invoice_line->save();
+            }
         }
 
         return $invoice;

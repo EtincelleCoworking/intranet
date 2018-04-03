@@ -199,6 +199,7 @@ class InvoiceController extends BaseController
                 $invoice->sent_at = null;
             }
             $invoice->address = Input::get('address');
+            $invoice->business_terms = Input::get('business_terms');
             $invoice->details = Input::get('details');
             $invoice->on_hold = Input::get('on_hold');
             $invoice->is_lost = Input::get('is_lost');
@@ -250,6 +251,11 @@ class InvoiceController extends BaseController
             $invoice->date_invoice = $date_explode[2] . '-' . $date_explode[1] . '-' . $date_explode[0];
             $invoice->number = Invoice::next_invoice_number(Input::get('type'), $days);
             $invoice->address = Input::get('address');
+            $location = Location::orderBy('id', 'asc')->where('enabled', '=', true)->first();
+            if ($location) {
+                $invoice->business_terms = $location->default_business_terms;
+            }
+
             $invoice->on_hold = false;
 
             $date = new DateTime($invoice->date_invoice);
@@ -338,6 +344,10 @@ class InvoiceController extends BaseController
     {
         /** @var Invoice $invoice */
         $invoice = $this->dataExist($id, 'invoice_list');
+
+
+        //echo $invoice->getPdfHtml();exit;
+
         $pdf = App::make('snappy.pdf.wrapper');
         $pdf->loadHTML($invoice->getPdfHtml());
         return $pdf->stream($invoice->ident . '.pdf');

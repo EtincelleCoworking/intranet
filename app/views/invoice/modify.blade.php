@@ -105,6 +105,12 @@
                         </div>
                     </div>
                     <div class="row">
+                    <div class="col-md-12">
+                        {{ Form::label('business_terms', 'Conditions commerciales') }}
+                        <p>{{ Form::textarea('business_terms', $invoice->business_terms, array('class' => 'form-control', 'rows' => '5')) }}</p>
+                    </div>
+                </div>
+                    <div class="row">
                         <div class="hr-line-dashed"></div>
                         <div class="form-group">
                             {{ Form::submit('Enregistrer', array('class' => 'btn btn-success')) }}
