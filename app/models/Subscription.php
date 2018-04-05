@@ -31,12 +31,20 @@ class Subscription extends Eloquent
     /**
      * Rules
      */
-    public static $rules = array();
+    public static $rules = array(
+        'user_id' => 'required|min:1',
+        'organisation_id' => 'required|min:1',
+        'subscription_kind_id' => 'required|min:1',
+    );
 
     /**
      * Rules Add
      */
-    public static $rulesAdd = array();
+    public static $rulesAdd = array(
+        'user_id' => 'required|min:1',
+        'organisation_id' => 'required|min:1',
+        'subscription_kind_id' => 'required|min:1',
+    );
 
     public function getDaysBeforeRenewAttribute()
     {
