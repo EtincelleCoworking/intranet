@@ -15,7 +15,7 @@
     {{ HTML::style('css/style.css') }}
 
     <style type="text/css">
-        div .col-md-2 {
+        div .col-xs-2 {
             height: 100px;
             padding-top: 40px;
         }
@@ -27,7 +27,7 @@
 <div id="slide-digits">
     <div class="row text-center" style="margin-bottom: 20px">
         <?php for($i = 0; $i < 6; $i++): ?>
-        <div class="col-md-2" id="digit{{$i}}">
+        <div class="col-xs-2" id="digit{{$i}}">
             <div class="filled hidden">
                 <i class="fa fa-circle fa-2x"></i>
             </div>
@@ -40,27 +40,27 @@
 
     <div class="row text-center">
         <?php for($i = 1; $i < 10; $i++): ?>
-        <div class="col-md-4" style="margin-bottom: 10px">
+        <div class="col-xs-4" style="margin-bottom: 10px">
             <a href="#" class="btn btn-block btn-primary btn-lg btn-digit" data-value="{{$i}}">{{$i}}</a>
         </div>
         <?php endfor; ?>
-        <div class="col-md-4" style="margin-bottom: 10px">
+        <div class="col-xs-4" style="margin-bottom: 10px">
             <a href="#" class="btn btn-block btn-default btn-lg" id="btn-cancel">C</a>
         </div>
-        <div class="col-md-4" style="margin-bottom: 10px">
+        <div class="col-xs-4" style="margin-bottom: 10px">
             <a href="#" class="btn btn-block btn-primary btn-lg btn-digit" data-value="0">0</a>
         </div>
-        <div class="col-md-4" style="margin-bottom: 10px">
+        <div class="col-xs-4" style="margin-bottom: 10px">
             <a href="#" class="btn btn-block btn-default btn-lg" id="btn-empty">X</a>
         </div>
     </div>
 </div>
 <div id="slide-user" class="row hidden">
-    <div class="col-md-12">
+    <div class="col-xs-12">
         <div class="m-b-md">
             <img alt="image" class="img-circle circle-border" style="float: right" id="user-picture" src="">
         </div>
-        <h1 id="user-name">Sébastien Hordeaux</h1>
+        <h1 id="user-name"></h1>
         <h2 id="countdown">15:00</h2>
         <a href="#" class="btn btn-primary btn-lg" id="btn-add-time">+15 min</a>
         <a href="#" class="btn btn-primary btn-lg" id="btn-leave">Libérer</a>
@@ -69,11 +69,16 @@
 {{ HTML::script('js/jquery-2.1.1.js') }}
 
 <script type="application/javascript">
+    // -- code
     var currentIndex = 0;
     var code = [];
     var codeLength = 6;
-    var remainingMinuts = 15;
-    var remainingSeconds = 0;
+    // -- time
+    var started_at;
+    var requested_duration = 0;
+    var timerId;
+
+
     $().ready(function () {
         $('.btn-digit').click(newDigit);
         $('#btn-cancel').click(canceDigits);
@@ -90,9 +95,7 @@
             div.find('.empty').addClass('hidden');
             currentIndex++;
             if (currentIndex === codeLength) {
-                var user_code = code.join('');
                 emptyDigits();
-
                 $.ajax({
                     dataType: 'json',
                     url: '{{ URL::route('phonebox_auth', array('location_slug'=> $location_slug, 'key'=>$key, 'box_id'=>$box_id)) }}',
@@ -107,6 +110,8 @@
                         } else {
                             $('#user-name').text(data.username);
                             $('#user-picture').attr('src', data.picture);
+                            started_at = new Date().getTime();
+                            requested_duration = 15;
                             showUserSlide();
                         }
                     },
@@ -121,33 +126,36 @@
     }
 
     function refreshCountdown() {
-        if (remainingSeconds === 0) {
-            if (remainingMinuts > 0) {
-                remainingMinuts--;
-            } else {
-                // timeout
+        timerId = setInterval(function () {
+            var now = new Date().getTime();
+
+            var distance = started_at + requested_duration * 1000 * 60 - now;
+
+            var minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
+            var seconds = Math.floor((distance % (1000 * 60)) / 1000);
+
+            txt = minutes.toString() + ':';
+            if (seconds < 10) {
+                txt += '0';
+            }
+            txt += seconds.toString();
+            $('#countdown').text(txt);
+
+            if (distance < 0) {
+                clearInterval(timerId);
                 leave();
             }
-            remainingSeconds = 59;
-        } else {
-            remainingSeconds--;
-        }
-        var txt = remainingMinuts + ':';
-        if (remainingSeconds < 10) {
-            txt += '0';
-        }
-        txt += remainingSeconds;
-        $('#countdown').text(txt);
-        setTimeout(refreshCountdown, 1000);
+        }, 1000);
         return false;
     }
 
     function showUserSlide() {
         $('#slide-digits').addClass('hidden');
         $('#slide-user').removeClass('hidden');
-        remainingMinuts = 15;
-        remainingSeconds = 0;
-        setTimeout(refreshCountdown, 1000);
+        $('#btn-add-time').removeAttr("disabled")
+            .removeClass('btn-default')
+            .addClass('btn-primary');
+        refreshCountdown();
         return false;
     }
 
@@ -182,7 +190,19 @@
     }
 
     function addMoreTime() {
-        remainingMinuts += 15;
+        if (requested_duration + 15 <= 60) {
+            requested_duration += 15;
+        }
+        console.log(requested_duration);
+        if (requested_duration >= 60) {
+            $('#btn-add-time').attr("disabled", "disabled")
+                .addClass('btn-default')
+                .removeClass('btn-primary');
+        } else {
+            $('#btn-add-time').removeAttr("disabled")
+                .removeClass('btn-default')
+                .addClass('btn-primary');
+        }
         return false;
     }
 
