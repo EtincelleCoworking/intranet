@@ -26,6 +26,10 @@ Route::post('/login_check', array('before' => 'csrf', 'as' => 'user_login_check'
 Route::get('/logout', array('as' => 'user_logout', 'uses' => 'UserController@logout'));
 Route::controller('password', 'RemindersController');
 
+Route::get('/phonebox/{location_slug}/{key}/{box_id}', array('as' => 'phonebox_index', 'uses' => 'PhoneBoxController@index'));
+Route::post('/phonebox/{location_slug}/{key}/{box_id}/auth', array('as' => 'phonebox_auth', 'uses' => 'PhoneBoxController@auth'));
+
+
 Route::group(['before' => 'member'], function() {
     Route::get('/profile/{id}', array('as' => 'user_profile', 'uses' => 'UserController@profile'))->where(array('id' => '[0-9]+'));
 //    Route::get('/users/directory', array('as' => 'user_directory', 'uses' => 'UserController@directory'));
