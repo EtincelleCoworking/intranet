@@ -90,12 +90,12 @@
     function newDigit() {
         if (currentIndex < codeLength + 1) {
             code[currentIndex] = $(this).attr('data-value');
+            console.log(code.join(''));
             var div = $('#digit' + currentIndex);
             div.find('.filled').removeClass('hidden');
             div.find('.empty').addClass('hidden');
             currentIndex++;
             if (currentIndex === codeLength) {
-                emptyDigits();
                 $.ajax({
                     dataType: 'json',
                     url: '{{ URL::route('phonebox_auth', array('location_slug'=> $location_slug, 'key'=>$key, 'box_id'=>$box_id)) }}',
@@ -120,6 +120,7 @@
                         console.log(data);
                     }
                 });
+                emptyDigits();
             }
         }
         return false;

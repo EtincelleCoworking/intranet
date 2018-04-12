@@ -142,6 +142,9 @@ order by invoices.date_invoice desc
                 if (Input::get('password')) {
                     $user->password = Hash::make(Input::get('password'));
                 }
+                if (Input::get('personnal_code')) {
+                    $user->personnal_code = Input::get('personnal_code');
+                }
                 if (Input::get('gender')) {
                     $user->gender = Input::get('gender');
                 }

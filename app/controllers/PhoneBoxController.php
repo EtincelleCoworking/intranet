@@ -19,9 +19,8 @@ class PhoneBoxController extends BaseController
 
     public function auth($location_slug, $key, $box_id)
     {
-        //$user = User::where('personnal_code', Input::get('code'))->first();
-        $user = User::where('id', '=', 1)->first();
-        if (false && empty($user->personnal_code)) {
+        $user = User::where('personnal_code', Input::get('code'))->first();
+        if (empty($user->personnal_code)) {
             $data = array(
                 'status' => 'error',
                 'message' => 'Utilisaeur inconnu'
