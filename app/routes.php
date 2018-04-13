@@ -29,7 +29,6 @@ Route::controller('password', 'RemindersController');
 Route::get('/phonebox/{location_slug}/{key}/{box_id}', array('as' => 'phonebox_index', 'uses' => 'PhoneBoxController@index'));
 Route::post('/phonebox/{location_slug}/{key}/{box_id}/auth', array('as' => 'phonebox_auth', 'uses' => 'PhoneBoxController@auth'));
 
-
 Route::group(['before' => 'member'], function() {
     Route::get('/profile/{id}', array('as' => 'user_profile', 'uses' => 'UserController@profile'))->where(array('id' => '[0-9]+'));
 //    Route::get('/users/directory', array('as' => 'user_directory', 'uses' => 'UserController@directory'));
@@ -75,6 +74,9 @@ Route::group(['before' => 'member'], function() {
     Route::get('/checkin/start', array('as' => 'checkin_start', 'uses' => 'CheckinController@start'));
     Route::get('/checkin/stop', array('as' => 'checkin_stop', 'uses' => 'CheckinController@stop'));
     Route::get('/checkin/status', array('as' => 'checkin_status', 'uses' => 'CheckinController@status'));
+
+    Route::get('/user/refresh_personnal_code', array('as' => 'user_refresh_personnal_code', 'uses' => 'UserController@refreshPersonnalCode'));
+
 
 //    Route::get('/subscription/manage', array('as' => 'subscription_manage', 'uses' => 'SubscriptionController@manage'));
 //    Route::get('/subscription/cancel', array('as' => 'subscription_cancel', 'uses' => 'SubscriptionController@cancel'));

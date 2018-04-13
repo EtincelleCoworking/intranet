@@ -7,7 +7,7 @@
 @section('breadcrumb')
     <div class="row wrapper border-bottom white-bg page-heading">
         <div class="col-ls-12">
-            <h2>Modification de la ressource {{$location->fullName}}</h2>
+            <h2>Modification du site {{$location->fullName}}</h2>
 
         </div>
 

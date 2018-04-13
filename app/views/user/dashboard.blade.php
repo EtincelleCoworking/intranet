@@ -26,6 +26,19 @@
 
     <div class="row">
         <div class="col-lg-9 col-md-8 col-sm-6 col-xs-8">
+            <div class="row">
+                <div class="col-lg-4 col-md-4 col-sm-6 col-xs-6">
+                    @include('partials.member.component')
+                    @include('partials.slack')
+                </div>
+                <div class="col-lg-4 col-md-4 col-sm-6 col-xs-6">
+                    @include('partials.checkin.availability')
+                </div>
+                <div class="col-lg-4 col-md-4 col-sm-6 col-xs-6">
+                    @include('partials.active_subscription')
+                    @include('partials.personnal_code.component')
+                </div>
+            </div>
             <?php
             $items = DB::select(DB::raw('SELECT count(*) as cnt FROM past_times WHERE date_past < CURRENT_DATE() AND device_id IS NOT NULL AND confirmed IS NULL AND is_free = 0 AND invoice_id = 0 AND user_id = ' . Auth::id()));
             if ($items[0]->cnt) {
@@ -40,16 +53,17 @@
         <div class="col-lg-3 col-md-4 col-sm-6 col-xs-4">
             {{--
             @include('partials.checkin.component')
-            --}}
-            @include('partials.slack')
-            @include('partials.checkin.availability')
+            {{--
             @if (Auth::user()->isSuperAdmin())
             @elseif (Auth::user()->role == 'member')
-                @include('partials.active_subscription')
-                @include('partials.member.component')
+            --}}
+            {{--
             @endif
-            @include('booking::partials.ressource_booking_status')
+            --}}
+
             @include('booking::partials.upcoming_events')
+            @include('booking::partials.ressource_booking_status')
+
             @include('partials.next_birthday.component')
         </div>
     </div>

@@ -148,10 +148,6 @@
                             {{ Form::label('password', 'Mot de passe') }}
                             {{ Form::password('password', array('class' => 'form-control', 'autocomplete' => 'new-password')) }}
                         </div>
-                        <div class="col-lg-6">
-                            {{ Form::label('personnal_code', 'Code personnel (6 chiffres)') }}
-                            {{ Form::password('personnal_code', array('class' => 'form-control', 'autocomplete' => 'new-password')) }}
-                        </div>
                         @if(Auth::user()->isSuperAdmin())
                             <div class="col-lg-12">
                                 {{ Form::checkbox('is_enabled', true) }}

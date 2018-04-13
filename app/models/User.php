@@ -37,6 +37,7 @@ class User extends Eloquent implements UserInterface, RemindableInterface
         'firstname' => 'required',
         'lastname' => 'required',
         'password' => 'min:5',
+        'personnal_code' => 'regex:/[0-9]{6}/',
         'avatar' => 'image'
     );
 
@@ -177,6 +178,17 @@ class User extends Eloquent implements UserInterface, RemindableInterface
         return sprintf('<img alt="%s" class="img-circle m-t-xs" src="%s" title="%s">',
             $this->fullname,
             $this->avatarUrl,
+            $this->fullnameOrga
+        );
+
+
+    }
+
+    public function getAvatarTag38Attribute()
+    {
+        return sprintf('<img alt="%s" class="img-circle m-t-xs" src="%s" title="%s">',
+            $this->fullname,
+            $this->getAvatarUrl(38),
             $this->fullnameOrga
         );
 

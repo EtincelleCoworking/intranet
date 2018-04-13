@@ -1,6 +1,8 @@
 <?php
 
 use GuzzleHttp\Client;
+use Illuminate\Http\Response;
+
 
 /**
  * UserController Class
@@ -142,9 +144,6 @@ order by invoices.date_invoice desc
                 if (Input::get('password')) {
                     $user->password = Hash::make(Input::get('password'));
                 }
-                if (Input::get('personnal_code')) {
-                    $user->personnal_code = Input::get('personnal_code');
-                }
                 if (Input::get('gender')) {
                     $user->gender = Input::get('gender');
                 }
@@ -223,7 +222,7 @@ order by invoices.date_invoice desc
     public function add_raw()
     {
         $data = User::SplitNameEmail(Input::get('content'));
-        if(!$data){
+        if (!$data) {
             return Redirect::route('user_add');
         }
         $email = strtolower($data['email']);
@@ -687,6 +686,34 @@ order by invoices.date_invoice desc
             'items' => $items,
             'users' => $users,
         ));
+    }
+
+    public function refreshPersonnalCode()
+    {
+        $sql = 'SELECT personnal_code
+FROM (
+  SELECT FLOOR(RAND() * 999999) AS personnal_code 
+  UNION
+  SELECT FLOOR(RAND() * 999999) AS personnal_code
+) AS personnal_code_plus_1
+WHERE `personnal_code` NOT IN (SELECT distinct(personnal_code) FROM users where personnal_code is not null)
+LIMIT 1';
+
+        $items = DB::select(DB::raw($sql));
+        $item = $items[0];
+
+        $user = Auth::user();
+        $user->personnal_code = str_pad($item->personnal_code, 6, "0", STR_PAD_LEFT);
+        $user->save();
+
+        $data = array();
+        $data['status'] = 'success';
+        $data['code'] = $user->personnal_code;
+
+        $result = new Response();
+        $result->headers->set('Content-Type', 'application/json');
+        $result->setContent(json_encode($data));
+        return $result;
     }
 }
 

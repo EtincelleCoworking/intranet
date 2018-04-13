@@ -28,8 +28,9 @@ class PhoneBoxController extends BaseController
         } else {
             $data = array();
             $data['username'] = $user->fullname;
-            $data['picture'] = $user->getAvatarUrl(300);
+            $data['picture'] = $user->getAvatarUrl(150);
         }
+
         $result = new Response();
         $result->headers->set('Content-Type', 'application/json');
         $result->setContent(json_encode($data));

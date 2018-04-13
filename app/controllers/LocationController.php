@@ -43,7 +43,7 @@ class LocationController extends BaseController
 
         $validator = Validator::make(Input::all(), Location::$rules);
         if (!$validator->fails()) {
-            $location->name = Input::get('name');
+            $location->name = Input::get('name')?Input::get('name'):null;
             $location->city_id = Input::get('city_id');
             $location->coworking_capacity = Input::get('coworking_capacity');
             $location->default_business_terms = Input::get('default_business_terms');

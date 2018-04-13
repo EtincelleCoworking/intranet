@@ -106,7 +106,7 @@ GROUP BY ressources.id
 <?php $is_first = true; ?>
                         @foreach($rooms as $room_index => $room)
                             <tr>
-                                <td @if($is_first)  class="no-borders" @endif>
+                                <td @if($is_first)  class="no-borders" @endif width="30">
                                     @if($room['current_event'])
                                         <span class="label label-danger">KO</span>
                                     @else
