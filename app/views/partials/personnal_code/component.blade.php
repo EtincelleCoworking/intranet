@@ -7,20 +7,22 @@
         $current_user = Auth::user();
         $code = $current_user->personnal_code;
         ?>
-        @if(empty($code))
-            <p>Aucun</p>
-        @else
-            <h1 id="user-personnal-code">{{$code}}</h1>
-        @endif
+        <h1 id="user-personnal-code">
+            @if(empty($code))
+                -
+            @else
+                {{$code}}
+            @endif
+        </h1>
 
         <?php
 
-        $rooms = PhoneBox::where('location_id', '=', $current_user->default_location_id)->with('active_session')->orderBy('order_index', 'ASC')->get();
+        $rooms = Phonebox::where('location_id', '=', $current_user->default_location_id)->with('active_session')->orderBy('order_index', 'ASC')->get();
 
         ?>
 
         <p><a href="#" class="btn btn-primary" id="btn-refresh-personnal-code">Nouveau code</a></p>
-        <p class="text-muted">Ce code vous permettra d'utiliser les box téléphonique. </p>
+        <p class="text-muted">Ce code vous permettra d'utiliser les box téléphonique. Si le code ne vous conviens pas, vous pouvez en générer un nouveau.</p>
         <table class="table">
             @foreach($rooms as $room)
                 <tr>
