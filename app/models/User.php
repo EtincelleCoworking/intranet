@@ -195,11 +195,16 @@ class User extends Eloquent implements UserInterface, RemindableInterface
 
     }
 
-    public function getPhoneFmtAttribute()
+    public static function formatPhoneNumber($value)
     {
-        $result = preg_replace('/[^0-9]/', '', $this->phone);
+        $result = preg_replace('/[^0-9]/', '', $value);
         $result = preg_replace('/([0-9]{2})/', '\1 ', $result);
         return trim($result);
+    }
+
+    public function getPhoneFmtAttribute()
+    {
+        return self::formatPhoneNumber($this->phone);
     }
 
     public function getAvatarUrlAttribute()
@@ -434,5 +439,19 @@ class User extends Eloquent implements UserInterface, RemindableInterface
     {
         $data = preg_split('/\s/', trim($name));
         return array('firstname' => array_shift($data), 'lastname' => implode(' ', $data));
+    }
+
+    public function getTotalPhoneboxUsageOverLastPeriod()
+    {
+        $now = new \DateTime();
+        $period_start = clone $now;
+        $period_start->sub(new \DateInterval(sprintf('PT%dM', Phonebox::QUOTA_PERIOD)));
+
+        $items = DB::select(DB::raw(sprintf('SELECT sum(time_to_sec(timediff(LEAST("%1$s", ended_at), started_at)) / 60) as used
+            FROM phonebox_session WHERE user_id = %2$d AND ended_at > "%3$s"',
+            $now->format('Y-m-d H:i:s'), $this->id, $period_start->format('Y-m-d H:i:s'))));
+
+        $item = array_shift($items);
+        return round($item->used);
     }
 }

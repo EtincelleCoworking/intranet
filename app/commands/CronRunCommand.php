@@ -165,13 +165,16 @@ where  subscription_user_id is null;');
 
         $this->everyFiveMinutes(array($this, 'sendSmsNotificationForCloseMeetings'));
         $this->daily(array($this, 'generateMissingBookingKeyForUsers'));
-        $this->hourly(function (){
+        $this->hourly(function () {
             Artisan::call('odoo:update', array('--users' => true));
         });
 
-        $this->dailyAt('23:00', function (){
+        $this->dailyAt('23:00', function () {
             Artisan::call('odoo:update', array('--pending-pos-to-orders' => true));
         });
+
+        $this->dailyAt('04:00', array($this, 'assignCoworkingPackItemsToUsers'));
+        $this->cleanPhoneboxSession();
 
         $this->finish();
     }
@@ -270,7 +273,7 @@ group by booking.id
                             date('H\hi', $previous_ends_at));
 
                         $this->slack(Config::get('etincelle.slack_staff_toulouse'), array(
-                            'text' => sprintf('SMS envoyé à %s %s <%s> au ', $previous['user']['firstname'], $previous['user']['lastname'], $previous['user']['email'], $phone),
+                            'text' => sprintf('SMS envoyé à %s %s <%s> au %s', $previous['user']['firstname'], $previous['user']['lastname'], $previous['user']['email'], User::formatPhoneNumber($phone)),
                             'attachments' => array(
                                 array(
                                     "text" => $message_content
@@ -509,7 +512,87 @@ group by booking.id
         return $result;
     }
 
-    protected function generateMissingBookingKeyForUsers(){
+    protected function generateMissingBookingKeyForUsers()
+    {
         DB::statement('UPDATE users SET booking_key = md5(UUID())  WHERE booking_key IS NULL');
+    }
+
+    protected function assignCoworkingPackItemsToUsers()
+    {
+        /*
+        $sql = 'SELECT invoices_items.invoice_id as invoice_id, invoices_items.id as invoice_item_id, invoices_items.coworking_pack_item_user_id as user_id, COUNT(coworking_prepaid_pack_item.*) as remaining_count
+         FROM coworking_prepaid_pack_item
+           JOIN invoices_items ON invoices_items.id = coworking_prepaid_pack_item.invoice_item_id
+           LEFT OUTER JOIN past_times ON coworking_prepaid_pack_item.past_time_id = past_times.id
+         WHERE coworking_prepaid_pack_item.past_time_id IS NULL
+          AND invoices_items.coworking_pack_item_user_id IS NOT NULL
+         GROUP BY invoices_items.coworking_pack_item_user_id
+         HAVING cnt > 0';
+
+
+        // Pour chaque utilisateur qui a un compte prépayé ouvert
+        //   Pour chaque temps passé non encore traité
+        //     Si le nb d'unité consommée est >= nombre d'unité disponible
+        //       - Associer le coworking_prepaid_pack_item.invoice_item_id
+        //       - Associer le coworking_prepaid_pack_item.past_time_id
+        //       - past_time.comment = x/10
+        //       - past_time.invoice_id = ..
+        //     S'il en manque >> Alerte
+        //     Si on arrive à la fin >> Proposer de renouveller / option de renouvellement automatique?
+
+
+        // Faire un tableau de bord des comptes prépayés
+        // Utilisateur - nb consommé / nb commandé - date de commandé - date de validité
+
+
+        $items = DB::select(DB::raw($sql));
+        foreach ($items as $item) { // list all prepaid orders not completed
+            $remaining_count = $item->remaining_count;
+            // get all unassigned PastTime items for this user, ordered by time
+            foreach (PastTime::where('user_id', '=', $item->user_id)
+                         ->where('is_free', '=', false)
+                         ->where('invoice_id', '=', false)// ou NULL?
+                ->orderBy('date_past', 'ASC')->get() as $open_past_time) {
+
+                    $duration = min(2, ceil(((strtotime($open_past_time->time_end) - strtotime($open_past_time->time_start)) / 3600) / PastTimeController::COWORKING_HALF_DAY_MAX_DURATION));
+
+                    if($remaining_count >= $duration){
+                        while($duration >0){
+                            $open_past_time->invoice_id = $item->invoice_id;
+                            if(!empty($open_past_time->comment)){
+                                $open_past_time->comment .= ' + ';
+                            }
+                            $open_past_time->comment .= sprintf('%d / 10', $remaining_count--);
+                            $open_past_time->save();
+                            $duration--;
+
+
+                        $prepaid_item = new CoworkingPrepaidPackItem();
+                        $prepaid_item->invoice_item_id = $item->invoice_item_id;
+                        $prepaid_item->past_time_id = $open_past_time->id;
+                    }
+                }
+
+
+                $invoice_line->text .= sprintf("\n - %s de %s à %s (%s demi journée%s)", date('d/m/Y', strtotime($item->time_start)),
+                    date('H:i', strtotime($item->time_start)), date('H:i', strtotime($item->time_end)), $duration, ($duration > 1) ? 's' : '');
+                if (count($users) > 1) {
+                    $invoice_line->text .= ' - ' . $item->user()->getResults()->fullname;
+                }
+                $invoice_line->amount += $duration * (self::COWORKING_HALF_DAY_PRICING / 1.2);
+
+                $item->invoice_id = $invoice->id;
+                $item->save();
+            }
+
+            $sql = 'SELECT ';
+        }
+        */
+    }
+
+    protected function cleanPhoneboxSession(){
+        DB::statement(sprintf('UPDATE phonebox SET active_session_id = null WHERE id in 
+          (SELECT phonebox_id as id from phonebox_session 
+            where ended_at <= "%s" and id = active_session_id)', date('Y-m-d H:i:s')));
     }
 }

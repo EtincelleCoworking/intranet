@@ -5,6 +5,12 @@
  */
 class Phonebox extends Eloquent
 {
+    const QUOTA = 60;
+    const QUOTA_PERIOD = 240;
+    const DEFAULT_DURATION = 15;
+
+    public $timestamps = false;
+
     /**
      * The database table used by the model.
      *

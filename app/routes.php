@@ -28,6 +28,8 @@ Route::controller('password', 'RemindersController');
 
 Route::get('/phonebox/{location_slug}/{key}/{box_id}', array('as' => 'phonebox_index', 'uses' => 'PhoneBoxController@index'));
 Route::post('/phonebox/{location_slug}/{key}/{box_id}/auth', array('as' => 'phonebox_auth', 'uses' => 'PhoneBoxController@auth'));
+Route::post('/phonebox/{location_slug}/{key}/{box_id}/update', array('as' => 'phonebox_update', 'uses' => 'PhoneBoxController@update'));
+Route::post('/phonebox/{location_slug}/{key}/{box_id}/stop', array('as' => 'phonebox_stop', 'uses' => 'PhoneBoxController@stop'));
 
 Route::group(['before' => 'member'], function() {
     Route::get('/profile/{id}', array('as' => 'user_profile', 'uses' => 'UserController@profile'))->where(array('id' => '[0-9]+'));

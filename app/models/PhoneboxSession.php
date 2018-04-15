@@ -12,12 +12,22 @@ class PhoneboxSession extends Eloquent
      */
     protected $table = 'phonebox_session';
 
+    public $timestamps = false;
+
     /**
      * PhoneBox belongs to User
      */
     public function user()
     {
         return $this->belongsTo('User');
+    }
+
+    /**
+     * PhoneBox belongs to User
+     */
+    public function phonebox()
+    {
+        return $this->belongsTo('Phonebox');
     }
 
     /**

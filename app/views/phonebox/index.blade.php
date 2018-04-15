@@ -83,7 +83,7 @@
                 </div>
             </div>
             <p class="text-muted slide-digits">Votre code personnel est disponible depuis l'intranet à l'adresse
-                http://intranet.coworking-toulouse.com/</p>
+                https://intranet.coworking-toulouse.com/</p>
             <p><a href="#" class="btn btn-primary btn-lg btn-add-time slide-user">+15 min</a></p>
             <p class="text-danger" id="feedback"></p>
         </div>
@@ -109,7 +109,6 @@
     </div>
 </div>
 
-
 {{ HTML::script('js/jquery-2.1.1.js') }}
 
 <script type="application/javascript">
@@ -120,19 +119,32 @@
     // -- time
     var started_at;
     var requested_duration = 0;
+    var max_duration = {{Phonebox::QUOTA}};
     var timerId;
-
-    var locked = false;
     var lock_code = '';
+    var session_id = false;
 
 
     $().ready(function () {
         $('.btn-digit').click(newDigit);
         $('.btn-cancel').click(canceDigits);
         $('.btn-empty').click(emptyDigits);
-        $('.btn-leave').click(leave);
         $('.btn-add-time').click(addMoreTime);
-        $('.slide-user').hide();
+
+        @if($phonebox->active_session)
+        <?php $user = $phonebox->active_session->user; ?>
+        max_duration = {{Phonebox::QUOTA}} - {{$user->getTotalPhoneboxUsageOverLastPeriod()}};
+        lock_code = '{{$user->personnal_code}}';
+        started_at = new Date('{{$phonebox->active_session->started_at}}').getTime();
+        requested_duration = parseInt('{{ (strtotime($phonebox->active_session->ended_at) - strtotime($phonebox->active_session->started_at)) / 60 }}');
+
+        showUserSlide({{$phonebox->active_session->id}}, '{{$user->fullname}}', '{{$user->getAvatarUrl(150)}}');
+
+        @else
+
+        showDigitSlide();
+
+        @endif
     });
 
     function newDigit() {
@@ -145,17 +157,32 @@
             div.find('.empty').addClass('hidden');
             currentIndex++;
             if (currentIndex === codeLength) {
-                if (locked) {
+                if (session_id) {
                     if (lock_code == code.join('')) {
-                        leave();
+                        $.ajax({
+                            dataType: 'json',
+                            url: '{{ URL::route('phonebox_stop', array('location_slug'=> $location_slug, 'key'=>$key, 'box_id'=>$phonebox->id)) }}',
+                            type: "POST",
+                            data: {
+                                session_id: session_id
+                            },
+                            success: function (data) {
+                                leave();
+                            },
+                            error: function (data) {
+                                // afficher un message générique?
+                                console.log(data);
+                            }
+                        });
                     } else {
                         $('#feedback').text('Code incorrect').show();
+                        console.log('Code incorrect (' + lock_code + ' vs ' + code.join('') + ')');
                         emptyDigits();
                     }
                 } else {
                     $.ajax({
                         dataType: 'json',
-                        url: '{{ URL::route('phonebox_auth', array('location_slug'=> $location_slug, 'key'=>$key, 'box_id'=>$box_id)) }}',
+                        url: '{{ URL::route('phonebox_auth', array('location_slug'=> $location_slug, 'key'=>$key, 'box_id'=>$phonebox->id)) }}',
                         type: "POST",
                         data: {
                             code: code.join('')
@@ -164,13 +191,11 @@
                             lock_code = code.join('');
                             console.log(data);
                             if (data.status == 'error') {
-                                $('#feedback').text(data.message);
+                                $('#feedback').text(data.message).show();
                             } else {
-                                $('#user-name').text(data.username);
-                                $('#user-picture').attr('src', data.picture);
                                 started_at = new Date().getTime();
-                                requested_duration = 15;
-                                showUserSlide();
+                                requested_duration = Math.min(data.max_duration, {{Phonebox::DEFAULT_DURATION}});
+                                showUserSlide(data.session_id, data.username, data.picture);
                             }
                             emptyDigits();
                         },
@@ -210,13 +235,14 @@
         return false;
     }
 
-    function showUserSlide() {
-        locked = true;
+    function showUserSlide(sess_id, username, picture_url) {
+        session_id = sess_id;
+        $('#user-name').text(username);
+        $('#user-picture').attr('src', picture_url);
+
         $('.slide-digits').hide();
         $('.slide-user').show();
-        $('.btn-add-time').removeAttr("disabled")
-            .removeClass('btn-default')
-            .addClass('btn-primary');
+        updateAddMoreButtonStatus();
         refreshCountdown();
         return false;
     }
@@ -251,12 +277,8 @@
         return false;
     }
 
-    function addMoreTime() {
-        if (requested_duration + 15 <= 60) {
-            requested_duration += 15;
-        }
-        console.log(requested_duration);
-        if (requested_duration >= 60) {
+    function updateAddMoreButtonStatus(){
+        if (requested_duration >= max_duration) {
             $('.btn-add-time').attr("disabled", "disabled")
                 .addClass('btn-default')
                 .removeClass('btn-primary');
@@ -265,11 +287,41 @@
                 .removeClass('btn-default')
                 .addClass('btn-primary');
         }
+    }
+
+    function addMoreTime() {
+        if (requested_duration + {{Phonebox::DEFAULT_DURATION}} <= max_duration) {
+            requested_duration += {{Phonebox::DEFAULT_DURATION}};
+        }
+        console.log(requested_duration);
+        updateAddMoreButtonStatus();
+        $.ajax({
+            dataType: 'json',
+            url: '{{ URL::route('phonebox_update', array('location_slug'=> $location_slug, 'key'=>$key, 'box_id'=>$phonebox->id)) }}',
+            type: "POST",
+            data: {
+                session_id: session_id,
+                duration: requested_duration
+            },
+            success: function (data) {
+                if (data.status == 'error') {
+                    $('#feedback').text(data.message).show();
+                    requested_duration = max_duration;
+                } else {
+                    requested_duration = data.duration;
+                }
+
+            },
+            error: function (data) {
+                // afficher un message générique?
+                console.log(data);
+            }
+        });
         return false;
     }
 
     function leave() {
-        locked = false;
+        session_id = false;
         emptyDigits();
         showDigitSlide();
         return false;
