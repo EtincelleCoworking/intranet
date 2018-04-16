@@ -14,6 +14,7 @@ class PhoneBoxController extends BaseController
             ->where('locations.key', '=', $key)
             ->where('order_index', '=', $box_id)
             ->with('active_session')
+            ->select('phonebox.*')
             ->firstOrFail();
 
         return View::make('phonebox.index',
@@ -31,6 +32,7 @@ class PhoneBoxController extends BaseController
             ->where('locations.key', '=', $key)
             ->where('order_index', '=', $box_id)
             ->with('active_session')
+            ->select('phonebox.*')
             ->firstOrFail();
 
         $user = User::where('personnal_code', Input::get('code'))->first();
