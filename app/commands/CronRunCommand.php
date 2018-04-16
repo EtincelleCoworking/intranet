@@ -173,6 +173,10 @@ where  subscription_user_id is null;');
             Artisan::call('odoo:update', array('--pending-pos-to-orders' => true));
         });
 
+        $this->daily(function () {
+            Artisan::call('etincelle:update-member-status');
+        });
+
         $this->dailyAt('04:00', array($this, 'assignCoworkingPackItemsToUsers'));
         $this->cleanPhoneboxSession();
 
