@@ -6,6 +6,7 @@ Route::get('/booking/ical/{key}.ics', array('as' => 'booking_ical', 'uses' => 'B
 Route::get('/api/booking/{booking_item_id}/members', array('as' => 'api_booking_members', 'uses' => 'BookingApiController@members'));
 Route::get('/api/booking/{booking_item_id}/register/{user_id?}', array('as' => 'api_booking_register', 'uses' => 'BookingApiController@register'));
 Route::get('/api/booking/{booking_item_id}/unregister/{user_id?}', array('as' => 'api_booking_unregister', 'uses' => 'BookingApiController@unregister'));
+Route::get('/api/1.0/intercom/{location_slug}/{key}/allowed', array('as' => 'api_booking_intercom_allowed', 'uses' => 'BookingApiController@intercom'));
 
 Route::get('/ressource/status/{id}', array('as' => 'ressource_status', 'uses' => 'BookingController@status'));
 

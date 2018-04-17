@@ -89,4 +89,19 @@ class BookingApiController extends Controller
         }
         return Redirect::route('booking_item_show', array('id' => $booking_item_id));
     }
+
+    public function intercom($location_slug, $key)
+    {
+        $result = DB::selectOne(DB::raw(str_replace(
+            array(':location_slug', ':key'), array($location_slug, $key),
+            'SELECT COUNT(booking_item.id) as cnt
+          FROM booking_item
+            JOIN ressources on ressources.id = booking_item.ressource_id
+            JOIN locations on locations.id = ressources.location_id
+          WHERE locations.slug = ":location_slug"
+            AND locations.key = ":key"
+            AND DATE_SUB(booking_item.start_at, INTERVAL 15 MINUTE) < now()
+            AND DATE_ADD(booking_item.start_at, INTERVAL booking_item.duration MINUTE) > now()')));
+        return $result->cnt ? 'Yes' : 'No';
+    }
 }

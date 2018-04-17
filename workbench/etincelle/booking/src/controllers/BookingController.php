@@ -166,6 +166,20 @@ class BookingController extends Controller
         $booking_item->duration = floor((strtotime(Input::get('end')) - strtotime(Input::get('start'))) / 60);
         if ($booking_item->ressource_id != Input::get('ressource_id')) {
             $booking_item->ressource_id = Input::get('ressource_id');
+
+            $ressource = Ressource::where('id', '=', $booking_item->ressource_id)->first();
+            $location = $ressource->location;
+            if ($location->voucher_endpoint) {
+                $voucher = Booking::generateVoucher($location->voucher_endpoint, $location->voucher_key, $location->voucher_secret, $start_at->format('Y-m-d H:i'));
+                if ($voucher) {
+                    $booking = $booking_item->booking;
+                    $booking->wifi_login = $voucher['username'];
+                    $booking->wifi_password = $voucher['password'];
+                    $booking->save();
+                } else {
+                    // log error ?
+                }
+            }
         }
         $booking_item->save();
 
