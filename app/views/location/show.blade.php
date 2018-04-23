@@ -41,14 +41,27 @@
                                             @endif
                                     ></i>
                                     {{$equipment->name}}
+                                    <i class="fa fa-question-circle"
+                                       @if($equipment->notify_frequency)
+                                       title="Mise à jour : {{$equipment->frequencyFmt()}} / Alerte : {{$equipment->notifyFrequencyFmt()}}"
+                                       @else
+                                       title="Mise à jour : {{$equipment->frequencyFmt()}}"
+                                            @endif
+                                    ></i>
+
+                                    @if($equipment->description)
+                                        <br/>
+                                        <small>{{$equipment->description}}</small>
+                                    @endif
                                 </td>
                                 <td class="col-md-2">{{$equipment->ip}}</td>
                                 <td class="col-md-2">
                                     @if($equipment->last_seen_at)
-                                        {{date('d/m/Y H:i', strtotime($equipment->last_seen_at))}}
+                                        {{$equipment->lastSeenAgo()}}
                                     @else
                                         -
                                     @endif
+
                                 </td>
                                 <td class="col-md-6">
                                     {{$equipment->dataFmt()}}

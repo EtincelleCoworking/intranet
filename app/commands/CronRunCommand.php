@@ -609,18 +609,21 @@ group by booking.id
         //region Host getting down
         $items = DB::select(DB::raw(
             'SELECT equipment.id, equipment.ip, equipment.name, equipment.last_seen_at,
-            if(locations.name IS NULL, cities.name,concat(cities.name, \' > \',  locations.name)) as location
+            if(locations.name IS NULL, cities.name,concat(cities.name, \' &gt; \',  locations.name)) as location,
+            locations.slug
           FROM equipment 
             join locations on equipment.location_id = locations.id
             join cities on locations.city_id = cities.id
           WHERE is_critical = 1 
             AND last_seen_at IS NOT NULL 
-            AND DATE_ADD(last_seen_at, INTERVAL 5 * frequency SECOND) < NOW()
+            AND DATE_ADD(last_seen_at, INTERVAL GREATEST(notify_delay, 2 * frequency) SECOND) < NOW()
             AND (notified_at IS NULL OR (notified_at < last_seen_at))
           '));
         foreach ($items as $equipment) {
-            $message = sprintf('%1$s > %2$s (%3$s) ne réponds pas depuis %4$s',
-                $equipment->location, $equipment->name, $equipment->ip, date('d/m/Y H:i', strtotime($equipment->last_seen_at)));
+            $message = sprintf(':exclamation: <%5$s|%1$s> &gt; *%2$s* ne réponds plus depuis %4$s - `%3$s`',
+                $equipment->location, $equipment->name, $equipment->ip, date('H:i', strtotime($equipment->last_seen_at)),
+                URL::route('location_show', $equipment->slug)
+            );
 
             $this->slack(Config::get('etincelle.slack_staff_toulouse'), array(
                 'text' => $message,
@@ -633,7 +636,8 @@ group by booking.id
         //region Host getting back
         $items = DB::select(DB::raw(
             'SELECT equipment.id, equipment.ip, equipment.name, equipment.last_seen_at,
-            if(locations.name IS NULL, cities.name,concat(cities.name, \' > \',  locations.name)) as location
+            if(locations.name IS NULL, cities.name,concat(cities.name, \' > \',  locations.name)) as location,
+            locations.slug
           FROM equipment 
             join locations on equipment.location_id = locations.id
             join cities on locations.city_id = cities.id
@@ -643,8 +647,10 @@ group by booking.id
             AND notified_at < last_seen_at
           '));
         foreach ($items as $equipment) {
-            $message = sprintf('%1$s > %2$s (%3$s) réponds à nouveau %4$s',
-                $equipment->location, $equipment->name, $equipment->ip, date('d/m/Y H:i', strtotime($equipment->last_seen_at)));
+            $message = sprintf(':white_check_mark: <%5$s|%1$s> &gt; *%2$s* réponds à nouveau depuis %4$s - `%3$s`',
+                $equipment->location, $equipment->name, $equipment->ip, date('H:i', strtotime($equipment->last_seen_at)),
+                URL::route('location_show', $equipment->slug)
+            );
 
             $this->slack(Config::get('etincelle.slack_staff_toulouse'), array(
                 'text' => $message,

@@ -36,6 +36,90 @@ class Equipment extends Eloquent
         return (time() - strtotime($this->last_seen_at)) / $this->frequency;
     }
 
+    protected function time_elapsed_string($datetime, $full = false)
+    {
+        $now = new DateTime;
+        $ago = new DateTime($datetime);
+        $diff = $now->diff($ago);
+
+        $diff->w = floor($diff->d / 7);
+        $diff->d -= $diff->w * 7;
+
+        $string = array(
+            'y' => 'year',
+            'm' => 'month',
+            'w' => 'week',
+            'd' => 'day',
+            'h' => 'hour',
+            'i' => 'minute',
+            's' => 'second',
+        );
+        foreach ($string as $k => &$v) {
+            if ($diff->$k) {
+                $v = $diff->$k . ' ' . $v . ($diff->$k > 1 ? 's' : '');
+            } else {
+                unset($string[$k]);
+            }
+        }
+
+        if (!$full) $string = array_slice($string, 0, 2);
+        return $string ? implode(', ', $string) . ' ago' : 'just now';
+    }
+
+    public function lastSeenAgo()
+    {
+        return $this->time_elapsed_string($this->last_seen_at);
+    }
+
+    public function frequencyFmt()
+    {
+        return $this->secondsToTime($this->frequency);
+    }
+
+    public function notifyFrequencyFmt()
+    {
+        return $this->secondsToTime($this->notify_frequency);
+    }
+
+    protected function secondsToTime($inputSeconds)
+    {
+        $secondsInAMinute = 60;
+        $secondsInAnHour = 60 * $secondsInAMinute;
+        $secondsInADay = 24 * $secondsInAnHour;
+
+        // Extract days
+        $days = floor($inputSeconds / $secondsInADay);
+
+        // Extract hours
+        $hourSeconds = $inputSeconds % $secondsInADay;
+        $hours = floor($hourSeconds / $secondsInAnHour);
+
+        // Extract minutes
+        $minuteSeconds = $hourSeconds % $secondsInAnHour;
+        $minutes = floor($minuteSeconds / $secondsInAMinute);
+
+        // Extract the remaining seconds
+        $remainingSeconds = $minuteSeconds % $secondsInAMinute;
+        $seconds = ceil($remainingSeconds);
+
+        // Format and return
+        $timeParts = [];
+        $sections = [
+            'day' => (int)$days,
+            'hour' => (int)$hours,
+            'minute' => (int)$minutes,
+            'second' => (int)$seconds,
+        ];
+
+        foreach ($sections as $name => $value) {
+            if ($value > 0) {
+                $timeParts[] = $value . ' ' . $name . ($value == 1 ? '' : 's');
+            }
+        }
+
+        return implode(', ', $timeParts);
+    }
+
     public function dataFmt()
     {
         if (empty($this->data)) {
