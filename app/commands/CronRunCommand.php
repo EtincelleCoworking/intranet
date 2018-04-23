@@ -608,8 +608,8 @@ group by booking.id
     {
         //region Host getting down
         $items = DB::select(DB::raw(
-            'SELECT equipment.id, equipment.ip, equipment.name, equipment.last_seen_at
-            if(locations.name IS NULL, cities.name,concat(cities.name, \' > \',  locations.name)) as location,
+            'SELECT equipment.id, equipment.ip, equipment.name, equipment.last_seen_at,
+            if(locations.name IS NULL, cities.name,concat(cities.name, \' > \',  locations.name)) as location
           FROM equipment 
             join locations on equipment.location_id = locations.id
             join cities on locations.city_id = cities.id
@@ -632,8 +632,8 @@ group by booking.id
 
         //region Host getting back
         $items = DB::select(DB::raw(
-            'SELECT equipment.id, equipment.ip, equipment.name, equipment.last_seen_at
-            if(locations.name IS NULL, cities.name,concat(cities.name, \' > \',  locations.name)) as location,
+            'SELECT equipment.id, equipment.ip, equipment.name, equipment.last_seen_at,
+            if(locations.name IS NULL, cities.name,concat(cities.name, \' > \',  locations.name)) as location
           FROM equipment 
             join locations on equipment.location_id = locations.id
             join cities on locations.city_id = cities.id
