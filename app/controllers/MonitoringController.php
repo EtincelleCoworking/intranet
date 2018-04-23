@@ -29,19 +29,20 @@ class MonitoringController extends BaseController
 
     public function feedback($location_slug, $location_key)
     {
-        $feedback = json_decode(Request::getContent());
+        $feedback = json_decode(Request::getContent(), true);
 
         $equipments = Equipment::whereIn('ip', array_keys($feedback))
             ->join('locations', 'locations.id', '=', 'equipment.location_id')
             ->where('locations.slug', '=', $location_slug)
             ->where('locations.key', '=', $location_key)
+            ->select('equipment.*')
             ->get();
 
         $now = date('Y-m-d H:i:s');
         $count = 0;
         foreach ($equipments as $equipment) {
             $equipment->last_seen_at = $now;
-            $equipment->data = json_encode($feedback[$equipment->ip]);
+            $equipment->data = json_encode($feedback[$equipment->ip], true);
             $equipment->save();
             $count++;
         }
