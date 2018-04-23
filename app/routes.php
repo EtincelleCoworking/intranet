@@ -92,6 +92,10 @@ Route::group(['before' => 'member'], function() {
 
 Route::group(['before' => 'superadmin'], function() {
     Route::get('/admin/{target_period?}', array('as' => 'admin_dashboard', 'uses' => 'DashboardController@admin'))->where(array('target_period' => '^[0-9]{4}-[0-9]{2}$'));
+    //Route::get('/operating', array('as' => 'operating', 'uses' => 'OperatingController@index'));
+
+    Route::get('/api/1.0/monitoring/agents', array('as' => 'monitoring_agents', 'uses' => 'MonitoringController@agents'));
+    Route::post('/api/1.0/monitoring/agents', array('as' => 'monitoring_feedback', 'uses' => 'MonitoringController@feedback'));
 
     Route::get('/user/add', array('as' => 'user_add', 'uses' => 'UserController@add'));
     Route::post('/user/add_raw', array('as' => 'user_add_raw', 'uses' => 'UserController@add_raw'));
