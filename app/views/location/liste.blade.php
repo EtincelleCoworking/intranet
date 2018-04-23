@@ -65,8 +65,10 @@
                                     {{$location->coworking_capacity}}
                                 </td>
                                 <td class="col-md-2">
+                                    <a href="{{ URL::route('location_show', $location->slug) }}"
+                                       class="btn btn-primary btn-xs">Voir</a>
                                     <a href="{{ URL::route('location_modify', $location->id) }}"
-                                       class="btn btn-primary btn-xs">Modifier</a>
+                                       class="btn btn-default btn-xs">Modifier</a>
                                 </td>
                             </tr>
                         @endforeach

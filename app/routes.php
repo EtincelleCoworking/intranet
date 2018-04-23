@@ -108,6 +108,7 @@ Route::group(['before' => 'superadmin'], function() {
     Route::get('/locations', array('as' => 'location_list', 'uses' => 'LocationController@liste'));
     Route::get('/location/modify/{id}', array('as' => 'location_modify', 'uses' => 'LocationController@modify'))->where(array('id' => '[0-9]+'));
     Route::post('/location/modify/{id}', array('as' => 'location_modify_check', 'uses' => 'LocationController@modify_check'))->where(array('id' => '[0-9]+'));
+    Route::get('/location/{location_slug}', array('as' => 'location_show', 'uses' => 'LocationController@show'));
 
 
     Route::get('/invoice/add/{type}', array('as' => 'invoice_add', 'uses' => 'InvoiceController@add'))->where(array('type' => '[A-Z]{1}'));

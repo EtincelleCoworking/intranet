@@ -43,7 +43,7 @@ class LocationController extends BaseController
 
         $validator = Validator::make(Input::all(), Location::$rules);
         if (!$validator->fails()) {
-            $location->name = Input::get('name')?Input::get('name'):null;
+            $location->name = Input::get('name') ? Input::get('name') : null;
             $location->city_id = Input::get('city_id');
             $location->coworking_capacity = Input::get('coworking_capacity');
             $location->default_business_terms = Input::get('default_business_terms');
@@ -58,6 +58,16 @@ class LocationController extends BaseController
         } else {
             return Redirect::route('location_modify', $location->id)->with('mError', 'Il y a des erreurs')->withErrors($validator->messages())->withInput();
         }
+    }
+
+    public function show($location_slug)
+    {
+        $location = Location::where('slug', '=', $location_slug)->first();
+        $equipments = Equipment::where('location_id', '=', $location->id)->get();
+        return View::make('location.show', array(
+            'location' => $location,
+            'equipments' => $equipments,
+        ));
     }
 
 }

@@ -31,4 +31,7 @@ class Equipment extends Eloquent
         'location_id' => 'required',
     );
 
+    public function isUp(){
+        return (time() - strtotime($this->last_seen_at)) < 5 * $this->frequency;
+    }
 }
