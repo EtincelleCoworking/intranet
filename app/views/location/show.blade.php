@@ -31,8 +31,11 @@
                             <tr>
                                 <td class="col-md-2">
                                     <i class="fa fa-circle" aria-hidden="true"
-                                       @if($equipment->isUp())
+                                       <?php $age = $equipment->getAge(); ?>
+                                       @if($age < 2)
                                        style="color: green"
+                                       @elseif($age < 5)
+                                       style="color: orange"
                                        @else
                                        style="color: red"
                                             @endif
