@@ -25,6 +25,7 @@
                             <th>Equipement</th>
                             <th>IP</th>
                             <th>Mis à jour</th>
+                            <th>Données</th>
                         </tr>
                         @foreach($equipments as $equipment)
                             <tr>
@@ -45,6 +46,15 @@
                                     @else
                                         -
                                     @endif
+                                </td>
+                                <td>
+                                    <?php
+                                    if (!empty($equipment->data)) {
+                                        echo '<pre>';
+                                        print_r(json_decode($equipment->data, true));
+                                        echo '</pre>';
+                                    }
+                                    ?>
                                 </td>
                             </tr>
                         @endforeach
