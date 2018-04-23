@@ -29,7 +29,7 @@
                         </tr>
                         @foreach($equipments as $equipment)
                             <tr>
-                                <td>
+                                <td class="col-md-2">
                                     <i class="fa fa-circle" aria-hidden="true"
                                        @if($equipment->isUp())
                                        style="color: green"
@@ -39,22 +39,16 @@
                                     ></i>
                                     {{$equipment->name}}
                                 </td>
-                                <td>{{$equipment->ip}}</td>
-                                <td>
+                                <td class="col-md-2">{{$equipment->ip}}</td>
+                                <td class="col-md-2">
                                     @if($equipment->last_seen_at)
                                         {{date('d/m/Y H:i', strtotime($equipment->last_seen_at))}}
                                     @else
                                         -
                                     @endif
                                 </td>
-                                <td>
-                                    <?php
-                                    if (!empty($equipment->data)) {
-                                        echo '<pre>';
-                                        print_r(json_decode($equipment->data, true));
-                                        echo '</pre>';
-                                    }
-                                    ?>
+                                <td class="col-md-6">
+                                    {{$equipment->dataFmt()}}
                                 </td>
                             </tr>
                         @endforeach
