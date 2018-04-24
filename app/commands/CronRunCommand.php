@@ -627,24 +627,26 @@ group by booking.id
             $slack_message['attachments'] = array();
             $slack_message['attachments'][] = array(
                 'fallback' => $location->name,
-                'actions' => array(
+                'actions' => array(array(
                     'type' => 'button',
                     'text' => $location->name,
                     'url' => URL::route('location_show', $location->slug)
-                )
+                ))
             );
             foreach ($equipments as $equipment) {
                 $status = $equipment->getStatus();
-                $slack_message['attachments'][] = array(
-                    'color' => $status,
-                    'text' => sprintf('%s*%s* %s `%s`', $equipment->is_critical ? ':exclamation: ' : '', $equipment->name, $equipment->description, $equipment->ip),
-                    'footer' => 'Last seen',
-                    'ts' => strtotime($equipment->last_seen_at),
-                    'mrkdwn_in' => array('text'),
-                );
-                if ($status == 'danger') {
-                    $sql = sprintf('UPDATE equipment SET notified_at = NOW() WHERE id = %d', $equipment->id);
-                    DB::statement($sql);
+                if ($status != 'good') {
+                    $slack_message['attachments'][] = array(
+                        'color' => $status,
+                        'text' => sprintf('%s*%s* %s `%s`', $equipment->is_critical ? ':exclamation: ' : '', $equipment->name, $equipment->description, $equipment->ip),
+                        'footer' => 'Vu la dernière fois',
+                        'ts' => strtotime($equipment->last_seen_at),
+                        'mrkdwn_in' => array('text'),
+                    );
+                    if ($status == 'danger') {
+                        $sql = sprintf('UPDATE equipment SET notified_at = NOW() WHERE id = %d', $equipment->id);
+                        DB::statement($sql);
+                    }
                 }
             }
             $this->slack(Config::get('etincelle.slack_staff_toulouse'), $slack_message);
@@ -665,7 +667,7 @@ group by booking.id
             AND notified_at < last_seen_at
           '));
         foreach ($items as $equipment) {
-            $message = sprintf(':white_check_mark: <%5$s|%1$s> &gt; *%2$s* réponds à nouveau depuis %4$s - `%3$s`',
+            $message = sprintf(':white_check_mark: <%5$s|%1$s> *%2$s* réponds à nouveau depuis %4$s',
                 $equipment->location, $equipment->name, $equipment->ip, date('H:i', strtotime($equipment->last_seen_at)),
                 URL::route('location_show', $equipment->slug)
             );
