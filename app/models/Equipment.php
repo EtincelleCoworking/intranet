@@ -127,6 +127,21 @@ class Equipment extends Eloquent
         return implode(', ', $timeParts);
     }
 
+    protected function renderInkLevel($colorMap, $data)
+    {
+        $result = '';
+        foreach ($colorMap as $color_name => $color_hex) {
+            if (isset($d[$color_name])) {
+                $result .= sprintf('<div class="progress" style="margin-bottom: 5px">
+                                <div style="width: %1$d%%; background-color: %2$s" aria-valuemax="100" aria-valuemin="0" aria-valuenow="%1$d" role="progressbar" class="progress-bar">
+                                    <span class="sr-only">%1$d%% </span>
+                                </div>
+                            </div>', $data[$color_name], $color_hex);
+            }
+        }
+        return $result;
+    }
+
     public function dataFmt()
     {
         if (empty($this->data)) {
@@ -139,15 +154,10 @@ class Equipment extends Eloquent
         $result = '';
         switch ($this->kind) {
             case 'Oki':
-                foreach (array('CYAN' => '#3BF8F8', 'MAGENTA' => '#F853F8', 'YELLOW' => '#F6F732', 'BLACK' => '#000000') as $color_name => $color_hex) {
-                    if (isset($d[$color_name])) {
-                        $result .= sprintf('<div class="progress" style="margin-bottom: 5px">
-                                <div style="width: %1$d%%; background-color: %2$s" aria-valuemax="100" aria-valuemin="0" aria-valuenow="%1$d" role="progressbar" class="progress-bar">
-                                    <span class="sr-only">%1$d%% </span>
-                                </div>
-                            </div>', $d[$color_name], $color_hex);
-                    }
-                }
+                $result .= $this->renderInkLevel(array('CYAN' => '#3BF8F8', 'MAGENTA' => '#F853F8', 'YELLOW' => '#F6F732', 'BLACK' => '#000000'), $d);
+                break;
+            case 'Canon':
+                $result .= $this->renderInkLevel(array('cyan' => '#3BF8F8', 'magenta' => '#F853F8', 'yellow' => '#F6F732', 'black' => '#000000'), $d);
                 break;
             default:
                 $result .= '<pre>';

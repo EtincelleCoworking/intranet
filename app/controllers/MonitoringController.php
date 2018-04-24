@@ -38,9 +38,20 @@ class MonitoringController extends BaseController
             ->select('equipment.*')
             ->get();
 
-        $now = date('Y-m-d H:i:s');
         $count = 0;
+        $ip_updated = false;
+        $now = date('Y-m-d H:i:s');
         foreach ($equipments as $equipment) {
+            if (!$ip_updated) {
+                LocationIp::where('id', '=', $equipment->location_id)->delete();
+
+                $locationIp = new LocationIp();
+                $locationIp->id = $equipment->location_id;
+                $locationIp->name = $_SERVER['REMOTE_ADDR'];
+                $locationIp->save();
+
+                $ip_updated = true;
+            }
             $equipment->last_seen_at = $now;
             $equipment->data = json_encode($feedback[$equipment->ip], true);
             $equipment->save();
