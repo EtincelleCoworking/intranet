@@ -622,10 +622,7 @@ group by booking.id
               )
           '));
         foreach ($locations as $location) {
-            $equipments = DB::select(DB::raw(
-                'SELECT equipment.id, equipment.ip, equipment.name, equipment.last_seen_at
-          FROM equipment 
-          WHERE location_id = ' . $location->id));
+            $equipments = Equipment::where('location_id', '=', $location->id)->orderBy('is_critical', 'DESC')->get();
             $slack_message = array();
             $slack_message['attachments'] = array();
             $slack_message['attachments'][] = array(
