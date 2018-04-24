@@ -190,24 +190,25 @@ class Equipment extends Eloquent
                     ),
                 );
                 $existing_data = json_decode($this->data, true);
-                if (is_array($existing_data)) {
-                    foreach ($existing_data as $color_name => $color_data) {
-                        if (isset($data[$color_name])) {
-                            if ($data[$color_name] > 90) {
-                                $new_data[$color_name]['notified_at'] = null;
-                            } elseif (($data[$color_name] < 30) && empty($existing_data[$color_name]['notified_at'])) {
-                                $slack_message = array(
-                                    'text' => sprintf('La cartouche *%s* de l\'imprimante %s arrive à un niveau bas (%d%%) à %s',
-                                        $color_name, $this->kind, $data[$color_name], $this->location->fullName)
-                                );
-                                $this->slack(Config::get('etincelle.slack_staff_toulouse'), $slack_message);
-                                $new_data[$color_name]['notified_at'] = date('Y-m-d H:i:s');
-                            }
-                            $new_data[$color_name]['status'] = $data[$color_name];
-                        }
+                foreach ($new_data as $color_name => $color_data) {
+                    if(isset($existing_data[$color_name]['notified_at'])){
+                        $new_data[$color_name]['notified_at'] = $existing_data[$color_name]['notified_at'];
                     }
-                } else {
-                    foreach ($new_data as $color_name => $color_data) {
+                    if(isset($existing_data[$color_name]['status'])){
+                        $new_data[$color_name]['status'] = $existing_data[$color_name]['status'];
+                    }
+                    if (isset($data[$color_name])) {
+                        if ($data[$color_name] > 90) {
+                            $new_data[$color_name]['notified_at'] = null;
+                        } elseif (($data[$color_name] < 30) && empty($existing_data[$color_name]['notified_at'])) {
+                            $slack_message = array(
+                                'text' => sprintf('La cartouche *%s* de l\'imprimante %s arrive à un niveau bas (%d%%) à <%s|%s>',
+                                    $color_name, $this->kind, $data[$color_name],
+                                    URL::route('location_show', $this->location->slug), str_replace('>', '&gt;', $this->location->fullName))
+                            );
+                            $this->slack(Config::get('etincelle.slack_staff_toulouse'), $slack_message);
+                            $new_data[$color_name]['notified_at'] = date('Y-m-d H:i:s');
+                        }
                         $new_data[$color_name]['status'] = $data[$color_name];
                     }
                 }
