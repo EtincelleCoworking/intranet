@@ -131,7 +131,7 @@ class Equipment extends Eloquent
     {
         $result = '';
         foreach ($colorMap as $color_name => $color_hex) {
-            if (isset($d[$color_name])) {
+            if (isset($data[$color_name])) {
                 $result .= sprintf('<div class="progress" style="margin-bottom: 5px">
                                 <div style="width: %1$d%%; background-color: %2$s" aria-valuemax="100" aria-valuemin="0" aria-valuenow="%1$d" role="progressbar" class="progress-bar">
                                     <span class="sr-only">%1$d%% </span>
