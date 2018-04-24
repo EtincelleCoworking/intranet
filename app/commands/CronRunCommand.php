@@ -638,9 +638,13 @@ group by booking.id
             foreach ($equipments as $equipment) {
                 $status = $equipment->getStatus();
                 if ($status != 'good') {
+                    $text = sprintf('%s*%s* `%s`', $equipment->is_critical ? ':exclamation: ' : '', $equipment->name, $equipment->ip);
+                    if (!empty($equipment->description)) {
+                        $text .= '\n' . $equipment->description;
+                    }
                     $data = array(
                         'color' => $status,
-                        'text' => sprintf('%s*%s* %s `%s`', $equipment->is_critical ? ':exclamation: ' : '', $equipment->name, $equipment->description, $equipment->ip),
+                        'text' => $text,
                         'mrkdwn_in' => array('text'),
                     );
                     if ($equipment->last_seen_at) {
@@ -678,7 +682,7 @@ group by booking.id
                 URL::route('location_show', $equipment->slug), $equipment->location
             );
             if (!empty($equipment->description)) {
-                $data['text'] .= '\n_'.$equipment->description.'_';
+                $data['text'] .= '\n_' . $equipment->description . '_';
             }
             $this->slack(Config::get('etincelle.slack_staff_toulouse'), $data);
             $sql = sprintf('UPDATE equipment SET notified_at = NULL WHERE id = %d', $equipment->id);
