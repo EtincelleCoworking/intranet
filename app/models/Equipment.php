@@ -76,9 +76,16 @@ class Equipment extends Eloquent
         return $this->secondsToTime($this->frequency);
     }
 
-    public function notifyFrequencyFmt()
+    public function getStatus()
     {
-        return $this->secondsToTime($this->notify_frequency);
+        $age = $this->getAge();
+        if ($age < 2) {
+            return 'good';
+        }
+        if ($age < 5) {
+            return 'warning';
+        }
+        return 'danger';
     }
 
     protected function secondsToTime($inputSeconds)

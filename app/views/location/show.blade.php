@@ -31,10 +31,10 @@
                             <tr>
                                 <td width="15%">
                                     <i class="fa fa-circle" aria-hidden="true"
-                                       <?php $age = $equipment->getAge(); ?>
-                                       @if($age < 2)
+                                       <?php $status = $equipment->getStatus(); ?>
+                                       @if($status == 'good')
                                        style="color: green"
-                                       @elseif($age < 5)
+                                       @elseif($status == 'warning')
                                        style="color: orange"
                                        @else
                                        style="color: red"

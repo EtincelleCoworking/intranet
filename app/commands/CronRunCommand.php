@@ -607,29 +607,50 @@ group by booking.id
     protected function checkMonitoring()
     {
         //region Host getting down
-        $items = DB::select(DB::raw(
-            'SELECT equipment.id, equipment.ip, equipment.name, equipment.last_seen_at,
-            if(locations.name IS NULL, cities.name,concat(cities.name, \' &gt; \',  locations.name)) as location,
+        $locations = DB::select(DB::raw(
+            'SELECT distinct(locations.id),
+            if(locations.name IS NULL, cities.name,concat(cities.name, \' &gt; \',  locations.name)) as name,
             locations.slug
-          FROM equipment 
-            join locations on equipment.location_id = locations.id
+          FROM locations  
             join cities on locations.city_id = cities.id
-          WHERE is_critical = 1 
-            AND last_seen_at IS NOT NULL 
-            AND DATE_ADD(last_seen_at, INTERVAL GREATEST(notify_delay, 3 * frequency) SECOND) < NOW()
-            AND (notified_at IS NULL OR (notified_at < last_seen_at))
+          WHERE locations.id IN 
+              (
+              SELECT DISTINCT(location_id) FROM equipment WHERE is_critical = 1 
+                AND last_seen_at IS NOT NULL 
+                AND DATE_ADD(last_seen_at, INTERVAL GREATEST(notify_delay, 3 * frequency) SECOND) < NOW()
+                AND (notified_at IS NULL OR (notified_at < last_seen_at))
+              )
           '));
-        foreach ($items as $equipment) {
-            $message = sprintf(':exclamation: <%5$s|%1$s> &gt; *%2$s* ne réponds plus depuis %4$s - `%3$s`',
-                $equipment->location, $equipment->name, $equipment->ip, date('H:i', strtotime($equipment->last_seen_at)),
-                URL::route('location_show', $equipment->slug)
+        foreach ($locations as $location) {
+            $equipments = DB::select(DB::raw(
+                'SELECT equipment.id, equipment.ip, equipment.name, equipment.last_seen_at
+          FROM equipment 
+          WHERE location_id = ' . $location->id));
+            $slack_message = array();
+            $slack_message['attachments'] = array();
+            $slack_message['attachments'][] = array(
+                'fallback' => $location->name,
+                'actions' => array(
+                    'type' => 'button',
+                    'text' => $location->name,
+                    'url' => URL::route('location_show', $location->slug)
+                )
             );
-
-            $this->slack(Config::get('etincelle.slack_staff_toulouse'), array(
-                'text' => $message,
-            ));
-            $sql = sprintf('UPDATE equipment SET notified_at = NOW() WHERE id = %d', $equipment->id);
-            DB::statement($sql);
+            foreach ($equipments as $equipment) {
+                $status = $equipment->getStatus();
+                $slack_message['attachments'][] = array(
+                    'color' => $status,
+                    'text' => sprintf('%s*%s* %s `%s`', $equipment->is_critical ? ':exclamation: ' : '', $equipment->name, $equipment->description, $equipment->ip),
+                    'footer' => 'Last seen',
+                    'ts' => strtotime($equipment->last_seen_at),
+                    'mrkdwn_in' => array('text'),
+                );
+                if ($status == 'danger') {
+                    $sql = sprintf('UPDATE equipment SET notified_at = NOW() WHERE id = %d', $equipment->id);
+                    DB::statement($sql);
+                }
+            }
+            $this->slack(Config::get('etincelle.slack_staff_toulouse'), $slack_message);
         }
         //endregion
 
