@@ -617,7 +617,7 @@ group by booking.id
               (
               SELECT DISTINCT(location_id) FROM equipment WHERE is_critical = 1 
                 AND last_seen_at IS NOT NULL 
-                AND DATE_ADD(last_seen_at, INTERVAL GREATEST(notify_delay, 3 * frequency) SECOND) < NOW()
+                AND DATE_ADD(last_seen_at, INTERVAL GREATEST(notify_delay, 5 * frequency) SECOND) < NOW()
                 AND (notified_at IS NULL OR (notified_at < last_seen_at))
               )
           '));
