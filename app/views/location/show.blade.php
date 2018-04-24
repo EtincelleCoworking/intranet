@@ -29,7 +29,7 @@
                         </tr>
                         @foreach($equipments as $equipment)
                             <tr>
-                                <td class="col-md-2">
+                                <td width="15%">
                                     <i class="fa fa-circle" aria-hidden="true"
                                        <?php $age = $equipment->getAge(); ?>
                                        @if($age < 2)
@@ -40,7 +40,18 @@
                                        style="color: red"
                                             @endif
                                     ></i>
-                                    {{$equipment->name}}
+                                    @if($equipment->is_critical)
+                                        {{$equipment->name}}
+                                    @else
+                                        <i>{{$equipment->name}}</i>
+                                    @endif
+
+                                    @if($equipment->description)
+                                        <br/>
+                                        <small>{{$equipment->description}}</small>
+                                    @endif
+                                </td>
+                                <td width="10%" style="text-wrap: none">
                                     <i class="fa fa-question-circle"
                                        @if($equipment->notify_frequency)
                                        title="Mise à jour : {{$equipment->frequencyFmt()}} / Alerte : {{$equipment->notifyFrequencyFmt()}}"
@@ -48,14 +59,10 @@
                                        title="Mise à jour : {{$equipment->frequencyFmt()}}"
                                             @endif
                                     ></i>
+                                    <small>{{$equipment->ip}}</small>
 
-                                    @if($equipment->description)
-                                        <br/>
-                                        <small>{{$equipment->description}}</small>
-                                    @endif
                                 </td>
-                                <td class="col-md-2">{{$equipment->ip}}</td>
-                                <td class="col-md-2">
+                                <td width="15%">
                                     @if($equipment->last_seen_at)
                                         {{$equipment->lastSeenAgo()}}
                                     @else
@@ -63,7 +70,7 @@
                                     @endif
 
                                 </td>
-                                <td class="col-md-6">
+                                <td width="50%">
                                     {{$equipment->dataFmt()}}
                                 </td>
                             </tr>

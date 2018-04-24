@@ -63,7 +63,10 @@ class LocationController extends BaseController
     public function show($location_slug)
     {
         $location = Location::where('slug', '=', $location_slug)->first();
-        $equipments = Equipment::where('location_id', '=', $location->id)->get();
+        $equipments = Equipment::where('location_id', '=', $location->id)
+            ->orderBy('is_critical', 'DESC')
+//            ->orderBy('order_index', 'ASC')
+            ->get();
         return View::make('location.show', array(
             'location' => $location,
             'equipments' => $equipments,
