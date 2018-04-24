@@ -222,7 +222,7 @@ class User extends Eloquent implements UserInterface, RemindableInterface
                 return $result;
             }
         }
-        return "http://www.gravatar.com/avatar/" . md5(strtolower(trim($this->email))) . "?d=mm&s=" . $size;
+        return "https://www.gravatar.com/avatar/" . md5(strtolower(trim($this->email))) . "?d=mm&s=" . $size;
     }
 
     public function getLargeAvatarUrlAttribute()
