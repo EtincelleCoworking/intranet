@@ -53,7 +53,7 @@ class MonitoringController extends BaseController
                 $ip_updated = true;
             }
             $equipment->last_seen_at = $now;
-            $equipment->data = json_encode($feedback[$equipment->ip], true);
+            $equipment->storeData($feedback[$equipment->ip]);
             $equipment->save();
             $count++;
         }
