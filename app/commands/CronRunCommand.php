@@ -622,27 +622,32 @@ group by booking.id
               )
           '));
         foreach ($locations as $location) {
+            $url = URL::route('location_show', $location->slug);
             $equipments = Equipment::where('location_id', '=', $location->id)->orderBy('is_critical', 'DESC')->get();
             $slack_message = array();
+            $slack_message['text'] = 'Un problème a été détecté sur les équipements du site '.$location->name;
             $slack_message['attachments'] = array();
             $slack_message['attachments'][] = array(
-                'fallback' => $location->name,
+                'fallback' => sprintf('<Voir les détails|%s>', $url),
                 'actions' => array(array(
                     'type' => 'button',
-                    'text' => $location->name,
-                    'url' => URL::route('location_show', $location->slug)
+                    'text' => 'Voir le détail',
+                    'url' => $url
                 ))
             );
             foreach ($equipments as $equipment) {
                 $status = $equipment->getStatus();
                 if ($status != 'good') {
-                    $slack_message['attachments'][] = array(
+                    $data = array(
                         'color' => $status,
                         'text' => sprintf('%s*%s* %s `%s`', $equipment->is_critical ? ':exclamation: ' : '', $equipment->name, $equipment->description, $equipment->ip),
-                        'footer' => 'Vu la dernière fois',
-                        'ts' => strtotime($equipment->last_seen_at),
                         'mrkdwn_in' => array('text'),
                     );
+                    if ($equipment->last_seen_at) {
+                        $data['footer'] = 'Vu la dernière fois';
+                        $data['ts'] = strtotime($equipment->last_seen_at);
+                    }
+                    $slack_message['attachments'][] = $data;
                     if ($status == 'danger') {
                         $sql = sprintf('UPDATE equipment SET notified_at = NOW() WHERE id = %d', $equipment->id);
                         DB::statement($sql);
