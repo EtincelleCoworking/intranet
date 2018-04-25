@@ -37,6 +37,7 @@ class PastTimeController extends BaseController
         if (Input::has('filtre_submitted')) {
             if (Input::has('toinvoice')) {
                 Session::put('filtre_pasttime.filtre_toinvoice', true);
+                Session::put('filtre_pasttime.filtre_exclude_coworking', true);
                 Session::forget('filtre_pasttime.user_id');
                 Session::forget('filtre_pasttime.organisation_id');
                 Session::put('filtre_pasttime.start', '2014-12-01');
@@ -68,6 +69,11 @@ class PastTimeController extends BaseController
                 } else {
                     Session::put('filtre_pasttime.filtre_toinvoice', false);
                 }
+                if (Input::has('filtre_exclude_coworking')) {
+                    Session::put('filtre_pasttime.filtre_exclude_coworking', Input::get('filtre_exclude_coworking'));
+                } else {
+                    Session::put('filtre_pasttime.filtre_exclude_coworking', false);
+                }
             }
         }
         if (Session::has('filtre_pasttime.start')) {
@@ -93,6 +99,9 @@ class PastTimeController extends BaseController
         if (Session::get('filtre_pasttime.filtre_toinvoice')) {
             $q->where('invoice_id', 0);
             $q->where('is_free', false);
+        }
+        if (Session::get('filtre_pasttime.filtre_exclude_coworking')) {
+            $q->where('ressource_id', '<>', Ressource::TYPE_COWORKING);
         }
         if (Auth::user()->isSuperAdmin()) {
             if (Session::has('filtre_pasttime.user_id') && Session::get('filtre_pasttime.user_id')) {
@@ -298,7 +307,6 @@ class PastTimeController extends BaseController
             $invoice_line->amount = 0;
             $invoice_line->order_index = $orderIndex++;
             if ($ressource_id == Ressource::TYPE_COWORKING) {
-
                 $items_per_user = array();
                 foreach ($line as $item) {
                     if (!$item->is_free) {

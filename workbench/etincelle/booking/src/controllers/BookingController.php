@@ -1074,7 +1074,7 @@ ORDER BY room ASC , booking_item.start_at ASC ', $day, $day, $location)));
     <ul>
         <li>Aimer notre page Facebook : http://fb.me/EtincelleCoworking</li>
         <li>Nous suivre sur Twitter : https://twitter.com/etincelle_tls</li>
-        <li>Laisser un avis sur Google : https://goo.gl/4aavWs</li>
+        <li>Laisser un avis sur Google : https://goo.gl/vzeXYy</li>
     </ul>
     </p>
     <p>&nbsp;</p>

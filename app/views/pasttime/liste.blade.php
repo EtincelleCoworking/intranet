@@ -35,15 +35,11 @@
                     {{ Form::hidden('filtre_submitted', 1) }}
                     @if (Auth::user()->isSuperAdmin())
                         <div class="row">
-                            <div class="col-md-5">
+                            <div class="col-md-6">
                                 {{ Form::select('filtre_organisation_id', Organisation::SelectAll('Sélectionnez une organisation'), Session::get('filtre_pasttime.organisation_id') ? Session::get('filtre_pasttime.organisation_id') : null, array('id' => 'filter-organisation','class' => 'form-control')) }}
                             </div>
-                            <div class="col-md-5">
+                            <div class="col-md-6">
                                 {{ Form::select('filtre_user_id', User::Select('Sélectionnez un client'), Session::get('filtre_pasttime.user_id') ? Session::get('filtre_pasttime.user_id') : null, array('id' => 'filter-client','class' => 'form-control')) }}
-                            </div>
-                            <div class="col-md-2 input-group-sm">
-                                {{ Form::checkbox('filtre_toinvoice', true, Session::has('filtre_pasttime.toinvoice') ? Session::get('filtre_pasttime.toinvoice') : false) }}
-                                A facturer
                             </div>
                         </div>
                     @else
@@ -51,9 +47,19 @@
                     @endif
 
                     <div class="row">
-                        <div class="col-md-4 input-group-sm">{{ Form::text('filtre_start', Session::get('filtre_pasttime.start') ? date('d/m/Y', strtotime(Session::get('filtre_pasttime.start'))) : date('01/m/Y'), array('class' => 'form-control datePicker')) }}</div>
-                        <div class="col-md-4 input-group-sm">{{ Form::text('filtre_end', ((Session::get('filtre_pasttime.end')) ? date('d/m/Y', strtotime(Session::get('filtre_pasttime.end'))) : date('t', date('m')).'/'.date('m/Y')), array('class' => 'form-control datePicker')) }}</div>
-                        <div class="col-md-4">
+                        <div class="col-md-3 input-group-sm">{{ Form::text('filtre_start', Session::get('filtre_pasttime.start') ? date('d/m/Y', strtotime(Session::get('filtre_pasttime.start'))) : date('01/m/Y'), array('class' => 'form-control datePicker')) }}</div>
+                        <div class="col-md-3 input-group-sm">{{ Form::text('filtre_end', ((Session::get('filtre_pasttime.end')) ? date('d/m/Y', strtotime(Session::get('filtre_pasttime.end'))) : date('t', date('m')).'/'.date('m/Y')), array('class' => 'form-control datePicker')) }}</div>
+                        <div class="col-md-3 input-group-sm">
+                            {{ Form::checkbox('filtre_toinvoice', true, Session::has('filtre_pasttime.toinvoice') ? Session::get('filtre_pasttime.toinvoice') : false) }}
+                            A facturer
+                        </div>
+                        <div class="col-md-3 input-group-sm">
+                            {{ Form::checkbox('filtre_exclude_coworking', true, Session::has('filtre_pasttime.exclude_coworking') ? Session::get('filtre_pasttime.exclude_coworking') : false) }}
+                            Exclure le coworking
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-12">
                             {{ Form::submit('Filtrer', array('class' => 'btn btn-sm btn-primary')) }}
                             <a href="{{URL::route('pasttime_filter_reset')}}" class="btn btn-sm btn-default">Réinitialiser</a>
                             @if (Auth::user()->isSuperAdmin())
