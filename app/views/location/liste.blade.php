@@ -45,7 +45,7 @@
                                         Aucune IP enregistrée
                                     @else
                                         @foreach($location->ips as $ip)
-                                            <?php $age = $ip->getAge(); ?>
+                                            <?php $age = $ip->getAge() * 24 * 60; ?>
                                             <i class="fa fa-circle" aria-hidden="true"
                                                @if($age < 1)
                                                style="color: green"

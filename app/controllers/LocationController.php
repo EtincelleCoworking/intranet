@@ -20,7 +20,7 @@ class LocationController extends BaseController
 
     public function liste()
     {
-        $items = Location::get();
+        $items = Location::orderBy('enabled', 'DESC')->orderBy('city_id', 'ASC')->get();
         return View::make('location.liste', array('items' => $items));
     }
 
