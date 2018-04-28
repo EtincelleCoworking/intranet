@@ -81,13 +81,14 @@ class Ressource extends Eloquent
 
         foreach ($query->select('ressources.*')
                      ->join('locations', 'ressources.location_id', '=', 'locations.id', 'left outer')
+                     ->where('locations.enabled', '=', true)
                      ->orderBy('locations.name', 'asc')
                      ->orderBy('ressources.order_index', 'asc')
                      ->with('location')
                      ->with('location.city')
                      ->orderBy('order_index', 'ASC')->get() as $ressource) {
             $location = (string)$ressource->location;
-            if(empty($location)){
+            if (empty($location)) {
                 $location = $commonKey;
             }
             $selectVals[$location][$ressource->id] = $ressource->name;
@@ -113,7 +114,7 @@ class Ressource extends Eloquent
                      ->orderBy('ressources.order_index', 'asc')
                      ->orderBy('order_index', 'ASC')->get() as $ressource) {
             $location = (string)$ressource->location;
-            if(empty($location)){
+            if (empty($location)) {
                 $location = $commonKey;
             }
             $selectVals[$location][$ressource->id] = $ressource->name;
