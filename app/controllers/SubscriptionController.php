@@ -186,7 +186,7 @@ class SubscriptionController extends BaseController
             $invoice_line->subscription_user_id = $subscription->user_id;
         }
         $date2->modify('-1 day');
-        $invoice_line->text = sprintf("%s\nDu %s au %s", $subscription->formattedName(), $date->format('d/m/Y'), $date2->format('d/m/Y'));
+        $invoice_line->text = sprintf("%s<br />\nDu %s au %s", $subscription->formattedName(), $date->format('d/m/Y'), $date2->format('d/m/Y'));
         $invoice_line->vat_types_id = VatType::whereValue(20)->first()->id;
         $invoice_line->order_index = 1;
         $invoice_line->save();
@@ -282,7 +282,7 @@ class SubscriptionController extends BaseController
 
             $date2->modify('-1 day');
             $caption = str_replace(array('%OrganisationName%', '%UserName%'), array($subscription->organisation->name, $subscription->user->fullname), $subscription->kind->name);
-            $invoice_line->text = sprintf("%s\nDu %s au %s", $caption, $date->format('d/m/Y'), $date2->format('d/m/Y'));
+            $invoice_line->text = sprintf("%s<br />\nDu %s au %s", $caption, $date->format('d/m/Y'), $date2->format('d/m/Y'));
             $invoice_line->vat_types_id = VatType::whereValue(20)->first()->id;
             $invoice_line->order_index = $index++;
             $invoice_line->save();

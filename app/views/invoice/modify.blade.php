@@ -74,9 +74,9 @@
                             {{ Form::label('user_id', 'Utilisateur') }}
                             <p>{{ Form::select('user_id', User::SelectInOrganisation($invoice->organisation_id), $invoice->user_id, array('id' => 'selectUserId', 'class' => 'form-control')) }}</p>
                         </div>
-                        </div>
-                            <div class="row">
-                                <div class="col-md-6">
+                    </div>
+                    <div class="row">
+                        <div class="col-md-6">
                             {{ Form::label('address', 'Adresse de facturation') }}
                             <p>{{ Form::textarea('address', $invoice->address, array('id' => 'addressInvoice', 'class' => 'form-control', 'rows' => '5')) }}</p>
 
@@ -105,11 +105,11 @@
                         </div>
                     </div>
                     <div class="row">
-                    <div class="col-md-12">
-                        {{ Form::label('business_terms', 'Conditions commerciales') }}
-                        <p>{{ Form::textarea('business_terms', $invoice->business_terms, array('class' => 'form-control', 'rows' => '5')) }}</p>
+                        <div class="col-md-12">
+                            {{ Form::label('business_terms', 'Conditions commerciales') }}
+                            <p>{{ Form::textarea('business_terms', $invoice->business_terms, array('class' => 'form-control', 'rows' => '5')) }}</p>
+                        </div>
                     </div>
-                </div>
                     <div class="row">
                         <div class="hr-line-dashed"></div>
                         <div class="form-group">
@@ -146,14 +146,15 @@
                                 <td class="col-lg-1">{{ Form::number('order_index['.$item->id.']', $item->order_index, array('class' => 'form-control')) }}</td>
                                 <td>{{ Form::select('ressource_id['.$item->id.']', Ressource::SelectAll(), $item->ressource_id, array('class' => 'form-control')) }}</td>
                                 <td>
-                                    {{ Form::textarea('text['.$item->id.']', $item->text, array('rows' => 4, 'class' => 'form-control')) }}
+                                    {{ Form::textarea('text['.$item->id.']', $item->text, array('id' => 'text'.$item->id, 'rows' => 4, 'class' => 'form-control')) }}
                                     @if(!$item->subscription_hours_quota)
                                         <a href="#" class="btn btn-xs btn-default action-item-option-toggle"
                                            data-id="{{$item->id}}" data-kind="subscription">+ Abonnement</a>
                                     @endif
-                                    @if(!$item->booking_hours)
+                                    @if(!$item->coworking_pack_item_count)
                                         <a href="#" class="btn btn-xs btn-default action-item-option-toggle"
-                                           data-id="{{$item->id}}" data-kind="booking">+ Pré-réservation</a>
+                                           data-id="{{$item->id}}" data-kind="prepaid">+ Pack 10 demi journées
+                                            coworking</a>
                                     @endif
                                 </td>
                                 <td>{{ Form::text('amount['.$item->id.']', $item->amount, array('class' => 'form-control')) }}</td>
@@ -163,12 +164,12 @@
                                        data-method="delete"
                                        data-confirm="Etes-vous certain de vouloir retirer cette ligne ?"
                                        rel="nofollow"
-                                       class="btn btn-xs btn-danger btn-outline">Supprimer</a</td>
+                                       class="btn btn-xs btn-danger btn-outline">Supprimer</a></td>
                             </tr>
                             <tr id="item-option-subscription-{{$item->id}}"
                                 @if(!$item->subscription_hours_quota)
-                                    class="hide"
-                                @endif
+                                class="hide"
+                                    @endif
                             >
                                 <td></td>
                                 <td>Abonnement</td>
@@ -176,39 +177,51 @@
                                     <div class="form-group"><label
                                                 class="col-sm-2 control-label">Utilisateur</label>
                                         <div class="col-sm-10">
-                                            {{ Form::select('subscription_user_id['.$item->id.']', User::SelectInOrganisation($invoice->organisation_id, '-'),$item->subscription_user_id, array('class' => 'form-control')) }}
+                                            {{ Form::select('subscription_user_id['.$item->id.']', User::SelectInOrganisation($invoice->organisation_id, '-'),$item->subscription_user_id, array('class' => 'form-control', 'id' => 'subscription_user_id'.$item->id, 'onchange' => '$(\'#update_text_coworking'.$item->id.'\').click(); return true;')) }}
                                         </div>
                                     </div>
                                     <div class="form-group"><label
                                                 class="col-sm-2 control-label">Abonnement</label>
                                         <div class="col-sm-10">
-                                            {{ Form::select('subscription_hours_quota['.$item->id.']',SubscriptionKind::SelectOptions(), $item->subscription_hours_quota, array('class' => 'form-control')) }}
+                                            {{ Form::select('subscription_hours_quota['.$item->id.']',SubscriptionKind::SelectOptions(), $item->subscription_hours_quota, array('class' => 'form-control', 'id' => 'subscription_hours_quota'.$item->id, 'onchange' => '$(\'#update_text_coworking'.$item->id.'\').click(); return true;')) }}
                                         </div>
                                     </div>
                                     <div class="form-group"><label
                                                 class="col-sm-2 control-label">Du</label>
                                         <div class="col-sm-10">
-                                            {{ Form::text('subscription_from['.$item->id.']', ($item->subscription_from != '0000-00-00 00:00:00') ?date('d/m/Y', strtotime($item->subscription_from)):null, array('class' => 'form-control datePicker')) }}
+                                            {{ Form::text('subscription_from['.$item->id.']', ($item->subscription_from != '0000-00-00 00:00:00') ?date('d/m/Y', strtotime($item->subscription_from)):null, array('class' => 'form-control datePicker', 'id' => 'subscription_from'.$item->id, 'onchange' => 'coworkingStartUpdated('.$item->id.'); return true;')) }}
                                         </div>
                                     </div>
                                     <div class="form-group"><label
                                                 class="col-sm-2 control-label">Au</label>
                                         <div class="col-sm-10">
-                                            {{ Form::text('subscription_to['.$item->id.']', ($item->subscription_to != '0000-00-00 00:00:00')?date('d/m/Y', strtotime($item->subscription_to)):null, array('class' => 'form-control datePicker')) }}
+                                            {{ Form::text('subscription_to['.$item->id.']', ($item->subscription_to != '0000-00-00 00:00:00')?date('d/m/Y', strtotime($item->subscription_to)):null, array('class' => 'form-control datePicker', 'id' => 'subscription_to'.$item->id))}}
                                         </div>
                                     </div>
+                                    <div>
+                                        <div class="form-group">
+                                            <label class="col-sm-2 control-label"></label>
+                                            <div class="col-sm-10">
+                                                <a href="#" class="btn btn-default btn-xs action-line-coworking"
+                                                   id="update_text_coworking{{$item->id}}"
+                                                   data-target-id="{{$item->id}}">Mettre à jour le texte</a>
+                                            </div>
+                                        </div>
+
+                                    </div>
                                 </td>
-                                <td></td>
+                                <td>
+                                </td>
                             </tr>
-                            <tr id="item-option-booking-{{$item->id}}"
-                                @if(!$item->booking_hours)
+                            <tr id="item-option-prepaid-{{$item->id}}"
+                                @if(!$item->coworking_pack_item_count)
                                 class="hide"
                                     @endif
                             >
                                 <td></td>
-                                <td>Pré-réservation</td>
+                                <td>Demi journées coworking - Prépayées</td>
                                 <td colspan="3">
-                                    {{ Form::text('booking_hours['.$item->id.']', $item->booking_hours, array('class' => 'form-control')) }}
+                                    {{ Form::text('coworking_pack_item_count['.$item->id.']', $item->coworking_pack_item_count, array('class' => 'form-control')) }}
                                 </td>
                                 <td></td>
                             </tr>
@@ -220,10 +233,10 @@
                             <td>{{ Form::select('ressource_id[0]', Ressource::SelectAll(), null, array('class' => 'form-control')) }}</td>
                             <td>
                                 {{ Form::textarea('text[0]', null, array('rows' => 4, 'placeholder' => 'Nouvelle ligne', 'class' => 'form-control')) }}
-                                    <a href="#" class="btn btn-xs btn-default action-item-option-toggle"
-                                       data-id="0" data-kind="subscription">+ Abonnement</a>
-                                    <a href="#" class="btn btn-xs btn-default action-item-option-toggle"
-                                       data-id="0" data-kind="booking">+ Pré-réservation</a>
+                                <a href="#" class="btn btn-xs btn-default action-item-option-toggle"
+                                   data-id="0" data-kind="subscription">+ Abonnement</a>
+                                <a href="#" class="btn btn-xs btn-default action-item-option-toggle"
+                                   data-id="0" data-kind="prepaid">+ Demi journées coworking prépayées</a>
                             </td>
                             <td>{{ Form::text('amount[0]', null, array('class' => 'form-control')) }}</td>
                             <td>{{ Form::select('vat_types_id[0]', VatType::SelectAll(), null, array('class' => 'form-control')) }}</td>
@@ -259,11 +272,11 @@
                             </td>
                             <td></td>
                         </tr>
-                        <tr id="item-option-booking-0" class="hide">
+                        <tr id="item-option-prepaid-0" class="hide">
                             <td></td>
-                            <td>Pré-réservation</td>
+                            <td>Demi journées coworking - prépayées</td>
                             <td colspan="3">
-                                {{ Form::text('booking_hours[0]', null, array('class' => 'form-control')) }}
+                                {{ Form::text('coworking_pack_item_count[0]', null, array('class' => 'form-control')) }}
                             </td>
                             <td></td>
                         </tr>
@@ -342,7 +355,7 @@
             });
         }
 
-        function refreshUserList(id){
+        function refreshUserList(id) {
             var url = "{{ URL::route('organisation_json_users') }}";
             var urlFinale = url.replace("%7Bid%7D", id);
 
@@ -367,6 +380,34 @@
 
         }
 
+        function coworkingStartUpdated(line_id) {
+            var m = moment($('#subscription_from' + line_id).datepicker('getDate'));
+            m.add(1, 'month');
+            $('#subscription_to' + line_id).datepicker('setDate', m.toDate());
+            coworking_updateText(line_id);
+        }
+
+        function coworking_updateText(line_id) {
+            var content = $('#subscription_hours_quota' + line_id + ' option:selected').text().replace('%UserName%', $('#subscription_user_id' + line_id + ' option:selected').text())
+            content += "<br />\n";
+            var datePicker = $('#subscription_to' + line_id);
+            var _date_orig = datePicker.datepicker('getDate');
+            var _date = datePicker.datepicker('getDate');
+            _date.setTime(_date.getTime() - 24 * 60 * 60 * 1000);
+            datePicker.datepicker('setDate', _date);
+            var to = datePicker.datepicker('getFormattedDate');
+            datePicker.datepicker('setDate', _date_orig);
+            //$('#subscription_from' + line_id).datepicker('setUTCDate');
+
+            content += "Du %from% au %to%"
+                .replace('%from%', $('#subscription_from' + line_id).val())
+                .replace('%to%', to)
+            ;
+
+            $('#text' + line_id).val(content);
+            return false;
+        }
+
         $().ready(function () {
 
 
@@ -385,6 +426,10 @@
             });
 
             $('#selectUserId').select2();
+
+            $('.action-line-coworking').click(function (){
+                coworking_updateText($(this).attr('data-target-id'));
+            });
 
         });
     </script>

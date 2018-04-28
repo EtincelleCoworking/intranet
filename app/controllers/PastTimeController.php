@@ -343,7 +343,7 @@ class PastTimeController extends BaseController
                     foreach ($line_content as $item) {
                         $duration = min(2, ceil(((strtotime($item->time_end) - strtotime($item->time_start)) / 3600) / self::COWORKING_HALF_DAY_MAX_DURATION));
                         $sum_duration += $duration;
-                        $invoice_line->text .= sprintf("\n - %s de %s à %s (%s demi journée%s)", date('d/m/Y', strtotime($item->time_start)),
+                        $invoice_line->text .= sprintf("<br />\n - %s de %s à %s (%s demi journée%s)", date('d/m/Y', strtotime($item->time_start)),
                             date('H:i', strtotime($item->time_start)), date('H:i', strtotime($item->time_end)), $duration, ($duration > 1) ? 's' : '');
                         if (count($users) > 1) {
                             $invoice_line->text .= ' - ' . $item->user()->getResults()->fullname;
@@ -353,12 +353,12 @@ class PastTimeController extends BaseController
                         $item->invoice_id = $invoice->id;
                         $item->save();
                     }
-                    $invoice_line->text .= sprintf("\nTotal : %s demi journée%s\n\n", $sum_duration, ($sum_duration > 1) ? 's' : '');
+                    $invoice_line->text .= sprintf("<br />\nTotal : %s demi journée%s<br />\n<br />\n", $sum_duration, ($sum_duration > 1) ? 's' : '');
                 }
             } else {
                 $invoice_line->text = sprintf('Location d\'espace de réunion - %s', $ressource->name);
                 foreach ($line as $item) {
-                    $invoice_line->text .= sprintf("\n - %s de %s à %s", date('d/m/Y', strtotime($item->time_start)), date('H:i', strtotime($item->time_start)), date('H:i', strtotime($item->time_end)));
+                    $invoice_line->text .= sprintf("<br />\n - %s de %s à %s", date('d/m/Y', strtotime($item->time_start)), date('H:i', strtotime($item->time_start)), date('H:i', strtotime($item->time_end)));
                     $invoice_line->amount += min(7, (strtotime($item->time_end) - strtotime($item->time_start)) / 3600) * $ressource->amount;
 
                     $item->invoice_id = $invoice->id;
