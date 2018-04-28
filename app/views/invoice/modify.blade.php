@@ -232,7 +232,7 @@
                             <td>{{ Form::number('order_index[0]', 1, array('class' => 'form-control')) }}</td>
                             <td>{{ Form::select('ressource_id[0]', Ressource::SelectAll(), null, array('class' => 'form-control')) }}</td>
                             <td>
-                                {{ Form::textarea('text[0]', null, array('rows' => 4, 'placeholder' => 'Nouvelle ligne', 'class' => 'form-control')) }}
+                                {{ Form::textarea('text[0]', null, array('rows' => 4, 'placeholder' => 'Nouvelle ligne', 'class' => 'form-control', 'id' => 'text0')) }}
                                 <a href="#" class="btn btn-xs btn-default action-item-option-toggle"
                                    data-id="0" data-kind="subscription">+ Abonnement</a>
                                 <a href="#" class="btn btn-xs btn-default action-item-option-toggle"
@@ -248,26 +248,37 @@
                                 <div class="form-group"><label
                                             class="col-sm-2 control-label">Utilisateur</label>
                                     <div class="col-sm-10">
-                                        {{ Form::select('subscription_user_id[0]', User::SelectInOrganisation($invoice->organisation_id, '-'),null, array('class' => 'form-control')) }}
+                                        {{ Form::select('subscription_user_id[0]', User::SelectInOrganisation($invoice->organisation_id, '-'),null, array('class' => 'form-control', 'id' => 'subscription_user_id0', 'onchange' => '$(\'#update_text_coworking0\').click(); return true;')) }}
                                     </div>
                                 </div>
                                 <div class="form-group"><label
                                             class="col-sm-2 control-label">Abonnement</label>
                                     <div class="col-sm-10">
-                                        {{ Form::select('subscription_hours_quota[0]',SubscriptionKind::SelectOptions(), null, array('class' => 'form-control')) }}
+                                        {{ Form::select('subscription_hours_quota[0]',SubscriptionKind::SelectOptions(), null, array('class' => 'form-control', 'id' => 'subscription_hours_quota0', 'onchange' => '$(\'#update_text_coworking0\').click(); return true;')) }}
                                     </div>
                                 </div>
                                 <div class="form-group"><label
                                             class="col-sm-2 control-label">Du</label>
                                     <div class="col-sm-10">
-                                        {{ Form::text('subscription_from[0]', null, array('class' => 'form-control datePicker')) }}
+                                        {{ Form::text('subscription_from[0]', null, array('class' => 'form-control datePicker', 'id' => 'subscription_from0', 'onchange' => 'coworkingStartUpdated(0); return true;')) }}
                                     </div>
                                 </div>
                                 <div class="form-group"><label
                                             class="col-sm-2 control-label">Au</label>
                                     <div class="col-sm-10">
-                                        {{ Form::text('subscription_to[0]', null, array('class' => 'form-control datePicker')) }}
+                                        {{ Form::text('subscription_to[0]', null, array('class' => 'form-control datePicker', 'id' => 'subscription_to0')) }}
                                     </div>
+                                </div>
+                                <div>
+                                    <div class="form-group">
+                                        <label class="col-sm-2 control-label"></label>
+                                        <div class="col-sm-10">
+                                            <a href="#" class="btn btn-default btn-xs action-line-coworking"
+                                               id="update_text_coworking0"
+                                               data-target-id="0">Mettre à jour le texte</a>
+                                        </div>
+                                    </div>
+
                                 </div>
                             </td>
                             <td></td>
