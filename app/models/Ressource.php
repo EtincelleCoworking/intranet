@@ -86,13 +86,11 @@ class Ressource extends Eloquent
                      ->with('location')
                      ->with('location.city')
                      ->orderBy('order_index', 'ASC')->get() as $ressource) {
-            if (!$ressource->location || $ressource->location->enabled) {
-                $location = (string)$ressource->location;
-                if (empty($location)) {
-                    $location = $commonKey;
-                }
-                $selectVals[$location][$ressource->id] = $ressource->name;
+            $location = (string)$ressource->location;
+            if (empty($location)) {
+                $location = $commonKey;
             }
+            $selectVals[$location][$ressource->id] = $ressource->name;
         }
         return $selectVals;
     }
