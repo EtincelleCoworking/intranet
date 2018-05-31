@@ -47,9 +47,9 @@
                                         @foreach($location->ips as $ip)
                                             <?php $age = $ip->getAge() * 24 * 60; ?>
                                             <i class="fa fa-circle" aria-hidden="true"
-                                               @if($age < 1)
+                                               @if($age < 2)
                                                style="color: green"
-                                               @elseif($age < 2)
+                                               @elseif($age < 5)
                                                style="color: orange"
                                                @else
                                                style="color: red"

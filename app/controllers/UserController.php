@@ -1,7 +1,6 @@
 <?php
 
 use GuzzleHttp\Client;
-use Illuminate\Http\Response;
 
 
 /**

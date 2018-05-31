@@ -38,10 +38,10 @@
                     @endif
 
                     <div class="row">
-                            <div class="col-md-6">
-                                {{ Form::label('user_id', 'Client') }}
-                                <p>{{ Form::select('user_id', User::Select('Sélectionnez un client'), isset($subscription)?$subscription->user_id:null, array('id' => 'selectUserId', 'class' => 'form-control')) }}</p>
-                            </div>
+                        <div class="col-md-6">
+                            {{ Form::label('user_id', 'Client') }}
+                            <p>{{ Form::select('user_id', User::Select('Sélectionnez un client'), isset($subscription)?$subscription->user_id:null, array('id' => 'selectUserId', 'class' => 'form-control')) }}</p>
+                        </div>
                         <div class="col-md-6">
                             {{ Form::label('organisation_id', 'Organisation') }}
                             <p>{{ Form::select('organisation_id', Organisation::SelectAll('Sélectionnez une organisation'), isset($subscription)?$subscription->organisation_id:null, array('id' => 'selectOrganisationId', 'class' => 'form-control')) }}</p>
@@ -75,38 +75,40 @@
 
 @section('javascript')
     <script type="text/javascript">
+        oldOrganisation = $('#selectOrganisationId').val();
+        url = "{{ URL::route('user_json_organisations') }}";
+
+        function getListOrganisations(id) {
+
+            $('#selectOrganisationId').html('');
+            $.getJSON(url.replace("%7Bid%7D", id), function (data) {
+                var items = '';
+                var is_single = (Object.keys(data).length == 1);
+                $.each(data, function (key, val) {
+                    if ((oldOrganisation == key) || is_single) {
+                        items += '<option value="' + key + '" selected="selected">' + val + '</option>';
+                    } else {
+                        items += '<option value="' + key + '">' + val + '</option>';
+                    }
+                });
+
+                $('#selectOrganisationId')
+                    .html(items)
+                    .trigger('change.select2');
+            });
+        }
+
         $().ready(function () {
             $('.datePicker').datepicker();
-//            $('.timePicker').timepicker({'timeFormat': 'H:i', step: 5});
 
-
-            function getListOrganisations(id) {
-                var oldOrganisation = $('#selectOrganisationId').val();
-                var url = "{{ URL::route('user_json_organisations') }}";
-                var urlFinale = url.replace("%7Bid%7D", id);
-
-                $('#selectOrganisationId').html('');
-                $.getJSON(urlFinale, function (data) {
-                    var items = '';
-                    $.each(data, function (key, val) {
-                        if (oldOrganisation == key) {
-                            items = items + '<option value="' + key + '" selected>' + val + '</option>';
-                        } else {
-                            items = items + '<option value="' + key + '">' + val + '</option>';
-                        }
-                    });
-
-                    $('#selectOrganisationId').html(items);
-                });
-            }
+            $('#selectOrganisationId')
+                .select2();
 
             $('#selectUserId')
-                    .select2()
-                    .on('change', function (e) {
-                        getListOrganisations($(this).val());
-                    });
-
-//            getListOrganisations($('#selectUserId').val());
+                .select2()
+                .on('change', function (e) {
+                    getListOrganisations($(this).val());
+                });
         });
     </script>
 @stop

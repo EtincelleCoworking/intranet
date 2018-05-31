@@ -41,7 +41,7 @@
                             </div>
                             <div class="col-md-4">
                                 {{ Form::label('country_id', 'Pays') }}
-                                <p>{{ Form::select('country_id', Country::Select(), 73, array('class' => 'form-control')) }}</p>
+                                <p>{{ Form::select('country_id', Country::Select(), $organisation->country_id, array('class' => 'form-control')) }}</p>
                             </div>
                         </div>
 
