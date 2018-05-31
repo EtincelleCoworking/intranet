@@ -457,4 +457,8 @@ class User extends Eloquent implements UserInterface, RemindableInterface
         $item = array_shift($items);
         return round($item->used);
     }
+
+    public function scopeStaff($query){
+        return $query->where('is_staff', true);
+    }
 }

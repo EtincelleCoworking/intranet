@@ -96,6 +96,11 @@ Route::group(['before' => 'superadmin'], function() {
     Route::get('/admin/{target_period?}', array('as' => 'admin_dashboard', 'uses' => 'DashboardController@admin'))->where(array('target_period' => '^[0-9]{4}-[0-9]{2}$'));
     //Route::get('/operating', array('as' => 'operating', 'uses' => 'OperatingController@index'));
 
+    Route::get('/planning/populate', array('as' => 'planning_populate', 'uses' => 'TeamPlanningController@populate'));
+    Route::get('/planning', array('as' => 'planning', 'uses' => 'TeamPlanningController@index'));
+    Route::get('/planning/member.json', array('as' => 'planning_json_member', 'uses' => 'TeamPlanningController@json_member'));
+    Route::get('/planning/member/{user_id}', array('as' => 'planning_member', 'uses' => 'TeamPlanningController@member'));
+
     Route::get('/user/add', array('as' => 'user_add', 'uses' => 'UserController@add'));
     Route::post('/user/add_raw', array('as' => 'user_add_raw', 'uses' => 'UserController@add_raw'));
 	Route::get('/user/login-as/{id}', array('as' => 'user_login_as', 'uses' => 'UserController@login_as'));
