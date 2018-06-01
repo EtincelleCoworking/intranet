@@ -77,22 +77,29 @@ class UserEventHandler
                 'text' => $content,
                 'image_url' => asset($user->avatarUrl)
             );
-            $client = new Client();
+            $quote = null;
+            try {
+                $client = new Client();
 
-            $res = $client->request('POST', 'https://andruxnet-random-famous-quotes.p.mashape.com/?cat=famous',
-                array('headers' => array(
-                    "X-Mashape-Key" => "vO38VakGS1mshNCjVHqaNY1gFFipp1LFn8vjsnisUkgMJX5ZIY",
-                    "Content-Type" => "application/x-www-form-urlencoded",
-                    "Accept" => "application/json"
-                ))
-            );
-            $quote = json_decode($res->getBody(), true);
+                $res = $client->request('POST', 'https://andruxnet-random-famous-quotes.p.mashape.com/?cat=famous',
+                    array('headers' => array(
+                        "X-Mashape-Key" => "vO38VakGS1mshNCjVHqaNY1gFFipp1LFn8vjsnisUkgMJX5ZIY",
+                        "Content-Type" => "application/x-www-form-urlencoded",
+                        "Accept" => "application/json"
+                    ))
+                );
+                $quote = json_decode($res->getBody(), true);
 
-            $attachments[] = array(
-                'pretext' => 'Citation du jour :',
-                'author_name' => $quote['author'],
-                'text' => $quote['quote'],
-            );
+                $attachments[] = array(
+                    'pretext' => 'Citation du jour :',
+                    'author_name' => $quote['author'],
+                    'text' => $quote['quote'],
+                );
+            } catch (\Exception $e) {
+                print_r($quote);
+                print_r($e);
+                // ignore
+            }
 
             Log::info(sprintf('Posted to Slack: %s', $Location->slack_endpoint), array('context' => 'user.shown'));
 
