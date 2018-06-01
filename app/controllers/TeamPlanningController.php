@@ -7,22 +7,24 @@ class TeamPlanningController extends BaseController
 {
     public function index()
     {
+        $user_id = Input::get('user_id');
+        $location_id = Input::get('location_id');
+        if ($user_id) {
+            $json_url = URL::route('planning_json_member') . '?user_id=' . $user_id;
+        } elseif ($location_id) {
+            $json_url = URL::route('planning_json_location', $location_id);
+        } else {
+            $json_url = URL::route('planning_json_member');
+        }
         $staff = User::staff()->get();
         $locations = Location::where('is_staffed', true)->get();
+
         return View::make('team_planning.index', array(
             'staff' => $staff,
             'locations' => $locations,
-        ));
-    }
-
-    public function member($user_id)
-    {
-        $staff = User::staff()->get();
-        $locations = Location::where('is_staffed', true)->get();
-        return View::make('team_planning.member', array(
-            'staff' => $staff,
-            'locations' => $locations,
-            'user_id' => $user_id
+            'user_id' => $user_id,
+            'location_id' => $location_id,
+            'json_url' => $json_url
         ));
     }
 
@@ -44,10 +46,11 @@ class TeamPlanningController extends BaseController
             $now = mktime(0, 0, 0, 6, 1, 2018);
             while ($count--) {
                 if (in_array(date('N', $now), $days)) {
-                    foreach ($ranges[$planning_index++ % 3] as $start_time => $end_time) {
+                    $range_index=$planning_index++ % 3;
+                    foreach ($ranges[$range_index] as $start_time => $end_time) {
                         $item = new TeamPlanningItem();
                         $item->user_id = $user_id;
-                        $item->location_id = 1;
+                        $item->location_id = ($range_index != 0)?1:8;
                         $item->start_at = date('Y-m-d ', $now) . $start_time;
                         $item->end_at = date('Y-m-d ', $now) . $end_time;
                         $item->save();
@@ -59,23 +62,207 @@ class TeamPlanningController extends BaseController
         }
     }
 
+    protected function getColors()
+    {
+        $colors = array();
+        $colors[1] = array( // Sébastien
+            'text' => '#ffffff',
+            'background' => '#40A040',
+            'border' => '#008000',
+        );
+        $colors[877] = array( // Aurélie
+            'text' => '#ffffff',
+            'background' => '#FFBC40',
+            'border' => '#FFA500',
+        );
+        $colors[1474] = array( // Caroline
+            'text' => '#ffffff',
+            'background' => '#6CA5C2',
+            'border' => '#3A87AD',
+        );
+        return $colors;
+    }
+
     public function json_member()
     {
         $result = array();
         $events = TeamPlanningItem::join('users', 'team_planning_item.user_id', '=', 'users.id')
-            ->where('users.is_staff', true);
+            ->join('locations', 'team_planning_item.location_id', '=', 'locations.id')
+            ->where('users.is_staff', true)
+            ->select('team_planning_item.*');
         if ($user_id = Input::get('user_id')) {
             $events->where('users.id', '=', $user_id);
+            $single_user = true;
+        } else {
+            $single_user = false;
         }
+        $colors = $this->getColors();
+
         foreach ($events->get() as $event) {
+            if ($single_user) {
+                $title = sprintf('%s', $event->location->name);
+            } else {
+                $title = sprintf('%s - %s', $event->user->firstname, $event->location->name);
+            }
             $result[] = array(
                 'id' => $event->id,
-                'title' => $event->user->fullname,
+                'title' => $title,
                 'start' => $event->start_at,
                 'end' => $event->end_at,
+                'url' => URL::route('planning_modify', $event->id),
+                'textColor' => $colors[$event->user_id]['text'],
+                'backgroundColor' => $colors[$event->user_id]['background'],
+                'borderColor' => $colors[$event->user_id]['border'],
             );
         }
         return Response::json($result);
     }
 
+    public function json_location($location_id)
+    {
+        $result = array();
+        $events = TeamPlanningItem::join('users', 'team_planning_item.user_id', '=', 'users.id')
+            ->join('locations', 'team_planning_item.location_id', '=', 'locations.id')
+            ->where('users.is_staff', true)
+            ->where('locations.id', '=', $location_id)
+            ->select('team_planning_item.*');
+
+        $colors = $this->getColors();
+        foreach ($events->get() as $event) {
+            $result[] = array(
+                'id' => $event->id,
+                'title' => $event->user->firstname,
+                'start' => $event->start_at,
+                'end' => $event->end_at,
+                'url' => URL::route('planning_modify', $event->id),
+                'textColor' => $colors[$event->user_id]['text'],
+                'backgroundColor' => $colors[$event->user_id]['background'],
+                'borderColor' => $colors[$event->user_id]['border'],
+            );
+        }
+        return Response::json($result);
+    }
+
+    /**
+     * Verify if exist
+     */
+    private function dataExist($id)
+    {
+        $data = TeamPlanningItem::find($id);
+        if (!$data) {
+            return Redirect::route('planning_list')->with('mError', 'Cet élément est introuvable !');
+        } else {
+            return $data;
+        }
+    }
+
+    public function liste()
+    {
+        return Redirect::route('planning');
+        // dsqdsq
+        if (Input::has('filtre_submitted')) {
+            if (Input::has('filtre_city_id') && !empty(Input::get('filtre_city_id'))) {
+                Session::put('filtre_subscription.city_id', Input::get('filtre_city_id'));
+            } else {
+                Session::forget('filtre_subscription.city_id');
+            }
+            if (Input::has('filtre_organisation_id')) {
+                Session::put('filtre_subscription.organisation_id', Input::get('filtre_organisation_id'));
+            } else {
+                Session::forget('filtre_subscription.organisation_id');
+            }
+            if (Input::has('filtre_user_id')) {
+                Session::put('filtre_subscription.user_id', Input::get('filtre_user_id'));
+            } else {
+                Session::forget('filtre_subscription.user_id');
+            }
+        }
+
+        $items = TeamPlanningItem::join('users', 'team_planning_item.user_id', '=', 'users.id')
+            ->join('locations', 'team_planning_item.location_id', '=', 'locations.id')
+            ->orderBy('team_planning_item.start_at', 'asc')
+            ->select('team_planning_item.*');;
+        if (Session::has('filtre_subscription.user_id')) {
+            $items->where('subscription.user_id', '=', Session::get('filtre_subscription.user_id'));
+        }
+        if (Session::has('filtre_subscription.organisation_id')) {
+            $items->where('subscription.organisation_id', '=', Session::get('filtre_subscription.organisation_id'));
+        }
+        if (Session::has('filtre_subscription.city_id')) {
+            $items->where('locations.city_id', '=', Session::get('filtre_subscription.city_id'));
+        }
+
+        return View::make('team_planning.liste', array(
+            'items' => $items->paginate(15)));
+
+    }
+
+    /**
+     * Modify ressource
+     */
+    public function modify($id)
+    {
+        $item = $this->dataExist($id);
+        if (!$item instanceof TeamPlanningItem) {
+            return $item;
+        }
+
+        return View::make('team_planning.modify', array('item' => $item));
+    }
+
+    /**
+     * Modify ressource (form)
+     */
+    public function modify_check($id)
+    {
+        $item = $this->dataExist($id);
+
+        $validator = Validator::make(Input::all(), TeamPlanningItem::$rules);
+        if (!$validator->fails()) {
+
+            $messages = array();
+            if (!preg_match('#^[0-9]{2}/[0-9]{2}/[0-9]{4}$#', Input::get('date'))) {
+                $messages['date'] = 'La date doit être renseignée';
+            }
+            if (!preg_match('#^[0-9]{2}:[0-9]{2}$#', Input::get('start'))) {
+                $messages['start'] = 'L\'heure de début doit être renseignée';
+            }
+            if (!preg_match('#^[0-9]{2}:[0-9]{2}$#', Input::get('end'))) {
+                $messages['end'] = 'L\'heure de fin doit être renseignée';
+            }
+
+            if (count($messages) > 0) {
+                return Redirect::route('planning_modify', $item->id)->with('mError', 'Il y a des erreurs')->withErrors($messages)->withInput();
+            }
+
+            $start = newDateTime(Input::get('date'), Input::get('start'));
+            $end = newDateTime(Input::get('date'), Input::get('end'));
+
+
+            $item->start_at = $start->format('Y-m-d H:i');
+            $item->end_at = $end->format('Y-m-d H:i');
+            $item->location_id = Input::get('location_id');
+            $item->user_id = Input::get('user_id');
+
+            if ($item->save()) {
+                return Redirect::route('planning_list')->with('mSuccess', 'Ce planning a bien été modifiée');
+            } else {
+                return Redirect::route('planning_modify', $item->id)->with('mError', 'Impossible de modifier ce planning')->withInput();
+            }
+        } else {
+            return Redirect::route('planning_modify', $item->id)->with('mError', 'Il y a des erreurs')->withErrors($validator->messages())->withInput();
+        }
+    }
+
+    public function delete($id)
+    {
+        $item = $this->dataExist($id);
+        if (!$item instanceof TeamPlanningItem) {
+            return $item;
+        }
+
+        $item->delete();
+
+        return Redirect::route('planning_list')->with('mSuccess', 'Ce planning a bien été supprimé');
+    }
 }

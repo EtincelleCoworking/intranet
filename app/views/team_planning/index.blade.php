@@ -6,16 +6,38 @@
         <div class="col-lg-12">
             <div class="ibox">
                 <div class="ibox-content">
-                    <p>
-                        <a href="{{URL::route('planning')}}"
-                           class="btn btn-primary btn-xs">Tous</a>
+                    <div>
+                        <p class="pull-right">
+                            @foreach($locations as $location)
+                                @if($location_id == $location->id)
+                                    <a href="{{URL::route('planning')}}?location_id={{$location->id}}"
+                                       class="btn btn-primary btn-xs">{{$location->fullname}}</a>
+                                @else
+                                    <a href="{{URL::route('planning')}}?location_id={{$location->id}}"
+                                       class="btn btn-default btn-xs">{{$location->fullname}}</a>
+                                @endif
+                            @endforeach
+                        </p>
+                        <p>
+                            @if(!$location_id && !$user_id)
+                                <a href="{{URL::route('planning')}}"
+                                   class="btn btn-primary btn-xs">Tous</a>
+                            @else
+                                <a href="{{URL::route('planning')}}"
+                                   class="btn btn-default btn-xs">Tous</a>
+                            @endif
 
-                        @foreach($staff as $member)
-                            <a href="{{URL::route('planning_member', $member->id)}}"
-                               class="btn btn-default btn-xs">{{$member->fullname}}</a>
-                        @endforeach
-                    </p>
-
+                            @foreach($staff as $member)
+                                @if($user_id == $member->id)
+                                    <a href="{{URL::route('planning')}}?user_id={{$member->id}}"
+                                       class="btn btn-primary btn-xs">{{$member->fullname}}</a>
+                                @else
+                                    <a href="{{URL::route('planning')}}?user_id={{$member->id}}"
+                                       class="btn btn-default btn-xs">{{$member->fullname}}</a>
+                                @endif
+                            @endforeach
+                        </p>
+                    </div>
                     <div id="calendar"></div>
                 </div>
             </div>
@@ -24,30 +46,14 @@
     </div>
 
     <div class="row wrapper border-bottom white-bg page-heading">
-        <div class="col-sm-10">
-
-        </div>
-
-        <p>
-            @foreach($locations as $location)
-                <a href="#" class="btn btn-default btn-xs">{{$location->fullname}}</a>
-            @endforeach
-        </p>
-        <p>
-            @foreach($staff as $member)
-                <a href="#" class="btn btn-xs">{{$member->fullname}}</a>
-            @endforeach
-        </p>
         <p>
             Team Planning
         <ul>
-            <li>1 couleur par espace &gt; légende</li>
             <li>Vue semaine par semaine
                 <ul>
                     <li>Par espace (mettre en fond les plages sur lesquelles on a des réservations, plages avec le nom
                         de la personne)
                     </li>
-                    <li>Par personne (mettre le nom de l'espace / couleur)</li>
                 </ul>
             </li>
         </ul>
@@ -59,7 +65,6 @@
             <li>Ajouter (2 créneaux possibles, récurrence (tous les X jours, sélection des jours L-V par défaut,
                 jusqu'au), raccourcis pour les heures type)
             </li>
-            <li>Modifier</li>
             <li>Supprimer (multiple)</li>
         </ul>
         Filtre
@@ -124,7 +129,7 @@
                 eventClick: function (calEvent, jsEvent, view) {
                 },
                 eventSources: [
-                    '{{  URL::route('planning_json_member') }}'
+                    '{{ $json_url }}'
                 ],
                 weekNumbers: true,
                 dayClick: function (date, jsEvent, view) {
