@@ -7,17 +7,6 @@
             <div class="ibox">
                 <div class="ibox-content">
                     <div>
-                        <p class="pull-right">
-                            @foreach($locations as $location)
-                                @if($location_id == $location->id)
-                                    <a href="{{URL::route('planning')}}?location_id={{$location->id}}"
-                                       class="btn btn-primary btn-xs">{{$location->fullname}}</a>
-                                @else
-                                    <a href="{{URL::route('planning')}}?location_id={{$location->id}}"
-                                       class="btn btn-default btn-xs">{{$location->fullname}}</a>
-                                @endif
-                            @endforeach
-                        </p>
                         <p>
                             @if(!$location_id && !$user_id)
                                 <a href="{{URL::route('planning')}}"
@@ -120,6 +109,8 @@
                 scrollTime: '08:30',
                 eventTextColor: '#000000',
                 slotDuration: '00:30:00',
+                //groupByResource: true,
+                groupByDateAndResource: true,
 /*
                 businessHours: {
                     // days of week. an array of zero-based day of week integers (0=Sunday)
@@ -132,7 +123,7 @@
                         @foreach($locations as $location)
                     {
                         id: '{{$location->id}}',
-                        title: '{{$location->fullname}}'
+                        title: '{{$location->name}}'
                     },
                     @endforeach
                 ],
