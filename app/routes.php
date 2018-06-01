@@ -98,8 +98,13 @@ Route::group(['before' => 'superadmin'], function() {
 
     Route::get('/planning/populate', array('as' => 'planning_populate', 'uses' => 'TeamPlanningController@populate'));
     Route::get('/planning', array('as' => 'planning', 'uses' => 'TeamPlanningController@index'));
+    Route::get('/planning/modify/{id}', array('as' => 'planning_modify', 'uses' => 'TeamPlanningController@modify'))->where(array('id' => '[0-9]+'));
+    Route::post('/planning/modify/{id}', array('as' => 'planning_modify_check', 'uses' => 'TeamPlanningController@modify_check'))->where(array('id' => '[0-9]+'));
+    Route::get('/planning/delete/{id}', array('as' => 'planning_delete', 'uses' => 'TeamPlanningController@delete'))->where(array('id' => '[0-9]+'));
+    Route::get('/planning/list', array('as' => 'planning_list', 'uses' => 'TeamPlanningController@liste'));
+
     Route::get('/planning/member.json', array('as' => 'planning_json_member', 'uses' => 'TeamPlanningController@json_member'));
-    Route::get('/planning/member/{user_id}', array('as' => 'planning_member', 'uses' => 'TeamPlanningController@member'));
+    Route::get('/planning/location/{location_id}.json', array('as' => 'planning_json_location', 'uses' => 'TeamPlanningController@json_location'));
 
     Route::get('/user/add', array('as' => 'user_add', 'uses' => 'UserController@add'));
     Route::post('/user/add_raw', array('as' => 'user_add_raw', 'uses' => 'UserController@add_raw'));
