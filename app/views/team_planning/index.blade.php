@@ -84,12 +84,14 @@
 @section('stylesheets')
     {{ HTML::style('css/plugins/fullcalendar/fullcalendar.min.css') }}
     {{ HTML::style('css/plugins/fullcalendar/fullcalendar.print.min.css', array('media'=> 'print')) }}
+    {{ HTML::style('css/scheduler.min.css') }}
 
 @stop
 
 @section('javascript')
 
     {{ HTML::script('js/plugins/fullcalendar/fullcalendar.min.js') }}
+    {{ HTML::script('js/scheduler.min.js') }}
     {{ HTML::script('js/locale/fr.js') }}
 
     <script type="text/javascript">
@@ -97,6 +99,7 @@
 
         $().ready(function () {
             $('#calendar').fullCalendar({
+                schedulerLicenseKey: 'CC-Attribution-NonCommercial-NoDerivatives',
                 defaultView: 'agendaWeek', // agendaWeek
                 nowIndicator: true,
                 header: {
@@ -117,6 +120,22 @@
                 scrollTime: '08:30',
                 eventTextColor: '#000000',
                 slotDuration: '00:30:00',
+/*
+                businessHours: {
+                    // days of week. an array of zero-based day of week integers (0=Sunday)
+                    dow: [1, 2, 3, 4, 5],
+                    start: '08:00',
+                    end: '19:00'
+                },
+*/
+                resources: [
+                        @foreach($locations as $location)
+                    {
+                        id: '{{$location->id}}',
+                        title: '{{$location->fullname}}'
+                    },
+                    @endforeach
+                ],
                 select: function (start, end) {
                     var startMoment = moment(start);
                     var endMoment = moment(end);

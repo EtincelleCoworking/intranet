@@ -89,6 +89,8 @@ class TeamPlanningController extends BaseController
         $events = TeamPlanningItem::join('users', 'team_planning_item.user_id', '=', 'users.id')
             ->join('locations', 'team_planning_item.location_id', '=', 'locations.id')
             ->where('users.is_staff', true)
+            ->where('start_at', '<', Input::get('end'))
+            ->where('end_at', '>', Input::get('start'))
             ->select('team_planning_item.*');
         if ($user_id = Input::get('user_id')) {
             $events->where('users.id', '=', $user_id);
@@ -97,6 +99,7 @@ class TeamPlanningController extends BaseController
             $single_user = false;
         }
         $colors = $this->getColors();
+        $ressources = array();
 
         foreach ($events->get() as $event) {
             if ($single_user) {
@@ -113,23 +116,37 @@ class TeamPlanningController extends BaseController
                 'textColor' => $colors[$event->user_id]['text'],
                 'backgroundColor' => $colors[$event->user_id]['background'],
                 'borderColor' => $colors[$event->user_id]['border'],
+                'resourceId' => $event->location_id,
             );
+            $ressources[$event->location_id] = true;
         }
-
 
         $events = BookingItem::join('ressources', 'booking_item.ressource_id', '=', 'ressources.id')
             ->join('locations', 'ressources.location_id', '=', 'locations.id')
-         //   ->where('locations.id', '=', $location_id)
+            //   ->where('locations.id', '=', $location_id)
             ->where('booking_item.start_at', '<', Input::get('end'))
             ->where(DB::raw('DATE_ADD(start_at, INTERVAL duration MINUTE)'), '>', Input::get('start'))
+            ->with('ressource')
             ->select('booking_item.*');
         foreach ($events->get() as $event) {
             $result[] = array(
-                'id' => 0,
+                'id' => sprintf('bg%d', $event->ressource->location_id),
                 'title' => '',
                 'start' => $event->start_at,
                 'end' => date('Y-m-d H:i', strtotime($event->start_at) + 60 * $event->duration),
                 'rendering' => 'inverse-background',
+                'resourceId' => $event->ressource->location_id,
+            );
+            unset($ressources[$event->ressource->location_id]);
+        }
+        foreach (array(1, 8) as $location_id) {
+            $result[] = array(
+                'id' => sprintf('bg%d', $location_id),
+                'title' => '',
+                'start' => Input::get('start'),
+                'end' => date('Y-m-d H:i', strtotime(Input::get('start')) + 1),
+                'rendering' => 'inverse-background',
+                'resourceId' => $location_id,
             );
         }
         return Response::json($result);
