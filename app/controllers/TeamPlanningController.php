@@ -46,11 +46,11 @@ class TeamPlanningController extends BaseController
             $now = mktime(0, 0, 0, 6, 1, 2018);
             while ($count--) {
                 if (in_array(date('N', $now), $days)) {
-                    $range_index=$planning_index++ % 3;
+                    $range_index = $planning_index++ % 3;
                     foreach ($ranges[$range_index] as $start_time => $end_time) {
                         $item = new TeamPlanningItem();
                         $item->user_id = $user_id;
-                        $item->location_id = ($range_index != 0)?1:8;
+                        $item->location_id = ($range_index != 0) ? 1 : 8;
                         $item->start_at = date('Y-m-d ', $now) . $start_time;
                         $item->end_at = date('Y-m-d ', $now) . $end_time;
                         $item->save();
@@ -115,6 +115,23 @@ class TeamPlanningController extends BaseController
                 'borderColor' => $colors[$event->user_id]['border'],
             );
         }
+
+
+        $events = BookingItem::join('ressources', 'booking_item.ressource_id', '=', 'ressources.id')
+            ->join('locations', 'ressources.location_id', '=', 'locations.id')
+         //   ->where('locations.id', '=', $location_id)
+            ->where('booking_item.start_at', '<', Input::get('end'))
+            ->where(DB::raw('DATE_ADD(start_at, INTERVAL duration MINUTE)'), '>', Input::get('start'))
+            ->select('booking_item.*');
+        foreach ($events->get() as $event) {
+            $result[] = array(
+                'id' => 0,
+                'title' => '',
+                'start' => $event->start_at,
+                'end' => date('Y-m-d H:i', strtotime($event->start_at) + 60 * $event->duration),
+                'rendering' => 'inverse-background',
+            );
+        }
         return Response::json($result);
     }
 
@@ -125,6 +142,8 @@ class TeamPlanningController extends BaseController
             ->join('locations', 'team_planning_item.location_id', '=', 'locations.id')
             ->where('users.is_staff', true)
             ->where('locations.id', '=', $location_id)
+            ->where('team_planning_item.start_at', '<', Input::get('end'))
+            ->where('team_planning_item.end_at', '>', Input::get('start'))
             ->select('team_planning_item.*');
 
         $colors = $this->getColors();
@@ -140,6 +159,23 @@ class TeamPlanningController extends BaseController
                 'borderColor' => $colors[$event->user_id]['border'],
             );
         }
+
+        $events = BookingItem::join('ressources', 'booking_item.ressource_id', '=', 'ressources.id')
+            ->join('locations', 'ressources.location_id', '=', 'locations.id')
+            ->where('locations.id', '=', $location_id)
+            ->where('booking_item.start_at', '<', Input::get('end'))
+            ->where(DB::raw('DATE_ADD(start_at, INTERVAL duration MINUTE)'), '>', Input::get('start'))
+            ->select('booking_item.*');
+        foreach ($events->get() as $event) {
+            $result[] = array(
+                'id' => 0,
+                'title' => '',
+                'start' => $event->start_at,
+                'end' => date('Y-m-d H:i', strtotime($event->start_at) + 60 * $event->duration),
+                'rendering' => 'inverse-background',
+            );
+        }
+
         return Response::json($result);
     }
 
