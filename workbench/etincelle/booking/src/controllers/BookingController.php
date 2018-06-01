@@ -52,10 +52,12 @@ class BookingController extends Controller
     {
         $result = array();
         $bookings = Booking::whereHas('items', function ($query) {
-            $query->whereBetween('start_at', array(Input::get('start'), Input::get('end')))
-                ->join('ressources', 'booking_item.ressource_id', '=', 'ressources.id')
+            $query->join('ressources', 'booking_item.ressource_id', '=', 'ressources.id')
                 ->join('locations', 'ressources.location_id', '=', 'locations.id')
-                ->where('locations.city_id', '=', Auth::user()->location->city_id);
+                ->where('locations.city_id', '=', Auth::user()->location->city_id)
+                ->where('start_at', '<', Input::get('end'))
+                ->where(DB::raw('DATE_ADD(start_at, INTERVAL duration MINUTE)'), '>', Input::get('start'))
+            ;
         })
             ->with('items')->get();
 
@@ -829,7 +831,6 @@ class BookingController extends Controller
                 $invoice_line->order_index = $line_index++;
                 $invoice_line->invoice_id = $invoice->id;
                 $invoice_line->ressource_id = $ressource_id;
-
 
 
                 $booking_text = '';

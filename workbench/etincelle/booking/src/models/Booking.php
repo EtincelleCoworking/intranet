@@ -64,10 +64,8 @@ class Booking extends Illuminate\Database\Eloquent\Model
             ->get();
     }
 
-    static public function selectableHours()
+    static public function selectableHours($slot = 15)
     {
-        $slot = 15;
-
         $result = array();
         for ($h = 0; $h < 24; $h++) {
             for ($m = 0; $m < 60; $m += $slot) {

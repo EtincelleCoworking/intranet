@@ -97,14 +97,12 @@
 
         $().ready(function () {
             $('#calendar').fullCalendar({
-//                schedulerLicenseKey: 'CC-Attribution-NonCommercial-NoDerivatives',
                 defaultView: 'agendaWeek', // agendaWeek
-//                defaultDate: '',
                 nowIndicator: true,
                 header: {
                     left: 'prev,next today',
                     center: 'title',
-                    right: ''
+                    right: 'agendaWeek,agendaDay'
                 },
                 editable: false,
                 firstDay: 1,
@@ -112,8 +110,9 @@
                 allDaySlot: false,
                 selectable: true,
                 selectHelper: true,
+                contentHeight: 700,
                 minTime: '07:00',
-                maxTime: '21:00',
+//                maxTime: '22:00',
                 axisFormat: 'HH:mm',
                 scrollTime: '08:30',
                 eventTextColor: '#000000',

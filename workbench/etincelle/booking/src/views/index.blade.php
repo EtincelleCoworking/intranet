@@ -588,6 +588,7 @@ foreach ($ressources as $ressource) {
                 allDaySlot: false,
                 selectable: true,
                 selectHelper: true,
+                contentHeight: 700,
                 minTime: '07:00',
 //                maxTime: '22:00',
                 axisFormat: 'HH:mm',
