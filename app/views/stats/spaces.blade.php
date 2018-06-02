@@ -78,6 +78,10 @@
                                         @else
                                             <span style="color: green">{{ number_format( $cumul, 0, ',', '.') }}€</span>
                                         @endif
+                                            @if($total_costs)
+                                                <small> ({{ round(100 * $cumul / $total_costs, 2) }}%)</small>
+                                            @endif
+
                                     </td>
                                 </tr>
                             @endforeach
@@ -161,6 +165,10 @@
                                                 <span style="color: green">{{ number_format( $cumul, 0, ',', '.') }}
                                                     €</span>
                                             @endif
+                                                @if($total_costs)
+                                                    <small> ({{ round(100 * $cumul / $total_costs, 2) }}%)</small>
+                                                @endif
+
                                         </td>
                                     </tr>
                                     @endif
