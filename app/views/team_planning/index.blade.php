@@ -121,10 +121,12 @@
                 firstDay: 1,
                 lang: 'fr',
                 allDaySlot: true,
+                allDayHtml: 'Congés',
                 selectable: true,
                 selectHelper: true,
-                contentHeight: 700,
+                contentHeight: 745,
                 minTime: '07:00',
+
 //                maxTime: '22:00',
                 axisFormat: 'HH:mm',
                 scrollTime: '08:30',
