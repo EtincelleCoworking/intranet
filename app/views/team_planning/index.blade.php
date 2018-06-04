@@ -75,6 +75,11 @@
     {{ HTML::style('css/plugins/fullcalendar/fullcalendar.print.min.css', array('media'=> 'print')) }}
     {{ HTML::style('css/scheduler.min.css') }}
 
+    <style type="text/css">
+        .fc-bgevent {
+            background-color: #ff0000;
+        }
+    </style>
 @stop
 
 @section('javascript')
@@ -110,15 +115,15 @@
                 eventTextColor: '#000000',
                 slotDuration: '00:30:00',
                 //groupByResource: true,
-                groupByDateAndResource: true,
-/*
-                businessHours: {
-                    // days of week. an array of zero-based day of week integers (0=Sunday)
-                    dow: [1, 2, 3, 4, 5],
-                    start: '08:00',
-                    end: '19:00'
-                },
-*/
+                //groupByDateAndResource: true,
+                /*
+                                businessHours: {
+                                    // days of week. an array of zero-based day of week integers (0=Sunday)
+                                    dow: [1, 2, 3, 4, 5],
+                                    start: '08:00',
+                                    end: '19:00'
+                                },
+                */
                 resources: [
                         @foreach($locations as $location)
                     {

@@ -94,14 +94,23 @@ class TeamPlanningController extends BaseController
             ->select('team_planning_item.*');
         if ($user_id = Input::get('user_id')) {
             $events->where('users.id', '=', $user_id);
+            $single_user = true;
+        } else {
+            $single_user = false;
         }
         $colors = $this->getColors();
         $ressources = array();
 
         foreach ($events->get() as $event) {
+/*            if ($single_user) {
+                $title = sprintf('%s', $event->location->name);
+            } else {
+                $title = sprintf('%s - %s', $event->user->firstname, $event->location->name);
+            }
+*/            $title = sprintf('%s - %s', $event->user->firstname, $event->location->name);
             $result[] = array(
                 'id' => $event->id,
-                'title' => $event->user->firstname,
+                'title' => $title,
                 'start' => $event->start_at,
                 'end' => $event->end_at,
                 'url' => URL::route('planning_modify', $event->id),
@@ -124,17 +133,18 @@ class TeamPlanningController extends BaseController
                 'id' => sprintf('bg%d', $event->ressource->location_id),
                 'start' => $event->start_at,
                 'end' => date('Y-m-d H:i', strtotime($event->start_at) + 60 * $event->duration),
-                'rendering' => 'inverse-background',
+                'rendering' => 'background',
                 'resourceId' => $event->ressource->location_id,
             );
             unset($ressources[$event->ressource->location_id]);
         }
+        // inverse-
         foreach (array(1, 8) as $location_id) {
             $result[] = array(
                 'id' => sprintf('bg%d', $location_id),
                 'start' => Input::get('start'),
                 'end' => date('Y-m-d H:i', strtotime(Input::get('start')) + 1),
-                'rendering' => 'inverse-background',
+                'rendering' => 'background',
                 'resourceId' => $location_id,
             );
         }
