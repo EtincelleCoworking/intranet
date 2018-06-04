@@ -89,8 +89,9 @@ class TeamPlanningController extends BaseController
         $events = TeamPlanningItem::join('users', 'team_planning_item.user_id', '=', 'users.id')
             ->join('locations', 'team_planning_item.location_id', '=', 'locations.id')
             ->where('users.is_staff', true)
-            ->where('start_at', '<', Input::get('end'))
-            ->where('end_at', '>', Input::get('start'))
+            ->where('start_at', '<=', Input::get('end'))
+            ->where('end_at', '>=', Input::get('start'))
+            ->with('location', 'user')
             ->select('team_planning_item.*');
         if ($user_id = Input::get('user_id')) {
             $events->where('users.id', '=', $user_id);
