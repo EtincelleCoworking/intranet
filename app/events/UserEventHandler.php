@@ -77,6 +77,7 @@ class UserEventHandler
                 'text' => $content,
                 'image_url' => asset($user->avatarUrl)
             );
+            /*
             $quote = null;
             try {
                 $client = new Client();
@@ -100,7 +101,7 @@ class UserEventHandler
                 print_r($e);
                 // ignore
             }
-
+*/
             Log::info(sprintf('Posted to Slack: %s', $Location->slack_endpoint), array('context' => 'user.shown'));
 
             $this->slack($Location->slack_endpoint, array(
