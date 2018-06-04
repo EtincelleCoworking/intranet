@@ -10,11 +10,11 @@ class TeamPlanningController extends BaseController
         $user_id = Input::get('user_id');
         $location_id = Input::get('location_id');
         if ($user_id) {
-            $json_url = URL::route('planning_json_member') . '?user_id=' . $user_id;
+            $json_url = URL::route('planning_json') . '?user_id=' . $user_id;
         } elseif ($location_id) {
-            $json_url = URL::route('planning_json_location', $location_id);
+            $json_url = URL::route('planning_json') . '?location_id=' . $location_id;
         } else {
-            $json_url = URL::route('planning_json_member');
+            $json_url = URL::route('planning_json');
         }
         $staff = User::staff()->get();
         $locations = Location::where('is_staffed', true)->get();
@@ -83,7 +83,7 @@ class TeamPlanningController extends BaseController
         return $colors;
     }
 
-    public function json_member()
+    public function json()
     {
         $result = array();
         $events = TeamPlanningItem::join('users', 'team_planning_item.user_id', '=', 'users.id')
@@ -98,16 +98,26 @@ class TeamPlanningController extends BaseController
         } else {
             $single_user = false;
         }
+        if ($location_id = Input::get('location_id')) {
+            $events->where('locations.id', '=', $location_id);
+            $single_location = true;
+        } else {
+            $single_location = false;
+        }
         $colors = $this->getColors();
         $ressources = array();
 
         foreach ($events->get() as $event) {
-/*            if ($single_user) {
+            if ($single_user) {
                 $title = sprintf('%s', $event->location->name);
             } else {
-                $title = sprintf('%s - %s', $event->user->firstname, $event->location->name);
+                if ($single_location) {
+                    $title = sprintf('%s', $event->user->firstname);
+                } else {
+                    $title = sprintf('%s - %s', $event->user->firstname, $event->location->name);
+                }
             }
-*/            $title = sprintf('%s - %s', $event->user->firstname, $event->location->name);
+            //$title = sprintf('%s - %s', $event->user->firstname, $event->location->name);
             $result[] = array(
                 'id' => $event->id,
                 'title' => $title,
@@ -128,6 +138,9 @@ class TeamPlanningController extends BaseController
             ->where(DB::raw('DATE_ADD(start_at, INTERVAL duration MINUTE)'), '>', Input::get('start'))
             ->with('ressource')
             ->select('booking_item.*');
+        if ($location_id) {
+            $events->where('locations.id', '=', $location_id);
+        }
         foreach ($events->get() as $event) {
             $result[] = array(
                 'id' => sprintf('bg%d', $event->ressource->location_id),
@@ -138,7 +151,6 @@ class TeamPlanningController extends BaseController
             );
             unset($ressources[$event->ressource->location_id]);
         }
-        // inverse-
         foreach (array(1, 8) as $location_id) {
             $result[] = array(
                 'id' => sprintf('bg%d', $location_id),

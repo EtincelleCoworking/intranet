@@ -7,6 +7,18 @@
             <div class="ibox">
                 <div class="ibox-content">
                     <div>
+                        <p class="pull-right">
+                            @foreach($locations as $location)
+                                @if($location_id == $location->id)
+                                    <a href="{{URL::route('planning')}}?location_id={{$location->id}}"
+                                       class="btn btn-primary btn-xs">{{$location->name}}</a>
+                                @else
+                                    <a href="{{URL::route('planning')}}?location_id={{$location->id}}"
+                                       class="btn btn-default btn-xs">{{$location->name}}</a>
+                                @endif
+                            @endforeach
+                        </p>
+
                         <p>
                             @if(!$location_id && !$user_id)
                                 <a href="{{URL::route('planning')}}"
@@ -78,6 +90,10 @@
     <style type="text/css">
         .fc-bgevent {
             background-color: #ff0000;
+        }
+
+        .fc-event {
+            margin-left: 10px;
         }
     </style>
 @stop
