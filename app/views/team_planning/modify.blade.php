@@ -23,13 +23,13 @@
                 <div class="ibox-content">
                     {{ Form::model($item, array('route' => array('planning_modify_check', $item->id))) }}
                     <div class="row">
-                        <div class="col-md-3 col-xs-12">
+                        <div class="col-md-6 col-xs-12">
                             <div>
                                 {{ Form::label('title', 'Membre') }}
                                 <p>{{ Form::select('user_id', User::staff()->Select('Sélectionnez un membre', 'fullname'), $item->user_id, array('id' => 'planning-user','class' => 'form-control')) }}</p>
                             </div>
                         </div>
-                        <div class="col-md-3 col-xs-12">
+                        <div class="col-md-6 col-xs-12">
                             <div>
                                 {{ Form::label('title', 'Site') }}
                                 <p>{{ Form::select('location_id', Location::SelectAll('Sélectionnez un site'), $item->location_id, array('id' => 'planning-location','class' => 'form-control')) }}</p>
@@ -41,6 +41,8 @@
                                 <div class="col-xs-4">
                                     {{ Form::label('date', 'Date') }}
                                     <p>{{ Form::text('date', date('d/m/Y', strtotime($item->start_at)), array('class' => 'form-control datePicker')) }}</p>
+                                    {{ Form::checkbox('is_holiday', true, $item->is_holiday, array('id' => 'checkbox_is_holiday')) }}
+                                    <label for="checkbox_is_holiday">Vacances</label>
                                 </div>
                                 <div class="col-xs-4">
                                     {{ Form::label('start', 'Début') }}
@@ -51,6 +53,8 @@
                                     <p>{{ Form::select('end', Booking::selectableHours(), date('H:i', strtotime($item->end_at)), array('class' => 'form-control')) }}</p>
                                 </div>
                             </div>
+                        </div>
+                        <div class="col-md-6 col-xs-12">
                         </div>
 
                     </div>

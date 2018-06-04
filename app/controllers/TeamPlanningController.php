@@ -108,27 +108,40 @@ class TeamPlanningController extends BaseController
         $ressources = array();
 
         foreach ($events->get() as $event) {
-            if ($single_user) {
-                $title = sprintf('%s', $event->location->name);
+            if ($single_user || $event->is_holiday) {
+                $title = $event->location->name;
             } else {
                 if ($single_location) {
-                    $title = sprintf('%s', $event->user->firstname);
+                    $title = $event->user->firstname;
                 } else {
                     $title = sprintf('%s - %s', $event->user->firstname, $event->location->name);
                 }
             }
-            //$title = sprintf('%s - %s', $event->user->firstname, $event->location->name);
-            $result[] = array(
+            if ($event->is_holiday) {
+                $title = sprintf('%s - Congés', $event->user->firstname);
+                $start = substr($event->start_at, 0, 10);
+                $end = null;
+                $all_day = true;
+            } else {
+                $start = $event->start_at;
+                $end = $event->end_at;
+                $all_day = false;
+            }
+            $item = array(
                 'id' => $event->id,
                 'title' => $title,
-                'start' => $event->start_at,
-                'end' => $event->end_at,
+                'start' => $start,
+                'allDay' => $all_day,
                 'url' => URL::route('planning_modify', $event->id),
                 'textColor' => $colors[$event->user_id]['text'],
                 'backgroundColor' => $colors[$event->user_id]['background'],
                 'borderColor' => $colors[$event->user_id]['border'],
                 'resourceId' => $event->location_id,
             );
+            if ($end) {
+                $item['end'] = $end;
+            }
+            $result[] = $item;
             $ressources[$event->location_id] = true;
         }
 
@@ -231,12 +244,39 @@ class TeamPlanningController extends BaseController
         return View::make('team_planning.modify', array('item' => $item));
     }
 
+    public function add()
+    {
+        $item = new TeamPlanningItem();
+        if ($date = Input::get('date')) {
+            if ($start = Input::get('start')) {
+                $item->start_at = sprintf('%s %s', $date, $start);
+            }
+            if ($end = Input::get('end')) {
+                $item->end_at = sprintf('%s %s', $date, $end);
+            }
+        }
+        if ($user_id = Input::get('user_id')) {
+            $item->user_id = $user_id;
+        }
+        if ($location_id = Input::get('location_id')) {
+            $item->location_id = $location_id;
+        }
+        return View::make('team_planning.modify', array('item' => $item));
+    }
+
     /**
      * Modify ressource (form)
      */
-    public function modify_check($id)
+    public function modify_check($id = null)
     {
-        $item = $this->dataExist($id);
+        if ($id) {
+            $item = TeamPlanningItem::find($id);
+            if (!$item) {
+                return Redirect::route('planning_list')->with('mError', 'Cet élément est introuvable !');
+            }
+        } else {
+            $item = new TeamPlanningItem();
+        }
 
         $validator = Validator::make(Input::all(), TeamPlanningItem::$rules);
         if (!$validator->fails()) {
@@ -264,6 +304,7 @@ class TeamPlanningController extends BaseController
             $item->end_at = $end->format('Y-m-d H:i');
             $item->location_id = Input::get('location_id');
             $item->user_id = Input::get('user_id');
+            $item->is_holiday = Input::get('is_holiday', false);
 
             if ($item->save()) {
                 return Redirect::route('planning_list')->with('mSuccess', 'Ce planning a bien été modifiée');

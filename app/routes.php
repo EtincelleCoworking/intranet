@@ -98,8 +98,9 @@ Route::group(['before' => 'superadmin'], function() {
 
     Route::get('/planning/populate', array('as' => 'planning_populate', 'uses' => 'TeamPlanningController@populate'));
     Route::get('/planning', array('as' => 'planning', 'uses' => 'TeamPlanningController@index'));
+    Route::get('/planning/add', array('as' => 'planning_add', 'uses' => 'TeamPlanningController@add'));
     Route::get('/planning/modify/{id}', array('as' => 'planning_modify', 'uses' => 'TeamPlanningController@modify'))->where(array('id' => '[0-9]+'));
-    Route::post('/planning/modify/{id}', array('as' => 'planning_modify_check', 'uses' => 'TeamPlanningController@modify_check'))->where(array('id' => '[0-9]+'));
+    Route::post('/planning/modify/{id?}', array('as' => 'planning_modify_check', 'uses' => 'TeamPlanningController@modify_check'))->where(array('id' => '[0-9]+'));
     Route::get('/planning/delete/{id}', array('as' => 'planning_delete', 'uses' => 'TeamPlanningController@delete'))->where(array('id' => '[0-9]+'));
     Route::get('/planning/list', array('as' => 'planning_list', 'uses' => 'TeamPlanningController@liste'));
 

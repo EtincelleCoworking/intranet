@@ -120,7 +120,7 @@
                 editable: false,
                 firstDay: 1,
                 lang: 'fr',
-                allDaySlot: false,
+                allDaySlot: true,
                 selectable: true,
                 selectHelper: true,
                 contentHeight: 700,
@@ -152,9 +152,16 @@
                     var startMoment = moment(start);
                     var endMoment = moment(end);
 
-//                    window.location.href = '{{ URL::route('booking_new_full', array('start_at' => 999999, 'end_at' => 888888)) }}'
-//                        .replace('999999', startMoment.format('YYYY-MM-DD HH:mm')).replace('888888', endMoment.format('YYYY-MM-DD HH:mm'));
-
+                    var url = '{{ URL::route('planning_add') }}?date=' + startMoment.format('YYYY-MM-DD')
+                        + '&start=' + startMoment.format('HH:mm')
+                        + '&end=' + endMoment.format('HH:mm');
+                    @if($user_id)
+                        url += '&user_id={{$user_id}}';
+                    @endif
+                    @if($location_id)
+                        url += '&location_id={{$location_id}}';
+                    @endif
+                    window.location.href = url;
                 },
                 eventClick: function (calEvent, jsEvent, view) {
                 },
