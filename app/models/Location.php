@@ -139,7 +139,7 @@ class Location extends Eloquent
 
     public static function getOperationTweaks(){
         return array(
-            'Toulouse > Carmes' => array(
+            'Carmes' => array(
                 // etalement du paiement Carmes
                 '2016-03' => -5 * 9250,
                 '2016-04' => 9250,
@@ -148,7 +148,7 @@ class Location extends Eloquent
                 '2016-07' => 9250,
                 '2016-08' => 9250,
             ),
-            'Toulouse > Victor Hugo' => array(
+            'Victor Hugo' => array(
                 // Loyer 12/2016 A. T.
                 '2016-11' => -1050,
                 '2016-12' => 1050,
@@ -171,7 +171,6 @@ class Location extends Eloquent
                 '2018-06' => 600,
 
             ),
-            'Toulouse > Espace W' => array(),
             'Albi' => array(
                 '2017-11' => -425,
                 '2017-12' => 425,
