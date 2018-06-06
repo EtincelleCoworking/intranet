@@ -348,10 +348,11 @@ GROUP BY locations.id, subscription_kind.id', Ressource::TYPE_COWORKING)));
         }
 
         $location_slugs = array();
+        // ddd
         $items = DB::select(DB::raw('select 
 `locations`.slug, 
-if(`locations`.`name` is null,cities.name,concat(cities.name, \' > \',  `locations`.`name`)) as `kind` 
-
+#if(`locations`.`name` is null,cities.name,concat(cities.name, \' > \',  `locations`.`name`)) as `kind` 
+if(`locations`.`name` is null,cities.name,`locations`.`name` ) as `kind` 
 from `locations` 
 left outer join cities on locations.city_id = cities.id'));
         foreach ($items as $item) {

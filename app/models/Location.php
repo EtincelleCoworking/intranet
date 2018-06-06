@@ -82,20 +82,20 @@ class Location extends Eloquent
                 '2017-11' => 2430,
                 '2018-04' => 1850,
             ),
-            'Toulouse > Carmes' => array(
+            'Carmes' => array(
                 '2016-01' => 500,
                 '2016-04' => 3500,
                 '2016-09' => 10740,
                 '2017-12' => 11820,
                 '2018-02' => 10415,
             ),
-            'Toulouse > Victor Hugo' => array(
+            'Victor Hugo' => array(
                 '2016-09' => 3415,
                 '2017-12' => 3735,
                 '2018-01' => 3565,
                 '2018-02' => 3705,
             ),
-            'Toulouse > Wilson' => array(
+            'Wilson' => array(
                 '2015-01' => 7000,
                 '2016-12' => 9280,
                 '2017-06' => 12500,
@@ -106,7 +106,7 @@ class Location extends Eloquent
                 '2018-02' => 17685 + 4480,
             ),
             //'Toulouse > Espace W' => array(),
-            'Toulouse > Alsace Lorraine' => array(
+            'Alsace Lorraine' => array(
                 '2017-12' => 2170,
                 '2018-02' => 6300,
             ),
@@ -183,7 +183,8 @@ class Location extends Eloquent
         $items = DB::select(DB::raw('select 
 date_format(invoices.date_invoice, "%Y-%m") as period, 
 SUM(invoices_items.amount) as total, 
-if(`locations`.`name` is null,cities.name,concat(cities.name, \' > \',  `locations`.`name`)) as `kind` 
+# if(`locations`.`name` is null,cities.name,concat(cities.name, \' > \',  `locations`.`name`)) as `kind` 
+if(`locations`.`name` is null,cities.name,locations.name) as `kind`
 
 from `invoices_items` 
 inner join `invoices` on `invoice_id` = `invoices`.`id` and invoices.`type` = \'F\' 
@@ -206,7 +207,8 @@ order by kind ASC, `period` desc')); // `organisations`.`is_founder` = '0' or (`
         $items = DB::select(DB::raw('select 
 date_format(invoices.date_invoice, "%Y-%m") as period, 
 SUM(invoices_items.amount) as total, 
-if(`locations`.`name` is null,cities.name,concat(cities.name, \' > \',  `locations`.`name`)) as `kind` 
+# if(`locations`.`name` is null,cities.name,concat(cities.name, \' > \',  `locations`.`name`)) as `kind` 
+if(`locations`.`name` is null,cities.name,locations.name) as `kind`
 
 from `invoices_items` 
 inner join `invoices` on `invoice_id` = `invoices`.`id` and `type` = \'F\' 
@@ -276,5 +278,4 @@ order by kind ASC, `period` DESC
         }
             return $datas;
     }
-
 }
