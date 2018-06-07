@@ -1093,9 +1093,9 @@ EOS;
 
         $pdf = new \Clegginabox\PDFMerger\PDFMerger;
         foreach ($mapping as $room => $data) {
-            $pdf->addPDF($pdf1filename, $data['index']);
+            $pdf->addPDF($pdf1filename, $data['index'], 'L');
             if (count($data['wifi'])) {
-                $pdf->addPDF($pdf2filename, implode(',', $data['wifi']));
+                $pdf->addPDF($pdf2filename, implode(',', $data['wifi']), 'P');
             }
         }
         $result = new \Illuminate\Http\Response($pdf->merge('string'), 200, array(
