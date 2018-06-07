@@ -27,7 +27,8 @@
     "maatwebsite/excel": "~1.3.0",
     "asgrim/ofxparser": "^1.2",
     "twilio/sdk": "^5.0",
-    "darkaonline/ripcord": "^0.1.6"
+    "darkaonline/ripcord": "^0.1.6",
+    "clegginabox/pdf-merger": "dev-master"
   },
   "autoload": {
     "classmap": [

@@ -56,8 +56,7 @@ class BookingController extends Controller
                 ->join('locations', 'ressources.location_id', '=', 'locations.id')
                 ->where('locations.city_id', '=', Auth::user()->location->city_id)
                 ->where('start_at', '<', Input::get('end'))
-                ->where(DB::raw('DATE_ADD(start_at, INTERVAL duration MINUTE)'), '>', Input::get('start'))
-            ;
+                ->where(DB::raw('DATE_ADD(start_at, INTERVAL duration MINUTE)'), '>', Input::get('start'));
         })
             ->with('items')->get();
 
@@ -69,20 +68,20 @@ class BookingController extends Controller
 
             }
         }
-
-        $start = strtotime(Input::get('start'));
-        $end = strtotime(Input::get('end'));
-        $i = $start;
-        while ($i < $end) {
-            if (!in_array(date('w', $i), array(0, 6))) {
-                $result[] = $this->createBackgroundEvent($i,
-                    Config::get('booking::work_hour_start', '09:00'),
-                    Config::get('booking::work_hour_end', '18:00')
-                );
-            }
-            $i += 24 * 3600;
-        }
-
+        /*
+                $start = strtotime(Input::get('start'));
+                $end = strtotime(Input::get('end'));
+                $i = $start;
+                while ($i < $end) {
+                    if (!in_array(date('w', $i), array(0, 6))) {
+                        $result[] = $this->createBackgroundEvent($i,
+                            Config::get('booking::work_hour_start', '09:00'),
+                            Config::get('booking::work_hour_end', '18:00')
+                        );
+                    }
+                    $i += 24 * 3600;
+                }
+        */
         return Response::json($result);
 
     }
@@ -890,7 +889,7 @@ class BookingController extends Controller
             $day = date('Y-m-d');
         }
 
-
+//region salles
         $datas = DB::select(DB::raw(sprintf('SELECT ressources.name AS room, concat(date_format( booking_item.start_at, "%%H:%%i" ) , " - ", date_format( booking_item.start_at + INTERVAL booking_item.duration
 MINUTE , "%%H:%%i" )) AS timerange, booking.title, 
 concat( users.firstname, " ", users.lastname ) AS contact,
@@ -927,6 +926,8 @@ ORDER BY room ASC , booking_item.start_at ASC ', $day, $day, $location)));
                 'wifi_password' => $data->wifi_password,
             );
         }
+        $mapping = array();
+        $pageNo = 1;
         $pages = array();
         foreach ($bookings as $room => $meetings) {
             $html = '
@@ -948,6 +949,7 @@ ORDER BY room ASC , booking_item.start_at ASC ', $day, $day, $location)));
                 }
                 $html .= '<hr style="border-top: dashed 1px;" /></td></tr>';
                 //valign="top"
+                $mapping[$room] = array('index' => $pageNo++, 'wifi' => array());
             }
             $html .= '</tbody></table>';
             $html .= '</div>';
@@ -955,39 +957,15 @@ ORDER BY room ASC , booking_item.start_at ASC ', $day, $day, $location)));
             $html .= '</html>';
             $pages[] = $html;
         }
-
         $pdf = App::make('snappy.pdf');
         $output = $pdf->getOutputFromHtml($pages,
             array('orientation' => 'Landscape',
-                'default-header' => false));;
-        return new \Illuminate\Http\Response($output, 200, array(
-            'Content-Type' => 'application/pdf',
-            'Content-Disposition' => sprintf('filename="%s_%s.pdf"', $day, $location)));
-        //attachment;
-    }
+                'default-header' => false));
+        $pdf1filename = tempnam(sys_get_temp_dir(), 'intranet_pdf_') . '.pdf';
+        file_put_contents($pdf1filename, $output);
+        //endregion
 
-    public function dailyPdfWifi($location, $day = null)
-    {
-        if (null == $day) {
-            $day = date('Y-m-d');
-        }
-
-
-        $datas = DB::select(DB::raw(sprintf('SELECT ressources.name AS room, concat(date_format( booking_item.start_at, "%%H:%%i" ) , " - ", date_format( booking_item.start_at + INTERVAL booking_item.duration
-MINUTE , "%%H:%%i" )) AS timerange, booking.title, 
-concat( users.firstname, " ", users.lastname ) AS contact,
-organisations.name as organisation, booking.wifi_login, booking.wifi_password
-FROM `booking_item`
-JOIN ressources ON booking_item.ressource_id = ressources.id
-JOIN locations ON ressources.location_id = locations.id
-JOIN booking ON booking_item.booking_id = booking.id
-JOIN users ON users.id = booking.user_id
-LEFT OUTER JOIN organisations on organisations.id = booking.organisation_id 
-WHERE booking_item.start_at > "%s 00:00:00"
-AND booking_item.start_at <= "%s 23:59:59"
-AND locations.slug = "%s"
-ORDER BY room ASC , booking_item.start_at ASC ', $day, $day, $location)));
-
+        //region WIFI
         $bookings = array();
         //var_dump($datas); exit;
 
@@ -1011,7 +989,7 @@ ORDER BY room ASC , booking_item.start_at ASC ', $day, $day, $location)));
         }
         $pages = array();
 
-
+        $pageNo = 1;
         foreach ($bookings as $room => $meetings) {
             foreach ($meetings as $timerange => $meeting_data) {
                 if ($meeting_data['wifi_login']) {
@@ -1098,16 +1076,31 @@ EOS;
                     );
                     $html = str_replace(array_keys($macros), array_values($macros), $html);
                     $pages[] = $html;
+
+                    $mapping[$room]['wifi'][] = $pageNo++;
                 }
             }
         }
-
         $pdf = App::make('snappy.pdf');
         $output = $pdf->getOutputFromHtml($pages,
             array(
                 //'orientation' => 'Landscape',
-                'default-header' => false));;
-        return new \Illuminate\Http\Response($output, 200, array(
+                'default-header' => false));
+        $pdf2filename = tempnam(sys_get_temp_dir(), 'intranet_pdf_') . '.pdf';
+        file_put_contents($pdf2filename, $output);
+
+        //endregion
+
+        $pdf = new \Clegginabox\PDFMerger\PDFMerger;
+        foreach ($mapping as $room => $data) {
+            $pdf->addPDF($pdf1filename, $data['index']);
+            foreach ($data['wifi'] as $pages) {
+                $pdf->addPDF($pdf2filename, implode(',', $pages));
+            }
+        }
+        unlink($pdf1filename);
+        unlink($pdf2filename);
+        return new \Illuminate\Http\Response($pdf->merge('string'), 200, array(
             'Content-Type' => 'application/pdf',
             'Content-Disposition' => sprintf('filename="%s_%s.pdf"', $day, $location)));
         //attachment;
