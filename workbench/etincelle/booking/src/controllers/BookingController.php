@@ -903,6 +903,7 @@ LEFT OUTER JOIN organisations on organisations.id = booking.organisation_id
 WHERE booking_item.start_at > "%s 00:00:00"
 AND booking_item.start_at <= "%s 23:59:59"
 AND locations.slug = "%s"
+AND ressources.has_paper_summary = true
 ORDER BY room ASC , booking_item.start_at ASC ', $day, $day, $location)));
 
         $bookings = array();
@@ -949,13 +950,13 @@ ORDER BY room ASC , booking_item.start_at ASC ', $day, $day, $location)));
                 }
                 $html .= '<hr style="border-top: dashed 1px;" /></td></tr>';
                 //valign="top"
-                $mapping[$room] = array('index' => $pageNo++, 'wifi' => array());
             }
             $html .= '</tbody></table>';
             $html .= '</div>';
             $html .= '</body>';
             $html .= '</html>';
             $pages[] = $html;
+            $mapping[$room] = array('index' => count($pages), 'wifi' => array());
         }
         $pdf = App::make('snappy.pdf');
         $output = $pdf->getOutputFromHtml($pages,
@@ -989,7 +990,6 @@ ORDER BY room ASC , booking_item.start_at ASC ', $day, $day, $location)));
         }
         $pages = array();
 
-        $pageNo = 1;
         foreach ($bookings as $room => $meetings) {
             foreach ($meetings as $timerange => $meeting_data) {
                 if ($meeting_data['wifi_login']) {
@@ -1077,7 +1077,7 @@ EOS;
                     $html = str_replace(array_keys($macros), array_values($macros), $html);
                     $pages[] = $html;
 
-                    $mapping[$room]['wifi'][] = $pageNo++;
+                    $mapping[$room]['wifi'][] = count($pages);
                 }
             }
         }
@@ -1094,15 +1094,16 @@ EOS;
         $pdf = new \Clegginabox\PDFMerger\PDFMerger;
         foreach ($mapping as $room => $data) {
             $pdf->addPDF($pdf1filename, $data['index']);
-            foreach ($data['wifi'] as $pages) {
-                $pdf->addPDF($pdf2filename, implode(',', $pages));
+            if (count($data['wifi'])) {
+                $pdf->addPDF($pdf2filename, implode(',', $data['wifi']));
             }
         }
-        unlink($pdf1filename);
-        unlink($pdf2filename);
-        return new \Illuminate\Http\Response($pdf->merge('string'), 200, array(
+        $result = new \Illuminate\Http\Response($pdf->merge('string'), 200, array(
             'Content-Type' => 'application/pdf',
             'Content-Disposition' => sprintf('filename="%s_%s.pdf"', $day, $location)));
+        unlink($pdf1filename);
+        unlink($pdf2filename);
+        return $result;
         //attachment;
     }
 

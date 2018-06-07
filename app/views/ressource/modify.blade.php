@@ -56,16 +56,23 @@
                                 {{ Form::label('is_bookable', 'Réservable') }}
                             </p>
                         </div>
+                        <div class="col-md-4">
+                        <p>
+                            {{ Form::checkbox('has_paper_summary', true) }}
+                            {{ Form::label('has_paper_summary', 'Imprimer l\'affiche') }}
+                        </p>
+                        </div>
                         <div class="col-md-2">
                             {{ Form::label('order_index', 'Ordre d\'affichage') }}
                             <p>{{ Form::text('order_index', null, array('class' => 'form-control', 'min' => 1)) }}</p>
                         </div>
-                        <div class="col-md-4">
+                        <div class="col-md-2">
                             {{ Form::label('booking_background_color', 'Couleur de fond') }}
                             <p>
                                 {{ Form::text('booking_background_color', null, array('class' => 'form-control')) }}
                             </p>
                         </div>
+
                         <div class="col-md-6">
                             {{ Form::label('sales_presentation', 'Présentation commerciale') }}
                             <p>{{ Form::textarea('sales_presentation', null, array('class' => 'form-control', 'rows' => '15')) }}</p>

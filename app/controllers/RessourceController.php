@@ -113,6 +113,7 @@ class RessourceController extends BaseController
             $ressource->ressource_kind_id = Input::get('ressource_kind_id');
             $ressource->subscription_id = Input::get('subscription_id') ? Input::get('subscription_id') : null;
             $ressource->sales_presentation = Input::get('sales_presentation') ;
+            $ressource->has_paper_summary = (bool)Input::get('has_paper_summary');
 
             if ($ressource->save()) {
                 return Redirect::route('ressource_list')->with('mSuccess', 'Cette ressource a bien été modifiée');
