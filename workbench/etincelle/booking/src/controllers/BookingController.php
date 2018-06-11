@@ -470,6 +470,7 @@ class BookingController extends Controller
         switch ($key) {
             case 'public':
                 $items = BookingItem::where('start_at', '>=', date('Y-m-d'))
+                    ->join('booking', 'booking_item.booking_id', '=', 'booking.id')
                     ->where('booking.is_private', '=', false)
                     ->with('booking', 'ressource')->get();
                 $description = '';
@@ -506,12 +507,12 @@ class BookingController extends Controller
 
         $vCalendar = new \Eluceo\iCal\Component\Calendar(Request::server('SERVER_NAME'));
         $vCalendar->setDescription($description);
-        $tz = new DateTimeZone(date_default_timezone_get());
+        //$tz = new DateTimeZone(date_default_timezone_get());
         foreach ($items as $booking_item) {
             $start = new \DateTime($booking_item->start_at);
-            $start->setTimezone($tz);
+//            $start->setTimezone($tz);
             $end = new \DateTime($booking_item->start_at);
-            $start->setTimezone($tz);
+//            $start->setTimezone($tz);
             $end->modify(sprintf('+%d minutes', $booking_item->duration));
 
             $vEvent = new \Eluceo\iCal\Component\Event();
