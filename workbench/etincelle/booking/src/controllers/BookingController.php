@@ -504,16 +504,19 @@ class BookingController extends Controller
                 break;
         }
 
+        $tz = new DateTimeZone(date_default_timezone_get());
+        $offset = (new DateTime("now", $tz))->getOffset();
 
         $vCalendar = new \Eluceo\iCal\Component\Calendar(Request::server('SERVER_NAME'));
         $vCalendar->setDescription($description);
-        //$tz = new DateTimeZone(date_default_timezone_get());
         foreach ($items as $booking_item) {
             $start = new \DateTime($booking_item->start_at);
-//            $start->setTimezone($tz);
+            $start->setTimezone($tz);
+            $start->add(new DateInterval(sprintf('PT%dS', $offset)));
             $end = new \DateTime($booking_item->start_at);
-//            $start->setTimezone($tz);
+            $start->setTimezone($tz);
             $end->modify(sprintf('+%d minutes', $booking_item->duration));
+            $end->add(new DateInterval(sprintf('PT%dS', $offset)));
 
             $vEvent = new \Eluceo\iCal\Component\Event();
             $vEvent
