@@ -7,17 +7,22 @@
 @section('breadcrumb')
     <div class="row wrapper border-bottom white-bg page-heading">
         <div class="col-sm-12">
-            <h2>Activité de la société {{$organisation->name}} sur la période {{$period}}</h2>
+            <h2>Activité de la société {{$organisation->name}} sur la période {{$period}}
+                @if (Auth::user()->isSuperAdmin())
+                    <a href="{{URL::route('organisation_usage_export', array('id' => $organisation->id))}}"
+                       class="btn btn-primary pull-right">Exporter</a>
+                @endif
+
+            </h2>
             <?php
             for ($i = 11; $i >= 0; $i--) {
                 $when = strtotime(sprintf('-%d month', $i));
                 $target_period = date('Y-m', $when);
                 $activeStr = ($target_period == $period) ? ' btn-primary' : ' btn-default';
-                printf('<a href="%s" class="btn btn-xs%s">%s</a>'."\n", URL::route('organisation_usage', array('id' => $organisation->id, 'period' => $target_period)), $activeStr, date('m/Y', $when));
+                printf('<a href="%s" class="btn btn-xs%s">%s</a>' . "\n", URL::route('organisation_usage', array('id' => $organisation->id, 'period' => $target_period)), $activeStr, date('m/Y', $when));
             }
             ?>
         </div>
-
     </div>
 @stop
 

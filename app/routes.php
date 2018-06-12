@@ -158,6 +158,7 @@ Route::group(['before' => 'superadmin'], function() {
 	Route::get('/organisation/{organisation}/delete/user/{id}', array('as' => 'organisation_delete_user', 'uses' => 'OrganisationController@delete_user'))->where(array('organisation' => '[0-9]+', 'id' => '[0-9]+'));
     Route::get('/organisation/{id}/remind', array('as' => 'organisation_remind', 'uses' => 'OrganisationController@remind'))->where(array('id' => '[0-9]+'));
     Route::post('/organisation/{id}/remind/send', array('as' => 'organisation_remind_send', 'uses' => 'OrganisationController@remind_send'))->where(array('id' => '[0-9]+'));
+    Route::get('/organisation/{id}/usage/export', array('as' => 'organisation_usage_export', 'uses' => 'OrganisationController@usage_export'))->where(array('id' => '[0-9]+'));
 
     Route::get('/domiciliation/{id}/renew', array('as' => 'domiciliation_renew', 'uses' => 'DomiciliationController@renew'));
 

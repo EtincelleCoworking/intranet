@@ -484,4 +484,42 @@ where organisation_user.organisation_id = %1$d
             'devices' => $devices,
         ));
     }
+
+    public function usage_export($id)
+    {
+        Excel::create('Filename', function ($excel) use ($id) {
+            $data = User::join('organisation_user', 'users.id', '=', 'organisation_user.user_id')
+                ->where('organisation_user.organisation_id', $id)
+                ->orderBy('users.lastname', 'ASC')
+                ->get();
+            $users = array();
+            foreach ($data as $user) {
+                $users[$user->user_id] = $user;
+            }
+
+            $excel->sheet('Usage', function ($sheet) use ($id) {
+                $sheet->appendRow(array(
+                    'Utilisateur',
+                    'Ressource',
+                    'Debut',
+                    'Fin',
+                ));
+
+                $sql = 'SELECT concat(users.firstname, " ", users.lastname) as name, ressources.name as ressource, past_times.time_start as start, past_times.time_end as end
+                FROM past_times join ressources on past_times.ressource_id = ressources.id
+                  JOIN users on users.id = past_times.user_id
+                  JOIN organisation_user ON organisation_user.user_id = users.id
+                  WHERE organisation_user.organisation_id = ' . $id . ' ORDER BY users.lastname ASC, users.firstname ASC, past_times.time_start ASC';
+                foreach (DB::select(DB::raw($sql)) as $item) {
+                    $sheet->appendRow(array(
+                        $item->name,
+                        $item->ressource,
+                        date('d/m/Y H:i', strtotime($item->start)),
+                        date('d/m/Y H:i', strtotime($item->end)),
+                    ));
+                }
+
+            });
+        })->download('xls');
+    }
 }
