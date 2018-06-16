@@ -1,7 +1,7 @@
 @extends('emails.master')
 
 @section('title')
-    {{$_ENV['organisation_name']}} - Renouvellement de ton abonnement le {{ date('d/m/Y', strtotime($subscription->renew_at))}}
+    Renouvellement de ton abonnement
 @stop
 
 @section('content')
