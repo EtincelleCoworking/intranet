@@ -310,34 +310,14 @@ order by invoices_items.subscription_overuse_managed ASC, invoices_items.subscri
         return Redirect::route('subscription_overuse')
             ->with('mSuccess', 'Le dépassement a été noté comme traité');
     }
-//    /**
-//     * Modify vat (form)
-//     */
-//    public function modify_check($id)
-//    {
-//        $vat = $this->dataExist($id);
-//
-//        $validator = Validator::make(Input::all(), VatType::$rules);
-//        if (!$validator->fails()) {
-//            $vat->value = Input::get('value');
-//            if ($vat->save()) {
-//                return Redirect::route('vat_modify', $vat->id)->with('mSuccess', 'Cette vat a bien été modifiée');
-//            } else {
-//                return Redirect::route('vat_modify', $vat->id)->with('mError', 'Impossible de modifier cette vat')->withInput();
-//            }
-//        } else {
-//            return Redirect::route('vat_modify', $vat->id)->with('mError', 'Il y a des erreurs')->withErrors($validator->messages())->withInput();
-//        }
-//    }
 
     public function manage()
     {
         $subscription = Subscription::where('user_id', '=', Auth::id())->first();
-
         $items = array();
         $options = SubscriptionKind::where('ressource_id', '=', Ressource::TYPE_COWORKING)->get();
         foreach ($options as $option) {
-            $items[$option->id] = sprintf('%s (%d&euro;HT/mois)', $option->shortName, $option->price);
+            $items[$option->id] = sprintf('%s (%d&euro;TTC/mois)', $option->shortName, $option->price * 1.2);
         }
 
         return View::make('subscription.manage', array(
