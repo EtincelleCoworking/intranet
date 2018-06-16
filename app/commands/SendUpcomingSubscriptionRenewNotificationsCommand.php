@@ -39,9 +39,12 @@ class SendUpcomingSubscriptionRenewNotificationsCommand extends Command
     public function fire()
     {
         $subscriptions = Subscription::where('is_automatic_renew_enabled', '=', true)
+            ->join('subscription_kind', 'subscription_kind_id', '=', 'subscription_kind.id', 'left outer')
             ->where('renew_at', '>', date('Y-m-d'))
             ->where('renew_at', '<=', date('Y-m-d', strtotime('+7 days')))
             ->whereNull('reminded_at')
+            ->where('subscription_kind.ressource_id', '=', Ressource::TYPE_COWORKING)
+            ->select('subscription.*')
             ->get();
         foreach ($subscriptions as $subscription) {
             Mail::send('emails.upcoming_subscription_renew', array('subscription' => $subscription), function ($message) use ($subscription) {
