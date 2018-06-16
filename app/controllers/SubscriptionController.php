@@ -79,6 +79,7 @@ class SubscriptionController extends BaseController
         $subscription->organisation_id = Input::get('organisation_id');
         $subscription->subscription_kind_id = Input::get('subscription_kind_id');
         $subscription->renew_at = $date_explode[2] . '-' . $date_explode[1] . '-' . $date_explode[0];
+        $subscription->is_automatic_renew_enabled = (bool)Input::get('is_automatic_renew_enabled');
         //$subscription->duration = Input::get('duration');
     }
 
