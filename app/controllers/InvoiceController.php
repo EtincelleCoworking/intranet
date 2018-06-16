@@ -396,10 +396,10 @@ class InvoiceController extends BaseController
     {
         /** @var Invoice $invoice */
         $invoice = $this->dataExist($invoice_id, 'invoice_list');
-        $invoice->send();
+        $feedback = $invoice->send();
 
         return Redirect::route('invoice_list')
-            ->with('mSuccess', sprintf('La facture %s a été envoyée par email à %s', $invoice->ident, $to));
+            ->with('mSuccess', $feedback);
     }
 
 

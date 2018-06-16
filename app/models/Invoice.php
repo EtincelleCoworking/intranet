@@ -492,5 +492,7 @@ class Invoice extends Eloquent
 
         $invoice->sent_at = date('Y-m-d');
         $invoice->save();
+
+        return sprintf('La facture %s a été envoyée par email à %s', $invoice->ident, $to);
     }
 }
