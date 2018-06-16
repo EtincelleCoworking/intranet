@@ -102,7 +102,7 @@
                                 <tr>
                                     <td>{{$position + 1}}</td>
                                     <td>{{ $subscription->user->location->city->name }}</td>
-                                    <td>
+                                    <td nowrap="nowrap">
                                         @if($subscription->is_automatic_renew_enabled)
                                             <i class="fa fa-refresh"></i>
                                         @endif
