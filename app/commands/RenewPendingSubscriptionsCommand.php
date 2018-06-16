@@ -46,7 +46,7 @@ class RenewPendingSubscriptionsCommand extends Command
 
             $data = array();
             $data['text'] = sprintf('La facture <%s|%s> de renouvellement d\'abonnement de %s a été créée automatiquement',
-                URL::route('invoice_modify', $invoice->id), $invoice->ident);
+                URL::route('invoice_modify', $invoice->id), $invoice->ident, $subscription->user->fullname);
             $this->slack(Config::get('etincelle.slack_staff_toulouse'), $data);
         }
     }
