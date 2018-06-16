@@ -724,6 +724,8 @@ group by booking.id
                 $message->to($subscription->user->email, $subscription->user->fullname);
                 $message->subject(sprintf('%s - Renouvellement de votre abonnement le %s', $_ENV['organisation_name'], date('d/m/Y', $subscription->renew_at)));
             });
+            $subscription->reminded_at = date('Y-m-d');
+            $subscription->save();
         }
     }
 }
