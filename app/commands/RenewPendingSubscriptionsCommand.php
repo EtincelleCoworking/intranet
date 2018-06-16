@@ -43,6 +43,7 @@ class RenewPendingSubscriptionsCommand extends Command
             ->get();
         foreach ($subscriptions as $subscription) {
             $invoice = $subscription->renew();
+            $invoice->send();
 
             $data = array();
             $data['text'] = sprintf('La facture <%s|%s> de renouvellement d\'abonnement de %s a été créée automatiquement',
@@ -69,6 +70,46 @@ class RenewPendingSubscriptionsCommand extends Command
     protected function getOptions()
     {
         return array();
+    }
+
+
+    protected function slack($endpoint, $data)
+    {
+//        $data = array();
+//        $data['text'] = $message;
+//        if($icon){
+//            $data['icon_emoji'] = $icon;
+//        }
+//
+//        array(
+//            "text"          =>  $message,
+//            "icon_emoji"    =>  ':white_check_mark:',
+//            'attachments'=> array(
+//                array(
+//                    'title'=>'title',
+//                    'title_link'=>'https://frenchwork.fr',
+//                    'text'=>'text',
+//                )
+//            )
+//        )
+        $ch = curl_init($endpoint);
+        curl_setopt($ch, CURLOPT_CUSTOMREQUEST, "POST");
+
+        curl_setopt($ch, CURLOPT_HTTPHEADER, array('Content-Type: application/x-www-form-urlencoded'));
+        curl_setopt($ch, CURLOPT_POSTFIELDS, "payload=" . urlencode(json_encode($data)));
+        curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+        $result = curl_exec($ch);
+
+        $errors = curl_error($ch);
+        if ($errors) {
+            Log::error($errors, array('context' => 'user.shown'));
+        }
+        $responseCode = curl_getinfo($ch, CURLINFO_HTTP_CODE);
+        Log::info(sprintf('Slack payload: %s', json_encode($data)), array('context' => 'user.shown'));
+        Log::info(sprintf('Slack response (HTTP Code: %s): %s', $responseCode, $result), array('context' => 'user.shown'));
+        curl_close($ch);
+
+        return $result;
     }
 
 }
