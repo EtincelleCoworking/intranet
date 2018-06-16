@@ -102,7 +102,12 @@
                                 <tr>
                                     <td>{{$position + 1}}</td>
                                     <td>{{ $subscription->user->location->city->name }}</td>
-                                    <td>{{$subscription->kind->ressource->name}}</td>
+                                    <td>
+                                        @if($subscription->is_automatic_renew_enabled)
+                                            <i class="fa fa-refresh"></i>
+                                        @endif
+                                        {{$subscription->kind->ressource->name}}
+                                    </td>
                                     <td>
                                         @if (Auth::user()->isSuperAdmin())
                                             <a href="{{ URL::route('organisation_modify', $subscription->organisation->id) }}">{{ $subscription->organisation->name }}</a>
@@ -119,15 +124,15 @@
                                     <td>
                                         @if ($subscription->daysBeforeRenew <= 0)
                                             <span class="badge badge-danger">
-                                                  {{ date('d/m/Y', strtotime($subscription->renew_at)); }}
+                                                  {{ date('d/m/Y', strtotime($subscription->renew_at)) }}
                         </span>
                                         @elseif ($subscription->daysBeforeRenew < 7)
                                             <span class="badge badge-warning">
-                                                          {{ date('d/m/Y', strtotime($subscription->renew_at)); }}
+                                                          {{ date('d/m/Y', strtotime($subscription->renew_at)) }}
                         </span>
                                         @else
                                             <span class="badge badge-success">
-                                                                  {{ date('d/m/Y', strtotime($subscription->renew_at)); }}
+                                                                  {{ date('d/m/Y', strtotime($subscription->renew_at)) }}
                         </span>
                                         @endif
                                     </td>

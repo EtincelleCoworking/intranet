@@ -57,6 +57,14 @@
                             <p>{{ Form::select('subscription_kind_id', SubscriptionKind::selectAll(), isset($subscription)?$subscription->subscription_kind_id:'', array('class' => 'form-control')) }}</p>
                         </div>
                     </div>
+                    <div class="row">
+                        <div class="col-md-6">
+                            <p>
+                                {{ Form::checkbox('is_automatic_renew_enabled', true, isset($subscription)?$subscription->is_automatic_renew_enabled:false, array('id' => 'is_automatic_renew_enabled')) }}
+                                {{ Form::label('is_automatic_renew_enabled', 'Renouvellement automatique') }}
+                            </p>
+                        </div>
+                    </div>
 
                     <div class="hr-line-dashed"></div>
                     <div class="form-group">
