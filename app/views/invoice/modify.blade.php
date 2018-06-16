@@ -318,8 +318,9 @@
                 @foreach ($invoice->comments as $comment)
                     <div class="media">
                         <div class="media-body">
-                            <h4 class="media-heading">Par {{ $comment->user->fullname }}</h4>
-
+                            @if($comment->user_id)
+                                <h4 class="media-heading">Par {{ $comment->user->fullname }}</h4>
+                            @endif
                             <p><i>Le {{ date('d/m/Y \à H:i', strtotime($comment->created_at)) }}</i></p>
 
                             <p>{{ nl2br($comment->content) }}</p>
@@ -438,7 +439,7 @@
 
             $('#selectUserId').select2();
 
-            $('.action-line-coworking').click(function (){
+            $('.action-line-coworking').click(function () {
                 coworking_updateText($(this).attr('data-target-id'));
             });
 

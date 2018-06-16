@@ -486,7 +486,7 @@ class Invoice extends Eloquent
 
         $invoice_comment = new InvoiceComment();
         $invoice_comment->invoice_id = $invoice->id;
-        $invoice_comment->user_id = Auth::user()->id;
+        $invoice_comment->user_id = Auth::id();
         $invoice_comment->content = sprintf('Envoyé par email le %s à %s', date('d/m/Y'), $to);
         $invoice_comment->save();
 
