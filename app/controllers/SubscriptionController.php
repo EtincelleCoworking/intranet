@@ -337,7 +337,7 @@ order by invoices_items.subscription_overuse_managed ASC, invoices_items.subscri
         $items = array();
         $options = SubscriptionKind::where('ressource_id', '=', Ressource::TYPE_COWORKING)->get();
         foreach ($options as $option) {
-            $items[$option->id] = sprintf('%s (%d&euro;/mois)', $option->shortName, $option->price);
+            $items[$option->id] = sprintf('%s (%d&euro;HT/mois)', $option->shortName, $option->price);
         }
 
         return View::make('subscription.manage', array(
