@@ -396,42 +396,7 @@ class InvoiceController extends BaseController
     {
         /** @var Invoice $invoice */
         $invoice = $this->dataExist($invoice_id, 'invoice_list');
-
-        $target_user = null;
-        if ($invoice->user) {
-            $target_user = $invoice->user;
-        }
-        if ($invoice->organisation && $invoice->organisation->accountant) {
-            $target_user = $invoice->organisation->accountant;
-        }
-        if (!$target_user) {
-            return Redirect::route('invoice_list')
-                ->with('mError', sprintf('Aucun utilisateur trouvé pour envoyer la facture %s par email', $invoice->ident));
-        }
-        Mail::send('emails.invoice', array('invoice' => $invoice), function ($message) use ($invoice, $target_user) {
-            $message->from($_ENV['mail_address'], $_ENV['mail_name'])
-                ->bcc($_ENV['mail_address'], $_ENV['mail_name']);
-
-            $message->to($target_user->email, $target_user->fullname);
-
-            $message->subject(sprintf('%s - Facture %s', $_ENV['organisation_name'], $invoice->ident));
-
-            $pdf = App::make('snappy.pdf.wrapper');
-
-            $message->attachData($pdf->getOutputFromHtml($invoice->getPdfHtml()),
-                sprintf('%s.pdf', $invoice->ident), array('mime' => 'application/pdf'));
-        });
-
-        $to = htmlentities(sprintf('%s <%s>', $target_user->fullname, $target_user->email));
-
-        $invoice_comment = new InvoiceComment();
-        $invoice_comment->invoice_id = $invoice->id;
-        $invoice_comment->user_id = Auth::user()->id;
-        $invoice_comment->content = sprintf('Envoyé par email le %s à %s', date('d/m/Y'), $to);
-        $invoice_comment->save();
-
-        $invoice->sent_at = date('Y-m-d');
-        $invoice->save();
+        $invoice->send();
 
         return Redirect::route('invoice_list')
             ->with('mSuccess', sprintf('La facture %s a été envoyée par email à %s', $invoice->ident, $to));

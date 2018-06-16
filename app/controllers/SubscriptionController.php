@@ -152,65 +152,10 @@ class SubscriptionController extends BaseController
     public function renew($id)
     {
         $subscription = $this->dataExist($id);
-
-        $invoice = new Invoice();
-        $invoice->type = 'F';
-        $invoice->organisation_id = $subscription->organisation_id;
-        if ($subscription->organisation->accountant_id) {
-            $invoice->user_id = $subscription->organisation->accountant_id;
-        } else {
-            $invoice->user_id = $subscription->user_id;
-        }
-        $invoice->days = date('Ym');
-        $invoice->date_invoice = date('Y-m-d');
-        $invoice->number = Invoice::next_invoice_number($invoice->type, $invoice->days);
-        $invoice->address = $subscription->organisation->fulladdress;
-
-        $date = new DateTime($invoice->date_invoice);
-        $date->modify('+1 month');
-        $invoice->deadline = $date->format('Y-m-d');
-        $invoice->expected_payment_at = $invoice->deadline;
-        $invoice->save();
-
-        $invoice_line = new InvoiceItem();
-        $invoice_line->invoice_id = $invoice->id;
-        $invoice_line->ressource_id = $subscription->kind->ressource_id;
-        $invoice_line->amount = $subscription->kind->price;
-        $date = new \DateTime($subscription->renew_at);
-        $date2 = new \DateTime($subscription->renew_at);
-        $date2->modify('+' . $subscription->kind->duration);
-        if ($subscription->kind->ressource_id == Ressource::TYPE_COWORKING) {
-            $invoice_line->subscription_from = $date->format('Y-m-d');
-            $invoice_line->subscription_to = $date2->format('Y-m-d');
-            $invoice_line->subscription_hours_quota = $subscription->kind->hours_quota;
-            $invoice_line->subscription_user_id = $subscription->user_id;
-        }
-        $date2->modify('-1 day');
-        $invoice_line->text = sprintf("%s<br />\nDu %s au %s", $subscription->formattedName(), $date->format('d/m/Y'), $date2->format('d/m/Y'));
-        $invoice_line->vat_types_id = VatType::whereValue(20)->first()->id;
-        $invoice_line->order_index = 1;
-        $invoice_line->save();
-
-        if ($subscription->kind->ressource_id == Ressource::TYPE_COWORKING && $subscription->user->is_student) {
-            $invoice_line = new InvoiceItem();
-            $invoice_line->invoice_id = $invoice->id;
-            $invoice_line->ressource_id = $subscription->kind->ressource_id;
-            $invoice_line->amount = -0.2 * $subscription->kind->price;
-            $invoice_line->text = 'Réduction commerciale étudiant (-20%)';
-            $invoice_line->vat_types_id = VatType::whereValue(20)->first()->id;
-            $invoice_line->order_index = 2;
-            $invoice_line->save();
-        }
-
-        $date = new DateTime($subscription->renew_at);
-        $date->modify('+' . $subscription->kind->duration);
-        $subscription->renew_at = $date->format('Y-m-d');
-        $subscription->save();
+        $invoice = $subscription->renew();
 
         return Redirect::route('invoice_modify', $invoice->id)->with('mSuccess',
             sprintf('La facture a été créée <a href="%s" class="btn btn-primary pull-right">Envoyer</a>', URL::route('invoice_send', $invoice->id)));
-
-
     }
 
     public function renewCompany($id)
@@ -385,5 +330,60 @@ order by invoices_items.subscription_overuse_managed ASC, invoices_items.subscri
 //        }
 //    }
 
+    public function manage()
+    {
+        $subscription = Subscription::where('user_id', '=', Auth::id())->first();
 
+        $items = array();
+        $options = SubscriptionKind::where('ressource_id', '=', Ressource::TYPE_COWORKING)->get();
+        foreach ($options as $option) {
+            $items[$option->id] = sprintf('%s (%d&euro;/mois)', $option->shortName, $option->price);
+        }
+
+        return View::make('subscription.manage', array(
+                'subscription' => $subscription,
+                'items' => $items,
+            )
+        );
+    }
+
+    public function manage_post()
+    {
+        $option_id = Input::get('option_id');
+
+        $subscription = Subscription::where('user_id', '=', Auth::id())->first();
+        if (!$option_id) {
+            if ($subscription) {
+                $subscription->delete();
+            }
+            return Redirect::route('subscription_manage')
+                ->with('mSuccess', 'Vos changements ont étés enregistrés');
+        }
+
+        if (!$subscription) {
+            $subscription = new Subscription();
+        }
+        $date_explode = explode('/', Input::get('renew_at'));
+        $renew_at = $date_explode[2] . '-' . $date_explode[1] . '-' . $date_explode[0];
+        $subscription->user_id = Auth::id();
+        if (!$subscription->organisation_id) {
+            $subscription->organisation_id = Auth::user()->organisations->first()->id;
+        }
+        $subscription->subscription_kind_id = $option_id;
+        $subscription->is_automatic_renew_enabled = (bool)Input::get('is_automatic_renew_enabled');
+        $subscription->renew_at = $renew_at;
+        $subscription->save();
+
+        if ($subscription->is_automatic_renew_enabled) {
+            if ($renew_at < date('Y-m-d')) {
+                $invoice = $subscription->renew();
+                $invoice->send();
+                return Redirect::route('subscription_manage')
+                    ->with('mSuccess', sprintf('Vos changements ont étés enregistrés, une nouvelle facture a été créée. Vous pouvez la <a href="%s">régler ici</a>.', URL::route('invoice_list')));
+            }
+        }
+
+        return Redirect::route('subscription_manage')
+            ->with('mSuccess', 'Vos changements ont étés enregistrés');
+    }
 }

@@ -82,7 +82,8 @@ Route::group(['before' => 'member'], function() {
     Route::get('/user/refresh_personnal_code', array('as' => 'user_refresh_personnal_code', 'uses' => 'UserController@refreshPersonnalCode'));
 
 
-//    Route::get('/subscription/manage', array('as' => 'subscription_manage', 'uses' => 'SubscriptionController@manage'));
+    Route::get('/subscription', array('as' => 'subscription_manage', 'uses' => 'SubscriptionController@manage'));
+    Route::post('/subscription', array('as' => 'subscription_manage', 'uses' => 'SubscriptionController@manage_post'));
 //    Route::get('/subscription/cancel', array('as' => 'subscription_cancel', 'uses' => 'SubscriptionController@cancel'));
 //    Route::get('/subscription/add', array('as' => 'subscription_add', 'uses' => 'SubscriptionController@add'));
 //    Route::post('/subscription/add', array('as' => 'subscription_add_check', 'uses' => 'SubscriptionController@add_check'));

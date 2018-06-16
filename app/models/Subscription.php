@@ -135,4 +135,65 @@ class Subscription extends Eloquent
         return $result;
     }
 
+    public function renew()
+    {
+        $invoice = new Invoice();
+        $invoice->type = 'F';
+        $invoice->organisation_id = $this->organisation_id;
+        if ($this->organisation->accountant_id) {
+            $invoice->user_id = $this->organisation->accountant_id;
+        } else {
+            $invoice->user_id = $this->user_id;
+        }
+        $invoice->days = date('Ym');
+        $invoice->date_invoice = date('Y-m-d');
+        $invoice->number = Invoice::next_invoice_number($invoice->type, $invoice->days);
+        $invoice->address = $this->organisation->fulladdress;
+
+        $date = new DateTime($invoice->date_invoice);
+        $date->modify('+1 month');
+        $invoice->deadline = $date->format('Y-m-d');
+        $invoice->expected_payment_at = $invoice->deadline;
+        $invoice->save();
+
+        $invoice_line = new InvoiceItem();
+        $invoice_line->invoice_id = $invoice->id;
+        $invoice_line->ressource_id = $this->kind->ressource_id;
+        $invoice_line->amount = $this->kind->price;
+        $date = new \DateTime($this->renew_at);
+        $date2 = new \DateTime($this->renew_at);
+        $date2->modify('+' . $this->kind->duration);
+        if ($this->kind->ressource_id == Ressource::TYPE_COWORKING) {
+            $invoice_line->subscription_from = $date->format('Y-m-d');
+            $invoice_line->subscription_to = $date2->format('Y-m-d');
+            $invoice_line->subscription_hours_quota = $this->kind->hours_quota;
+            $invoice_line->subscription_user_id = $this->user_id;
+        }
+        $date2->modify('-1 day');
+        $invoice_line->text = sprintf("%s<br />\nDu %s au %s", $this->formattedName(), $date->format('d/m/Y'), $date2->format('d/m/Y'));
+        $invoice_line->vat_types_id = VatType::whereValue(20)->first()->id;
+        $invoice_line->order_index = 1;
+        $invoice_line->save();
+
+        if ($this->kind->ressource_id == Ressource::TYPE_COWORKING && $this->user->is_student) {
+            $invoice_line = new InvoiceItem();
+            $invoice_line->invoice_id = $invoice->id;
+            $invoice_line->ressource_id = $this->kind->ressource_id;
+            $invoice_line->amount = -0.2 * $this->kind->price;
+            $invoice_line->text = 'Réduction commerciale étudiant (-20%)';
+            $invoice_line->vat_types_id = VatType::whereValue(20)->first()->id;
+            $invoice_line->order_index = 2;
+            $invoice_line->save();
+        }
+
+        $date = new DateTime($this->renew_at);
+        $date->modify('+' . $this->kind->duration);
+        $this->renew_at = $date->format('Y-m-d');
+        $this->reminded_at = null;
+
+        $this->save();
+
+        return $invoice;
+    }
+
 }

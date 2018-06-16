@@ -294,24 +294,24 @@ class Invoice extends Eloquent
             $vats[$item->vat->id]['montant'] += $calc_vat;
             $vat_total['ht'] += $item->amount;
             $vat_total['vat'] += $calc_vat;
-if($item->ressource_id){
+            if ($item->ressource_id) {
 
-            $html .= '
+                $html .= '
                                             <tr valign="top">
                                                 <td style="border-top:1px solid #666; padding:5px">' . $item->text . '</td>
                                                 <td style="border-top:1px solid #666; border-left:1px solid #666; text-align:right; padding:5px">' . $item->vat->value . '%</td>
                                                 <td style="border-top:1px solid #666; border-left:1px solid #666; text-align:right; padding:5px">' . sprintf('%0.2f', $item->amount) . '€</td>
                                             </tr>
                                             ';
-        }else{
-    $html .= '
+            } else {
+                $html .= '
                                             <tr valign="top">
                                                 <td style="border-top:1px solid #666; padding:5px">' . nl2br($item->text) . '</td>
                                                 <td style="border-top:1px solid #666; border-left:1px solid #666; ">&nbsp;</td>
                                                 <td style="border-top:1px solid #666; border-left:1px solid #666; ">&nbsp;</td>
                                             </tr>
                                             ';
-    }
+            }
         }
         $html .= '
                                         </tbody>
@@ -384,7 +384,7 @@ if($item->ressource_id){
                         </tr>
                     </tbody>
                 </table>
-                <div style="font-size:12px;">'.$this->business_terms.'</div>
+                <div style="font-size:12px;">' . $this->business_terms . '</div>
                     <table cellpading="0" cellspacing="0" style="width:100%">
                         <tr>
                             <td style="width:45%" valign="top">
@@ -448,5 +448,49 @@ if($item->ressource_id){
     {
         return sprintf('<a href="%s">%s</a>',
             URL::route('invoice_modify', $this->id), $this->ident);
+    }
+
+    public function send()
+    {
+        $target_user = null;
+
+        $invoice = $this;
+        if ($invoice->user) {
+            $target_user = $invoice->user;
+        }
+        if ($invoice->organisation && $invoice->organisation->accountant) {
+            $target_user = $invoice->organisation->accountant;
+        }
+        if (!$target_user) {
+            return Redirect::route('invoice_list')
+                ->with('mError', sprintf('Aucun utilisateur trouvé pour envoyer la facture %s par email', $invoice->ident));
+        }
+        Mail::send('emails.invoice', array('invoice' => $invoice), function ($message) use ($invoice, $target_user) {
+            $message->from($_ENV['mail_address'], $_ENV['mail_name'])
+                ->bcc($_ENV['mail_address'], $_ENV['mail_name']);
+
+            $message->to($target_user->email, $target_user->fullname);
+
+            $message->subject(sprintf('%s - Facture %s', $_ENV['organisation_name'], $invoice->ident));
+
+            $pdf = App::make('snappy.pdf.wrapper');
+            try {
+                $message->attachData($pdf->getOutputFromHtml($invoice->getPdfHtml()),
+                    sprintf('%s.pdf', $invoice->ident), array('mime' => 'application/pdf'));
+            } catch (\RuntimeException $e) {
+                //
+            }
+        });
+
+        $to = htmlentities(sprintf('%s <%s>', $target_user->fullname, $target_user->email));
+
+        $invoice_comment = new InvoiceComment();
+        $invoice_comment->invoice_id = $invoice->id;
+        $invoice_comment->user_id = Auth::user()->id;
+        $invoice_comment->content = sprintf('Envoyé par email le %s à %s', date('d/m/Y'), $to);
+        $invoice_comment->save();
+
+        $invoice->sent_at = date('Y-m-d');
+        $invoice->save();
     }
 }

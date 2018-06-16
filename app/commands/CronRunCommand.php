@@ -183,6 +183,9 @@ where  subscription_user_id is null;');
         $this->dailyAt('04:00', array($this, 'assignCoworkingPackItemsToUsers'));
         $this->cleanPhoneboxSession();
 
+        $this->daily(array($this, 'renewPendingSubscriptions'));
+        $this->daily(array($this, 'sendUpcomingSubscriptionRenewNotifications'));
+
         $this->finish();
     }
 
@@ -689,5 +692,38 @@ group by booking.id
             DB::statement($sql);
         }
         //endregion
+    }
+
+    public function renewPendingSubscriptions()
+    {
+        $subscriptions = Subscription::where('is_automatic_renew_enabled', '=', true)
+            ->where('renew_at', '<=', date('Y-m-d'))
+            ->get();
+        foreach ($subscriptions as $subscription) {
+            $invoice = $subscription->renew();
+
+            $data = array();
+            $data['text'] = sprintf('La facture <%s|%s> de renouvellement d\'abonnement de %s a été créée automatiquement',
+                URL::route('invoice_modify', $invoice->id), $invoice->ident);
+            $this->slack(Config::get('etincelle.slack_staff_toulouse'), $data);
+        }
+    }
+
+    public function sendUpcomingSubscriptionRenewNotifications()
+    {
+        $subscriptions = Subscription::where('is_automatic_renew_enabled', '=', true)
+            ->where('renew_at', '>', date('Y-m-d'))
+            ->where('renew_at', '<=', date('Y-m-d', strtotime('+7 days')))
+            ->whereNull('reminded_at')
+            ->get();
+        foreach ($subscriptions as $subscription) {
+            Mail::send('emails.upcoming_subscription_renew', array('subscription' => $subscription), function ($message) use ($subscription) {
+                $message->from($_ENV['mail_address'], $_ENV['mail_name'])
+                    ->bcc($_ENV['mail_address'], $_ENV['mail_name']);
+
+                $message->to($subscription->user->email, $subscription->user->fullname);
+                $message->subject(sprintf('%s - Renouvellement de votre abonnement le %s', $_ENV['organisation_name'], date('d/m/Y', $subscription->renew_at)));
+            });
+        }
     }
 }
