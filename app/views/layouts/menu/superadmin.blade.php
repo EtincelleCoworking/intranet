@@ -57,12 +57,10 @@
             <span class="nav-label">Temps passé</span>
         </a>
     </li>
-    <li{{ Request::is('subscription*') ? ' class="active"' : '' }}>
+    <li{{ Request::is('subscription') ? ' class="active"' : '' }}>
         <a href="{{ URL::route('subscription_manage') }}"><i class="fa fa-ticket"></i> <span
                     class="nav-label">Abonnement</span></a>
     </li>
-
-
     <li{{ (Request::is('booking*') ? ' class="active"' : '') }}>
         <a href="{{ URL::route('booking_list') }}"><i class="fa fa-calendar"></i> <span
                     class="nav-label">Réservations</span>
@@ -93,7 +91,7 @@
     {{--<a href="{{ URL::route('booking_list') }}"><i class="fa fa-th-large"></i> <span class="nav-label">Réservations</span></a>--}}
     {{--</li>--}}
 
-    <li class="{{ ((Request::is('invoice*') or Request::is('quote*') || Request::is('cashflow*') || Request::is('charge*') || Request::is('subscription*') || Request::is('device*')) ? 'active' : '') }}">
+    <li class="{{ ((Request::is('invoice*') or Request::is('quote*') || Request::is('cashflow*') || Request::is('charge*') || Request::is('subscriptions*') || Request::is('device*')) ? 'active' : '') }}">
         <a href="{{ URL::route('invoice_list') }}"><i class="fa fa-money"></i> <span class="nav-label">Gestion</span>
             <span class="fa arrow"></span></a>
         <ul class="nav nav-second-level {{ ((Request::is('invoice*') or Request::is('quote*') || Request::is('charge*')) ? '' : 'collapse') }}">

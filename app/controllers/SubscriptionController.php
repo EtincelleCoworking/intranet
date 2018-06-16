@@ -357,7 +357,7 @@ order by invoices_items.subscription_overuse_managed ASC, invoices_items.subscri
                 $subscription->delete();
             }
             return Redirect::route('subscription_manage')
-                ->with('mSuccess', 'Vos changements ont étés enregistrés');
+                ->with('mSuccess', 'Votre abonnement a été supprimé');
         }
 
         if (!$subscription) {

@@ -14,6 +14,25 @@
 
 @section('content')
 
+    @if($subscription)
+        <div class="ibox float-e-margins">
+            <div class="ibox-content">
+                <div class="row">
+                    <div class="col-md-12">
+                        <p>Vous avez sélectionné la formule {{$subscription->kind->shortname}}.</p>
+                        @if($subscription->is_automatic_renew_enabled)
+                            <p>Elle sera renouvellée automatiquement
+                                le {{date('d/m/Y', strtotime($subscription->renew_at))}}.</p>
+                        @else
+                            <p>Elle ne sera pas renouvellée automatiquement.</p>
+                        @endif
+                    </div>
+                </div>
+            </div>
+        </div>
+    @endif
+
+
     <div class="ibox float-e-margins">
         <div class="ibox-content">
             <div class="row">

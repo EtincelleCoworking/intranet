@@ -45,12 +45,11 @@
             {{--<li><a href="{{ URL::route('user_directory') }}">Annuaire</a></li>--}}
         </ul>
     </li>
-
     <li{{ Request::is('pasttime*') ? ' class="active"' : '' }}>
         <a href="{{ URL::route('pasttime_list') }}"><i class="fa fa-clock-o"></i> <span
                     class="nav-label">Temps passé</span></a>
     </li>
-    <li{{ Request::is('subscription*') ? ' class="active"' : '' }}>
+    <li{{ Request::is('subscription') ? ' class="active"' : '' }}>
         <a href="{{ URL::route('subscription_manage') }}"><i class="fa fa-ticket"></i> <span
                     class="nav-label">Abonnement</span></a>
     </li>
