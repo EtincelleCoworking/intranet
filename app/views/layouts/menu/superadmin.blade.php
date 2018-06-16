@@ -57,6 +57,10 @@
             <span class="nav-label">Temps passé</span>
         </a>
     </li>
+    <li{{ Request::is('subscription*') ? ' class="active"' : '' }}>
+        <a href="{{ URL::route('subscription_manage') }}"><i class="fa fa-ticket"></i> <span
+                    class="nav-label">Abonnement</span></a>
+    </li>
 
 
     <li{{ (Request::is('booking*') ? ' class="active"' : '') }}>
