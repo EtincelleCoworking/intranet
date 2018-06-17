@@ -212,7 +212,7 @@ class CashflowAccount extends Illuminate\Database\Eloquent\Model
 
             $item = new ChargeItem();
             $item->charge_id = $charge->id;
-            $item->description = implode(' ', array($operation['name'], $operation['comment']));
+            $item->description = sprintf('%s %s (%s)', $operation['name'], $operation['comment'],$operation['amount']);
             $item->amount = -1 * $operation['amount'] / 1.2;
             $item->vat_types_id = 1;
             $item->save();
