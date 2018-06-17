@@ -200,7 +200,7 @@ class CashflowAccount extends Illuminate\Database\Eloquent\Model
     {
         $item = ChargeItem::join('charges', 'charges.id', '=', 'charges_items.charge_id')
             ->where('description', '=', implode(' ', array($operation['name'], $operation['comment'])))
-            ->where('amount', '=', -1 * $operation['amount'])
+            //->where('amount', '=', -1 * $operation['amount'])
             ->where('charges.date_charge', '=', $operation['occurs_at'])
             ->with('charge')
             ->first();
@@ -213,7 +213,7 @@ class CashflowAccount extends Illuminate\Database\Eloquent\Model
             $item = new ChargeItem();
             $item->charge_id = $charge->id;
             $item->description = implode(' ', array($operation['name'], $operation['comment']));
-            $item->amount = -1 * $operation['amount'];
+            $item->amount = -1 * $operation['amount'] / 1.2;
             $item->vat_types_id = 1;
             $item->save();
         }
