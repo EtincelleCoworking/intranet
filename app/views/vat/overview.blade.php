@@ -67,8 +67,8 @@
                                 <thead>
                                 <tr>
                                     <th rowspan="2">Période</th>
-                                    <th colspan="{{count($paid_rates)}}">TVA Décaissée</th>
-                                    <th colspan="{{min(count($received_rates), 1)}}">TVA Encaissée</th>
+                                    <th colspan="{{max(count($paid_rates), 1)}}">TVA Décaissée</th>
+                                    <th colspan="{{max(count($received_rates), 1)}}">TVA Encaissée</th>
                                     <th rowspan="2">Solde</th>
                                 </tr>
                                 <tr>
