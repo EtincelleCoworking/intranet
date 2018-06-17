@@ -34,6 +34,7 @@ class InvoiceItem extends Eloquent
                 'vat_types.value',
                 DB::raw('SUM((invoices_items.amount * vat_types.value) / 100) as total')
             )
+            ->whereNotNull('invoices.date_payment')
             ->groupBy('days', 'vat_types.value')
             ->orderBy('days', 'ASC')//->get()
             ;
