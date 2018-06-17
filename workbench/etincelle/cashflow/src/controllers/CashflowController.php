@@ -59,6 +59,7 @@ class CashflowController extends Controller
                 }
                 foreach (CashflowAccount::all() as $account) {
                     if (isset($result[$account->account_number])) {
+                        $account->processCharges($result[$account->account_number]['operations']);
                         if ($account->amount_updated_at <= $result[$account->account_number]['balanceDate']) {
                             $report = $account->processOperations($result[$account->account_number]['operations']);
 
@@ -75,7 +76,6 @@ class CashflowController extends Controller
                                 date('d/m/Y', strtotime($account->amount_updated_at)),
                                 date('d/m/Y', strtotime($result[$account->account_number]['balanceDate'])));
                         }
-                        $account->processCharges($result[$account->account_number]['operations']);
                     } else {
                         $messages[] = sprintf('Aucune information de mise à jour trouvée pour le compte %s', $account->account_number);
                     }

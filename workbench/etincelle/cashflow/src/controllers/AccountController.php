@@ -1,6 +1,5 @@
 <?php
 
-
 use Illuminate\Routing\Controller;
 use Illuminate\Support\Facades\Response;
 
