@@ -157,6 +157,15 @@ class CashflowAccount extends Illuminate\Database\Eloquent\Model
         }
     }
 
+    public function processCharges($operations)
+    {
+        foreach ($operations as $operation) {
+            if ($operation['amount'] < 0) {
+                $this->addCharge($operation);
+            }
+        }
+    }
+
     public function processOperation($operation)
     {
         $result = array(
@@ -185,6 +194,29 @@ class CashflowAccount extends Illuminate\Database\Eloquent\Model
             return $result;
         }
         return $result;
+    }
+
+    public function addCharge($operation)
+    {
+        $item = ChargeItem::join('charges', 'charges.id', '=', 'charges_items.charge_id')
+            ->where('description', '=', implode(' ', array($operation['name'], $operation['comment'])))
+            ->where('amount', '=', -1 * $operation['amount'])
+            ->where('charges.date_charge', '=', $operation['occurs_at'])
+            ->with('charge')
+            ->first();
+        if (!$item) {
+            $charge = new Charge();
+            $charge->date_charge = $operation['occurs_at'];
+            $charge->date_payment = $operation['occurs_at'];
+            $charge->save();
+
+            $item = new ChargeItem();
+            $item->charge_id = $charge->id;
+            $item->description = implode(' ', array($operation['name'], $operation['comment']));
+            $item->amount = -1 * $operation['amount'];
+            $item->vat_types_id = 1;
+            $item->save();
+        }
     }
 
 }

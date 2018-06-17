@@ -356,11 +356,11 @@ order by invoices_items.subscription_overuse_managed ASC, invoices_items.subscri
         $subscription->save();
 
         if ($subscription->is_automatic_renew_enabled) {
-            if ($renew_at < date('Y-m-d')) {
+            if ($renew_at <= date('Y-m-d')) {
                 $invoice = $subscription->renew();
                 $invoice->send();
                 return Redirect::route('subscription_manage')
-                    ->with('mSuccess', sprintf('Vos changements ont étés enregistrés, une nouvelle facture a été créée. Vous pouvez la <a href="%s">régler ici</a>.', URL::route('invoice_list')));
+                    ->with('mSuccess', sprintf('Vos changements ont étés enregistrés, une nouvelle facture a été créée. Vous pouvez la <a href="%s">retrouver ici</a>.', URL::route('invoice_list')));
             }
         }
 

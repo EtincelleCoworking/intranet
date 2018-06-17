@@ -104,7 +104,7 @@
                                     <td>{{ $subscription->user->location->city->name }}</td>
                                     <td nowrap="nowrap">
                                         @if($subscription->is_automatic_renew_enabled)
-                                            <i class="fa fa-refresh"></i>
+                                            <i class="fa fa-refresh" title="Renouvellement automatique"></i>
                                         @endif
                                         {{$subscription->kind->ressource->name}}
                                     </td>
