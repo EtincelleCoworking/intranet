@@ -2,6 +2,13 @@
 
 class InvoiceBankOperationFactory extends AbstractBankOperationFactory
 {
+    protected $account_id;
+
+    public function __construct($account_id)
+    {
+        $this->account_id = $account_id;
+    }
+
     public function populate(BankOperationCollection $collection)
     {
         $invoices = Invoice::invoiceOnly()->unpaid()
