@@ -22,4 +22,5 @@ Artisan::add(new GenerateMissingVoucherCommand);
 
 Artisan::add(new RenewPendingSubscriptionsCommand);
 Artisan::add(new SendUpcomingSubscriptionRenewNotificationsCommand);
+Artisan::add(new BookingGenerateCommand);
 //Artisan::add(new CatalyzCashflowSyncCommand);
