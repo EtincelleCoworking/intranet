@@ -171,7 +171,7 @@ class BookingController extends Controller
             $ressource = Ressource::where('id', '=', $booking_item->ressource_id)->first();
             $location = $ressource->location;
             if ($location->voucher_endpoint) {
-                $voucher = Booking::generateVoucher($location->voucher_endpoint, $location->voucher_key, $location->voucher_secret, $start_at->format('Y-m-d H:i'));
+                $voucher = Booking::generateVoucher($location->voucher_endpoint, $location->voucher_key, $location->voucher_secret, $booking_item->start_at);
                 if ($voucher) {
                     $booking = $booking_item->booking;
                     $booking->wifi_login = $voucher['username'];
