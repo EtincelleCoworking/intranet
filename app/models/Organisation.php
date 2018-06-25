@@ -1,29 +1,30 @@
 <?php
+
 /**
-* Organisation Model
-*/
+ * Organisation Model
+ */
 class Organisation extends Eloquent
 {
 
-	/**
-	 * The database table used by the model.
-	 *
-	 * @var string
-	 */
-	protected $table = 'organisations';
+    /**
+     * The database table used by the model.
+     *
+     * @var string
+     */
+    protected $table = 'organisations';
 
     /**
      * The guarded fields
      */
     protected $guarded = array('id');
 
-	/**
-	 * Relation Belongs To Many (Organisation has many Users)
-	 */
-	public function users()
-	{
-		return $this->belongsToMany('User', 'organisation_user', 'organisation_id', 'user_id');
-	}
+    /**
+     * Relation Belongs To Many (Organisation has many Users)
+     */
+    public function users()
+    {
+        return $this->belongsToMany('User', 'organisation_user', 'organisation_id', 'user_id');
+    }
 
     /**
      * Relation BelongsTo (Organisation belongs to country)
@@ -69,22 +70,22 @@ class Organisation extends Eloquent
      */
     public function getFulladdressAttribute()
     {
-        return $this->name."\r\n".$this->address."\r\n".$this->zipcode.' '.$this->city."\r\n".$this->country->name;
+        return $this->name . "\r\n" . $this->address . "\r\n" . $this->zipcode . ' ' . $this->city . "\r\n" . $this->country->name;
     }
 
-	/**
-	 * Rules
-	 */
-	public static $rules = array(
-		'name' => 'required|min:1'
-	);
+    /**
+     * Rules
+     */
+    public static $rules = array(
+        'name' => 'required|min:1'
+    );
 
-	/**
-	 * Rules Add
-	 */
-	public static $rulesAdd = array(
-		'name' => 'required|min:1|unique:organisations'
-	);
+    /**
+     * Rules Add
+     */
+    public static $rulesAdd = array(
+        'name' => 'required|min:1|unique:organisations'
+    );
 
     /**
      * Get list of organisations where user is not in
@@ -92,7 +93,10 @@ class Organisation extends Eloquent
     public function scopeSelectNotInOrganisation($query, $user, $title = "Select")
     {
         $ids = OrganisationUser::where('user_id', $user)->lists('organisation_id');
-        $selectVals[''] = $title;
+        $selectVals = array();
+        if ($title) {
+            $selectVals[''] = $title;
+        }
         if ($ids) {
             $selectVals += $this->whereNotIn('id', $ids)->orderBy('name', 'asc')->lists('name', 'id');
         } else {
@@ -107,7 +111,10 @@ class Organisation extends Eloquent
      */
     public function scopeSelectAll($query, $title = "Select")
     {
-        $selectVals[''] = $title;
+        $selectVals = array();
+        if ($title) {
+            $selectVals[''] = $title;
+        }
         $selectVals += $this->orderBy('name', 'ASC')->get()->lists('name', 'id');
         return $selectVals;
     }
@@ -117,7 +124,8 @@ class Organisation extends Eloquent
         return $query->where('is_domiciliation', 1);
     }
 
-    public function getNotYetCountedBookingCount($period_start, $period_end){
+    public function getNotYetCountedBookingCount($period_start, $period_end)
+    {
         $sql = 'select count(booking_item.id) as cnt
 from booking_item 
 join booking on booking_item.booking_id = booking.id
@@ -128,17 +136,18 @@ LEFT OUTER JOIN past_times
     AND past_times.time_start = booking_item.start_at
     AND past_times.time_end = booking_item.start_at + INTERVAL booking_item.duration MINUTE
     AND past_times.is_free != true
-WHERE booking_item.invoice_id IS NULL
+WHERE past_times.invoice_id = 0
   AND past_times.id IS NULL
-  AND booking_item.start_at BETWEEN "'.$period_start.'" AND "'.$period_end.'"
-  AND booking.organisation_id = '.$this->id;
+  AND booking_item.start_at BETWEEN "' . $period_start . '" AND "' . $period_end . '"
+  AND booking.organisation_id = ' . $this->id;
 
         $items = DB::select(DB::raw($sql));
         return $items[0]->cnt;
     }
 
 
-    public function getCountedBookingCount($period_start, $period_end){
+    public function getCountedBookingCount($period_start, $period_end)
+    {
         $sql = 'select count(past_times.id) as cnt
 from booking_item 
 join booking on booking_item.booking_id = booking.id
@@ -149,10 +158,10 @@ LEFT OUTER JOIN past_times
     AND past_times.time_start = booking_item.start_at
     AND past_times.time_end = booking_item.start_at + INTERVAL booking_item.duration MINUTE
     AND past_times.is_free != true
-WHERE booking_item.invoice_id IS NULL
+WHERE past_times.invoice_id = 0
   AND past_times.id IS NOT NULL
-  AND booking_item.start_at BETWEEN "'.$period_start.'" AND "'.$period_end.'"
-  AND booking.organisation_id = '.$this->id;
+  AND booking_item.start_at BETWEEN "' . $period_start . '" AND "' . $period_end . '"
+  AND booking.organisation_id = ' . $this->id;
 
         $items = DB::select(DB::raw($sql));
         return $items[0]->cnt;
