@@ -790,16 +790,16 @@ class BookingController extends Controller
                 $organisation = new Organisation();
                 $organisation->name = $user->fullname;
                 $organisation->country_id = Country::where('name', '=', 'France')->first()->id;
-
                 $organisation->save();
+
+                $link = new OrganisationUser();
+                $link->organisation_id = $organisation->id;
+                $link->user_id = $user->id;
+                $link->save();
             }
 
             $invoice->organisation_id = $organisation->id;
 
-            $link = new OrganisationUser();
-            $link->organisation_id = $organisation->id;
-            $link->user_id = $user->id;
-            $link->save();
         }
         $invoice->address = $organisation->fulladdress;
 
