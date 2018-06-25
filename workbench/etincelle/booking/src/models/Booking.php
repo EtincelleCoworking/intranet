@@ -99,13 +99,15 @@ class Booking extends Illuminate\Database\Eloquent\Model
         $result = json_decode(curl_exec($curl));
         curl_close($curl);
 
-        $voucher = array_pop($result);
-        if (is_object($voucher)) {
-            return array(
-                'username' => $voucher->username,
-                'password' => $voucher->password,
-            );
-            return true;
+        if (is_array($result)) {
+            $voucher = array_pop($result);
+            if (is_object($voucher)) {
+                return array(
+                    'username' => $voucher->username,
+                    'password' => $voucher->password,
+                );
+                return true;
+            }
         }
 
         return false;
