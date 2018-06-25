@@ -30,7 +30,7 @@ class TeamPlanningController extends BaseController
 
     public function populate()
     {
-        TeamPlanningItem::truncate();
+       // TeamPlanningItem::truncate();
         $days = array(1, 2, 3, 4, 5);
         $ranges = array(
             array('08:00' => '11:00', '15:00' => '19:00'),
@@ -42,8 +42,8 @@ class TeamPlanningController extends BaseController
         $members[] = 877; // Aurélie
         $members[] = 1474; // Caroline
         foreach ($members as $planning_index => $user_id) {
-            $count = 31;
-            $now = mktime(0, 0, 0, 6, 1, 2018);
+            $count = 60;
+            $now = mktime(0, 0, 0, 7, 1, 2018);
             while ($count--) {
                 if (in_array(date('N', $now), $days)) {
                     $range_index = $planning_index++ % 3;
