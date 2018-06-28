@@ -57,7 +57,9 @@
                             {{ Form::checkbox('filtre_free_coworking_time', true, Session::has('filtre_user.free_coworking_time') ? Session::get('filtre_user.free_coworking_time') : false) }}
                             Invité Coworking<br/>
                             {{ Form::checkbox('filtre_subscription', true, Session::has('filtre_user.subscription') ? Session::get('filtre_user.subscription') : false) }}
-                            Souscription active
+                            Souscription active<br/>
+                            {{ Form::checkbox('filtre_is_hidden_member', true, Session::has('filtre_user.is_hidden_member') ? Session::get('filtre_user.is_hidden_member') : false) }}
+                            Utilisateur caché
                         </div>
                         <div class="col-md-4">
                             {{ Form::submit('Filtrer', array('class' => 'btn btn-sm btn-primary')) }}
@@ -94,11 +96,15 @@
             <tr
                     @if(!$user->is_enabled)
                     class="text-muted"
+                    @elseif(!$user->is_hidden_member)
+                    class="text-warning"
                     @endif
             >
                 <td>
                     @if(!$user->is_enabled)
                         <i class="fa fa-ban" title="Compte désactivé"></i>
+                    @elseif($user->is_hidden_member)
+                        <i class="fa fa-user-secret" title="Compte caché"></i>
                     @endif
 
 

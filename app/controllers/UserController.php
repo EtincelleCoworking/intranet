@@ -1,6 +1,7 @@
 <?php
 
 use GuzzleHttp\Client;
+use Illuminate\Http\Response;
 
 
 /**
@@ -162,6 +163,7 @@ order by invoices.date_invoice desc
                     $user->free_coworking_time = Input::get('free_coworking_time', false);
                     $user->default_location_id = Input::get('default_location_id');
                     $user->is_enabled = Input::get('is_enabled');
+                    $user->is_hidden_member = Input::get('is_hidden_member');
                     $user->affiliate_user_id = Input::get('affiliate_user_id') ? Input::get('affiliate_user_id') : null;
                 }
                 $user->slack_id = Input::get('slack_id');
@@ -491,6 +493,11 @@ order by invoices.date_invoice desc
             } else {
                 Session::put('filtre_user.free_coworking_time', false);
             }
+            if (Input::has('filtre_is_hidden_member')) {
+                Session::put('filtre_user.is_hidden_member', Input::get('filtre_is_hidden_member'));
+            } else {
+                Session::put('filtre_user.is_hidden_member', false);
+            }
 
             if (Input::has('filtre_subscription')) {
                 Session::put('filtre_user.subscription', Input::get('filtre_subscription'));
@@ -511,6 +518,9 @@ order by invoices.date_invoice desc
         }
         if (Session::get('filtre_user.free_coworking_time')) {
             $users->where('users.free_coworking_time', '=', true);
+        }
+        if (Session::get('filtre_user.is_hidden_member')) {
+            $users->where('users.is_hidden_member', '=', true);
         }
         if (Session::get('filtre_user.subscription')) {
             $users->join('invoices_items', 'invoices_items.subscription_user_id', '=', 'users.id')

@@ -37,6 +37,9 @@ class UserEventHandler
         if (!$Location->slack_endpoint) {
             return true;
         }
+        if($user->is_hidden_member){
+            return true;
+        }
         // this is first show of the day
         $timeslot = PastTime::where('user_id', '=', $PastTime->user_id)
             ->where('date_past', '=', $PastTime->date_past)
