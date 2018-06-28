@@ -549,6 +549,7 @@ order by invoices.date_invoice desc
         Session::forget('filtre_user.subscription');
         Session::forget('filtre_user.member');
         Session::forget('filtre_user.free_coworking_time');
+        Session::forget('filtre_user.is_hidden_member');
         return Redirect::route('user_list');
     }
 

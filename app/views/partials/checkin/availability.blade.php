@@ -19,9 +19,11 @@ ORDER BY cities.name ASC, locations.name ASC'));
 
     $results = DB::select(DB::raw('SELECT past_times.location_id, past_times.user_id
 FROM past_times
+JOIN users on users.id = past_times.user_id
 WHERE past_times.date_past = CURDATE()
   AND past_times.user_id > 0
   AND ressource_id = ' . Ressource::TYPE_COWORKING . '
+  AND users.is_hidden_member = false
   AND time_start < NOW()
   AND ((time_end IS NULL) OR (time_end > NOW()))'));
     $users = array();
@@ -67,7 +69,15 @@ WHERE past_times.date_past = CURDATE()
                             @endforeach
                         </div>
                         <div class="progress progress-small">
-                            <div class="progress-bar @if($ratio > 80) progress-bar-danger @endif"
+                            <div class="progress-bar
+@if($ratio <= 100)
+                                    progress-bar-success
+@elseif($ratio <= 110)
+                                    progress-bar-warning
+@else
+                                    progress-bar-danger
+@endif
+                                    "
                                  style="width: {{ $ratio }}%;"></div>
                         </div>
                     @endforeach

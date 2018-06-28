@@ -96,7 +96,7 @@
             <tr
                     @if(!$user->is_enabled)
                     class="text-muted"
-                    @elseif(!$user->is_hidden_member)
+                    @elseif($user->is_hidden_member)
                     class="text-warning"
                     @endif
             >
