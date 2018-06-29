@@ -8,14 +8,12 @@ class Location extends Eloquent
     /**
      * Rules
      */
-    public static $rules = array(
-    );
+    public static $rules = array();
 
     /**
      * Rules Add
      */
-    public static $rulesAdd = array(
-    );
+    public static $rulesAdd = array();
 
     public function ips()
     {
@@ -35,7 +33,7 @@ class Location extends Eloquent
             ->join('cities', 'cities.id', '=', 'locations.city_id')
             ->select(array('locations.id', DB::raw('concat(cities.name, \' > \', IF(locations.name IS NULL, \'\', locations.name)) as _name')));
 
-        if(!$includeDisabled){
+        if (!$includeDisabled) {
             $query->where('enabled', '=', true);
         }
         $selectVals += $query
@@ -69,7 +67,8 @@ class Location extends Eloquent
         return $this->belongsTo('City', 'city_id');
     }
 
-    public static function getCostPerLocation(){
+    public static function getCostPerLocation()
+    {
         $costs = array(
             'Albi' => array(
                 '2017-02' => 1350,
@@ -113,7 +112,7 @@ class Location extends Eloquent
         );
         $periods = array();
         $when = Config::get('etincelle.activity_started');
-        while($when < time()){
+        while ($when < time()) {
             $periods[date('Y-m', $when)] = 0;
             $when = strtotime('+1 month', $when);
         }
@@ -137,7 +136,8 @@ class Location extends Eloquent
 
     }
 
-    public static function getOperationTweaks(){
+    public static function getOperationTweaks()
+    {
         return array(
             'Carmes' => array(
                 // etalement du paiement Carmes
@@ -175,10 +175,17 @@ class Location extends Eloquent
                 '2017-11' => -425,
                 '2017-12' => 425,
             ),
+            'Wilson' => array(
+                '2018-06' => -2590,
+                '2018-07' => 1085,
+                '2018-08' => 1085,
+                '2018-09' => 420,
+            ),
         );
     }
 
-    public static function getStats(){
+    public static function getStats()
+    {
         $items = DB::select(DB::raw('select 
 date_format(invoices.date_invoice, "%Y-%m") as period, 
 SUM(invoices_items.amount) as total, 
@@ -275,6 +282,6 @@ order by kind ASC, `period` DESC
             krsort($datas[$location]);
 
         }
-            return $datas;
+        return $datas;
     }
 }
