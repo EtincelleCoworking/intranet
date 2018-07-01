@@ -1,6 +1,7 @@
 <?php
 $member = User::whereIsMember(true)
         ->where('default_location_id', '=', Auth::user()->default_location_id)
+        ->where('is_hidden_member', '=', false)
         ->orderByRaw("RAND()")->first();
 ?>
 @if($member)
