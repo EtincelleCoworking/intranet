@@ -1249,11 +1249,10 @@ EOS;
 
     public function ressource_ical($id)
     {
-
-        $ressource = Ressource::where('id', '=', $id);
-                $items = BookingItem::where('start_at', '>=', date('Y-m-d'))
-                    ->where('ressource_id', '=', $ressource->id)
-                    ->get();
+        $ressource = Ressource::find($id);
+        $items = BookingItem::where('start_at', '>=', date('Y-m-d'))
+            ->where('ressource_id', '=', $ressource->id)
+            ->get();
 
         $tz = new DateTimeZone(date_default_timezone_get());
         $offset = (new DateTime("now", $tz))->getOffset();
