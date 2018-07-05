@@ -32,9 +32,7 @@
                             <th>Site</th>
                             <th>Nom</th>
                             <th>Client</th>
-                            <!--
-                            <th>Réservable</th>
-                            -->
+                            <th>iCal</th>
                             <th>Prix HT</th>
                             <!--
                             <th>Ordre</th>
@@ -70,6 +68,9 @@
                                     @else
                                         -
                                     @endif
+                                </td>
+                                <td class="col-md-1" align="center">
+                                    <a href="{{URL::route('booking_ressource_ical', $ressource->id)}}" target="_blank"><u class="fa fa-link"></u></a>
                                 </td>
                                 <td class="col-md-1" align="right">{{ $ressource->amount }}€</td>
                                 <td class="col-md-2">
