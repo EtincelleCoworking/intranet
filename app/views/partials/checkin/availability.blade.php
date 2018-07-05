@@ -71,7 +71,7 @@ WHERE past_times.date_past = CURDATE()
                         <div class="progress progress-small">
                             <div class="progress-bar
 @if($ratio <= 100)
-                                    progress-bar-success
+                                    progress-bar-primary
 @elseif($ratio <= 110)
                                     progress-bar-warning
 @else

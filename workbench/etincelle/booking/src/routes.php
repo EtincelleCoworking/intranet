@@ -1,6 +1,7 @@
 <?php
 
 Route::get('/booking/ical/{key}.ics', array('as' => 'booking_ical', 'uses' => 'BookingController@ical'));
+Route::get('/booking/ressource/{id}.ics', array('as' => 'booking_ressource_ical', 'uses' => 'BookingController@ressource_ical'));
 
 // API
 Route::get('/api/booking/{booking_item_id}/members', array('as' => 'api_booking_members', 'uses' => 'BookingApiController@members'));

@@ -1247,4 +1247,39 @@ EOS;
         return Redirect::route('invoice_modify', $invoice->id)->with('mSuccess', 'Le devis a été créé');
     }
 
+    public function ressource_ical($id)
+    {
+
+        $ressource = Ressource::where('id', '=', $id);
+                $items = BookingItem::where('start_at', '>=', date('Y-m-d'))
+                    ->where('ressource_id', '=', $ressource->id)
+                    ->get();
+
+        $tz = new DateTimeZone(date_default_timezone_get());
+        $offset = (new DateTime("now", $tz))->getOffset();
+
+        $vCalendar = new \Eluceo\iCal\Component\Calendar($ressource->name);
+        foreach ($items as $booking_item) {
+            $start = new \DateTime($booking_item->start_at);
+            $start->setTimezone($tz);
+            $start->add(new DateInterval(sprintf('PT%dS', $offset)));
+            $end = new \DateTime($booking_item->start_at);
+            $start->setTimezone($tz);
+            $end->modify(sprintf('+%d minutes', $booking_item->duration));
+            $end->add(new DateInterval(sprintf('PT%dS', $offset)));
+
+            $vEvent = new \Eluceo\iCal\Component\Event();
+            $vEvent
+                ->setDtStart($start)
+                ->setDtEnd($end)
+                ->setUseTimezone(true)
+                ->setSummary('Réservé');
+            $vCalendar->addComponent($vEvent);
+        }
+        $response = Response::make($vCalendar->render());
+        $response->header('Content-Type', 'text/calendar; charset=utf-8');
+        $response->header('Content-Disposition', 'attachment; filename="cal.ics"');
+        return $response;
+    }
+
 }

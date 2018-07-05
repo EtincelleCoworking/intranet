@@ -49,7 +49,7 @@ Log::useFiles(storage_path() . '/logs/laravel.log');
 
 App::error(function (Exception $exception, $code) {
     if ($exception instanceof \Symfony\Component\HttpKernel\Exception\NotFoundHttpException) {
-        Log::error(sprintf('NotFoundHttpException : %s', Request::path()));
+        Log::error(sprintf('NotFoundHttpException : /%s', Request::path()));
     } else {
         Log::error($exception);
     }
