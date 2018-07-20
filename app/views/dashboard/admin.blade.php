@@ -186,33 +186,6 @@ $target_year = substr($target_period, 0, 4);
 
 
                         </div>
-                        @if(isset($ressources[$location]['coworking']) && (count($ressources[$location]['coworking'])>0))
-                            <div class="panel panel-default">
-                                <div class="panel-heading">
-                                    Coworking
-                                </div>
-                                <div class="panel-body">
-                                    <table class="table">
-                                        <?php $position = 1; ?>
-                                        @foreach($ressources[$location]['coworking'] as $user)
-                                            <tr>
-                                                {{--
-                                                <td>
-                                                    <a href="{{URL::route('user_profile', $user['instance']->id)}}">
-                                                        {{$user['instance']->avatarTag38}}
-                                                    </a>
-                                                </td>
-                                                --}}
-                                                <td>{{$position++}}. {{$user['instance']->fullname}}</td>
-                                                <td>
-                                                    {{ number_format($user['hours'], 0, ',', '.') }} heures
-                                                    </td>
-                                            </tr>
-                                        @endforeach
-                                    </table>
-                                </div>
-                            </div>
-                        @endif
                         @if(isset($ressources[$location]['meeting_room']) && (count($ressources[$location]['meeting_room'])>0))
                             <div class="panel panel-default">
                                 <div class="panel-heading">
@@ -296,6 +269,57 @@ $target_year = substr($target_period, 0, 4);
                                             </div>
                                         @endforeach
                                     </div>
+                                </div>
+                            </div>
+                        @endif
+                        @if(isset($ressources[$location]['coworking']) && (count($ressources[$location]['coworking'])>0))
+                            <div class="panel panel-default">
+                                <div class="panel-heading">
+                                    Coworking
+                                </div>
+                                <div class="panel-body">
+                                    <table class="table">
+                                        <?php $position = 1; ?>
+                                        @foreach($ressources[$location]['coworking'] as $user)
+                                            <tr
+                                                    @if($user['instance']->free_coworking_time)
+                                                    class="text-muted"
+                                                    @elseif($user['instance']->is_hidden_member)
+                                                    class="text-warning"
+                                                    @endif
+                                            >
+                                                {{--
+                                                <td>
+                                                    <a href="{{URL::route('user_profile', $user['instance']->id)}}">
+                                                        {{$user['instance']->avatarTag38}}
+                                                    </a>
+                                                </td>
+                                                --}}
+                                                <td>{{$position++}}.</td>
+                                                <td>
+                                                    <?php
+                                                    switch ($user['instance']->gender) {
+                                                        case 'F':
+                                                            echo '<i class="fa fa-female"></i>';
+                                                            break;
+                                                        case 'M':
+                                                            echo '<i class="fa fa-male"></i>';
+                                                            break;
+                                                        default:
+                                                            echo '<i class="fa fa-question"></i>';
+                                                    }
+                                                    ?>
+                                                    <a href="{{ URL::route('user_modify', $user['instance']->id) }}">{{ $user['instance']->fullnameOrga }}</a>
+                                                    @if($user['instance']->is_hidden_member)
+                                                        <i class="fa fa-user-secret" title="Compte caché"></i>
+                                                    @endif
+                                                </td>
+                                                <td>
+                                                    {{ number_format($user['hours'], 0, ',', '.') }} heures
+                                                </td>
+                                            </tr>
+                                        @endforeach
+                                    </table>
                                 </div>
                             </div>
                         @endif
