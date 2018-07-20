@@ -186,37 +186,43 @@ $target_year = substr($target_period, 0, 4);
 
 
                         </div>
-                        <div class="panel panel-default">
-                            <div class="panel-heading">
-                                Coworking
+                        @if(isset($ressources[$location]['coworking']) && (count($ressources[$location]['coworking'])>0))
+                            <div class="panel panel-default">
+                                <div class="panel-heading">
+                                    Coworking
+                                </div>
+                                <div class="panel-body">
+                                    <table class="table">
+                                        <?php $position = 1; ?>
+                                        @foreach($ressources[$location]['coworking'] as $user)
+                                            <tr>
+                                                {{--
+                                                <td>
+                                                    <a href="{{URL::route('user_profile', $user['instance']->id)}}">
+                                                        {{$user['instance']->avatarTag38}}
+                                                    </a>
+                                                </td>
+                                                --}}
+                                                <td>{{$position++}}. {{$user['instance']->fullname}}</td>
+                                                <td>
+                                                    {{ number_format($user['hours'], 0, ',', '.') }} heures
+                                                    </td>
+                                            </tr>
+                                        @endforeach
+                                    </table>
+                                </div>
                             </div>
-                            <div class="panel-body">
-                            </div>
-                        </div>
-                        <div class="panel panel-default">
-                            <div class="panel-heading">
-                                Location de salle
-                            </div>
-                            <div class="panel-body">
+                        @endif
+                        @if(isset($ressources[$location]['meeting_room']) && (count($ressources[$location]['meeting_room'])>0))
+                            <div class="panel panel-default">
+                                <div class="panel-heading">
+                                    Location de salle
+                                </div>
+                                <div class="panel-body">
 
-                                <div class="row">
-                                    @if(isset($ressources[$location]))
+                                    <div class="row">
                                         <?php
-                                        foreach($ressources[$location] as $ressource_id => $ressource_data){
-                                        $ressource_stats = Ressource::getStatForRessource($ressource_id);
-                                        if(
-                                        (in_array($ressource_data['ressource_kind_id'], array(RessourceKind::TYPE_MEETING_ROOM, RessourceKind::TYPE_PRIVATE_OFFICE))
-                                            && ($ressource_data['is_bookable']/* || ($data->amount != 0)*/))
-                                        || !in_array($ressource_data['ressource_kind_id'], array(RessourceKind::TYPE_MEETING_ROOM, RessourceKind::TYPE_PRIVATE_OFFICE))){
-                                        $data = array_shift($ressource_stats);
-                                        while (is_object($data) && ($data->occurs_at != $target_period && (count($ressource_stats) > 0))) {
-                                            $data = array_shift($ressource_stats);
-                                        }
-                                        if (!is_object($data) || ($data->occurs_at != $target_period)) {
-                                            $data = new stdClass();
-                                            $data->busy_rate = 0;
-                                            $data->amount = 0;
-                                        }
+                                        foreach ($ressources[$location]['meeting_room'] as $ressource_id => $ressource_data) {
                                         ?>
                                         <div class="col-lg-4">
                                             <div class="panel panel-default">
@@ -224,24 +230,26 @@ $target_year = substr($target_period, 0, 4);
                                                     {{ $ressource_data['name'] }}
                                                 </div>
                                                 <div class="panel-body">
-                                                    <h2>{{ number_format($data->busy_rate, 0, ',', '.') }}%</h2>
+                                                    <h2>{{ number_format($ressource_data['busy_rate'], 0, ',', '.') }}
+                                                        %</h2>
                                                     <div class="progress progress-mini">
                                                         @if($ressource_data['ressource_kind_id'] == RessourceKind::TYPE_MEETING_ROOM)
                                                             <div class="progress">
-                                                                <div style="width: {{ number_format($data->busy_rate, 0, ',', '.') }}%"
+                                                                <div style="width: {{ number_format($ressource_data['busy_rate'], 0, ',', '.') }}%"
                                                                      aria-valuemax="100" aria-valuemin="0"
-                                                                     aria-valuenow="{{ number_format($data->busy_rate, 0, ',', '') }}"
+                                                                     aria-valuenow="{{ number_format($ressource_data['busy_rate'], 0, ',', '') }}"
                                                                      role="progressbar" class="progress-bar
-@if($data->busy_rate > 60)
+@if($ressource_data['busy_rate'] > 60)
                                                                         progress-bar-primary
-@elseif($data->busy_rate > 30)
+@elseif($ressource_data['busy_rate'] > 30)
                                                                         progress-bar-warning
 @else
                                                                         progress-bar-danger
 @endif
-                                                                        "><span class="sr-only">{{ number_format($data->busy_rate, 0, ',', '.') }}
+                                                                        "><span class="sr-only">{{ number_format($ressource_data['busy_rate'], 0, ',', '.') }}
                                                                         %</span>
-                                                                    {{ number_format($data->busy_rate, 0, ',', '.') }}%
+                                                                    {{ number_format($ressource_data['busy_rate'], 0, ',', '.') }}
+                                                                    %
                                                                 </div>
                                                             </div>
                                                         @else
@@ -250,7 +258,7 @@ $target_year = substr($target_period, 0, 4);
                                                     </div>
                                                 </div>
                                                 <div class="panel-footer">
-                                                    {{ number_format($data->amount, 0, ',', '.') }}€ HT
+                                                    {{ number_format($ressource_data['amount'], 0, ',', '.') }}€ HT
                                                 </div>
 
 
@@ -258,27 +266,43 @@ $target_year = substr($target_period, 0, 4);
 
 
                                         </div>
-                                        <?php
-                                        }
-                                        }
-                                        ?>
-                                    @endif
-
+                                        <?php } ?>
+                                    </div>
                                 </div>
                             </div>
-                        </div>
-                        <div class="panel panel-default">
-                            <div class="panel-heading">
-                                Bureaux privatifs
+                        @endif
+                        @if(isset($ressources[$location]['private_office']) && (count($ressources[$location]['private_office'])>0))
+                            <div class="panel panel-default">
+                                <div class="panel-heading">
+                                    Bureaux privatifs
+                                </div>
+                                <div class="panel-body">
+
+                                    <div class="row">
+                                        @foreach($ressources[$location]['private_office'] as $stats)
+                                            <div class="col-lg-4">
+                                                <div class="panel panel-default">
+                                                    <div class="panel-heading">
+                                                        {{ $stats['name'] }}
+                                                    </div>
+                                                    <div class="panel-body">
+                                                        <h2>{{ number_format($stats['amount'], 0, ',', '.') }}€ HT</h2>
+
+                                                    </div>
+
+                                                </div>
+
+
+                                            </div>
+                                        @endforeach
+                                    </div>
+                                </div>
                             </div>
-                            <div class="panel-body">
-                            </div>
-                        </div>
+                        @endif
                     </div>
                 </div>
-            @endforeach
-            @endif
-        </div>
+        @endforeach
+    @endif
 
 
 
