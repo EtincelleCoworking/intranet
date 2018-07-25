@@ -1,8 +1,6 @@
 <?php
 
 use GuzzleHttp\Client;
-use Illuminate\Http\Response;
-
 
 /**
  * UserController Class
