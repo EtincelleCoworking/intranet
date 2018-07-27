@@ -57,10 +57,15 @@
                             </p>
                         </div>
                         <div class="col-md-4">
-                        <p>
-                            {{ Form::checkbox('has_paper_summary', true) }}
-                            {{ Form::label('has_paper_summary', 'Imprimer l\'affiche') }}
-                        </p>
+                            <p>
+                                {{ Form::checkbox('has_paper_summary', true) }}
+                                {{ Form::label('has_paper_summary', 'Imprimer l\'affiche') }}
+                            </p>
+                            <p>
+                                {{ Form::checkbox('intercom_enabled', true) }}
+                                {{ Form::label('intercom_enabled', 'Contrôle l\'interphone') }}
+                            </p>
+
                         </div>
                         <div class="col-md-2">
                             {{ Form::label('order_index', 'Ordre d\'affichage') }}

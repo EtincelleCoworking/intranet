@@ -196,7 +196,7 @@ class Ressource extends Eloquent
     }
 
 
-    public static function getStatForRessource($id)
+    public static function getStatForRessource($id, $target_period = null)
     {
         $items = DB::select(DB::raw(sprintf('SELECT 
  date_format(invoices.date_invoice, \'%%Y-%%m\') as occurs_at, 
@@ -204,8 +204,9 @@ class Ressource extends Eloquent
 FROM invoices 
 join past_times ON past_times.invoice_id = invoices.id 
 WHERE past_times.ressource_id = %1$d
-AND invoices.type = \'F\'
-group by occurs_at DESC', $id)));
+AND invoices.type = \'F\' ' .
+            ((null == $target_period) ? '' : ' AND date_format(invoices.date_invoice, \'%%Y-%%m\') = "' . $target_period . '"')
+            . ' group by occurs_at DESC', $id)));
         $sold_hours = array();
         foreach ($items as $item) {
             $sold_hours[$item->occurs_at] = $item->sold_hours;
@@ -218,8 +219,9 @@ group by occurs_at DESC', $id)));
  round(sum(invoices_items.amount)) as amount
 FROM `invoices_items` 
 join invoices on invoices.id = invoices_items.invoice_id AND invoices.type = \'F\'
-WHERE invoices_items.ressource_id = %1$d
-group by occurs_at DESC', $id)));
+WHERE invoices_items.ressource_id = %1$d ' .
+            ((null == $target_period) ? '' : ' AND date_format(invoices.date_invoice, \'%%Y-%%m\') = "' . $target_period . '"')
+            . ' group by occurs_at DESC', $id)));
 
         foreach ($items as $index => $item) {
             $when = strtotime($item->occurs_at . '-01');

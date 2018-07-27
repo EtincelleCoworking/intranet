@@ -100,6 +100,7 @@ class BookingApiController extends Controller
             JOIN locations on locations.id = ressources.location_id
           WHERE locations.slug = ":location_slug"
             AND locations.key = ":key"
+            AND ressources.intercom_enabled = true
             AND DATE_SUB(booking_item.start_at, INTERVAL 15 MINUTE) < now()
             AND DATE_ADD(booking_item.start_at, INTERVAL booking_item.duration MINUTE) > now()')));
         return $result->cnt ? 'Yes' : 'No';
