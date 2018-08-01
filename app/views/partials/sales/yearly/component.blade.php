@@ -1,4 +1,4 @@
-@if(Auth::user()->isSuperAdmin())
+@if(Auth::user()->isShareholder())
     <?php
     $sales = DB::table('invoices_items')->join('invoices', function ($join) {
         $join->on('invoices_items.invoice_id', '=', 'invoices.id')

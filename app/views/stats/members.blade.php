@@ -34,7 +34,7 @@
                                             <td>Départs</td>
                                             <td>
                                         @foreach($data['leaving'] as $user_id => $user)
-                                            @if($user)
+                                                    @if(is_object($user))
                                                 <a href="{{URL::route('user_profile', $user->id)}}">
                                                     <img alt="{{$user->fullname}}" class="img-circle circle-border m-t-xs" style="border-color: #ED5565" src="{{$user->getAvatarUrl(50)}}" title="{{$user->fullnameOrga}}">
                                                 </a>
@@ -51,7 +51,7 @@
                                                 <td>Ephémères</td>
                                                 <td>
                                         @foreach($data['new-leaving'] as $user_id => $user)
-                                            @if($user)
+                                                        @if(is_object($user))
                                                 <a href="{{URL::route('user_profile', $user->id)}}">
                                                     <img alt="{{$user->fullname}}" class="img-circle circle-border m-t-xs" style="border-color: #F8AC59" src="{{$user->getAvatarUrl(50)}}" title="{{$user->fullnameOrga}}">
                                                 </a>
@@ -68,7 +68,7 @@
                                                 <td>Membres</td>
                                                 <td>
                                         @foreach($data['members'] as $user_id => $user)
-                                            @if($user)
+                                                        @if(is_object($user))
                                                 <a href="{{URL::route('user_profile', $user->id)}}">
                                                     <img alt="{{$user->fullname}}" class="img-circle circle-border m-t-xs" style="border-color: #23C6C8" src="{{$user->getAvatarUrl(50)}}" title="{{$user->fullnameOrga}}">
                                                 </a>
@@ -85,7 +85,7 @@
                                                 <td>Nouveaux</td>
                                                 <td>
                                         @foreach($data['new'] as $user_id => $user)
-                                            @if($user)
+                                            @if(is_object($user))
                                                 <a href="{{URL::route('user_profile', $user->id)}}">
                                                     <img alt="{{$user->fullname}}" class="img-circle circle-border m-t-xs" style="border-color: #1AB394" src="{{$user->getAvatarUrl(50)}}" title="{{$user->fullnameOrga}}">
                                                 </a>

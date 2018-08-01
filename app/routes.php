@@ -93,8 +93,27 @@ Route::group(['before' => 'member'], function() {
 
 });
 
-Route::group(['before' => 'superadmin'], function() {
+Route::group(['before' => 'shareholder'], function() {
     Route::get('/admin/{target_period?}', array('as' => 'admin_dashboard', 'uses' => 'DashboardController@admin'))->where(array('target_period' => '^[0-9]{4}-[0-9]{2}$'));
+
+    Route::get('/stats/overview', array('as' => 'stats_overview', 'uses' => 'StatsController@overview'));
+    Route::get('/stats/sales', array('as' => 'stats_sales', 'uses' => 'StatsController@sales'));
+    Route::get('/stats/customers', array('as' => 'stats_customers', 'uses' => 'StatsController@customers'));
+    Route::get('/stats/charges', array('as' => 'stats_charges', 'uses' => 'StatsController@charges'));
+    Route::get('/stats/subscriptions', array('as' => 'stats_subscriptions', 'uses' => 'StatsController@subscriptions'));
+    Route::get('/stats/sales_per_category/{period?}', array('as' => 'stats_sales_per_category', 'uses' => 'StatsController@sales_per_category'));
+    Route::get('/stats/sales_per_category_and_location/{period}/{location_id}', array('as' => 'stats_sales_per_category_and_location', 'uses' => 'StatsController@sales_per_category'));
+    Route::get('/stats/members', array('as' => 'stats_members', 'uses' => 'StatsController@members'));
+    Route::get('/stats/age', array('as' => 'stats_age', 'uses' => 'StatsController@age'));
+    Route::get('/stats/spaces', array('as' => 'stats_spaces', 'uses' => 'StatsController@spaces'));
+    Route::get('/stats/spaces/{space_slug}/{period}', array('as' => 'stats_spaces_details', 'uses' => 'StatsController@spaces_details'));
+    Route::get('/stats/ressource/{ressource_id}', array('as' => 'stats_sales_per_ressource', 'uses' => 'StatsController@sales_per_ressource'));
+    Route::get('/stats/top_customers', array('as' => 'stats_top_customers', 'uses' => 'StatsController@top_customers'));
+
+
+});
+
+Route::group(['before' => 'superadmin'], function() {
     //Route::get('/operating', array('as' => 'operating', 'uses' => 'OperatingController@index'));
 
     Route::get('/planning/populate', array('as' => 'planning_populate', 'uses' => 'TeamPlanningController@populate'));
@@ -186,20 +205,6 @@ Route::group(['before' => 'superadmin'], function() {
     Route::get('/vat/modify/{id}', array('as' => 'vat_modify', 'uses' => 'VatTypeController@modify'))->where(array('id' => '[0-9]+'));
     Route::post('/vat/modify/{id}', array('as' => 'vat_modify_check', 'uses' => 'VatTypeController@modify_check'))->where(array('id' => '[0-9]+'));
     Route::get('/vat/overview', array('as' => 'vat_overview', 'uses' => 'VatController@overview'));
-
-    Route::get('/stats/overview', array('as' => 'stats_overview', 'uses' => 'StatsController@overview'));
-    Route::get('/stats/sales', array('as' => 'stats_sales', 'uses' => 'StatsController@sales'));
-    Route::get('/stats/customers', array('as' => 'stats_customers', 'uses' => 'StatsController@customers'));
-    Route::get('/stats/charges', array('as' => 'stats_charges', 'uses' => 'StatsController@charges'));
-    Route::get('/stats/subscriptions', array('as' => 'stats_subscriptions', 'uses' => 'StatsController@subscriptions'));
-    Route::get('/stats/sales_per_category/{period?}', array('as' => 'stats_sales_per_category', 'uses' => 'StatsController@sales_per_category'));
-    Route::get('/stats/sales_per_category_and_location/{period}/{location_id}', array('as' => 'stats_sales_per_category_and_location', 'uses' => 'StatsController@sales_per_category'));
-    Route::get('/stats/members', array('as' => 'stats_members', 'uses' => 'StatsController@members'));
-    Route::get('/stats/age', array('as' => 'stats_age', 'uses' => 'StatsController@age'));
-    Route::get('/stats/spaces', array('as' => 'stats_spaces', 'uses' => 'StatsController@spaces'));
-    Route::get('/stats/spaces/{space_slug}/{period}', array('as' => 'stats_spaces_details', 'uses' => 'StatsController@spaces_details'));
-    Route::get('/stats/ressource/{ressource_id}', array('as' => 'stats_sales_per_ressource', 'uses' => 'StatsController@sales_per_ressource'));
-    Route::get('/stats/top_customers', array('as' => 'stats_top_customers', 'uses' => 'StatsController@top_customers'));
 
     Route::get('/tags', array('as' => 'tag_list', 'uses' => 'TagController@liste'));
     Route::get('/tag/add', array('as' => 'tag_add', 'uses' => 'TagController@add'));

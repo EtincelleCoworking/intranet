@@ -1,4 +1,4 @@
-@if(Auth::user()->isSuperAdmin())
+@if(Auth::user()->isShareholder())
     <?php
     $pending = InvoiceItem::Pending();
     $on_hold = InvoiceItem::OnHold();

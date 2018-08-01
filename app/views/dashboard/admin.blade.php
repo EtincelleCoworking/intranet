@@ -5,7 +5,7 @@ $target_year = substr($target_period, 0, 4);
 ?>
 @section('content')
 
-    @if (Auth::user()->isSuperAdmin())
+    @if (Auth::user()->isShareholder())
 
         <div class="row">
             <div class="col-lg-12">
@@ -33,16 +33,9 @@ $target_year = substr($target_period, 0, 4);
             <?php
             $target_days = substr($target_period, 0, 4) . substr($target_period, 5, 2);
             $totalMonth = DB::table('invoices_items')->join('invoices', function ($join) use ($target_days) {
-                if (Auth::user()->isSuperAdmin()) {
-                    $join->on('invoices_items.invoice_id', '=', 'invoices.id')
-                        ->where('invoices.type', '=', 'F')
-                        ->where('invoices.days', '=', $target_days);
-                } else {
-                    $join->on('invoices_items.invoice_id', '=', 'invoices.id')
-                        ->where('invoices.type', '=', 'F')
-                        ->where('invoices.user_id', '=', Auth::id())
-                        ->where('invoices.days', '=', $target_days);
-                }
+                $join->on('invoices_items.invoice_id', '=', 'invoices.id')
+                    ->where('invoices.type', '=', 'F')
+                    ->where('invoices.days', '=', $target_days);
             })->join('ressources', 'ressources.id', '=', 'invoices_items.ressource_id')
                 ->where('ressources.ressource_kind_id', '!=', RessourceKind::TYPE_EXCEPTIONNAL)
                 ->select(DB::raw('SUM(invoices_items.amount) as total'))->groupBy('invoices.days')->first();

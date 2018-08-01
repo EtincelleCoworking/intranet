@@ -7,6 +7,11 @@ use Illuminate\Auth\Reminders\RemindableInterface;
 
 class User extends Eloquent implements UserInterface, RemindableInterface
 {
+    const LEAD_STATUS_NEW = 1;
+    const LEAD_STATUS_SCHEDULED = 2;
+    const LEAD_STATUS_VISITED = 3;
+    const LEAD_STATUS_TRIED = 4;
+    const LEAD_STATUS_CLOSED = 5;
 
     use UserTrait, RemindableTrait;
 
@@ -235,7 +240,11 @@ class User extends Eloquent implements UserInterface, RemindableInterface
      */
     public function scopeSelect($query, $title = "Select", $selector = 'fullnameOrga')
     {
-        $selectVals[''] = $title;
+        $selectVals = array();
+
+        if ($title) {
+            $selectVals[''] = $title;
+        }
         $selectVals += $query->orderBy('lastname', 'ASC')->with('organisations')->orderBy('firstname', 'ASC')->get()->lists($selector, 'id');
         return $selectVals;
     }
@@ -246,7 +255,10 @@ class User extends Eloquent implements UserInterface, RemindableInterface
     public function scopeSelectNotInOrganisation($query, $organisation, $title = "Select")
     {
         $ids = OrganisationUser::where('organisation_id', $organisation)->lists('user_id');
-        $selectVals[''] = $title;
+        $selectVals = array();
+        if ($title) {
+            $selectVals[''] = $title;
+        }
         if ($ids) {
             $selectVals += $this->whereNotIn('id', $ids)->get()->lists('fullname', 'id');
         } else {
@@ -261,7 +273,10 @@ class User extends Eloquent implements UserInterface, RemindableInterface
     public function scopeSelectInOrganisation($query, $organisation, $title = "Select")
     {
         $ids = OrganisationUser::where('organisation_id', $organisation)->lists('user_id');
-        $selectVals[''] = $title;
+        $selectVals = array();
+        if ($title) {
+            $selectVals[''] = $title;
+        }
         if ($ids) {
             $selectVals += $this->whereIn('id', $ids)
                 ->orderBy('firstname', 'asc')
@@ -288,7 +303,8 @@ class User extends Eloquent implements UserInterface, RemindableInterface
         $roles = array(
             '' => array('member'),
             'member' => array('member'),
-            'superadmin' => array('member', 'superadmin')
+            'shareholder' => array('member', 'shareholder'),
+            'superadmin' => array('member', 'shareholder', 'superadmin')
         );
 
         return in_array($name, $roles[Auth::user()->role]);
@@ -320,7 +336,12 @@ class User extends Eloquent implements UserInterface, RemindableInterface
 
     public function isSuperAdmin()
     {
-        return ($this->role == 'superadmin');
+        return $this->getRoles('superadmin');
+    }
+
+    public function isShareholder()
+    {
+        return $this->getRoles('shareholder');
     }
 
     public function getLastSubscription()
@@ -458,7 +479,8 @@ class User extends Eloquent implements UserInterface, RemindableInterface
         return round($item->used);
     }
 
-    public function scopeStaff($query){
+    public function scopeStaff($query)
+    {
         return $query->where('is_staff', true);
     }
 }
