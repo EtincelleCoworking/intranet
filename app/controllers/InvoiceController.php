@@ -104,28 +104,25 @@ class InvoiceController extends BaseController
         if (Session::get('filtre_invoice.filtre_unpaid')) {
             $q->whereNull('date_payment');
         }
-        if (Auth::user()->role == 'member') {
-            $q->select('invoices.*');
-            $q->join('organisations', 'organisations.id', '=', 'invoices.organisation_id');
-            $q->where(function ($query) {
-                $query->where('organisations.accountant_id', Auth::id())
-                    ->orWhere('invoices.user_id', Auth::id());
-            });
-        } else {
+        if (Auth::user()->isSuperAdmin()) {
             if (Session::has('filtre_invoice.user_id')) {
                 $q->whereUserId(Session::get('filtre_invoice.user_id'));
             }
             if (Session::has('filtre_invoice.organisation_id')) {
                 $q->whereOrganisationId(Session::get('filtre_invoice.organisation_id'));
             }
+        } else {
+            $q->select('invoices.*');
+            $q->join('organisations', 'organisations.id', '=', 'invoices.organisation_id');
+            $q->where(function ($query) {
+                $query->where('organisations.accountant_id', Auth::id())
+                    ->orWhere('invoices.user_id', Auth::id());
+            });
         }
 
 
         $q->orderBy('created_at', 'DESC');
         $q->with('user', 'organisation', 'items', 'items.vat');
-//        if (Auth::user()->role != 'superadmin') {
-//            $q->whereUserId(Auth::user()->id);
-        //      }
         $invoices = $q->paginate(15);
 
         return View::make('invoice.liste', array('invoices' => $invoices));
