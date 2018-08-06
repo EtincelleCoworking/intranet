@@ -210,7 +210,7 @@ class Equipment extends Eloquent
                             $new_data[$color_name]['notified_at'] = null;
                             $new_data[$color_name]['notified20_at'] = null;
                             $new_data[$color_name]['notified10_at'] = null;
-                        } elseif (($data[$color_name] < 30) && empty($existing_data[$color_name]['notified_at'])) {
+                        } elseif (($data[$color_name] < 10) && empty($existing_data[$color_name]['notified10_at'])) {
                             $slack_message = array(
                                 'text' => sprintf('La cartouche *%s* de l\'imprimante %s arrive à un niveau bas (%d%%) à <%s|%s>',
                                     $color_name, $this->kind, $data[$color_name],
@@ -226,7 +226,7 @@ class Equipment extends Eloquent
                             );
                             $this->slack(Config::get('etincelle.slack_staff_toulouse'), $slack_message);
                             $new_data[$color_name]['notified_at'] = date('Y-m-d H:i:s');
-                        } elseif (($data[$color_name] < 10) && empty($existing_data[$color_name]['notified10_at'])) {
+                        } elseif (($data[$color_name] < 30) && empty($existing_data[$color_name]['notified_at'])) {
                             $slack_message = array(
                                 'text' => sprintf('La cartouche *%s* de l\'imprimante %s arrive à un niveau bas (%d%%) à <%s|%s>',
                                     $color_name, $this->kind, $data[$color_name],
