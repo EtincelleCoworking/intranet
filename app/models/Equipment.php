@@ -175,32 +175,58 @@ class Equipment extends Eloquent
                     'cyan' => array(
                         'status' => -1,
                         'notified_at' => null,
+                        'notified20_at' => null,
+                        'notified10_at' => null,
                     ),
                     'magenta' => array(
                         'status' => -1,
                         'notified_at' => null,
+                        'notified20_at' => null,
+                        'notified10_at' => null,
                     ),
                     'yellow' => array(
                         'status' => -1,
                         'notified_at' => null,
+                        'notified20_at' => null,
+                        'notified10_at' => null,
                     ),
                     'black' => array(
                         'status' => -1,
                         'notified_at' => null,
+                        'notified20_at' => null,
+                        'notified10_at' => null,
                     ),
                 );
                 $existing_data = json_decode($this->data, true);
                 foreach ($new_data as $color_name => $color_data) {
-                    if(isset($existing_data[$color_name]['notified_at'])){
+                    if (isset($existing_data[$color_name]['notified_at'])) {
                         $new_data[$color_name]['notified_at'] = $existing_data[$color_name]['notified_at'];
                     }
-                    if(isset($existing_data[$color_name]['status'])){
+                    if (isset($existing_data[$color_name]['status'])) {
                         $new_data[$color_name]['status'] = $existing_data[$color_name]['status'];
                     }
                     if (isset($data[$color_name])) {
                         if ($data[$color_name] > 90) {
                             $new_data[$color_name]['notified_at'] = null;
+                            $new_data[$color_name]['notified20_at'] = null;
+                            $new_data[$color_name]['notified10_at'] = null;
                         } elseif (($data[$color_name] < 30) && empty($existing_data[$color_name]['notified_at'])) {
+                            $slack_message = array(
+                                'text' => sprintf('La cartouche *%s* de l\'imprimante %s arrive à un niveau bas (%d%%) à <%s|%s>',
+                                    $color_name, $this->kind, $data[$color_name],
+                                    URL::route('location_show', $this->location->slug), str_replace('>', '&gt;', $this->location->fullName))
+                            );
+                            $this->slack(Config::get('etincelle.slack_staff_toulouse'), $slack_message);
+                            $new_data[$color_name]['notified_at'] = date('Y-m-d H:i:s');
+                        } elseif (($data[$color_name] < 20) && empty($existing_data[$color_name]['notified20_at'])) {
+                            $slack_message = array(
+                                'text' => sprintf('La cartouche *%s* de l\'imprimante %s arrive à un niveau bas (%d%%) à <%s|%s>',
+                                    $color_name, $this->kind, $data[$color_name],
+                                    URL::route('location_show', $this->location->slug), str_replace('>', '&gt;', $this->location->fullName))
+                            );
+                            $this->slack(Config::get('etincelle.slack_staff_toulouse'), $slack_message);
+                            $new_data[$color_name]['notified_at'] = date('Y-m-d H:i:s');
+                        } elseif (($data[$color_name] < 10) && empty($existing_data[$color_name]['notified10_at'])) {
                             $slack_message = array(
                                 'text' => sprintf('La cartouche *%s* de l\'imprimante %s arrive à un niveau bas (%d%%) à <%s|%s>',
                                     $color_name, $this->kind, $data[$color_name],
