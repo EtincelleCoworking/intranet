@@ -56,9 +56,11 @@ class ComputeCoworkingStatsCommand extends Command
             $locations[$item->id] = $item->coworking_capacity;
         }
 
-        $now = date('Y-m-d H:i:00');
+        $start = date('Y-m-d H:00:00', strtotime($start));
+
+        $now = date('Y-m-d H:00:00');
         while ($start < $now) {
-            $end = date('Y-m-d H:i:00', strtotime('+1 hour', strtotime($start)));
+            $end = date('Y-m-d H:00:00', strtotime('+1 hour', strtotime($start)));
             $this->output->writeln($start);
             $result = DB::select('SELECT users.default_location_id as location_id, COUNT(DISTINCT(users.id)) as cnt
 FROM past_times
