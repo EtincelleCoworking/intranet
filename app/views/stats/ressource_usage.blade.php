@@ -9,7 +9,8 @@
         <div class="col-sm-12">
             <h2>Utilisation des ressources - {{$ressource->name}}</h2>
             @foreach(Ressource::where('ressource_kind_id', '=', RessourceKind::TYPE_MEETING_ROOM)
-            ->where('ressources.location_id', '=', Auth::user()->default_location_id)
+            ->where('location_id', '=', Auth::user()->default_location_id)
+            ->where('is_bookable', '=', true)
             ->get() as $r)
                 <a href="{{URL::route('stats_ressource_usage', $r->id)}}"
                    class="btn btn-xs
