@@ -17,8 +17,10 @@
 
     <style type="text/css">
         @foreach($colors as $index => $color)
-            .percent<?php echo 10*$index; ?>          {
+            .percent<?php echo 10*$index; ?>            {
             background-color: #{{$color}}
+
+
 
 
 
@@ -36,6 +38,17 @@
 
     <div class="row">
         <div class="col-lg-12">
+            <table class="table">
+                <tr>
+                    <?php
+                    for ($i = 0; $i < 11; $i++) {
+                        printf('<td class="percent%1$02d">%1$d%%</td>', 10 * $i);
+                    }
+                    ?>
+                </tr>
+            </table>
+
+
             <table class="table" id="stats-coworking">
                 <tr>
                     <td>Date</td>
