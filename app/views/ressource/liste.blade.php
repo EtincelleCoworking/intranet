@@ -32,7 +32,6 @@
                             <th>Site</th>
                             <th>Nom</th>
                             <th>Client</th>
-                            <th>iCal</th>
                             <th>Prix HT</th>
                             <!--
                             <th>Ordre</th>
@@ -50,7 +49,7 @@
                                 }
                                     ?>
                             >
-                                <td class="col-md-3">
+                                <td class="col-md-2">
                                     <?php if ($ressource->location) {
                                         echo $ressource->location;
                                     } else {
@@ -59,25 +58,26 @@
                                     }
                                     ?>
                                 </td>
-                                <td class="col-md-3">
+                                <td class="col-md-2">
                                     <a href="{{ URL::route('ressource_modify', $ressource->id) }}">{{ $ressource->name }}</a>
                                 </td>
-                                <td class="col-md-3">
+                                <td class="col-md-2">
                                     @if($ressource->subscription)
                                         <a href="{{ URL::route('organisation_modify', $ressource->subscription->organisation->id) }}">{{ $ressource->subscription->organisation->name }}</a>
                                     @else
                                         -
                                     @endif
                                 </td>
-                                <td class="col-md-1" align="center">
-                                    <a href="{{URL::route('booking_ressource_ical', $ressource->id)}}" target="_blank"><u class="fa fa-link"></u></a>
-                                </td>
                                 <td class="col-md-1" align="right">{{ $ressource->amount }}€</td>
-                                <td class="col-md-2">
+                                <td class="col-md-4">
+                                    <a href="{{URL::route('booking_ressource_ical', $ressource->id)}}" target="_blank" class="btn btn-default btn-xs">iCal</a>
+
                                     <a href="{{ URL::route('ressource_modify', $ressource->id) }}"
                                        class="btn btn-primary btn-xs">Modifier</a>
                                     <a href="{{ URL::route('stats_sales_per_ressource', $ressource->id) }}"
-                                       class="btn btn-default btn-xs">Stats</a>
+                                       class="btn btn-default btn-xs">Stats Vente</a>
+                                    <a href="{{ URL::route('stats_ressource_usage', $ressource->id) }}"
+                                       class="btn btn-default btn-xs">Stats Utilisation</a>
                                     @if($ressource->is_bookable && $ressource->ressource_kind_id == RessourceKind::TYPE_MEETING_ROOM)
                                         <a href="{{ URL::route('ressource_status', $ressource->id) }}"
                                            class="btn btn-default btn-xs" target="_blank">iPad</a>

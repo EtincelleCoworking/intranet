@@ -602,7 +602,7 @@ GROUP BY organisations.id ORDER by amount DESC');
                         'percent_step' => round($item->percent / 10) * 10,
                     );
                 }
-            $items[$dateFmt]['date'] = $date;
+                $items[$dateFmt]['date'] = $date;
             }
             if (null == $capacity) {
                 $capacity = $item->capacity;
@@ -640,6 +640,127 @@ GROUP BY organisations.id ORDER by amount DESC');
                 'start_at' => $start_at,
                 'end_at' => $end_at,
                 'overall' => array_sum($overall) / count($overall),
+                'capacity' => $capacity
+            )
+        );
+    }
+
+    public function ressource_usage($ressource_id)
+    {
+        $ressource = Ressource::find($ressource_id);
+
+        $start_at = date('Y-m-d', strtotime('-10 days'));
+        $end_at = date('Y-m-d 23:59:59');
+        if (Input::has('filtre_start')) {
+            $date_start_explode = explode('/', Input::get('filtre_start'));
+            if (count($date_start_explode) == 3) {
+                $start_at = $date_start_explode[2] . '-' . $date_start_explode[1] . '-' . $date_start_explode[0];
+            }
+        }
+        if (Input::has('filtre_end')) {
+            $date_end_explode = explode('/', Input::get('filtre_end'));
+            if (count($date_end_explode) == 3) {
+                $end_at = $date_end_explode[2] . '-' . $date_end_explode[1] . '-' . $date_end_explode[0];
+            }
+        }
+
+        $capacity = null;
+        $data = DB::select('SELECT occurs_at, busy as count, 1 as capacity, 100 * busy as percent 
+            FROM stats_ressource_usage 
+            WHERE occurs_at > "' . $start_at . '" AND occurs_at < "' . $end_at . ' 23:59:59" 
+              AND ressource_id = ' . $ressource_id . '
+            ORDER BY occurs_at DESC');
+
+        $combined = Input::get('filtre_combined');
+
+        $min_time = 7;
+        $excluded = array();
+        for ($i = 0; $i < $min_time; $i++) {
+            $excluded[] = sprintf('%02d:00', $i);
+        }
+
+        $overall = array();
+
+        $items = array();
+        foreach ($data as $item) {
+            $date = substr($item->occurs_at, 0, 10);
+            $day_id = date('N', strtotime($date));
+            switch ($day_id) {
+                case 1:
+                    $dateFmt = 'Lun';
+                    break;
+                case 2:
+                    $dateFmt = 'Mar';
+                    break;
+                case 3:
+                    $dateFmt = 'Mer';
+                    break;
+                case 4:
+                    $dateFmt = 'Jeu';
+                    break;
+                case 5:
+                    $dateFmt = 'Ven';
+                    break;
+                case 6:
+                    $dateFmt = 'Sam';
+                    break;
+                case 7:
+                    $dateFmt = 'Dim';
+                    break;
+                default:
+                    $dateFmt = '';
+            }
+            $time = substr($item->occurs_at, 11, 5);
+            if (!in_array($time, $excluded)) {
+                if ($combined) {
+                    $items[$dateFmt]['hours'][$time]['count'][] = $item->count;
+                    $items[$dateFmt]['hours'][$time]['percent'][] = $item->percent;
+                } else {
+                    $dateFmt .= ' ' . date('d/m', strtotime($date));
+                    $items[$dateFmt]['hours'][$time] = array(
+                        'count' => $item->count,
+                        'percent' => $item->percent,
+                        'percent_step' => round($item->percent / 10) * 10,
+                    );
+                }
+                $items[$dateFmt]['date'] = $date;
+            }
+            if (null == $capacity) {
+                $capacity = $item->capacity;
+            }
+
+            if (in_array($day_id, array(1, 2, 3, 4, 5)) && ($time >= '09:00') && ($time < '18:00')
+                && !Utils::isFerian($date)) {
+                $overall[] = $item->percent;
+            }
+        }
+
+        if ($combined) {
+            $items = array(
+                'Lundi' => @$items['Lun'],
+                'Mardi' => @$items['Mar'],
+                'Mercredi' => @$items['Mer'],
+                'Jeudi' => @$items['Jeu'],
+                'Vendredi' => @$items['Ven'],
+                'Samedi' => @$items['Sam'],
+                'Dimanche' => @$items['Dim'],
+            );
+        }
+
+        $colors = array_merge(array('ffffff'),
+            array_values($this->Gradient("00FF00", "FFFF00", 5)),
+            array_values($this->Gradient("FFFF00", "FF0000", 5))
+        );
+
+        return View::make('stats.ressource_usage', array(
+                'items' => $items,
+                'colors' => $colors,
+                'min_time' => $min_time,
+                'ressource' => $ressource,
+                'combined' => $combined,
+                'start_at' => $start_at,
+                'end_at' => $end_at,
+                'overall' => (count($overall) == 0) ? 0 : array_sum($overall) / count($overall),
                 'capacity' => $capacity
             )
         );
