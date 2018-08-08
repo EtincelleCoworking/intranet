@@ -589,27 +589,27 @@ GROUP BY organisations.id ORDER by amount DESC');
                 default:
                     $dateFmt = '';
             }
-
             $time = substr($item->occurs_at, 11, 5);
             if (!in_array($time, $excluded)) {
                 if ($combined) {
-                    $items[$dateFmt][$time]['count'][] = $item->count;
-                    $items[$dateFmt][$time]['percent'][] = $item->percent;
+                    $items[$dateFmt]['hours'][$time]['count'][] = $item->count;
+                    $items[$dateFmt]['hours'][$time]['percent'][] = $item->percent;
                 } else {
                     $dateFmt .= ' ' . date('d/m', strtotime($date));
-                    $items[$dateFmt][$time] = array(
+                    $items[$dateFmt]['hours'][$time] = array(
                         'count' => $item->count,
                         'percent' => $item->percent,
                         'percent_step' => round($item->percent / 10) * 10,
                     );
-
                 }
+            $items[$dateFmt]['date'] = $date;
             }
-            if(null == $capacity){
-            $capacity = $item->capacity;
+            if (null == $capacity) {
+                $capacity = $item->capacity;
             }
 
-            if (in_array($day_id, array(1, 2, 3, 4, 5)) && ($time >= '09:00') && ($time < '18:00')) {
+            if (in_array($day_id, array(1, 2, 3, 4, 5)) && ($time >= '09:00') && ($time < '18:00')
+                && !Utils::isFerian($date)) {
                 $overall[] = $item->percent;
             }
         }

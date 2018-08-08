@@ -17,17 +17,25 @@
 
     <style type="text/css">
         @foreach($colors as $index => $color)
-            .percent<?php echo 10*$index; ?>                  {
+            .percent<?php echo 10*$index; ?>                   {
             background-color: #{{$color}}
 
-
-
-
-
-
+        }
+        table#stats-coworking tr.ferian td.percent<?php echo 10*$index; ?>   {
+            background: none;
         }
 
         @endforeach
+
+        tr.ferian {
+            background: repeating-linear-gradient(
+                    -45deg,
+                    #dedede,
+                    #dedede 10px,
+                    #efefef 10px,
+                    #efefef 20px
+            );
+        }
 
         table#stats-coworking td, table#stats-coworking th {
             font-size: 7pt;
@@ -82,15 +90,12 @@
         </div>
     </div>
 
-
-
-
-
     <div class="row">
         <div class="col-lg-12">
             <div class="ibox">
                 <div class="ibox-title">
-                    <h5> Taux de remplissage global: {{sprintf('%0.2f', $overall)}}% - Capacité: {{$capacity}} postes</h5>
+                    <h5> Taux de remplissage global: {{sprintf('%0.2f', $overall)}}% - Capacité: {{$capacity}}
+                        postes</h5>
                 </div>
                 <div class="ibox-content">
                     <table class="table" id="stats-coworking">
@@ -106,13 +111,17 @@
                         </thead>
                         <tbody>
                         @foreach($items as $date => $data)
-                            <tr>
+                            <tr
+                            @if(!$combined && isset($data['date']) && Utils::isFerian($data['date']))
+                                class="ferian"
+                            @endif
+                            >
                                 <td>{{$date}}</td>
                                 <?php
                                 for ($i = $min_time; $i < 24; $i++) {
                                     $time = sprintf('%02d:00', $i);
-                                    if (isset($data[$time])) {
-                                        $d = $data[$time];
+                                    if (isset($data['hours'][$time])) {
+                                        $d = $data['hours'][$time];
                                         //var_dump($d);
                                         if (is_array($d['percent'])) {
                                             $d['percent_step'] = round((array_sum($d['percent']) / count($d['percent'])) / 10) * 10;
