@@ -17,11 +17,17 @@
 
     <style type="text/css">
         @foreach($colors as $index => $color)
-            .percent<?php echo 10*$index; ?>                   {
+            .percent<?php echo 10*$index; ?>                        {
             background-color: #{{$color}}
 
+
+
+
+
+
         }
-        table#stats-coworking tr.ferian td.percent<?php echo 10*$index; ?>   {
+
+        table#stats-coworking tr.ferian td.percent<?php echo 10*$index; ?>        {
             background: none;
         }
 
@@ -74,8 +80,8 @@
                     {{ Form::hidden('filtre_submitted', 1) }}
                     <div class="row">
 
-                        <div class="col-md-3 input-group-sm">{{ Form::text('filtre_start', date('d/m/Y', strtotime($start_at)), array('class' => 'form-control datePicker')) }}</div>
-                        <div class="col-md-3 input-group-sm">{{ Form::text('filtre_end', date('d/m/Y', strtotime($end_at)), array('class' => 'form-control datePicker')) }}</div>
+                        <div class="col-md-3 input-group-sm">{{ Form::text('filtre_start', date('d/m/Y', strtotime($start_at)), array('class' => 'form-control datePicker', 'autocomplete' => 'new-password')) }}</div>
+                        <div class="col-md-3 input-group-sm">{{ Form::text('filtre_end', date('d/m/Y', strtotime($end_at)), array('class' => 'form-control datePicker', 'autocomplete' => 'new-password')) }}</div>
                         <div class="col-md-3 input-group-sm">
                             {{ Form::checkbox('filtre_combined', true, $combined) }}
                             Combiné
@@ -85,6 +91,19 @@
                         </div>
                     </div>
                     {{ Form::close() }}
+
+                    <hr class="hr-line-dashed"/>
+                    <p>
+                        Accès rapide :
+                        <?php
+                        $d_start = strtotime(date('Y-m-01'));
+                        for ($i = 12; $i > 0; $i--) {
+                            $d_end = date('t/m/Y', $d_start);
+                            printf(' <a href="?filtre_start=%s&filtre_end=%s&filtre_submitted=1" class="btn btn-default btn-xs">%s</a>', date('d/m/Y', $d_start), $d_end, date('m/Y', $d_start));
+                            $d_start = strtotime('-1 month', $d_start);
+                        }
+                        ?>
+                    </p>
                 </div>
             </div>
         </div>
@@ -112,9 +131,10 @@
                         <tbody>
                         @foreach($items as $date => $data)
                             <tr
-                            @if(!$combined && isset($data['date']) && Utils::isFerian($data['date']))
-                                class="ferian"
-                            @endif
+                                    @if(!$combined && isset($data['date']) && Utils::isFerian($data['date']))
+                                    class="ferian"
+                                    title="Jour férié"
+                                    @endif
                             >
                                 <td>{{$date}}</td>
                                 <?php
