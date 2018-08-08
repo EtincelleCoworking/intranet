@@ -541,8 +541,9 @@ GROUP BY organisations.id ORDER by amount DESC');
             }
         }
 
+        $capacity = null;
         $city = Auth::user()->location->city;
-        $data = DB::select('SELECT occurs_at, count, 100 * count / capacity as percent 
+        $data = DB::select('SELECT occurs_at, count, capacity, 100 * count / capacity as percent 
             FROM stats_coworking_usage 
             JOIN locations on locations.id = stats_coworking_usage.location_id
             WHERE occurs_at > "' . $start_at . '" AND occurs_at < "' . $end_at . ' 23:59:59" 
@@ -604,6 +605,9 @@ GROUP BY organisations.id ORDER by amount DESC');
 
                 }
             }
+            if(null == $capacity){
+            $capacity = $item->capacity;
+            }
 
             if (in_array($day_id, array(1, 2, 3, 4, 5)) && ($time >= '09:00') && ($time < '18:00')) {
                 $overall[] = $item->percent;
@@ -635,7 +639,8 @@ GROUP BY organisations.id ORDER by amount DESC');
                 'combined' => $combined,
                 'start_at' => $start_at,
                 'end_at' => $end_at,
-                'overall' => array_sum($overall) / count($overall)
+                'overall' => array_sum($overall) / count($overall),
+                'capacity' => $capacity
             )
         );
     }

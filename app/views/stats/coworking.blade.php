@@ -90,7 +90,7 @@
         <div class="col-lg-12">
             <div class="ibox">
                 <div class="ibox-title">
-                    <h5> Taux de remplissage global: {{sprintf('%0.2f', $overall)}}%</h5>
+                    <h5> Taux de remplissage global: {{sprintf('%0.2f', $overall)}}% - Capacité: {{$capacity}} postes</h5>
                 </div>
                 <div class="ibox-content">
                     <table class="table" id="stats-coworking">
