@@ -526,7 +526,7 @@ GROUP BY organisations.id ORDER by amount DESC');
 
     public function coworking()
     {
-        $start_at = date('Y-m-d', strtotime('-3 months'));
+        $start_at = date('Y-m-d', strtotime('-10 days'));
         $end_at = date('Y-m-d 23:59:59');
         if (Input::has('filtre_start')) {
             $date_start_explode = explode('/', Input::get('filtre_start'));
@@ -547,7 +547,7 @@ GROUP BY organisations.id ORDER by amount DESC');
             JOIN locations on locations.id = stats_coworking_usage.location_id
             WHERE occurs_at > "' . $start_at . '" AND occurs_at < "' . $end_at . ' 23:59:59" 
               AND locations.city_id = ' . $city->id . '
-            ORDER BY occurs_at ASC');
+            ORDER BY occurs_at DESC');
 
         $combined = Input::get('filtre_combined');
 
