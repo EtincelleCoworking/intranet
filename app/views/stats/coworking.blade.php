@@ -99,7 +99,7 @@
                         $d_start = strtotime(date('Y-m-01'));
                         for ($i = 12; $i > 0; $i--) {
                             $d_end = date('t/m/Y', $d_start);
-                            printf(' <a href="?filtre_start=%s&filtre_end=%s&filtre_submitted=1" class="btn btn-default btn-xs">%s</a>', date('d/m/Y', $d_start), $d_end, date('m/Y', $d_start));
+                            printf(' <a href="?filtre_start=%s&filtre_end=%s&filtre_combined=%s&filtre_submitted=1" class="btn btn-default btn-xs">%s</a>', date('d/m/Y', $d_start), $d_end, $combined, date('m/Y', $d_start));
                             $d_start = strtotime('-1 month', $d_start);
                         }
                         ?>
