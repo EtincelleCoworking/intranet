@@ -180,6 +180,10 @@ where  subscription_user_id is null;');
             Artisan::call('etincelle:update-member-status');
         });
 
+        $this->hourly(function () {
+            Artisan::call('etincelle:compute-coworking-stats');
+        });
+
         $this->dailyAt('04:00', array($this, 'assignCoworkingPackItemsToUsers'));
         $this->cleanPhoneboxSession();
 
