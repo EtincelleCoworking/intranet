@@ -557,11 +557,13 @@ GROUP BY organisations.id ORDER by amount DESC');
             $excluded[] = sprintf('%02d:00', $i);
         }
 
+        $overall = array();
+
         $items = array();
         foreach ($data as $item) {
             $date = substr($item->occurs_at, 0, 10);
-
-            switch (date('N', strtotime($date))) {
+            $day_id = date('N', strtotime($date));
+            switch ($day_id) {
                 case 1:
                     $dateFmt = 'Lun';
                     break;
@@ -602,6 +604,10 @@ GROUP BY organisations.id ORDER by amount DESC');
 
                 }
             }
+
+            if (in_array($day_id, array(1, 2, 3, 4, 5)) && ($time >= '09:00') && ($time < '18:00')) {
+                $overall[] = $item->percent;
+            }
         }
 
         if ($combined) {
@@ -628,7 +634,8 @@ GROUP BY organisations.id ORDER by amount DESC');
                 'city' => $city,
                 'combined' => $combined,
                 'start_at' => $start_at,
-                'end_at' => $end_at
+                'end_at' => $end_at,
+                'overall' => array_sum($overall) / count($overall)
             )
         );
     }
