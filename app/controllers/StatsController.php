@@ -526,15 +526,30 @@ GROUP BY organisations.id ORDER by amount DESC');
 
     public function coworking()
     {
-        $city = Auth::user()->location->city;
+        $start_at = date('Y-m-d', strtotime('-3 months'));
+        $end_at = date('Y-m-d 23:59:59');
+        if (Input::has('filtre_start')) {
+            $date_start_explode = explode('/', Input::get('filtre_start'));
+            if (count($date_start_explode) == 3) {
+                $start_at = $date_start_explode[2] . '-' . $date_start_explode[1] . '-' . $date_start_explode[0];
+            }
+        }
+        if (Input::has('filtre_end')) {
+            $date_end_explode = explode('/', Input::get('filtre_end'));
+            if (count($date_end_explode) == 3) {
+                $end_at = $date_end_explode[2] . '-' . $date_end_explode[1] . '-' . $date_end_explode[0];
+            }
+        }
 
+        $city = Auth::user()->location->city;
         $data = DB::select('SELECT occurs_at, count, 100 * count / capacity as percent 
             FROM stats_coworking_usage 
             JOIN locations on locations.id = stats_coworking_usage.location_id
-            WHERE occurs_at > DATE_SUB(NOW(), INTERVAL 3 MONTH)
+            WHERE occurs_at > "' . $start_at . '" AND occurs_at < "' . $end_at . ' 23:59:59" 
               AND locations.city_id = ' . $city->id . '
-            ORDER BY occurs_at DESC');
-        $combined = Input::get('combined');
+            ORDER BY occurs_at ASC');
+
+        $combined = Input::get('filtre_combined');
 
         $min_time = 7;
         $excluded = array();
@@ -606,13 +621,14 @@ GROUP BY organisations.id ORDER by amount DESC');
             array_values($this->Gradient("FFFF00", "FF0000", 5))
         );
 
-
         return View::make('stats.coworking', array(
                 'items' => $items,
                 'colors' => $colors,
                 'min_time' => $min_time,
                 'city' => $city,
-                'combined' => $combined
+                'combined' => $combined,
+                'start_at' => $start_at,
+                'end_at' => $end_at
             )
         );
     }

@@ -19,14 +19,6 @@
         @foreach($colors as $index => $color)
             .percent<?php echo 10*$index; ?>            {
             background-color: #{{$color}}
-
-
-
-
-
-
-
-
         }
 
         @endforeach
@@ -35,6 +27,35 @@
             font-size: 7pt;
         }
     </style>
+    <div class="row">
+        <div class="col-lg-12">
+            <div class="ibox">
+                <div class="ibox-title">
+                    <h5>Filtre</h5>
+                </div>
+                <div class="ibox-content">
+
+                    {{ Form::open(array('route' => array('stats_coworking'), 'method' => 'GET')) }}
+                    {{ Form::hidden('filtre_submitted', 1) }}
+                    <div class="row">
+
+                        <div class="col-md-3 input-group-sm">{{ Form::text('filtre_start', date('d/m/Y', strtotime($start_at)), array('class' => 'form-control datePicker')) }}</div>
+                        <div class="col-md-3 input-group-sm">{{ Form::text('filtre_end', date('d/m/Y', strtotime($end_at)), array('class' => 'form-control datePicker')) }}</div>
+                        <div class="col-md-3 input-group-sm">
+                            {{ Form::checkbox('filtre_combined', true, $combined) }}
+                            Combiné
+                        </div>
+                        <div class="col-md-3">
+                            {{ Form::submit('Filtrer', array('class' => 'btn btn-sm btn-primary')) }}
+                        </div>
+                    </div>
+                    {{ Form::close() }}
+                </div>
+            </div>
+        </div>
+    </div>
+
+
 
     <div class="row">
         <div class="col-lg-12">
@@ -47,10 +68,6 @@
                     ?>
                 </tr>
             </table>
-
-            <a href="?combined=0" class="btn <?php echo $combined?'btn-default':'btn-primary'; ?>">Normal</a>
-            <a href="?combined=1" class="btn <?php echo $combined?'btn-primary':'btn-default'; ?>">Combiné</a>
-
 
             <table class="table" id="stats-coworking">
                 <tr>
@@ -72,6 +89,7 @@
                                 //var_dump($d);
                                 if (is_array($d['percent'])) {
                                     $d['percent_step'] = round((array_sum($d['percent']) / count($d['percent'])) / 10) * 10;
+                                    $d['percent'] = round(array_sum($d['percent']) / count($d['percent']));
                                 }
                                 if (is_array($d['count'])) {
                                     $d['count'] = array_sum($d['count']) / count($d['count']);
@@ -90,6 +108,16 @@
     </div>
 
 
+@stop
+
+
+
+@section('javascript')
+    <script type="text/javascript">
+        $().ready(function () {
+            $('.datePicker').datepicker();
+        });
+    </script>
 @stop
 
 
