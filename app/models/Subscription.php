@@ -84,7 +84,7 @@ class Subscription extends Eloquent
         $params = array();
         $active_subscription = InvoiceItem::where('ressource_id', Ressource::TYPE_COWORKING)
             ->where('invoices_items.subscription_user_id', Auth::user()->id)
-            ->where('subscription_from', '<', date('Y-m-d'))
+            ->where('subscription_from', '<=', date('Y-m-d'))
             ->where('subscription_to', '>', date('Y-m-d'))
             ->join('invoices', function ($j) {
                 $j->on('invoice_id', '=', 'invoices.id')->where('type', '=', 'F');
@@ -145,6 +145,13 @@ class Subscription extends Eloquent
         } else {
             $invoice->user_id = $this->user_id;
         }
+        $organisation = $this->organisation;
+        if ($organisation->tva_number) {
+            $invoice->details = sprintf('N° TVA Intracommunautaire: %s', $organisation->tva_number);
+            $vat_types_id = VatType::whereValue(0)->first()->id;
+        } else {
+            $vat_types_id = VatType::whereValue(20)->first()->id;
+        }
         $invoice->days = date('Ym');
         $invoice->date_invoice = date('Y-m-d');
         $invoice->number = Invoice::next_invoice_number($invoice->type, $invoice->days);
@@ -171,7 +178,7 @@ class Subscription extends Eloquent
         }
         $date2->modify('-1 day');
         $invoice_line->text = sprintf("%s<br />\nDu %s au %s", $this->formattedName(), $date->format('d/m/Y'), $date2->format('d/m/Y'));
-        $invoice_line->vat_types_id = VatType::whereValue(20)->first()->id;
+        $invoice_line->vat_types_id = $vat_types_id;
         $invoice_line->order_index = 1;
         $invoice_line->save();
 
@@ -181,7 +188,7 @@ class Subscription extends Eloquent
             $invoice_line->ressource_id = $this->kind->ressource_id;
             $invoice_line->amount = -0.2 * $this->kind->price;
             $invoice_line->text = 'Réduction commerciale étudiant (-20%)';
-            $invoice_line->vat_types_id = VatType::whereValue(20)->first()->id;
+            $invoice_line->vat_types_id = $vat_types_id;
             $invoice_line->order_index = 2;
             $invoice_line->save();
         }

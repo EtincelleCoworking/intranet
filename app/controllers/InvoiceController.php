@@ -242,7 +242,12 @@ class InvoiceController extends BaseController
 
             $invoice = new Invoice;
             $invoice->user_id = Input::get('user_id');
+
             $invoice->organisation_id = Input::get('organisation_id');
+            $organisation = $invoice->organisation;
+            if ($organisation->tva_number) {
+                $invoice->details = sprintf('N° TVA Intracommunautaire: %s', $organisation->tva_number);
+            }
             $invoice->type = Input::get('type');
             $invoice->days = $days;
             $invoice->date_invoice = $date_explode[2] . '-' . $date_explode[1] . '-' . $date_explode[0];

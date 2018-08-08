@@ -181,6 +181,14 @@ class SubscriptionController extends BaseController
         $invoice->type = 'F';
         $invoice->user_id = $organisation->accountant_id;
         $invoice->organisation_id = $organisation->id;
+
+        if ($organisation->tva_number) {
+            $invoice->details = sprintf('N° TVA Intracommunautaire: %s', $organisation->tva_number);
+            $vat_types_id = VatType::whereValue(0)->first()->id;
+        } else {
+            $vat_types_id = VatType::whereValue(20)->first()->id;
+        }
+
         $invoice->days = date('Ym');
         $invoice->date_invoice = date('Y-m-d');
         $invoice->number = Invoice::next_invoice_number($invoice->type, $invoice->days);
@@ -229,7 +237,7 @@ class SubscriptionController extends BaseController
             $date2->modify('-1 day');
             $caption = str_replace(array('%OrganisationName%', '%UserName%'), array($subscription->organisation->name, $subscription->user->fullname), $subscription->kind->name);
             $invoice_line->text = sprintf("%s<br />\nDu %s au %s", $caption, $date->format('d/m/Y'), $date2->format('d/m/Y'));
-            $invoice_line->vat_types_id = VatType::whereValue(20)->first()->id;
+            $invoice_line->vat_types_id = $vat_types_id;
             $invoice_line->order_index = $index++;
             $invoice_line->save();
 
@@ -244,7 +252,7 @@ class SubscriptionController extends BaseController
             $invoice_line->ressource_id = Ressource::TYPE_COWORKING;
             $invoice_line->amount = -0.2 * $discountable_amount;
             $invoice_line->text = 'Réduction commerciale équipe (-20% à partir du 2ème collaborateur)';
-            $invoice_line->vat_types_id = VatType::whereValue(20)->first()->id;
+            $invoice_line->vat_types_id = $vat_types_id;
             $invoice_line->ressource_id = Ressource::TYPE_COWORKING;
             $invoice_line->order_index = $index++;
             $invoice_line->save();
@@ -256,7 +264,7 @@ class SubscriptionController extends BaseController
             $invoice_line->ressource_id = Ressource::TYPE_COWORKING;
             $invoice_line->amount = -0.2 * $student_amount;
             $invoice_line->text = 'Réduction commerciale étudiant (-20%)';
-            $invoice_line->vat_types_id = VatType::whereValue(20)->first()->id;
+            $invoice_line->vat_types_id = $vat_types_id;
             $invoice_line->ressource_id = Ressource::TYPE_COWORKING;
             $invoice_line->order_index = $index++;
             $invoice_line->save();
@@ -333,12 +341,19 @@ order by invoices_items.subscription_overuse_managed ASC, invoices_items.subscri
         $option_id = Input::get('option_id');
 
         $subscription = Subscription::where('user_id', '=', Auth::id())->first();
-        if (!$option_id) {
+
+        $renew_enabled = (bool)Input::get('is_automatic_renew_enabled');
+        if (!$renew_enabled) {
             if ($subscription) {
                 $subscription->delete();
             }
             return Redirect::route('subscription_manage')
-                ->with('mSuccess', 'Votre abonnement a été supprimé');
+                ->with('mSuccess', 'Vos changements ont étés enregistrés');
+        }
+
+        if (!$option_id) {
+            return Redirect::route('subscription_manage')
+                ->with('mError', 'Merci de sélectionner la formule')->withInput();
         }
 
         if (!$subscription) {
@@ -348,10 +363,20 @@ order by invoices_items.subscription_overuse_managed ASC, invoices_items.subscri
         $renew_at = $date_explode[2] . '-' . $date_explode[1] . '-' . $date_explode[0];
         $subscription->user_id = Auth::id();
         if (!$subscription->organisation_id) {
-            $subscription->organisation_id = Auth::user()->organisations->first()->id;
+            $organisation = Auth::user()->organisations->first();
+            if (!$organisation) {
+                $organisation = new Organisation();
+                $user = Auth::user();
+                $organisation->name = implode(' ', array($user->firstname, $user->lastname));
+                $organisation->country_id = Country::where('code', 'FR')->first()->id;
+                $organisation->save();
+                $user->organisations()->save($organisation);
+            }
+
+            $subscription->organisation_id = $organisation->id;
         }
         $subscription->subscription_kind_id = $option_id;
-        $subscription->is_automatic_renew_enabled = (bool)Input::get('is_automatic_renew_enabled');
+        $subscription->is_automatic_renew_enabled = $renew_enabled;
         $subscription->renew_at = $renew_at;
         $subscription->save();
 
