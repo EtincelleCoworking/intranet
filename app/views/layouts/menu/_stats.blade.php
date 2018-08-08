@@ -34,5 +34,8 @@
         <li{{ Request::is('stats/spaces') ? ' class="active"' : '' }}>
             <a href="{{ URL::route('stats_spaces') }}">Espaces</a>
         </li>
+        <li{{ Request::is('stats/coworking') ? ' class="active"' : '' }}>
+            <a href="{{ URL::route('stats_coworking') }}">Coworking</a>
+        </li>
     </ul>
 </li>
