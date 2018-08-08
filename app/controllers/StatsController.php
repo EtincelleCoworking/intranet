@@ -538,7 +538,7 @@ GROUP BY organisations.id ORDER by amount DESC');
 
         $min_time = 7;
         $excluded = array();
-        for ($i = 0; $i <= $min_time; $i++) {
+        for ($i = 0; $i < $min_time; $i++) {
             $excluded[] = sprintf('%02d:00', $i);
         }
 
@@ -601,7 +601,11 @@ GROUP BY organisations.id ORDER by amount DESC');
             );
         }
 
-        $colors = $this->Gradient("FFFFFF", "FF0000", 11);
+        $colors = array_merge(array('ffffff'),
+            array_values($this->Gradient("00FF00", "FFFF00", 5)),
+            array_values($this->Gradient("FFFF00", "FF0000", 5))
+        );
+
 
         return View::make('stats.coworking', array(
                 'items' => $items,
