@@ -109,8 +109,7 @@ Route::group(['before' => 'shareholder'], function() {
     Route::get('/stats/spaces/{space_slug}/{period}', array('as' => 'stats_spaces_details', 'uses' => 'StatsController@spaces_details'));
     Route::get('/stats/ressource/{ressource_id}', array('as' => 'stats_sales_per_ressource', 'uses' => 'StatsController@sales_per_ressource'));
     Route::get('/stats/top_customers', array('as' => 'stats_top_customers', 'uses' => 'StatsController@top_customers'));
-
-
+    Route::get('/stats/coworking', array('as' => 'stats_coworking', 'uses' => 'StatsController@coworking'));
 });
 
 Route::group(['before' => 'superadmin'], function() {
