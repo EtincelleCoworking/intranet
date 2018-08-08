@@ -19,12 +19,12 @@ class StatsController extends BaseController
         }
 
         $operations = Location::getOperationTweaks();
-        foreach($operations as $space_name => $data){
-            foreach($data as $period => $value){
-                if(!isset($charts['Produits'][$period])){
+        foreach ($operations as $space_name => $data) {
+            foreach ($data as $period => $value) {
+                if (!isset($charts['Produits'][$period])) {
                     $charts['Produits'][$period] = 0;
                 }
-                if(!isset($charts['Produits (hors exceptionnels)'][$period])){
+                if (!isset($charts['Produits (hors exceptionnels)'][$period])) {
                     $charts['Produits (hors exceptionnels)'][$period] = 0;
                 }
                 $charts['Produits'][$period] += $value;
@@ -162,7 +162,7 @@ GROUP BY locations.id, subscription_kind.id', Ressource::TYPE_COWORKING)));
 
         $data = array();
         $query = InvoiceItem::withoutExceptionnals()->total()->byKind();
-        if($location_id){
+        if ($location_id) {
             $query->byLocation($location_id);
         }
         if ($period) {
@@ -433,8 +433,8 @@ where invoices.id IN
     FROM invoices_items
       JOIN invoices on invoice_id = invoices.id
       JOIN past_times ON past_times.invoice_id = invoices.id
-  WHERE invoices_items.ressource_id IN ('.implode(', ', $ressources).')
-    AND past_times.date_past BETWEEN "'.$from.'" AND "'.$to.'"
+  WHERE invoices_items.ressource_id IN (' . implode(', ', $ressources) . ')
+    AND past_times.date_past BETWEEN "' . $from . '" AND "' . $to . '"
   )
 GROUP BY organisations.id ORDER by amount DESC');
         $items = DB::select(DB::raw($sql));
@@ -455,12 +455,13 @@ GROUP BY organisations.id ORDER by amount DESC');
     }
 
 
-    public function top_customers(){
+    public function top_customers()
+    {
         $from = date('Y-m-d', strtotime('-3 months'));
         $to = date('Y-m-d');
         $ressources = array(31);
 
-$sql = sprintf('select 
+        $sql = sprintf('select 
 organisations.name, sum(invoices_items.amount) as amount
 from `invoices_items` 
 inner join `invoices` on `invoice_id` = `invoices`.`id` and `type` = \'F\' 
@@ -470,11 +471,11 @@ where invoices.id IN
     FROM invoices_items
       JOIN invoices on invoice_id = invoices.id
       JOIN past_times ON past_times.invoice_id = invoices.id
-  WHERE invoices_items.ressource_id IN ('.implode(', ', $ressources).')
-    AND past_times.date_past BETWEEN "'.$from.'" AND "'.$to.'"
+  WHERE invoices_items.ressource_id IN (' . implode(', ', $ressources) . ')
+    AND past_times.date_past BETWEEN "' . $from . '" AND "' . $to . '"
   )
 GROUP BY organisations.id ORDER by amount DESC');
-echo $sql;
+        echo $sql;
         $items = DB::select(DB::raw($sql));
         $result = array();
         foreach ($items as $item) {
@@ -486,6 +487,127 @@ echo $sql;
 
         return View::make('stats.top_customers', array(
                 'items' => $result
+            )
+        );
+    }
+
+    private function Gradient($HexFrom, $HexTo, $ColorSteps)
+    {
+        $FromRGB['r'] = hexdec(substr($HexFrom, 0, 2));
+        $FromRGB['g'] = hexdec(substr($HexFrom, 2, 2));
+        $FromRGB['b'] = hexdec(substr($HexFrom, 4, 2));
+
+        $ToRGB['r'] = hexdec(substr($HexTo, 0, 2));
+        $ToRGB['g'] = hexdec(substr($HexTo, 2, 2));
+        $ToRGB['b'] = hexdec(substr($HexTo, 4, 2));
+
+        $StepRGB['r'] = ($FromRGB['r'] - $ToRGB['r']) / ($ColorSteps - 1);
+        $StepRGB['g'] = ($FromRGB['g'] - $ToRGB['g']) / ($ColorSteps - 1);
+        $StepRGB['b'] = ($FromRGB['b'] - $ToRGB['b']) / ($ColorSteps - 1);
+
+        $GradientColors = array();
+
+        for ($i = 0; $i <= $ColorSteps; $i++) {
+            $RGB['r'] = floor($FromRGB['r'] - ($StepRGB['r'] * $i));
+            $RGB['g'] = floor($FromRGB['g'] - ($StepRGB['g'] * $i));
+            $RGB['b'] = floor($FromRGB['b'] - ($StepRGB['b'] * $i));
+
+            $HexRGB['r'] = sprintf('%02x', ($RGB['r']));
+            $HexRGB['g'] = sprintf('%02x', ($RGB['g']));
+            $HexRGB['b'] = sprintf('%02x', ($RGB['b']));
+
+            $GradientColors[] = implode(NULL, $HexRGB);
+        }
+        $GradientColors = array_filter($GradientColors, function ($val) {
+            return (strlen($val) == 6 ? true : false);
+        });
+        return $GradientColors;
+    }
+
+    public function coworking()
+    {
+        $city = Auth::user()->location->city;
+
+        $data = DB::select('SELECT occurs_at, count, 100 * count / capacity as percent 
+            FROM stats_coworking_usage 
+            JOIN locations on locations.id = stats_coworking_usage.location_id
+            WHERE occurs_at > DATE_SUB(NOW(), INTERVAL 3 MONTH)
+              AND locations.city_id = ' . $city->id . '
+            ORDER BY occurs_at DESC');
+        $combined = Input::get('combined');
+
+        $min_time = 7;
+        $excluded = array();
+        for ($i = 0; $i <= $min_time; $i++) {
+            $excluded[] = sprintf('%02d:00', $i);
+        }
+
+        $items = array();
+        foreach ($data as $item) {
+            $date = substr($item->occurs_at, 0, 10);
+
+            switch (date('N', strtotime($date))) {
+                case 1:
+                    $dateFmt = 'Lun';
+                    break;
+                case 2:
+                    $dateFmt = 'Mar';
+                    break;
+                case 3:
+                    $dateFmt = 'Mer';
+                    break;
+                case 4:
+                    $dateFmt = 'Jeu';
+                    break;
+                case 5:
+                    $dateFmt = 'Ven';
+                    break;
+                case 6:
+                    $dateFmt = 'Sam';
+                    break;
+                case 7:
+                    $dateFmt = 'Dim';
+                    break;
+                default:
+                    $dateFmt = '';
+            }
+
+            $time = substr($item->occurs_at, 11, 5);
+            if (!in_array($time, $excluded)) {
+                if ($combined) {
+                    $items[$dateFmt][$time]['count'][] = $item->count;
+                    $items[$dateFmt][$time]['percent'][] = $item->percent;
+                } else {
+                    $dateFmt .= ' ' . date('d/m', strtotime($date));
+                    $items[$dateFmt][$time] = array(
+                        'count' => $item->count,
+                        'percent' => $item->percent,
+                        'percent_step' => round($item->percent / 10) * 10,
+                    );
+
+                }
+            }
+        }
+
+        if ($combined) {
+            $items = array(
+                'Lundi' => $items['Lun'],
+                'Mardi' => $items['Mar'],
+                'Mercredi' => $items['Mer'],
+                'Jeudi' => $items['Jeu'],
+                'Vendredi' => $items['Ven'],
+                'Samedi' => $items['Sam'],
+                'Dimanche' => $items['Dim'],
+            );
+        }
+
+        $colors = $this->Gradient("FFFFFF", "FF0000", 11);
+
+        return View::make('stats.coworking', array(
+                'items' => $items,
+                'colors' => $colors,
+                'min_time' => $min_time,
+                'city' => $city
             )
         );
     }
