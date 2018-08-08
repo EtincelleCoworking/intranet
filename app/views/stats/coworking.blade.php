@@ -48,6 +48,9 @@
                 </tr>
             </table>
 
+            <a href="?combined=0" class="btn <?php echo $combined?'btn-default':'btn-primary'; ?>">Normal</a>
+            <a href="?combined=1" class="btn <?php echo $combined?'btn-primary':'btn-default'; ?>">Combiné</a>
+
 
             <table class="table" id="stats-coworking">
                 <tr>

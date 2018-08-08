@@ -591,13 +591,13 @@ GROUP BY organisations.id ORDER by amount DESC');
 
         if ($combined) {
             $items = array(
-                'Lundi' => $items['Lun'],
-                'Mardi' => $items['Mar'],
-                'Mercredi' => $items['Mer'],
-                'Jeudi' => $items['Jeu'],
-                'Vendredi' => $items['Ven'],
-                'Samedi' => $items['Sam'],
-                'Dimanche' => $items['Dim'],
+                'Lundi' => @$items['Lun'],
+                'Mardi' => @$items['Mar'],
+                'Mercredi' => @$items['Mer'],
+                'Jeudi' => @$items['Jeu'],
+                'Vendredi' => @$items['Ven'],
+                'Samedi' => @$items['Sam'],
+                'Dimanche' => @$items['Dim'],
             );
         }
 
@@ -607,7 +607,8 @@ GROUP BY organisations.id ORDER by amount DESC');
                 'items' => $items,
                 'colors' => $colors,
                 'min_time' => $min_time,
-                'city' => $city
+                'city' => $city,
+                'combined' => $combined
             )
         );
     }
