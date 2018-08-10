@@ -199,11 +199,10 @@ class Equipment extends Eloquent
                 );
                 $existing_data = json_decode($this->data, true);
                 foreach ($new_data as $color_name => $color_data) {
-                    if (isset($existing_data[$color_name]['notified_at'])) {
-                        $new_data[$color_name]['notified_at'] = $existing_data[$color_name]['notified_at'];
-                    }
-                    if (isset($existing_data[$color_name]['status'])) {
-                        $new_data[$color_name]['status'] = $existing_data[$color_name]['status'];
+                    foreach (array('notified_at', 'notified20_at', 'notified10_at', 'status') as $property) {
+                        if (isset($existing_data[$color_name][$property])) {
+                            $new_data[$color_name][$property] = $existing_data[$color_name][$property];
+                        }
                     }
                     if (isset($data[$color_name])) {
                         if ($data[$color_name] > 90) {
