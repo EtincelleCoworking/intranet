@@ -509,7 +509,8 @@ where organisation_user.organisation_id = %1$d
                 FROM past_times join ressources on past_times.ressource_id = ressources.id
                   JOIN users on users.id = past_times.user_id
                   JOIN organisation_user ON organisation_user.user_id = users.id
-                  WHERE organisation_user.organisation_id = ' . $id . ' ORDER BY users.lastname ASC, users.firstname ASC, past_times.time_start ASC';
+                  WHERE organisation_user.organisation_id = ' . $id . ' AND past_times.time_start < "2018-05-19"
+                   ORDER BY users.lastname ASC, users.firstname ASC, past_times.time_start ASC';
                 foreach (DB::select(DB::raw($sql)) as $item) {
                     $sheet->appendRow(array(
                         $item->name,
@@ -521,5 +522,18 @@ where organisation_user.organisation_id = %1$d
 
             });
         })->download('xls');
+    }
+
+    public function delete_rule($id, $rule_id){
+        InvoicingRule::find($rule_id)->delete();
+        return Redirect::route('organisation_modify', $id)->with('mSuccess', 'Cette règle a été supprimée');
+    }
+
+    public function add_rule($id){
+        $rule = new InvoicingRule();
+        $rule->organisation_id = $id;
+        $rule->kind = Input::get('kind');
+        $rule->save();
+        return Redirect::route('organisation_modify', $id)->with('mSuccess', 'La règle a été ajoutée    ');
     }
 }
