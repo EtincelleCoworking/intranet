@@ -39,9 +39,10 @@ class Organisation extends Eloquent
         return $this->belongsTo('User');
     }
 
-    public function invoicing_rules()
+    public function rules()
     {
-        return $this->belongsTo('InvoicingRule');
+        return $this->hasMany('InvoicingRule')
+            ->orderBy('order_index', 'ASC');
     }
 
     public function domiciliation_kind()
@@ -136,7 +137,7 @@ LEFT OUTER JOIN past_times
     AND past_times.time_start = booking_item.start_at
     AND past_times.time_end = booking_item.start_at + INTERVAL booking_item.duration MINUTE
     AND past_times.is_free != true
-WHERE past_times.invoice_id = 0
+WHERE past_times.invoice_id IS NULL
   AND past_times.id IS NULL
   AND booking_item.start_at BETWEEN "' . $period_start . '" AND "' . $period_end . '"
   AND booking.organisation_id = ' . $this->id;
@@ -165,5 +166,35 @@ WHERE past_times.invoice_id = 0
 
         $items = DB::select(DB::raw($sql));
         return $items[0]->cnt;
+    }
+
+    public function applyInvoicingRulesAndSaveLines_Quotes($invoice_lines)
+    {
+        foreach ($this->rules as $rule) {
+            $processor = $rule->createProcessor();
+            if ($processor && $processor->isValidForQuotes()) {
+                $invoice_lines = $processor->execute($invoice_lines);
+            }
+        }
+        $order_index = 1;
+        foreach ($invoice_lines as $line) {
+            $line->order_index = $order_index++;
+            $line->save();
+        }
+    }
+
+    public function applyInvoicingRulesAndSaveLines_Invoices($invoice_lines)
+    {
+        foreach ($this->rules as $rule) {
+            $processor = $rule->createProcessor();
+            if ($processor && $processor->isValidForInvoices()) {
+                $invoice_lines = $processor->execute($invoice_lines);
+            }
+        }
+        $order_index = 1;
+        foreach ($invoice_lines as $line) {
+            $line->order_index = $order_index++;
+            $line->save();
+        }
     }
 }
