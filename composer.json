@@ -35,6 +35,7 @@
       "app/commands",
       "app/controllers",
       "app/models",
+      "app/models/InvoicingRuleProcessor",
       "app/database/migrations",
       "app/database/seeds",
       "app/tests/TestCase.php"
