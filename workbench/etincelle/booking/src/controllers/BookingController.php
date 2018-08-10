@@ -810,7 +810,7 @@ class BookingController extends Controller
         $invoice->save();
 
         $vat = VatType::where('value', 20)->first();
-
+        $invoice_lines = array();
 
         $line_index = 1;
         foreach ($by_ressources as $location_id => $ressources_map) {
@@ -818,10 +818,9 @@ class BookingController extends Controller
             $invoice_line->order_index = $line_index++;
             $invoice_line->invoice_id = $invoice->id;
 //            $invoice_line->ressource_id = $ressource_id;
-            $invoice_line->vat_types_id = null;
             $invoice_line->text = $locations[$location_id]->sales_presentation;
             $invoice_line->vat_types_id = $vat->id;
-            $invoice_line->save();
+            $invoice_lines[] = $invoice_line;
 
             foreach ($ressources_map as $ressource_id => $booking_items) {
                 $booking_item = $booking_items[0];
@@ -840,13 +839,15 @@ class BookingController extends Controller
                 $invoice_line->ressource_id = $ressource_id;
 
 
-                $booking_text = '';
                 if (count($booking_items) == 1) {
                     $booking_item = array_shift($booking_items);
                     $start = new DateTime($booking_item->start_at);
                     $end = new DateTime($booking_item->start_at);
                     $end->modify(sprintf('+%d minutes', $booking_item->duration));
                     $booking_text = sprintf("<p><b>Réservation le %s de %s à %s.</b>", $start->format('d/m/Y'), $start->format('H:i'), $end->format('H:i'));
+                    if (!empty($booking_item->booking->content)) {
+                        $booking_text .= sprintf(' (%s)', $booking_item->booking->content);
+                    }
                     $invoice_line->amount += min(7, $booking_item->duration / 60) * $ressource->amount;
                 } else {
                     $booking_text = '<p><b>Réservation des créneaux suivants :<ul>';
@@ -854,7 +855,11 @@ class BookingController extends Controller
                         $start = new DateTime($booking_item->start_at);
                         $end = new DateTime($booking_item->start_at);
                         $end->modify(sprintf('+%d minutes', $booking_item->duration));
-                        $booking_text .= sprintf("<li>%s de %s à %s</li>", $start->format('d/m/Y'), $start->format('H:i'), $end->format('H:i'));
+                        $booking_text .= sprintf("<li>%s de %s à %s", $start->format('d/m/Y'), $start->format('H:i'), $end->format('H:i'));
+                        if (!empty($booking_item->booking->content)) {
+                            $booking_text .= sprintf(' (%s)', $booking_item->booking->content);
+                        }
+                        $booking_text .= '</li>';
                         $invoice_line->amount += min(7, $booking_item->duration / 60) * $ressource->amount;
                     }
                     $booking_text .= '</ul></b></p>';
@@ -870,9 +875,11 @@ class BookingController extends Controller
 
                 $invoice_line->text = str_replace(array_keys($map), array_values($map), $template);
                 $invoice_line->vat_types_id = $vat->id;
-                $invoice_line->save();
+                $invoice_lines[] = $invoice_line;
             }
         }
+
+        $organisation->applyInvoicingRulesAndSaveLines_Quotes($invoice_lines);
 
         return $invoice;
     }

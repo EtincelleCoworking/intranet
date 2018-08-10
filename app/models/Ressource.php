@@ -8,6 +8,7 @@ class Ressource extends Eloquent
     const TYPE_COWORKING = 1;
     const TYPE_EXCEPTIONNAL = 12;
     const TYPE_DOMICILIATION = 9;
+    const TYPE_CATERING_INTERNAL = 6;
     /**
      * The database table used by the model.
      *

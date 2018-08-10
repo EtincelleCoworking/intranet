@@ -200,7 +200,7 @@ class PastTimeController extends BaseController
             }
             if (Auth::user()->isSuperAdmin()) {
                 $time->user_id = Input::get('user_id');
-                $time->organisation_id = empty(Input::get('organisation_id'))?null:Input::get('organisation_id');
+                $time->organisation_id = empty(Input::get('organisation_id')) ? null : Input::get('organisation_id');
                 $time->invoice_id = Input::get('invoice_id');
                 $time->is_free = Input::get('is_free');
             } else {
@@ -372,14 +372,9 @@ class PastTimeController extends BaseController
             $invoice_line->save();
             $invoice_lines[] = $invoice_line;
         }
-        /*
-                foreach ($organisation->invoicing_rules() as $rule) {
-                    $processor = $rule->createProcessor();
-                    if ($processor) {
-                        $processor->execute($invoice_lines);
-                    }
-                }
-        */
+
+        $organisation->applyInvoicingRulesAndSaveLines_Invoices($invoice_lines);
+
         return Redirect::route('invoice_modify', $invoice->id)->with('mSuccess',
             sprintf('La facture a bien été générée <a href="%s" class="btn btn-primary pull-right">Envoyer</a>', URL::route('invoice_send', $invoice->id)));
     }
@@ -431,10 +426,10 @@ class PastTimeController extends BaseController
             ->get();
 
         foreach ($items as $item) {
-            if ($item->date_past != date('Y-m-d')) {
-                $item->is_free = true;
-                $item->save();
-            }
+            //if ($item->date_past != date('Y-m-d')) {
+            $item->is_free = true;
+            $item->save();
+            //}
         }
 
         return Redirect::route('pasttime_list')->with('mSuccess', 'Ces entrées ont étés notées commeoffertes');

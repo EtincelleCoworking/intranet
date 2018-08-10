@@ -95,6 +95,67 @@
         <div class="col-lg-6">
             <div class="ibox ">
                 <div class="ibox-title">
+                    <h5>Conditions commerciales</h5>
+                </div>
+                <div class="ibox-content">
+                    <?php $options = InvoicingRuleProcessor::getAvailableItems(); ?>
+                    <table class="table table-striped table-hover">
+                        <thead>
+                        <tr>
+                            <th>Nom</th>
+                            <th>Devis</th>
+                            <th>Facture</th>
+                            <th>Actions</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        @foreach ($organisation->rules as $rule)
+                            <tr>
+                                <td>
+                                    <?php
+                                    $processor = $rule->createProcessor();
+                                    echo $processor->getCaption();
+                                    unset($options[$rule->kind]);
+                                    ?>
+                                </td>
+                                <td>
+                                    @if($processor->isValidForQuotes())
+                                        <i class="fa fa-check"></i>
+                                    @else
+                                        <i class="fa fa-times"></i>
+                                    @endif
+                                </td>
+                                <td>
+                                @if($processor->isValidForInvoices())
+                                    <i class="fa fa-check"></i>
+                                @else
+                                    <i class="fa fa-times"></i>
+                                @endif
+                                </td>
+                                <td>
+                                    <a href="{{ URL::route('organisation_rule_delete', array($organisation->id, $rule->id)) }}"
+                                       class="btn btn-danger btn-xs btn-outline"
+                                       rel="nofollow">Supprimer</a>
+
+                                </td>
+                            </tr>
+                        @endforeach
+                        </tbody>
+                    </table>
+                    @if(count($options) > 0)
+                        {{ Form::model($organisation, array('route' => array('organisation_add_rule', $organisation->id))) }}
+                        <table class="table">
+                            <tr>
+                                <td>{{ Form::select('kind', $options, null, array('class' => 'form-control', 'id' => 'user_selector')) }}</td>
+                                <td>{{ Form::submit('Ajouter', array('class' => 'btn btn-default')) }}</td>
+                            </tr>
+                            {{ Form::close() }}
+                        </table>
+                    @endif
+                </div>
+            </div>
+            <div class="ibox ">
+                <div class="ibox-title">
                     <h5>Membres</h5>
                 </div>
                 <div class="ibox-content">
@@ -130,7 +191,8 @@
 
                     {{ Form::model($organisation, array('route' => array('organisation_add_users', $organisation->id))) }}
                     {{ Form::label('content', 'Ajout rapide d\'utilisateurs') }}
-                    <p class="text-muted">Ajouter rapidement des utilisateurs dans l'intranet et les associée à cette organisation. <br />Format (1 par ligne): [prénom] [nom] [email]</p>
+                    <p class="text-muted">Ajouter rapidement des utilisateurs dans l'intranet et les associée à cette
+                        organisation. <br/>Format (1 par ligne): [prénom] [nom] [email]</p>
                     {{ Form::textarea('content', null, array('class' => 'form-control')) }}
                     {{ Form::submit('Ajouter', array('class' => 'btn btn-default')) }}
                     {{ Form::close() }}
