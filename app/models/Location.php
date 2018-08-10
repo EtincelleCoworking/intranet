@@ -93,6 +93,7 @@ class Location extends Eloquent
                 '2017-12' => 3735,
                 '2018-01' => 3565,
                 '2018-02' => 3705,
+                '2018-08' => 3430,// - Caroline
             ),
             'Wilson' => array(
                 '2015-01' => 7000,
@@ -103,11 +104,13 @@ class Location extends Eloquent
                 '2017-10' => 14150 + 4480,
                 '2017-12' => 15080 + 4480,
                 '2018-02' => 17685 + 4480,
+                '2018-08' => 16265 + 4060,// - Caroline
             ),
             //'Toulouse > Espace W' => array(),
             'Alsace Lorraine' => array(
                 '2017-12' => 2170,
                 '2018-02' => 6300,
+                '2018-08' => 5075, // - Caroline - Ménage
             ),
         );
         $periods = array();
@@ -199,7 +202,7 @@ left outer join `ressources` on invoices_items.`ressource_id` = `ressources`.`id
 left outer join `locations` on ressources.`location_id` = `locations`.`id` 
 left outer join cities on locations.city_id = cities.id
 
-where ressources.ressource_kind_id NOT IN (' . RessourceKind::TYPE_COWORKING . ', ' . RessourceKind::TYPE_EXCEPTIONNAL . ')
+where ressources.ressource_kind_id NOT IN (' . RessourceKind::TYPE_EXCEPTIONNAL . ')
 
 group by `period`, kind
 order by kind ASC, `period` desc')); // `organisations`.`is_founder` = '0' or (`organisation_id` is null) AND
@@ -209,7 +212,7 @@ order by kind ASC, `period` desc')); // `organisations`.`is_founder` = '0' or (`
             $result[$item->kind][$item->period] = (float)$item->total;
             $periods[$item->period] = true;
         }
-
+/*
         $items = DB::select(DB::raw('select 
 date_format(invoices.date_invoice, "%Y-%m") as period, 
 SUM(invoices_items.amount) as total, 
@@ -231,6 +234,7 @@ AND ressources.ressource_kind_id = ' . RessourceKind::TYPE_COWORKING . '
 group by `period`, kind
 order by kind ASC, `period` DESC
 '));
+
         foreach ($items as $item) {
             if (!isset($result[$item->kind][$item->period])) {
                 $result[$item->kind][$item->period] = 0;
@@ -238,7 +242,6 @@ order by kind ASC, `period` DESC
             $periods[$item->period] = true;
             $result[$item->kind][$item->period] += (float)$item->total;
         }
-
 
         foreach ($result as $location => $data) {
             foreach ($periods as $period => $value) {
@@ -248,6 +251,7 @@ order by kind ASC, `period` DESC
             }
             ksort($result[$location]);
         }
+*/
 
         $costs = Location::getCostPerLocation();
         $operations = self::getOperationTweaks();
