@@ -202,7 +202,7 @@ left outer join `ressources` on invoices_items.`ressource_id` = `ressources`.`id
 left outer join `locations` on ressources.`location_id` = `locations`.`id` 
 left outer join cities on locations.city_id = cities.id
 
-where ressources.ressource_kind_id NOT IN (' . RessourceKind::TYPE_EXCEPTIONNAL . ')
+where ressources.ressource_kind_id NOT IN (' . RessourceKind::TYPE_COWORKING . ', ' . RessourceKind::TYPE_EXCEPTIONNAL . ')
 
 group by `period`, kind
 order by kind ASC, `period` desc')); // `organisations`.`is_founder` = '0' or (`organisation_id` is null) AND
@@ -212,7 +212,7 @@ order by kind ASC, `period` desc')); // `organisations`.`is_founder` = '0' or (`
             $result[$item->kind][$item->period] = (float)$item->total;
             $periods[$item->period] = true;
         }
-/*
+
         $items = DB::select(DB::raw('select 
 date_format(invoices.date_invoice, "%Y-%m") as period, 
 SUM(invoices_items.amount) as total, 
@@ -251,7 +251,7 @@ order by kind ASC, `period` DESC
             }
             ksort($result[$location]);
         }
-*/
+
 
         $costs = Location::getCostPerLocation();
         $operations = self::getOperationTweaks();
