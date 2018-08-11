@@ -195,6 +195,14 @@ where  subscription_user_id is null;');
             Artisan::call('etincelle:send-upcoming-subscription-renew-notification');
         });
 
+        $this->dailyAt('06:00', function () {
+            Artisan::call('etincelle:birthday');
+        });
+
+        $this->dailyAt('06:00', function () {
+            Artisan::call('etincelle:update-member-status');
+        });
+
         $this->finish();
     }
 
