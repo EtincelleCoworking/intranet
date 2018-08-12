@@ -71,6 +71,15 @@ class ApiController extends BaseController
             ->where('key', '=', $key)
             ->firstOrFail();
 
+        //region Update location public IP
+        LocationIp::where('id', '=', $location->id)->delete();
+
+        $locationIp = new LocationIp();
+        $locationIp->id = $location->id;
+        $locationIp->name = $_SERVER['REMOTE_ADDR'];
+        $locationIp->save();
+        //endregion
+
         $json = json_decode(Request::getContent(), true);
         $macs = array();
         $emails = array();
@@ -99,6 +108,33 @@ class ApiController extends BaseController
         // var_dump(array_keys($devices));
         $notified_users = array();
         $updated_users = array();
+
+        $query = null;
+        foreach ($json as $item) {
+            if (!empty($item['mac']) && ($item['lastSeen'] > date('Y-m-d'))) {
+                if (isset($devices[$item['mac']])) {
+                    $device = $devices[$item['mac']];
+                    if (null == $query) {
+                        $query = DeviceSeen::where(function ($q) use ($device, $item) {
+                            $q->where('device_id', '=', $device->id)
+                                ->andWhere('last_seen_at', '=', date('Y-m-d H:i:s', strtotime($item['lastSeen'])));
+                        });
+                    } else {
+                        $query->orwhere(function ($q) use ($device, $item) {
+                            $q->where('device_id', '=', $device->id)
+                                ->andWhere('last_seen_at', '=', date('Y-m-d H:i:s', strtotime($item['lastSeen'])));
+                        });
+                    }
+                }
+            }
+        }
+
+        $devices_seen = array();
+        if ($query) {
+            foreach ($query->get() as $ds) {
+                $devices_seen[$ds->device_id] = $ds;
+            }
+        }
 
         foreach ($json as $item) {
             if (!empty($item['mac']) && ($item['lastSeen'] > date('Y-m-d'))) {
@@ -169,9 +205,7 @@ class ApiController extends BaseController
                                 Event::fire('user.shown', array($timeslot->user, $timeslot, $location));
                             }
                         }
-                        $device_seen = DeviceSeen::where('device_id', '=', $device->id)
-                            ->where('last_seen_at', '=', date('Y-m-d H:i:s', strtotime($item['lastSeen'])))
-                            ->first();
+                        $device_seen = isset($devices_seen[$device->id]) ? $devices_seen[$device->id] : null;
                         if (!$device_seen) {
                             $device_seen = new DeviceSeen();
                             $device_seen->device_id = $device->id;
