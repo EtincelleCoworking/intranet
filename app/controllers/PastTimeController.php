@@ -97,7 +97,10 @@ class PastTimeController extends BaseController
         $q->select('past_times.*');
         $q->with('user', 'ressource');
         if (Session::get('filtre_pasttime.filtre_toinvoice')) {
-            $q->where('invoice_id', 0);
+            $q->where(function ($query) {
+                $query->where('invoice_id', '=', 0)
+                    ->orWhereNull('invoice_id');
+            });
             $q->where('is_free', false);
         }
         if (Session::get('filtre_pasttime.filtre_exclude_coworking')) {
@@ -243,7 +246,10 @@ class PastTimeController extends BaseController
     {
         $items = PastTime::query()
             ->whereIn('id', Input::get('items'))
-            ->where('invoice_id', 0)
+            ->where(function ($query) {
+                $query->where('invoice_id', '=', 0)
+                    ->orWhereNull('invoice_id');
+            })
             ->orderBy('ressource_id', 'ASC')
             ->orderBy('time_start', 'ASC')
             ->get();
