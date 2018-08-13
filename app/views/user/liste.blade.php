@@ -212,9 +212,8 @@
                     <?php
                     if ($user->welcome_email_sent_at && $user->welcome_email_sent_at != '0000-00-00') {
                         echo date('d/m/Y', strtotime($user->welcome_email_sent_at));
-                    } else {
-                        printf('<a href="%s" class="btn btn-xs btn-primary">Inviter</a>', URL::route('user_send_welcome_email', $user->id));
                     }
+                    printf('<a href="%s" class="btn btn-xs btn-primary">Inviter</a>', URL::route('user_send_welcome_email', $user->id));
                     ?>
                 </td>
                 <td>
