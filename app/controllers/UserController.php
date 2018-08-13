@@ -563,8 +563,10 @@ order by invoices.date_invoice desc
 
         $fields = array(
             'email' => $user->email,
+            'first_name' => $user->firstname,
+            'last_name' => $user->lastname,
             'token' => $_ENV['slack_token'],
-            'set_active' => 'true'
+            'resend' => 'true'
         );
 
         $fields_string = '';
@@ -585,6 +587,11 @@ order by invoices.date_invoice desc
         curl_close($ch);
 
         if ($httpcode == 200) {
+            $json = json_decode($output);
+            if (false == $json->ok) {
+                return sprintf('Erreur: %s', $json->error);
+            }
+
             $user->slack_invite_sent_at = new \DateTime();
             $user->save();
             return $user->slack_invite_sent_at->format('d/m/Y');
