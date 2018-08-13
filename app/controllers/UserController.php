@@ -723,5 +723,37 @@ LIMIT 1';
         $result->setContent(json_encode($data));
         return $result;
     }
+
+    public function send_welcome_email($user_id)
+    {
+        $user = User::find($user_id);
+        if (!$user) {
+            return Redirect::route('user_list');
+        }
+        $location = $user->location;
+
+        $content = $location->welcome_email_content;
+        if (empty($content)) {
+            return Redirect::route('user_list')->with('mError', sprintf('L\'espace %s ne contient pas de modèle d\'email de bienvenue.', $location->fullname));
+
+        }
+        $macros = array();
+        $macros['%User.Firstname%'] = $user->firstname;
+        $macros['%User.Lastname%'] = $user->lastname;
+        $macros['%User.Email%'] = $user->email;
+
+        $content = str_replace(array_keys($macros), array_values($macros), $content);
+
+        Mail::send('emails.welcome_email', array('content' => $content), function ($message) use ($user) {
+            $message->from($_ENV['mail_address'], $_ENV['mail_name'])
+                ->bcc($_ENV['mail_address'], $_ENV['mail_name']);
+
+            $message->to($user->email, $user->fullname);
+            $message->subject(sprintf('%s - Bienvenue à Etincelle Coworking !', $_ENV['organisation_name']));
+        });
+        $user->welcome_email_sent_at = date('Y-m-d H:i:s');
+        $user->save();
+        return Redirect::route('user_list')->with('mSuccess', sprintf('L\'email de bienvenue a été envoyé à %s &lt;%s&gt;', $user->fullname, $user->email));
+    }
 }
 

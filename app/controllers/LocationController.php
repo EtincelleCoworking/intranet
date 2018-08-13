@@ -48,6 +48,7 @@ class LocationController extends BaseController
             $location->coworking_capacity = Input::get('coworking_capacity');
             $location->default_business_terms = Input::get('default_business_terms');
             $location->sales_presentation = Input::get('sales_presentation');
+            $location->welcome_email_content = Input::get('welcome_email_content');
             $location->enabled = (bool)Input::get('enabled');
 
             if ($location->save()) {

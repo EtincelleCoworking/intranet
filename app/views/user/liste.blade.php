@@ -81,11 +81,11 @@
             <th class="col-md-1">Espace</th>
             <th class="col-md-1">Membre</th>
             <th class="col-md-1">Périphériques</th>
-            <th class="col-md-1">Date de naissance</th>
             <th class="col-md-1">Abonnement</th>
             @if(!empty($_ENV['slack_url']))
                 <th class="col-md-1">Slack</th>
             @endif
+            <th class="col-md-1">Intranet</th>
             <th class="col-md-1">Temps passé</th>
             <th class="col-md-1">Invité Coworking</th>
             <th class="col-md-2">Actions</th>
@@ -163,15 +163,6 @@
                 </td>
                 <td>
                     <?php
-                    if ($user->birthday && $user->birthday != '0000-00-00') {
-                        echo date('d/m/Y', strtotime($user->birthday));
-                    } else {
-                        echo '-';
-                    }
-                    ?>
-                </td>
-                <td>
-                    <?php
                     $subscription = $user->getLastSubscription();
                     $duration = 0;
                     if (!$subscription) {
@@ -216,6 +207,16 @@
                         ?>
                     </td>
                 @endif
+
+                <td>
+                    <?php
+                    if ($user->welcome_email_sent_at && $user->welcome_email_sent_at != '0000-00-00') {
+                        echo date('d/m/Y', strtotime($user->welcome_email_sent_at));
+                    } else {
+                        printf('<a href="%s" class="btn btn-xs btn-primary">Inviter</a>', URL::route('user_send_welcome_email', $user->id));
+                    }
+                    ?>
+                </td>
                 <td>
                     <?php
                     if ($subscription) {

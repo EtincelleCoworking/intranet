@@ -48,6 +48,18 @@
                                 {{ Form::label('enabled', 'Actif') }}
                             </p>
                         </div>
+                        <div class="col-md-12">
+                            {{ Form::label('welcome_email_content', 'Email de bienvenue') }}
+                            <p>{{ Form::textarea('welcome_email_content', null, array('class' => 'form-control', 'rows' => '15')) }}</p>
+                            <p class="text-muted">Les macros suivantes seront automatiquement remplacées :</p>
+                            <ul class="text-muted">
+                                <li>%User.Firstname%: Prénom</li>
+                                <li>%User.Lastname%: Nom de famille</li>
+                                <li>%User.Email%: Email</li>
+                            </ul>
+
+
+                        </div>
                     </div>
                     <div class="hr-line-dashed"></div>
                     <div class="form-group">
