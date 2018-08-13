@@ -754,8 +754,16 @@ LIMIT 1';
                 ->cc($admin->email, $admin->fullname)
                 ->bcc($_ENV['mail_address'], $_ENV['mail_name']);
 
+            $admins = User::where('is_staff', '=', true)
+                ->join('locations', 'users.default_location_id', 'locations.id')
+                ->where('locations.city_id', '=', $user->location->city_id)
+                ->get();
+            foreach ($admins as $a) {
+                $message->cc($a->email, $a->fullname);
+            }
+
             $message->to($user->email, $user->fullname);
-            $message->subject(sprintf('%s - Bienvenue à Etincelle Coworking !', $_ENV['organisation_name']));
+            $message->subject(sprintf('Bienvenue à %s !', $_ENV['organisation_name']));
         });
         $user->welcome_email_sent_at = date('Y-m-d H:i:s');
         $user->save();
