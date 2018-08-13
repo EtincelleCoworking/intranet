@@ -275,7 +275,7 @@
                 $.ajax({
                     url: link.attr('href')
                 }).done(function (data) {
-                    link.replaceWith(data);
+                    link.parent.replaceWith(data);
                 }).error(function (data) {
 
                 });
