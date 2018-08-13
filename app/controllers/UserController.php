@@ -755,7 +755,7 @@ LIMIT 1';
                 ->bcc($_ENV['mail_address'], $_ENV['mail_name']);
 
             $admins = User::where('is_staff', '=', true)
-                ->join('locations', 'users.default_location_id', 'locations.id')
+                ->join('locations', 'users.default_location_id', '=', 'locations.id')
                 ->where('locations.city_id', '=', $user->location->city_id)
                 ->get();
             foreach ($admins as $a) {
