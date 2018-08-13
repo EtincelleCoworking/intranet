@@ -737,16 +737,21 @@ LIMIT 1';
             return Redirect::route('user_list')->with('mError', sprintf('L\'espace %s ne contient pas de modèle d\'email de bienvenue.', $location->fullname));
 
         }
+            $admin = Auth::user();
         $macros = array();
         $macros['%User.Firstname%'] = $user->firstname;
         $macros['%User.Lastname%'] = $user->lastname;
         $macros['%User.Email%'] = $user->email;
+        $macros['%Admin.Firstname%'] = $user->firstname;
+        $macros['%Admin.Lastname%'] = $user->lastname;
 
         $content = str_replace(array_keys($macros), array_values($macros), $content);
 
-        Mail::send('emails.welcome_email', array('content' => $content), function ($message) use ($user) {
+        Mail::send('emails.welcome_email', array('content' => $content), function ($message) use ($user, $admin) {
             $message->from($_ENV['mail_address'], $_ENV['mail_name'])
-                ->bcc($_ENV['mail_address'], $_ENV['mail_name']);
+                ->cc($admin->email, $admin->fullname)
+                ->bcc($_ENV['mail_address'], $_ENV['mail_name'])
+            ;
 
             $message->to($user->email, $user->fullname);
             $message->subject(sprintf('%s - Bienvenue à Etincelle Coworking !', $_ENV['organisation_name']));

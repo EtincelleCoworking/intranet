@@ -56,6 +56,8 @@
                                 <li>%User.Firstname%: Prénom</li>
                                 <li>%User.Lastname%: Nom de famille</li>
                                 <li>%User.Email%: Email</li>
+                                <li>%Admin.Firstname%: Prénom de l'administrateur qui déclenche l'action</li>
+                                <li>%Admin.Lastname%: Nom de famille de l'administrateur qui déclenche l'action</li>
                             </ul>
 
 
