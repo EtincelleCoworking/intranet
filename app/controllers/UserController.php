@@ -744,8 +744,8 @@ LIMIT 1';
         $macros['%User.Firstname%'] = $user->firstname;
         $macros['%User.Lastname%'] = $user->lastname;
         $macros['%User.Email%'] = $user->email;
-        $macros['%Admin.Firstname%'] = $user->firstname;
-        $macros['%Admin.Lastname%'] = $user->lastname;
+        $macros['%Admin.Firstname%'] = $admin->firstname;
+        $macros['%Admin.Lastname%'] = $admin->lastname;
 
         $content = str_replace(array_keys($macros), array_values($macros), $content);
 
