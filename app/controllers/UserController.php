@@ -236,7 +236,9 @@ order by invoices.date_invoice desc
         $user->password = Hash::make('etincelle');
         $user->default_location_id = Auth::user()->default_location_id;
         $user->save();
-        return Redirect::route('user_modify', $user->id)->with('mSuccess', 'Cet utilisateur a bien été ajouté');
+        return Redirect::route('user_modify', $user->id)->with('mSuccess',
+            sprintf('L\'utilisateur %s &lt;%s&gt; a été créé. <a href="%s" class="btn btn-primary">Envoyer l\'email de bienvenue</a>',
+                $user->fullname, $user->email, URL::route('user_send_welcome_email', $user->id)));
     }
 
     /**
@@ -737,7 +739,7 @@ LIMIT 1';
             return Redirect::route('user_list')->with('mError', sprintf('L\'espace %s ne contient pas de modèle d\'email de bienvenue.', $location->fullname));
 
         }
-            $admin = Auth::user();
+        $admin = Auth::user();
         $macros = array();
         $macros['%User.Firstname%'] = $user->firstname;
         $macros['%User.Lastname%'] = $user->lastname;
@@ -750,8 +752,7 @@ LIMIT 1';
         Mail::send('emails.welcome_email', array('content' => $content), function ($message) use ($user, $admin) {
             $message->from($_ENV['mail_address'], $_ENV['mail_name'])
                 ->cc($admin->email, $admin->fullname)
-                ->bcc($_ENV['mail_address'], $_ENV['mail_name'])
-            ;
+                ->bcc($_ENV['mail_address'], $_ENV['mail_name']);
 
             $message->to($user->email, $user->fullname);
             $message->subject(sprintf('%s - Bienvenue à Etincelle Coworking !', $_ENV['organisation_name']));
