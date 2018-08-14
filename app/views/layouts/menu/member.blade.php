@@ -29,7 +29,7 @@
     </li>
 
     <li{{ ((Request::is('user*')  && !Request::is('user/affiliate'))||  Request::is('profile*')) ? ' class="active"' : '' }}>
-        <a href="{{ URL::route('members') }}"><i class="fa fa-user"></i> <span class="nav-label">Membres</span></a>
+        <a href="{{ URL::route('members') }}"><i class="fa fa-users"></i> <span class="nav-label">Membres</span></a>
     </li>
 
     <li{{ (Request::is('booking*') ? ' class="active"' : '') }}>
@@ -62,6 +62,9 @@
         <a href="{{ URL::route('quote_list', 'all') }}"><i class="fa fa-file-text"></i> <span class="nav-label">Devis</span></a>
     </li>
     @endif
+    <li{{(Request::is('postbox*')) ? ' class="active"' : '' }}>
+        <a href="{{ URL::route('postbox') }}"><i class="fa fa-envelope"></i> Domiciliation</a>
+    </li>
 
     {{-- */ $invoiceCount = Auth::user()->getPendingInvoiceCount(); /* --}}
 

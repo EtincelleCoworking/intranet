@@ -90,6 +90,8 @@ Route::group(['before' => 'member'], function() {
 //    Route::get('/subscription/modify/{id}', array('as' => 'subscription_modify', 'uses' => 'SubscriptionController@modify'));
 //    Route::post('/subscription/modify/{id}', array('as' => 'subscription_modify_check', 'uses' => 'SubscriptionController@modify_check'));
 //    Route::get('/subscription/renew/{id}', array('as' => 'subscription_renew', 'uses' => 'SubscriptionController@renew'));
+    Route::get('/postbox', array('as' => 'postbox', 'uses' => 'PostboxController@index'));
+    Route::get('/postbox/{organisation_id}', array('as' => 'postbox_details', 'uses' => 'PostboxController@details'));
 
 });
 
@@ -245,6 +247,8 @@ Route::group(['before' => 'superadmin'], function() {
     Route::get('/wall/delete/{id}', array('as' => 'wall_delete', 'uses' => 'WallPostController@delete'));
     Route::get('/wall/delete-reply/{id}', array('as' => 'wall_delete_reply', 'uses' => 'WallPostController@deleteReply'));
 
+    Route::get('/postbox/{organisation_id}/notify', array('as' => 'postbox_notify', 'uses' => 'PostboxController@notify'));
+    Route::post('/postbox/{organisation_id}/notify', array('as' => 'postbox_notify_handle', 'uses' => 'PostboxController@notify_handle'));
 });
 
 // JSON

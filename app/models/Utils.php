@@ -75,28 +75,42 @@ class Utils
 
     /**
      * Lightens/darkens a given colour (hex format), returning the altered colour in hex format.7
-     * @param str $hex Colour as hexadecimal (with or without hash);
+     * @param string $hex Colour as hexadecimal (with or without hash);
      * @percent float $percent Decimal ( 0.2 = lighten by 20%(), -0.4 = darken by 40%() )
-     * @return str Lightened/Darkend colour as hexadecimal (with hash);
+     * @return string Lightened/Darkend colour as hexadecimal (with hash);
      */
-public static function colorLuminance( $hex, $percent ) {
+    public static function colorLuminance($hex, $percent)
+    {
 
         // validate hex string
 
-        $hex = preg_replace( '/[^0-9a-f]/i', '', $hex );
+        $hex = preg_replace('/[^0-9a-f]/i', '', $hex);
         $new_hex = '#';
 
-        if ( strlen( $hex ) < 6 ) {
+        if (strlen($hex) < 6) {
             $hex = $hex[0] + $hex[0] + $hex[1] + $hex[1] + $hex[2] + $hex[2];
         }
 
         // convert to decimal and change luminosity
         for ($i = 0; $i < 3; $i++) {
-            $dec = hexdec( substr( $hex, $i*2, 2 ) );
-            $dec = min( max( 0, $dec + $dec * $percent ), 255 );
-            $new_hex .= str_pad( dechex( $dec ) , 2, 0, STR_PAD_LEFT );
+            $dec = hexdec(substr($hex, $i * 2, 2));
+            $dec = min(max(0, $dec + $dec * $percent), 255);
+            $new_hex .= str_pad(dechex($dec), 2, 0, STR_PAD_LEFT);
         }
 
         return $new_hex;
+    }
+
+    public static function convertDate($frenchValue)
+    {
+        $tokens = explode('/', $frenchValue);
+        if (count($tokens) == 3) {
+            return sprintf('%d-%d-%d',
+                $tokens[2],
+                $tokens[1],
+                $tokens[0]
+            );
+        }
+        return false;
     }
 }

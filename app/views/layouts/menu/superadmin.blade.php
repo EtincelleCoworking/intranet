@@ -36,20 +36,23 @@
                     class="nav-label">Communauté</span>
             <span class="fa arrow"></span></a>
         <ul class="nav nav-second-level {{ ((Request::is('user*') || Request::is('organisation*')) ? '' : 'collapse') }}">
-            <li{{ Request::is('organisation*') ? ' class="active"' : '' }}>
+            <li{{ (Request::is('organisation*') && !Request::is('organisation_postbox')) ? ' class="active"' : '' }}>
                 <a href="{{ URL::route('organisation_list') }}"><i class="fa fa-building"></i> Sociétés</a>
             </li>
             <li{{ (Request::is('user*') && !Request::is('user/list') && !Request::is('user/birthday'))? ' class="active"' : '' }}>
-                <a href="{{ URL::route('members') }}"><i class="fa fa-user"></i> Membres</a>
+                <a href="{{ URL::route('members') }}"><i class="fa fa-users"></i> Membres</a>
             </li>
             <li{{ Request::is('user/list') ? ' class="active"' : '' }}>
                 <a href="{{ URL::route('user_list') }}"><i class="fa fa-user"></i> Utilisateurs</a>
             </li>
             <li{{ Request::is('user/birthday') ? ' class="active"' : '' }}>
-                <a href="{{ URL::route('user_birthday') }}"><i class="fa fa-user"></i> Anniversaires</a>
+                <a href="{{ URL::route('user_birthday') }}"><i class="fa fa-birthday-cake"></i> Anniversaires</a>
             </li>
             {{--<li><a href="{{ URL::route('user_directory') }}">Annuaire</a></li>--}}
         </ul>
+    </li>
+    <li{{(Request::is('postbox*')) ? ' class="active"' : '' }}>
+        <a href="{{ URL::route('postbox') }}"><i class="fa fa-envelope"></i> Domiciliation</a>
     </li>
     <li{{ Request::is('pasttime*') ? ' class="active"' : '' }}>
         <a href="{{ URL::route('pasttime_list') }}">

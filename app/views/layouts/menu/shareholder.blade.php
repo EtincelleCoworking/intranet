@@ -65,6 +65,10 @@
         </li>
     @endif
 
+    <li{{(Request::is('postbox*')) ? ' class="active"' : '' }}>
+        <a href="{{ URL::route('postbox') }}"><i class="fa fa-envelope"></i> Domiciliation</a>
+    </li>
+
     {{-- */ $invoiceCount = Auth::user()->getPendingInvoiceCount(); /* --}}
 
     <li{{ Request::is('invoice*') ? ' class="active"' : '' }}>
