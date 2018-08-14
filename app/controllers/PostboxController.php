@@ -56,6 +56,11 @@ class PostboxController extends BaseController
         $kinds = PostboxKind::get()->lists('name', 'id');
         $default_kind_id = array_keys($kinds);
         $organisation = Organisation::find($organisation_id);
+
+        if (!$organisation->accountant) {
+            return Redirect::route('organisation_modify', $organisation->id)
+                ->with('mError', 'Vous devez définir un contact pour l\'envoi des notifications');
+        }
         return View::make('postbox.notify', array(
             'organisation' => $organisation,
             'kinds' => $kinds,

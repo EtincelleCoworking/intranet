@@ -17,17 +17,19 @@
                         <th>Expéditeur</th>
                         <th>Informations complémentaires</th>
                     </tr>
-                    <tr>
-                        <td>
-                            {{$item->quantity}}
-                            {{$item->kind->name}}
-                            @if($item->is_important)
-                                <br/><strong>Recommandé</strong>
-                            @endif
-                        </td>
-                        <td>{{$item->from_name}}</td>
-                        <td>{{$item->detais}}</td>
-                    </tr>
+                    @foreach($items as $item)
+                        <tr>
+                            <td>
+                                {{$item->quantity}}
+                                {{$item->kind->name}}
+                                @if($item->is_important)
+                                    <br/><strong>Recommandé</strong>
+                                @endif
+                            </td>
+                            <td>{{$item->from_name}}</td>
+                            <td>{{$item->detais}}</td>
+                        </tr>
+                    @endforeach
                 </table>
 
                 <p>Nous le tenons à votre disposition dans notre espace.</p>
