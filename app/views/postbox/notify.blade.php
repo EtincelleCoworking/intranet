@@ -32,7 +32,7 @@
                                         {{ Form::label('quantity', 'Quantité') }}
                                         <p>{{ Form::text('quantity[0]', 1, array('class' => 'form-control')) }}</p>
                                     </div>
-                                    <div class="col-md-2">
+                                    <div class="col-md-3">
                                         {{ Form::label('kind', 'Type') }}
                                         @foreach($kinds as $kind_id => $kind_value)
                                             <p>
@@ -45,7 +45,7 @@
                                         {{ Form::label('from_name', 'Expéditeur') }}
                                         <p>{{ Form::text('from_name[0]', null, array('class' => 'form-control')) }}</p>
                                     </div>
-                                    <div class="col-md-5">
+                                    <div class="col-md-4">
                                         {{ Form::label('details', 'Informations complémentaires') }}
                                         <p>{{ Form::text('details[0]', null, array('class' => 'form-control')) }}</p>
                                     </div>
@@ -87,7 +87,7 @@
             '                                        {{ Form::label('quantity', 'Quantité') }}\n' +
             '                                        <p>{{ Form::text('quantity[ROWID]', 1, array('class' => 'form-control')) }}</p>\n' +
             '                                    </div>\n' +
-            '                                    <div class="col-md-2">\n' +
+            '                                    <div class="col-md-3">\n' +
             '                                        {{ Form::label('kind', 'Type') }}\n' +
                 @foreach($kinds as $kind_id => $kind_value)
                     '                                            <p>\n' +
@@ -99,7 +99,7 @@
             '                                        {{ Form::label('from_name', 'Expéditeur') }}\n' +
             '                                        <p>{{ Form::text('from_name[ROWID]', null, array('class' => 'form-control')) }}</p>\n' +
             '                                    </div>\n' +
-            '                                    <div class="col-md-5">\n' +
+            '                                    <div class="col-md-4">\n' +
             '                                        {{ Form::label('details', 'Informations complémentaires') }}\n' +
             '                                        <p>{{ Form::text('details[ROWID]', null, array('class' => 'form-control')) }}</p>\n' +
             '                                    </div>\n' +
