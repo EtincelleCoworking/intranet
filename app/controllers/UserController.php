@@ -757,7 +757,7 @@ LIMIT 1';
         $content = str_replace(array_keys($macros), array_values($macros), $content);
 
         Mail::send('emails.welcome_email', array('content' => $content), function ($message) use ($user, $admin) {
-            $message->from($_ENV['mail_address'], $_ENV['mail_name'])
+            $message->from($admin->email, $admin->fullname)
                 ->cc($admin->email, $admin->fullname)
                 ->bcc($_ENV['mail_address'], $_ENV['mail_name']);
 
