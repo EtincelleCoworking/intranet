@@ -163,10 +163,10 @@
     <nav class="navbar-default navbar-static-side" role="navigation">
         <div class="sidebar-collapse">
             @if (Auth::user())
-                @if(Auth::user()->role)
-                    @include('layouts.menu.'.Auth::user()->role)
+                @if(Auth::user()->role == 'superadmin')
+                    @include('layouts.menu.superadmin')
                 @else
-                    @include('layouts.menu.member')
+                    @include('layouts.menu.member_shareholder')
                 @endif
             @endif
 
@@ -553,6 +553,8 @@
     moment.locale('fr');
 
 </script>
+
 @yield('javascript')
+
 </body>
 </html>

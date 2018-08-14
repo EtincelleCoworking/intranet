@@ -51,19 +51,18 @@
             {{--<li><a href="{{ URL::route('user_directory') }}">Annuaire</a></li>--}}
         </ul>
     </li>
-    <li{{(Request::is('postbox*')) ? ' class="active"' : '' }}>
-        <a href="{{ URL::route('postbox') }}"><i class="fa fa-envelope"></i> Domiciliation</a>
-    </li>
     <li{{ Request::is('pasttime*') ? ' class="active"' : '' }}>
         <a href="{{ URL::route('pasttime_list') }}">
             <i class="fa fa-clock-o"></i>
             <span class="nav-label">Temps passé</span>
         </a>
     </li>
+    {{--
     <li{{ Request::is('subscription') ? ' class="active"' : '' }}>
         <a href="{{ URL::route('subscription_manage') }}"><i class="fa fa-ticket"></i> <span
                     class="nav-label">Abonnement</span></a>
     </li>
+    --}}
     <li{{ (Request::is('booking*') ? ' class="active"' : '') }}>
         <a href="{{ URL::route('booking_list') }}"><i class="fa fa-calendar"></i> <span
                     class="nav-label">Réservations</span>
@@ -81,6 +80,11 @@
             </li>
         </ul>
     </li>
+
+    <li{{(Request::is('postbox*')) ? ' class="active"' : '' }}>
+        <a href="{{ URL::route('postbox') }}"><i class="fa fa-envelope"></i> Domiciliation</a>
+    </li>
+
     <li{{ (Request::is('planning*') ? ' class="active"' : '') }}>
         <a href="{{ URL::route('planning') }}"><i class="fa fa-calendar-o"></i> <span class="nav-label">Planning</span></a>
     </li>
