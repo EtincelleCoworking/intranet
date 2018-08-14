@@ -19,15 +19,15 @@
                     </tr>
                     @foreach($items as $item)
                         <tr>
-                            <td>
+                            <td width="20%">
                                 {{$item->quantity}}
                                 {{$item->kind->name}}
                                 @if($item->is_important)
                                     <br/><strong>Recommandé</strong>
                                 @endif
                             </td>
-                            <td>{{$item->from_name}}</td>
-                            <td>{{$item->detais}}</td>
+                            <td width="40%">{{$item->from_name}}</td>
+                            <td width="40%">{{$item->details}}</td>
                         </tr>
                     @endforeach
                 </table>

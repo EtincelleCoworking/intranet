@@ -54,6 +54,9 @@
                                     </div>
                                 </div>
                             </td>
+                            <td>
+                                <a href="javascript:void(0);" class="btn btn-danger btn-xs action-delete">Supprimer</a>
+                            </td>
                         </tr>
 
                     </table>
@@ -76,6 +79,7 @@
 
 @section('javascript')
     <script type="text/javascript">
+        var RowCounter = 1;
         var newRowTemplate = '<tr>\n' +
             '                            <td>\n' +
             '                                <div class="row">\n' +
@@ -104,14 +108,20 @@
             '                                    </div>\n' +
             '                                </div>\n' +
             '                            </td>\n' +
+            '                            <td>' +
+            '                                <a href="javascript:void(0);" class="btn btn-danger btn-xs action-delete">Supprimer</a>' +
+            '                            </td> ' +
             '                        </tr>';
 
         $().ready(function () {
             $('.datePicker').datepicker();
+            $('body').on('click', '.action-delete', function () {
+                $(this).parent().parent().remove();
+            });
 
             $('#postboxAdd').click(function () {
                 $('#PostboxContent').append(newRowTemplate
-                    .replace(new RegExp('ROWID', 'g'), $('#PostboxContent tr').length)
+                    .replace(new RegExp('ROWID', 'g'), RowCounter++)
                 );
             });
         });
