@@ -22,7 +22,7 @@
         ?>
 
         <p><a href="#" class="btn btn-primary" id="btn-refresh-personnal-code">Nouveau code</a></p>
-        <p class="text-muted">Ce code vous permettra d'utiliser les box téléphonique. Si le code ne vous conviens pas, vous pouvez en générer un nouveau.</p>
+        <p class="text-muted">Ce code vous permettra d'utiliser les box téléphonique. Si le code ne vous convient pas, vous pouvez en générer un nouveau.</p>
         <table class="table">
             @foreach($rooms as $room)
                 <tr>

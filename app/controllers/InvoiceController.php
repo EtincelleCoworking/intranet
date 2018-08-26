@@ -492,5 +492,46 @@ order by older_invoice_at ASC';
         ));
     }
 
+    public function coworking_pending()
+    {
+        $sql = 'SELECT users.id as user_id, 
+users.default_location_id as location_id,
+concat(cities.name, \' > \', IF(locations.name IS NULL, \'\', locations.name)) as location_name,
+concat(users.firstname, \' \', users.lastname) as user_name,
+date_format(date_past, \'%Y-%m-01\') as period, sum(GREATEST(0, (TIME_TO_SEC(past_times.time_end) - TIME_TO_SEC(past_times.time_start)) / 60 )) as duration FROM `past_times` 
+
+join users on users.id = past_times.user_id
+join locations on users.default_location_id = locations.id
+join cities on cities.id = locations.city_id 
+WHERE ressource_id= ' . Ressource::TYPE_COWORKING . '
+AND is_free = 0
+AND ( invoice_id IS NULL OR invoice_id = 0)
+GROUP BY users.id,  period
+ORDER BY cities.name ASC, locations.name ASC, date_past ASC';
+
+        $data = array();
+        $locations = array();
+        $periods = array();
+        $users = array();
+        foreach (DB::select(DB::raw($sql)) as $item) {
+            $periods[$item->period] = true;
+            $users[$item->user_id] = array(
+                'name' => $item->user_name,
+                'location_id' => $item->location_id
+            );
+            $locations[$item->location_id] = rtrim($item->location_name, ' > ');
+            $data[$item->location_id][$item->user_id][$item->period] = $item->duration;
+        }
+        ksort($periods);
+
+        return View::make('invoice.coworking_pending', array(
+            'periods' => $periods,
+            'data' => $data,
+            'users' => $users,
+            'locations' => $locations,
+        ));
+
+    }
+
 
 }

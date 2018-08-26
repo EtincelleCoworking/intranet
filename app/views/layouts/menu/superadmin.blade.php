@@ -111,6 +111,9 @@
             <li{{ (Request::is('invoice_invoicing')) ? ' class="active"' : '' }}>
                 <a href="{{ URL::route('invoice_invoicing') }}">Facturation</a>
             </li>
+            <li{{ (Request::is('invoice_coworking_pending')) ? ' class="active"' : '' }}>
+                <a href="{{ URL::route('invoice_coworking_pending') }}">F - Coworking</a>
+            </li>
             <li{{ Request::is('invoice_unpaid') ? ' class="active"' : '' }}>
                 <a href="{{ URL::route('invoice_unpaid') }}">Impayés</a>
             </li>
