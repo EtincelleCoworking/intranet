@@ -498,7 +498,7 @@ order by older_invoice_at ASC';
 users.default_location_id as location_id,
 concat(cities.name, \' > \', IF(locations.name IS NULL, \'\', locations.name)) as location_name,
 concat(users.firstname, \' \', users.lastname) as user_name,
-date_format(date_past, \'%Y-%m-01\') as period, sum(GREATEST(0, (TIME_TO_SEC(past_times.time_end) - TIME_TO_SEC(past_times.time_start)) / 60 )) as duration FROM `past_times` 
+date_format(date_past, \'%Y-%m-01\') as period, sum(GREATEST(0, (UNIX_TIMESTAMP(past_times.time_end) - UNIX_TIMESTAMP(past_times.time_start)) / 60 )) as duration FROM `past_times` 
 
 join users on users.id = past_times.user_id
 join locations on users.default_location_id = locations.id

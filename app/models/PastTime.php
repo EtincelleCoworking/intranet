@@ -16,9 +16,9 @@ class PastTime extends Eloquent
     {
         $query->select(
             'ressources.name',
-            DB::raw('HOUR(SEC_TO_TIME(SUM(TIME_TO_SEC(past_times.time_end) - TIME_TO_SEC(past_times.time_start)))) AS hours'),
-            DB::raw('MINUTE(SEC_TO_TIME(SUM(TIME_TO_SEC(past_times.time_end) - TIME_TO_SEC(past_times.time_start)))) AS minutes'),
-            DB::raw('ressources.amount * (HOUR(SEC_TO_TIME(SUM(TIME_TO_SEC(past_times.time_end) - TIME_TO_SEC(past_times.time_start)))) + MINUTE(SEC_TO_TIME(SUM(TIME_TO_SEC(past_times.time_end) - TIME_TO_SEC(past_times.time_start)))) / 60) AS amount')
+            DB::raw('HOUR(SEC_TO_TIME(SUM(UNIX_TIMESTAMP(past_times.time_end) - UNIX_TIMESTAMP(past_times.time_start)))) AS hours'),
+            DB::raw('MINUTE(SEC_TO_TIME(SUM(UNIX_TIMESTAMP(past_times.time_end) - UNIX_TIMESTAMP(past_times.time_start)))) AS minutes'),
+            DB::raw('ressources.amount * (HOUR(SEC_TO_TIME(SUM(UNIX_TIMESTAMP(past_times.time_end) - UNIX_TIMESTAMP(past_times.time_start)))) + MINUTE(SEC_TO_TIME(SUM(UNIX_TIMESTAMP(past_times.time_end) - UNIX_TIMESTAMP(past_times.time_start)))) / 60) AS amount')
         )
             ->join('ressources', 'ressource_id', '=', 'ressources.id')
             ->whereBetween('date_past', array($start, $end))

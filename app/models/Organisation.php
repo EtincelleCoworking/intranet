@@ -159,7 +159,7 @@ LEFT OUTER JOIN past_times
     AND past_times.time_start = booking_item.start_at
     AND past_times.time_end = booking_item.start_at + INTERVAL booking_item.duration MINUTE
     AND past_times.is_free != true
-WHERE past_times.invoice_id = 0
+WHERE (past_times.invoice_id = 0 OR past_times.invoice_id IS NULL)
   AND past_times.id IS NOT NULL
   AND booking_item.start_at BETWEEN "' . $period_start . '" AND "' . $period_end . '"
   AND booking.organisation_id = ' . $this->id;

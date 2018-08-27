@@ -358,7 +358,7 @@ class User extends Eloquent implements UserInterface, RemindableInterface
         return (int)PastTime::where('user_id', $this->id)
             ->whereBetween('date_past', array($from, $to))
             ->where('ressource_id', Ressource::TYPE_COWORKING)
-            ->select(DB::raw('sum((TIME_TO_SEC(past_times.time_end) - TIME_TO_SEC(past_times.time_start)) / 60) as amount'))
+            ->select(DB::raw('sum((UNIX_TIMESTAMP(past_times.time_end) - UNIX_TIMESTAMP(past_times.time_start)) / 60) as amount'))
             ->first()->amount;
     }
 

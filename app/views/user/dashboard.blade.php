@@ -18,7 +18,7 @@
                 </div>
             </div>
             <?php
-            $items = DB::select(DB::raw('SELECT count(*) as cnt FROM past_times WHERE date_past < CURRENT_DATE() AND device_id IS NOT NULL AND confirmed IS NULL AND is_free = 0 AND invoice_id = 0 AND user_id = ' . Auth::id()));
+            $items = DB::select(DB::raw('SELECT count(*) as cnt FROM past_times WHERE date_past < CURRENT_DATE() AND device_id IS NOT NULL AND confirmed IS NULL AND is_free = 0 AND (invoice_id = 0 OR invoice_id IS NULL) AND user_id = ' . Auth::id()));
             if ($items[0]->cnt) {
                 echo '<div class="alert alert-warning" role="alert">';
                 printf('<p>Vous avez actuellement %d plage horaire qui ont été détectées automatiquement et que vous n\'avez pas confirmées</p>', $items[0]->cnt);

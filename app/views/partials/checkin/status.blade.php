@@ -3,7 +3,7 @@
 $items = Cache::get(CheckinController::CACHE_KEY_STATUS, array());
 if (count($items) == 0) {
 
-    $results = DB::select(DB::raw('SELECT locations.id, locations.slug, locations.key, (TIME_TO_SEC(TIMEDIFF(now(), locations_ips.created_at))/3600) < 2 as is_fresh, concat(cities.name, " > ", IF(locations.name IS NULL, "", locations.name)) as name, locations_ips.name as ip FROM locations join cities on locations.city_id = cities.id left outer join locations_ips on locations.id = locations_ips.id ORDER BY locations.name ASC, locations_ips.name ASC'));
+    $results = DB::select(DB::raw('SELECT locations.id, locations.slug, locations.key, ((UNIX_TIMESTAMP(now()) - UNIX_TIMESTAMP(locations_ips.created_at))/3600) < 2 as is_fresh, concat(cities.name, " > ", IF(locations.name IS NULL, "", locations.name)) as name, locations_ips.name as ip FROM locations join cities on locations.city_id = cities.id left outer join locations_ips on locations.id = locations_ips.id ORDER BY locations.name ASC, locations_ips.name ASC'));
     $items = array();
     foreach ($results as $result) {
         $items[] = array(
