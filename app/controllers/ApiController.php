@@ -10,7 +10,7 @@ class ApiController extends BaseController
 
     public function test()
     {
-
+        Event::fire('user.shown', array(Auth::user(), null, null));
 
     }
 
@@ -117,12 +117,12 @@ class ApiController extends BaseController
                     if (null == $query) {
                         $query = DeviceSeen::where(function ($q) use ($device, $item) {
                             $q->where('device_id', '=', $device->id)
-                                ->andWhere('last_seen_at', '=', date('Y-m-d H:i:s', strtotime($item['lastSeen'])));
+                                ->where('last_seen_at', '=', date('Y-m-d H:i:s', strtotime($item['lastSeen'])));
                         });
                     } else {
                         $query->orwhere(function ($q) use ($device, $item) {
                             $q->where('device_id', '=', $device->id)
-                                ->andWhere('last_seen_at', '=', date('Y-m-d H:i:s', strtotime($item['lastSeen'])));
+                                ->where('last_seen_at', '=', date('Y-m-d H:i:s', strtotime($item['lastSeen'])));
                         });
                     }
                 }
