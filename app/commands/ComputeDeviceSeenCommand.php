@@ -58,6 +58,7 @@ class ComputeDeviceSeenCommand extends Command
                 $items = DB::select($sql);
 
                 $last = null;
+                $current = null;
                 $range_start = null;
                 $ids_to_remove = array();
                 foreach ($items as $item) {
@@ -65,6 +66,7 @@ class ComputeDeviceSeenCommand extends Command
                     if (null == $last) {
                         $last = strtotime($item->last_seen_at);
                         $range_start = $last;
+                        $current = $last;
                     } else {
                         $current = strtotime($item->last_seen_at);
 
