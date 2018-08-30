@@ -3,27 +3,6 @@
         font-size: 7pt;
     }
 
-    table#stats-devices thead {
-        display: block;
-    }
-
-    table#stats-devices tbody {
-        display: block;
-        height: 30em; /* 5 times the equivalent of a text "size". */
-        overflow-y: scroll;
-    }
-
-    table#stats-devices thead tr th:nth-child(1),
-    table#stats-devices tbody tr:first-child td:nth-child(1) { /* column 1 ! */
-        width: 10em;
-    }
-
-    table#stats-devices thead tr th:nth-child(2),
-    table#stats-devices thead tr th,
-    table#stats-devices tbody tr td {
-        width: 5em;
-    }
-
     .date-active, .date-inactive, .date-weekend {
         border-left: 1px solid #ffffff;
     }
@@ -81,7 +60,7 @@ if (count($days)) {
 } else {
     $min = date('Y-01-01');
 }
-    $max = date('Y-m-01');
+$max = date('Y-m-01');
 
 $min_year = substr($min, 0, 4);
 $min_month = substr($min, 5, 2);
@@ -93,6 +72,12 @@ $min_month = ($max_year == $min_year) ? $min_month : 1;
 ?>
 
 <table class="table" id="stats-devices">
+    <thead>
+    <td>Mois</td>
+    @for($i = 1; $i <=31; $i++)
+        <td>{{sprintf('%02d', $i)}}</td>
+    @endfor
+    </thead>
     <tbody>
     @for($year = $max_year,$month = $max_month; $year >= $min_year; $year--, $month = 12, $min_month = ($year == $min_year)?$min_month:1)
         @for(; $month >= $min_month; $month--)
