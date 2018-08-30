@@ -25,4 +25,4 @@ Artisan::add(new SendUpcomingSubscriptionRenewNotificationsCommand);
 Artisan::add(new BookingGenerateCommand);
 Artisan::add(new ComputeCoworkingStatsCommand);
 Artisan::add(new ComputeRessourceStatsCommand);
-//Artisan::add(new CatalyzCashflowSyncCommand);
+Artisan::add(new ComputeDeviceSeenCommand);
