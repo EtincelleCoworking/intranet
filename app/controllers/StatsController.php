@@ -765,4 +765,37 @@ GROUP BY organisations.id ORDER by amount DESC');
             )
         );
     }
+
+    public function devices($user_id)
+    {
+
+        $user = User::find($user_id);
+
+        $days = array();
+        $sql = sprintf('select distinct(date(devices_seen_range.start_at)) as was_here_at from devices_seen_range join devices on devices.id = devices_seen_range.device_id where devices.user_id = %d', $user_id);
+        foreach (DB::select($sql) as $item) {
+            $days[$item->was_here_at] = true;
+        }
+        $sql = sprintf('select distinct(date(devices_seen.last_seen_at)) as was_here_at from devices_seen join devices on devices.id = devices_seen.device_id where devices.user_id = %d', $user_id);
+        foreach (DB::select($sql) as $item) {
+            $days[$item->was_here_at] = true;
+        }
+
+        $sql = sprintf('select subscription_from, subscription_to from invoices_items where subscription_user_id = %d', $user_id);
+        $days2 = array();
+        foreach (DB::select($sql) as $item) {
+            $start = $item->subscription_from;
+            while ($start < $item->subscription_to) {
+                $days2[] = $start;
+                $start = date('Y-m-d', strtotime('+1 day', strtotime($start)));
+            }
+        }
+
+        return View::make('stats.devices', array(
+                'user' => $user,
+                'days' => $days2,
+                'days2' => array_keys($days),
+            )
+        );
+    }
 }

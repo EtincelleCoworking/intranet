@@ -248,6 +248,8 @@
                        class="btn btn-xs btn-default">Affiliation</a>
                     <a href="{{ URL::route('user_modify', $user->id) }}"
                        class="btn btn-xs btn-default">Modifier</a>
+                    <a href="{{ URL::route('stats_devices', $user->id) }}"
+                       class="btn btn-xs btn-default">Présence</a>
                     <a href="{{URL::route('user_login_as', $user->id)}}"
                        title="Se connecter en tant que {{$user->fullname}}"
                        class="btn btn-xs btn-default"><i class="fa fa-user-secret"></i></a>
