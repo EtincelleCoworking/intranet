@@ -36,12 +36,12 @@
         background-color: #f66a0a !important;
     }
 
-    .date-active {
-        background-color: #3DCF5F;
+    .date-active.date-weekend {
+        background-color: #1bad3d !important;
     }
 
-    .date-active.date-weekend {
-        background-color: #2cbe4e !important;
+    .date-today{
+        border: 1px solid red !important;
     }
 
 </style>
@@ -61,6 +61,7 @@ if (count($days)) {
     $min = date('Y-01-01');
 }
 $max = date('Y-m-01');
+$today = date('Y-m-d');
 
 $min_year = substr($min, 0, 4);
 $min_month = substr($min, 5, 2);
@@ -98,6 +99,9 @@ $min_month = ($max_year == $min_year) ? $min_month : 1;
                         }
                         if (in_array(date('N', mktime(0, 0, 0, $month, $day, $year)), array(6, 7))) {
                             $classes[] = 'weekend';
+                        }
+                        if($today == $current){
+                            $classes[] = 'today';
                         }
                     } else {
                         $classes[] = 'invalid';
