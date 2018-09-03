@@ -126,6 +126,20 @@ class Invoice extends Eloquent
         return sprintf('%0.2f', $total);
     }
 
+    public function getTotalWithTaxesAttribute()
+    {
+        $total = 0;
+
+        if ($this->items) {
+            /** @var InvoiceItem $value */
+            foreach ($this->items as $key => $value) {
+                $total += $value->amount * (1 + $value->vat->value / 100);;
+            }
+        }
+
+        return sprintf('%0.2f', $total);
+    }
+
     public function getStripeFeesAttribute()
     {
         $total = 0;

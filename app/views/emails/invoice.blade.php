@@ -10,7 +10,7 @@
             <td class="content-block">
 
                 <p>Nous vous faisons parvenir ci-joint notre facture n°{{$invoice->ident}}
-                    du {{date('d/m/Y', strtotime($invoice->date_invoice))}} correspondant aux prestations suivantes:
+                    du {{date('d/m/Y', strtotime($invoice->date_invoice))}} d'un montant total de {{$invoice->totalWithTaxes}}&euro;TTC correspondant aux prestations suivantes:
                 </p>
                 <ul>
                     @foreach ($invoice->items as $item)
