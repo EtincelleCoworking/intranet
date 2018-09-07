@@ -146,7 +146,7 @@ class Subscription extends Eloquent
             $invoice->user_id = $this->user_id;
         }
         $organisation = $this->organisation;
-        if ($organisation->tva_number) {
+        if ($organisation->tva_number && ($organisation->country_id != Country::FRANCE)) {
             $invoice->details = sprintf('N° TVA Intracommunautaire: %s', $organisation->tva_number);
             $vat_types_id = VatType::whereValue(0)->first()->id;
         } else {

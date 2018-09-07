@@ -4,7 +4,7 @@
 */
 class Country extends Eloquent
 {
-
+const FRANCE = 73;
     /**
      * The database table used by the model.
      *
