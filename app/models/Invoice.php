@@ -481,7 +481,7 @@ class Invoice extends Eloquent
         }
         Mail::send('emails.invoice', array('invoice' => $invoice), function ($message) use ($invoice, $target_user) {
             $message->from($_ENV['mail_address'], $_ENV['mail_name'])
-                ->bcc($_ENV['mail_address'], $_ENV['mail_name']);
+                ->bcc($_ENV['mail_bcc']);
 
             $message->to($target_user->email, $target_user->fullname);
 

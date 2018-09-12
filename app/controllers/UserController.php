@@ -759,7 +759,7 @@ LIMIT 1';
         Mail::send('emails.welcome_email', array('content' => $content), function ($message) use ($user, $admin) {
             $message->from($admin->email, $admin->fullname)
                 ->cc($admin->email, $admin->fullname)
-                ->bcc($_ENV['mail_address'], $_ENV['mail_name']);
+                ->bcc($_ENV['mail_bcc']);
 
             $admins = User::where('is_staff', '=', true)
                 ->join('locations', 'users.default_location_id', '=', 'locations.id')

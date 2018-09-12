@@ -149,6 +149,7 @@ class TeamPlanningController extends BaseController
         $events = BookingItem::join('ressources', 'booking_item.ressource_id', '=', 'ressources.id')
             ->join('locations', 'ressources.location_id', '=', 'locations.id')
             ->where('booking_item.start_at', '<=', Input::get('end'))
+            ->where('locations.city_id', '=', Auth::user()->location->city_id)
             ->where(DB::raw('DATE_ADD(start_at, INTERVAL duration MINUTE)'), '>=', Input::get('start'))
             ->with('ressource')
             ->select('booking_item.*');

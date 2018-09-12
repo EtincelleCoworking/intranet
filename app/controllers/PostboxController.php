@@ -99,7 +99,7 @@ class PostboxController extends BaseController
             'notification' => $notification, 'items' => $items),
             function ($message) use ($count, $to, $organisation) {
                 $message->from($_ENV['mail_address'], $_ENV['mail_name'])
-                    ->bcc($_ENV['mail_address'], $_ENV['mail_name']);
+                    ->bcc($_ENV['mail_bcc']);
 
                 $message->to($to->email, $to->fullname);
                 $message->subject(sprintf('%1$s - %2$d courrier%3$s reçu%3$s pour %4$s',

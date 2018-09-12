@@ -415,7 +415,7 @@ class BookingController extends Controller
             }
 
             $m->from($_ENV['organisation_email'], $_ENV['organisation_name'])
-                ->bcc($_ENV['organisation_email'], $_ENV['organisation_name'])
+                ->bcc($_ENV['mail_bcc'])
                 ->to($booking->user->email, $booking->user->fullname)
                 ->subject(html_entity_decode(sprintf('%s - %s - %s', $_ENV['organisation_name'], $title, $start_at->format('d/m/Y H:i'))));
         });
@@ -448,7 +448,7 @@ class BookingController extends Controller
             }
 
             $m->from($_ENV['organisation_email'], $_ENV['organisation_name'])
-                ->bcc($_ENV['organisation_email'], $_ENV['organisation_name'])
+                ->bcc($_ENV['mail_bcc'])
                 ->to($booking_item->booking->user->email, $booking_item->booking->user->fullname)
                 ->subject(html_entity_decode(sprintf('%s - Modification de réservation - %s', $_ENV['organisation_name'], $update)));
         });
@@ -458,7 +458,7 @@ class BookingController extends Controller
     {
         Mail::send('booking::emails.deleted', array('booking_item' => $booking_item, 'ressource' => $ressource, 'booking' => $booking, 'user' => $user), function ($m) use ($user, $booking_item) {
             $m->from($_ENV['organisation_email'], $_ENV['organisation_name'])
-                ->bcc($_ENV['organisation_email'], $_ENV['organisation_name'])
+                ->bcc($_ENV['mail_bcc'])
                 ->to($user->email, $user->fullname)
                 ->subject(html_entity_decode(sprintf('%s - Annulation de réservation - %s', $_ENV['organisation_name'], date('d/m/Y H:i', strtotime($booking_item->start_at)))));
         });
