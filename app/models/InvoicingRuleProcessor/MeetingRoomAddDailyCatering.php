@@ -16,12 +16,10 @@ class InvoicingRuleProcessor_MeetingRoomAddDailyCatering extends InvoicingRulePr
                     $participant_count = (int)$tokens[1];
                 }
 
-                $new_line = new InvoiceItem();
-                $new_line->invoice_id = $line->invoice_id;
+                $new_line = $this->createAdditionnalLine($line);
                 $new_line->amount = static::UNIT_PRICE * $participant_count;
                 $new_line->ressource_id = Ressource::TYPE_CATERING_INTERNAL;
                 $new_line->text = sprintf('Formule séminaire - %0.2f€/pers.<br />%d participants', static::UNIT_PRICE, $participant_count);
-                $new_line->vat_types_id = $line->vat_types_id;
 
                 // -- Stack discounts
                 while ((count($invoice_lines) > 0)

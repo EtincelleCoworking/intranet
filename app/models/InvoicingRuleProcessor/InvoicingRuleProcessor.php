@@ -43,4 +43,23 @@ class InvoicingRuleProcessor
         return $result;
     }
 
+    protected function createDiscountLine($invoice_line, $text = '', $amount = 0)
+    {
+        $new_line = $this->createAdditionnalLine($invoice_line);
+        $new_line->ressource_id = $invoice_line->ressource_id;
+        $new_line->amount = $amount;
+        $new_line->text = $text;
+        return $new_line;
+
+    }
+
+    protected function createAdditionnalLine($invoice_line)
+    {
+        $new_line = new InvoiceItem();
+        $new_line->invoice_id = $invoice_line->invoice_id;
+        $new_line->vat_types_id = $invoice_line->vat_types_id;
+        return $new_line;
+
+    }
+
 }

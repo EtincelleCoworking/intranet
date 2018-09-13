@@ -14,13 +14,8 @@ class InvoicingRuleProcessor_MeetingRoomFlatPrice10 extends InvoicingRuleProcess
                 $duration = $line->amount / $line->ressource->amount;
                 $hourly_discount = ($line->ressource->amount - static::PRICING);
 
-                $new_line = new InvoiceItem();
-                $new_line->invoice_id = $line->invoice_id;
-                $new_line->ressource_id = $line->ressource_id;
-                $new_line->vat_types_id = $line->vat_types_id;
-                $new_line->amount = -$duration * $hourly_discount;
-                $new_line->text = sprintf('Réduction commerciale - %s', $line->ressource->name);
-                $result[] = $new_line;
+                $result[] = $this->createDiscountLine($line,
+                    sprintf('Réduction commerciale - %s', $line->ressource->name), -$duration * $hourly_discount);
             }
         }
 
