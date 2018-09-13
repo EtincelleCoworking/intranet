@@ -116,6 +116,27 @@ class InvoiceItem extends Eloquent
             ;
     }
 
+    public function scopeTotalCountPerMonthAndCity($query, $city_id)
+    {
+        return $query
+            ->join('invoices', function ($j) {
+                $j->on('invoices_items.invoice_id', '=', 'invoices.id')
+                    ->where('type', '=', 'F');
+            })
+            ->join('users', 'invoices_items.subscription_user_id', '=', 'users.id')
+            ->join('locations', function ($j) use($city_id) {
+                $j->on('users.default_location_id', '=', 'locations.id')
+                    ->where('locations.city_id', '=', $city_id);
+            })
+            ->select(
+                DB::raw('date_format(invoices.date_invoice, "%Y-%m") as period'),
+                DB::raw('count(distinct(invoices_items.subscription_user_id)) as total')
+            )
+            ->groupBy('period')
+            ->orderBy('period', 'DESC')//->get()
+            ;
+    }
+
     public function scopeWithoutStakeholders($query)
     {
         return $query

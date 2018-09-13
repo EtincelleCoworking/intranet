@@ -7,7 +7,7 @@
 @section('breadcrumb')
     <div class="row wrapper border-bottom white-bg page-heading">
         <div class="col-sm-4">
-            <h2>Statistiques</h2>
+            <h2>Statistiques pour {{Auth::user()->location->city->name}}</h2>
         </div>
 
     </div>

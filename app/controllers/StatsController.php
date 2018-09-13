@@ -78,7 +78,7 @@ class StatsController extends BaseController
     {
         $charts = array();
 
-        foreach (InvoiceItem::TotalCountPerMonth()->WithoutStakeholders()->byKind()->get() as $item) {
+        foreach (InvoiceItem::TotalCountPerMonthAndCity(Auth::user()->location->city_id)->WithoutStakeholders()->byKind()->get() as $item) {
             $charts[$item->kind ? $item->kind : self::LABEL_OTHERS][$item->period] = $item->total;
         }
 
