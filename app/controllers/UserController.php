@@ -565,7 +565,6 @@ order by invoices.date_invoice desc
             'email' => $user->email,
             'first_name' => $user->firstname,
             'last_name' => $user->lastname,
-            'token' => $_ENV['slack_token'],
             'resend' => 'true'
         );
 
@@ -574,30 +573,18 @@ order by invoices.date_invoice desc
             $fields_string .= $key . '=' . $value . '&';
         }
         rtrim($fields_string, '&');
-        $ch = curl_init();
-        curl_setopt($ch, CURLOPT_URL, sprintf('%s/api/users.admin.invite', $_ENV['slack_url']));
-        curl_setopt($ch, CURLOPT_USERAGENT, 'Mozilla/5.0 (Windows NT 6.1) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/41.0.2228.0 Safari/537.36');
-        curl_setopt($ch, CURLOPT_HEADER, 0);
-        curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
-        curl_setopt($ch, CURLOPT_POST, count($fields));
-        curl_setopt($ch, CURLOPT_POSTFIELDS, $fields_string);
-        curl_setopt($ch, CURLOPT_TIMEOUT, 10);
-        $output = curl_exec($ch);
-        $httpcode = curl_getinfo($ch, CURLINFO_HTTP_CODE);
-        curl_close($ch);
 
-        if ($httpcode == 200) {
-            $json = json_decode($output);
-            if (false == $json->ok) {
-                return sprintf('Erreur: %s', $json->error);
-            }
 
-            $user->slack_invite_sent_at = new \DateTime();
-            $user->save();
-            return $user->slack_invite_sent_at->format('d/m/Y');
+        $slack = new Slack($_ENV['slack_token']);
+        $json = $slack->call('users.admin.invite', $fields);
+
+        if (false == $json->ok) {
+            return sprintf('Erreur: %s', $json->error);
         }
-        throw new Exception('An error has occured: ' . $output);
 
+        $user->slack_invite_sent_at = new \DateTime();
+        $user->save();
+        return $user->slack_invite_sent_at->format('d/m/Y');
     }
 
     public function birthday()

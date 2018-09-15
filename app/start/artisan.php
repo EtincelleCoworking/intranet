@@ -26,3 +26,5 @@ Artisan::add(new BookingGenerateCommand);
 Artisan::add(new ComputeCoworkingStatsCommand);
 Artisan::add(new ComputeRessourceStatsCommand);
 Artisan::add(new ComputeDeviceSeenCommand);
+Artisan::add(new SlackSyncUsersCommand);
+Artisan::add(new SlackDeleteOldFilesCommand);
