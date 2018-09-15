@@ -67,12 +67,13 @@ class SlackSyncUsersCommand extends Command
                     }
                 }
             }elseif(isset($slack_ids[$user->slack_id])) {
-                unset($emails[$user->email]);
+                unset($emails[$slack_ids[$user->slack_id]]);
                 unset($slack_ids[$user->slack_id]);
             }
         }
 
-        print_r($emails);
+        //print_r($emails);
+        print_r($slack_ids);
 
     }
 
