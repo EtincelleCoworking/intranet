@@ -82,7 +82,7 @@
     </li>
 
     <li{{(Request::is('postbox*')) ? ' class="active"' : '' }}>
-        <a href="{{ URL::route('postbox') }}"><i class="fa fa-envelope"></i> Domiciliation</a>
+        <a href="{{ URL::route('postbox') }}"><i class="fa fa-envelope"></i> <span class="nav-label">Domiciliation</span></a>
     </li>
 
     <li{{ (Request::is('planning*') ? ' class="active"' : '') }}>

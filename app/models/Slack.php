@@ -78,4 +78,26 @@ class Slack
         }
         return $result ? json_decode($result, true) : false;
     }
+
+    public static function postMessage($endpoint, $data)
+    {
+        $ch = curl_init($endpoint);
+        curl_setopt($ch, CURLOPT_CUSTOMREQUEST, "POST");
+
+        curl_setopt($ch, CURLOPT_HTTPHEADER, array('Content-Type: application/x-www-form-urlencoded'));
+        curl_setopt($ch, CURLOPT_POSTFIELDS, "payload=" . urlencode(json_encode($data)));
+        curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+        $result = curl_exec($ch);
+
+        $errors = curl_error($ch);
+        if ($errors) {
+            Log::error($errors, array('context' => 'user.shown'));
+        }
+        $responseCode = curl_getinfo($ch, CURLINFO_HTTP_CODE);
+        Log::info(sprintf('Slack payload: %s', json_encode($data)), array('context' => 'user.shown'));
+        Log::info(sprintf('Slack response (HTTP Code: %s): %s', $responseCode, $result), array('context' => 'user.shown'));
+        curl_close($ch);
+
+        return $result;
+    }
 }

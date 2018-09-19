@@ -215,7 +215,7 @@ class Equipment extends Eloquent
                                     $color_name, $this->kind, $data[$color_name],
                                     URL::route('location_show', $this->location->slug), str_replace('>', '&gt;', $this->location->fullName))
                             );
-                            $this->slack(Config::get('etincelle.slack_staff_toulouse'), $slack_message);
+                            Slack::postMessage(Config::get('etincelle.slack_staff_toulouse'), $slack_message);
                             $new_data[$color_name]['notified10_at'] = date('Y-m-d H:i:s');
                         } elseif (($data[$color_name] < 20) && empty($existing_data[$color_name]['notified20_at'])) {
                             $slack_message = array(
@@ -223,7 +223,7 @@ class Equipment extends Eloquent
                                     $color_name, $this->kind, $data[$color_name],
                                     URL::route('location_show', $this->location->slug), str_replace('>', '&gt;', $this->location->fullName))
                             );
-                            $this->slack(Config::get('etincelle.slack_staff_toulouse'), $slack_message);
+                            Slack::postMessage(Config::get('etincelle.slack_staff_toulouse'), $slack_message);
                             $new_data[$color_name]['notified20_at'] = date('Y-m-d H:i:s');
                         } elseif (($data[$color_name] < 30) && empty($existing_data[$color_name]['notified_at'])) {
                             $slack_message = array(
@@ -231,7 +231,7 @@ class Equipment extends Eloquent
                                     $color_name, $this->kind, $data[$color_name],
                                     URL::route('location_show', $this->location->slug), str_replace('>', '&gt;', $this->location->fullName))
                             );
-                            $this->slack(Config::get('etincelle.slack_staff_toulouse'), $slack_message);
+                            Slack::postMessage(Config::get('etincelle.slack_staff_toulouse'), $slack_message);
                             $new_data[$color_name]['notified_at'] = date('Y-m-d H:i:s');
                         }
                         $new_data[$color_name]['status'] = $data[$color_name];
@@ -246,25 +246,5 @@ class Equipment extends Eloquent
         }
     }
 
-    protected function slack($endpoint, $data)
-    {
-        $ch = curl_init($endpoint);
-        curl_setopt($ch, CURLOPT_CUSTOMREQUEST, "POST");
-
-        curl_setopt($ch, CURLOPT_HTTPHEADER, array('Content-Type: application/x-www-form-urlencoded'));
-        curl_setopt($ch, CURLOPT_POSTFIELDS, "payload=" . urlencode(json_encode($data)));
-        curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
-        $result = curl_exec($ch);
-
-        $errors = curl_error($ch);
-        if ($errors) {
-            Log::error($errors, array('context' => 'user.shown'));
-        }
-        $responseCode = curl_getinfo($ch, CURLINFO_HTTP_CODE);
-        Log::info(sprintf('Slack payload: %s', json_encode($data)), array('context' => 'user.shown'));
-        Log::info(sprintf('Slack response (HTTP Code: %s): %s', $responseCode, $result), array('context' => 'user.shown'));
-        curl_close($ch);
-
-        return $result;
-    }
+   
 }

@@ -93,6 +93,10 @@ Route::group(['before' => 'member'], function() {
     Route::get('/postbox', array('as' => 'postbox', 'uses' => 'PostboxController@index'));
     Route::get('/postbox/{organisation_id}', array('as' => 'postbox_details', 'uses' => 'PostboxController@details'));
 
+
+    Route::get('/gift/photoshoot', array('as' => 'gift_photoshoot', 'uses' => 'GiftController@photoshoot'));
+    Route::get('/gift/photoshoot/book/{gift_photoshoot_id}', array('as' => 'gift_photoshoot_book', 'uses' => 'GiftController@photoshoot_book'))->where(array('gift_photoshoot_id' => '[0-9]+'));
+    Route::get('/gift/photoshoot/cancel/{gift_photoshoot_id}', array('as' => 'gift_photoshoot_cancel', 'uses' => 'GiftController@photoshoot_cancel'))->where(array('gift_photoshoot_id' => '[0-9]+'));
 });
 
 Route::group(['before' => 'shareholder'], function() {
@@ -251,6 +255,12 @@ Route::group(['before' => 'superadmin'], function() {
 
     Route::get('/postbox/{organisation_id}/notify', array('as' => 'postbox_notify', 'uses' => 'PostboxController@notify'));
     Route::post('/postbox/{organisation_id}/notify', array('as' => 'postbox_notify_handle', 'uses' => 'PostboxController@notify_handle'));
+
+    Route::get('/user/gift/{user_id}/enable/{kind}', array('as' => 'user_gift_enable', 'uses' => 'GiftController@enable'));
+    Route::get('/user/gift/{user_id}/disable/{kind}', array('as' => 'user_gift_disable', 'uses' => 'GiftController@disable'));
+    Route::get('/user/gift/{user_id}', array('as' => 'user_gift', 'uses' => 'GiftController@index'));
+
+
 });
 
 // JSON

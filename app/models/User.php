@@ -483,4 +483,10 @@ class User extends Eloquent implements UserInterface, RemindableInterface
     {
         return $query->where('is_staff', true);
     }
+
+    public function getUserGift($kind){
+        return UserGift::join('gift_kind', 'gift_kind.id', '=', 'user_gift.kind_id')
+            ->where('gift_kind.code', '=', $kind)
+            ->where('user_id', '=', $this->id)->first();
+    }
 }

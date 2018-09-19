@@ -112,7 +112,8 @@ order by invoices.date_invoice desc
         }
 
         //var_dump($subscription_stats);exit;
-        return View::make('user.modify', array('user' => $user,
+        return View::make('user.modify', array(
+            'user' => $user,
             'subscription_stats' => $subscription_stats));
     }
 
@@ -200,7 +201,7 @@ order by invoices.date_invoice desc
                         }
                         Input::file('avatar')->move($target_folder, $filename);
                     }
-                    return Redirect::route('user_profile', $user->id)->with('mSuccess', 'Cet utilisateur a bien été modifié');
+                    return Redirect::route('user_profile', $user->id)->with('mSuccess', 'Les modifications ont été enregistrées');
                 } else {
                     return Redirect::route('user_modify', $user->id)->with('mError', 'Impossible de modifier cet utilisateur');
                 }
