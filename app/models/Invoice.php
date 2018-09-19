@@ -15,7 +15,9 @@ class Invoice extends Eloquent
 
     public function scopeInvoiceOnly($query)
     {
-        return $query->whereType('F')->whereNull('date_canceled');
+        return $query->whereType('F')
+            //->whereNull('date_canceled')
+            ;
     }
 
     public function scopeUnpaid($query)
@@ -23,7 +25,7 @@ class Invoice extends Eloquent
         return $query->whereNull('date_payment');
     }
 
-    public function scopeQuoteOnly($query, $filtre)
+    public function scopeQuoteOnly($query, $filtre = '')
     {
         if ($filtre == 'canceled') {
             return $query->whereType('D')->whereNotNull('date_canceled');
