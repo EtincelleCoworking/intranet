@@ -9,13 +9,14 @@
     <div class="row wrapper border-bottom white-bg page-heading">
         <div class="col-sm-10">
             <h2>
-
                 Gestion des casiers pour {{$location->fullname}}
             </h2>
         </div>
         <div class="col-sm-2">
-            <a href="{{URL::route('locker_admin_pdf', $location->id)}}"
-               class="btn btn-default" tar>PDF</a>
+            <div class="title-action">
+                <a href="{{URL::route('locker_admin_pdf', $location->id)}}"
+                   class="btn btn-default">PDF</a>
+            </div>
         </div>
 
     </div>
