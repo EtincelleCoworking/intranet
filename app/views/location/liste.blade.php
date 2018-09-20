@@ -69,6 +69,8 @@
                                        class="btn btn-primary btn-xs">Voir</a>
                                     <a href="{{ URL::route('location_modify', $location->id) }}"
                                        class="btn btn-default btn-xs">Modifier</a>
+                                    <a href="{{ URL::route('locker_admin', $location->id) }}"
+                                       class="btn btn-default btn-xs">Casiers</a>
                                 </td>
                             </tr>
                         @endforeach

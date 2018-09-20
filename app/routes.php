@@ -97,6 +97,11 @@ Route::group(['before' => 'member'], function() {
     Route::get('/gift/photoshoot', array('as' => 'gift_photoshoot', 'uses' => 'GiftController@photoshoot'));
     Route::get('/gift/photoshoot/book/{gift_photoshoot_id}', array('as' => 'gift_photoshoot_book', 'uses' => 'GiftController@photoshoot_book'))->where(array('gift_photoshoot_id' => '[0-9]+'));
     Route::get('/gift/photoshoot/cancel/{gift_photoshoot_id}', array('as' => 'gift_photoshoot_cancel', 'uses' => 'GiftController@photoshoot_cancel'))->where(array('gift_photoshoot_id' => '[0-9]+'));
+
+    Route::get('/locker', array('as' => 'locker', 'uses' => 'LockerController@index'));
+
+    Route::get('/locker/{id}/toggle/{secret}', array('as' => 'locker_toggle', 'uses' => 'LockerController@toggle'));
+
 });
 
 Route::group(['before' => 'shareholder'], function() {
@@ -259,6 +264,11 @@ Route::group(['before' => 'superadmin'], function() {
     Route::get('/user/gift/{user_id}/enable/{kind}', array('as' => 'user_gift_enable', 'uses' => 'GiftController@enable'));
     Route::get('/user/gift/{user_id}/disable/{kind}', array('as' => 'user_gift_disable', 'uses' => 'GiftController@disable'));
     Route::get('/user/gift/{user_id}', array('as' => 'user_gift', 'uses' => 'GiftController@index'));
+
+    Route::get('/lockers/{location_id}/pdf', array('as' => 'locker_admin_pdf', 'uses' => 'LockerController@pdf'));
+    Route::get('/lockers/{location_id}', array('as' => 'locker_admin', 'uses' => 'LockerController@admin'));
+    Route::get('/locker/{id}/history', array('as' => 'locker_history', 'uses' => 'LockerController@history'));
+    Route::get('/locker/{id}/release', array('as' => 'locker_release', 'uses' => 'LockerController@release'));
 
 
 });

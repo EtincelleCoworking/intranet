@@ -64,6 +64,11 @@
             {{--<li><a href="{{ URL::route('user_directory') }}">Annuaire</a></li>--}}
         </ul>
     </li>
+    <li{{ Request::is('locker') ? ' class="active"' : '' }}>
+        <a href="{{ URL::route('locker') }}"><i class="fa fa-lock"></i> <span
+                    class="nav-label">Casier</span></a>
+    </li>
+
     <li{{ Request::is('user/affiliate') ? ' class="active"' : '' }}>
         <a href="{{ URL::route('user_affiliate') }}"><i class="fa fa-users"></i> <span
                     class="nav-label">Affiliation</span></a>
