@@ -14,7 +14,7 @@
             </h2>
         </div>
         <div class="col-sm-2">
-            <a href="{{URL::route('locker_admin_pdf', $cabinet->location_id)}}"
+            <a href="{{URL::route('locker_admin_pdf', $location->id)}}"
                class="btn btn-default" tar>PDF</a>
         </div>
 
