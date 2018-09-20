@@ -28,7 +28,9 @@
     "asgrim/ofxparser": "^1.2",
     "twilio/sdk": "^5.0",
     "darkaonline/ripcord": "^0.1.6",
-    "clegginabox/pdf-merger": "dev-master"
+    "clegginabox/pdf-merger": "dev-master",
+    "sabre/dav": "3.3.x-dev",
+    "ziplr/php-qr-code": "^1.0"
   },
   "autoload": {
     "classmap": [

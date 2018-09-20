@@ -66,6 +66,10 @@ class LockerController extends \BaseController
         background-color: #efefef;
         text-align: right;
     }
+    
+    p{
+    font-size: 20pt;
+    }
 </style>
 </head>
 <body>
@@ -74,11 +78,12 @@ class LockerController extends \BaseController
     <h1>%locker%</h1>
 </div>
 <div class="page">
-    <p>Ce casier est à ta disposition pour laisser tes affaires pendant une durée raisonnable. Afin de nous permettre de mieux comprendre comment il est utilisé et de mieux gérer les besoins d’ajouts ou de réguler les usages, merci de nous signaler que tu viens de le prendre en activant le QR code ci-dessous (la plupart des smartphones le détectent si tu essayes de le prendre en photo).</p>
+    <p>Ce casier est à ta disposition pour laisser tes affaires.</p>
+    <p>Afin de nous permettre de mieux comprendre comment il est utilisé et de mieux gérer les besoins d’ajouts ou de réguler les usages, merci de nous signaler que tu viens de le prendre en activant le QR code ci-dessous (la plupart des smartphones le détectent si tu essayes de le prendre en photo).</p>
 
-    <img src="%locker_qrcode_url%" height="150" width="150" style="text-align: center;" />
+    <img src="%locker_qrcode_url%" height="500" width="500" style=" display: block; margin-left: auto; margin-right: auto; width: 50%;" />
     
-    <p>Quand tu n’en a plus besoin, merci de signaler que tu viens de le libérer en scannant à nouveau ce code ou directement depuis ton intranet : https://intranet.coworking-toulouse.com/locker </p>
+    <p>Quand tu n’en as plus besoin, merci de signaler que tu viens de le libérer en scannant à nouveau ce QRcode ou directement depuis ton intranet dans la section "Casier".</p>
     <p>Si tu as besoin d'aide, contacte un membre de l'équipe dans la zone d’accueil ou au 05 64 88 01 30 (renvoyé sur nos téléphones portables).</p>
     
 </div>
@@ -91,7 +96,7 @@ EOS;
                 $macros = array(
                     '%locker%' => $locker->name,
                     '%cabinet%' => $cabinet->name,
-                    '%locker_qrcode_url%' => sprintf('%s/lockers/%d_%s.png', $_ENV['site_url'], $locker->id, $locker->secret),
+                    '%locker_qrcode_url%' => public_path(sprintf('lockers/%d_%s.png', $locker->id, $locker->secret)) ,
                 );
 
                 $filename = sprintf('%s/lockers/%d_%s.png', public_path(), $locker->id, $locker->secret);
@@ -106,7 +111,6 @@ EOS;
             }
         }
 
-        echo implode('',$pages); exit;
         $pdf = App::make('snappy.pdf');
         $output = $pdf->getOutputFromHtml($pages,
             array(
@@ -115,7 +119,7 @@ EOS;
         $result = new \Illuminate\Http\Response($output, 200, array(
             'Content-Type' => 'application/pdf',
             'Content-Disposition' => sprintf('filename="%s_%s.pdf"', $cabinet->name, $locker->name)));
-        //endregion
+        return $result;
     }
 
     public function history($id)

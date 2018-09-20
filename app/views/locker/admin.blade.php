@@ -7,10 +7,15 @@
 
 @section('breadcrumb')
     <div class="row wrapper border-bottom white-bg page-heading">
-        <div class="col-sm-12">
+        <div class="col-sm-10">
             <h2>
+
                 Gestion des casiers pour {{$location->fullname}}
             </h2>
+        </div>
+        <div class="col-sm-2">
+            <a href="{{URL::route('locker_admin_pdf', $cabinet->location_id)}}"
+               class="btn btn-default" tar>PDF</a>
         </div>
 
     </div>
@@ -22,8 +27,6 @@
             @foreach($cabinets as $cabinet)
                 <div class="ibox">
                     <div class="ibox-title">
-                        <a href="{{URL::route('locker_admin_pdf', $cabinet->location_id)}}"
-                           class="btn btn-primary pull-right" tar>PDF</a>
                         <h3>{{$cabinet->name}}</h3>
                         <p>{{$cabinet->description}}</p>
                     </div>
@@ -54,15 +57,17 @@
                                         <td class="col-md-4">-</td>
                                     @endif
                                     <td class="col-md-2">
-                                            <a href="{{URL::route('locker_history', $locker->id)}}"
-                                               class="btn btn-default btn-xs">Historique</a>
+                                        <a href="{{URL::route('locker_history', $locker->id)}}"
+                                           class="btn btn-primary btn-xs">Historique</a>
 
                                         @if($locker->current_usage)
                                             <a href="{{URL::route('locker_release', $locker->id)}}"
                                                class="btn btn-danger btn-xs">Libérer</a>
                                         @else
-                                            <a href="{{URL::route('locker_toggle', array('id' => $locker->id, 'secret' => $locker->secret))}}"
+                                            {{--
                                                class="btn btn-primary btn-xs">Toggle</a>
+                                            <a href="{{URL::route('locker_toggle', array('id' => $locker->id, 'secret' => $locker->secret))}}"
+                                            --}}
                                         @endif
                                     </td>
                                 </tr>

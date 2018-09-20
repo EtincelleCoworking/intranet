@@ -80,6 +80,11 @@
             </li>
         </ul>
     </li>
+    <li{{ Request::is('locker') ? ' class="active"' : '' }}>
+        <a href="{{ URL::route('locker') }}"><i class="fa fa-lock"></i> <span
+                    class="nav-label">Casier</span></a>
+    </li>
+
 
     <li{{(Request::is('postbox*')) ? ' class="active"' : '' }}>
         <a href="{{ URL::route('postbox') }}"><i class="fa fa-envelope"></i> <span class="nav-label">Domiciliation</span></a>
