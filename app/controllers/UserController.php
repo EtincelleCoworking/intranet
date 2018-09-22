@@ -27,10 +27,10 @@ class UserController extends BaseController
             'email' => Input::get('email'),
             'password' => Input::get('password')
         );
-
-        if (Auth::attempt($user, Input::get('remember'))) {
-            if (Auth::user()->enabled) {
-                return Redirect::intended(URL::route('dashboard'));
+        $result = Auth::attempt($user, Input::get('remember'));
+        if ($result) {
+            if (Auth::user()->is_enabled) {
+                return Redirect::intended('dashboard');
             }
             return Redirect::route('user_login')->with('mError', 'Connexion impossible, merci de contacter un administrateur')->withInput();
         } else {
