@@ -11,6 +11,15 @@
             <h2>
                 Gestion des casiers
             </h2>
+            <?php
+            if (Auth::user()->isSuperAdmin()) {
+                $ids = DB::table('locker_cabinet')->distinct('location_id')->lists('location_id');
+                printf('Gestion : ');
+                foreach (Location::whereIn('id', $ids)->get() as $location) {
+                    printf('<a href="%s" class="btn btn-default btn-xs">%s</a>', URL::route('locker_admin', $location->id), $location->fullname);
+                }
+            }
+            ?>
         </div>
 
     </div>
