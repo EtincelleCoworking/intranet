@@ -51,6 +51,7 @@
                                 <div class="col-md-6">
                                     {{ Form::label('code', 'Code') }}
                                     <p>{{ Form::text('code', null, array('class' => 'form-control')) }}</p>
+                                    <p class="text-muted">Ce code est présent dans le casier</p>
                                 </div>
                             </div>
                             <input type="submit" value="Enregistrer" class="btn btn-primary"/>
