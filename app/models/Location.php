@@ -80,6 +80,7 @@ class Location extends Eloquent
                 '2016-12' => 3870,
                 '2017-11' => 2430,
                 '2018-04' => 1850,
+                '2018-11' => 0,
             ),
             'Carmes' => array(
                 '2016-01' => 500,
@@ -93,7 +94,7 @@ class Location extends Eloquent
                 '2017-12' => 3735,
                 '2018-01' => 3565,
                 '2018-02' => 3705,
-                '2018-08' => 3430,// - Caroline
+                '2018-08' => 3430,
             ),
             'Wilson' => array(
                 '2015-01' => 7000,
@@ -105,7 +106,7 @@ class Location extends Eloquent
                 '2017-12' => 15080 + 4480,
                 '2018-02' => 17685 + 4480,
                 '2018-08' => 16265 + 4060,// - Caroline
-                '2018-09' => 17685 + 4480,// - Caroline
+                '2018-09' => 17685 + 4480,
             ),
             //'Toulouse > Espace W' => array(),
             '36 rue Alsace Lorraine' => array(

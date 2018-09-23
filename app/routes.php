@@ -99,6 +99,7 @@ Route::group(['before' => 'member'], function() {
     Route::get('/gift/photoshoot/cancel/{gift_photoshoot_id}', array('as' => 'gift_photoshoot_cancel', 'uses' => 'GiftController@photoshoot_cancel'))->where(array('gift_photoshoot_id' => '[0-9]+'));
 
     Route::get('/locker', array('as' => 'locker', 'uses' => 'LockerController@index'));
+    Route::post('/locker/take', array('as' => 'locker_take', 'uses' => 'LockerController@take'));
 
     Route::get('/locker/{id}/toggle/{secret}', array('as' => 'locker_toggle', 'uses' => 'LockerController@toggle'));
 
@@ -269,6 +270,9 @@ Route::group(['before' => 'superadmin'], function() {
     Route::get('/lockers/{location_id}', array('as' => 'locker_admin', 'uses' => 'LockerController@admin'));
     Route::get('/locker/{id}/history', array('as' => 'locker_history', 'uses' => 'LockerController@history'));
     Route::get('/locker/{id}/release', array('as' => 'locker_release', 'uses' => 'LockerController@release'));
+    Route::get('/locker/{id}/assign', array('as' => 'locker_assign', 'uses' => 'LockerController@assign'));
+    Route::post('/locker/{id}/assign', array('as' => 'locker_assign_check', 'uses' => 'LockerController@assign_check'));
+
 
 
 });

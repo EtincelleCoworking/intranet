@@ -65,6 +65,8 @@
                                             <a href="{{URL::route('locker_release', $locker->id)}}"
                                                class="btn btn-danger btn-xs">Libérer</a>
                                         @else
+                                            <a href="{{URL::route('locker_assign', $locker->id)}}"
+                                               class="btn btn-default btn-xs">Affecter</a>
                                             {{--
                                                class="btn btn-primary btn-xs">Toggle</a>
                                             <a href="{{URL::route('locker_toggle', array('id' => $locker->id, 'secret' => $locker->secret))}}"
