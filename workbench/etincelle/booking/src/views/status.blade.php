@@ -27,11 +27,11 @@
         </div>
         <div class="jumbotron">
             <div class="h2">{{$ressource->name}}</div>
-            <div class="h1">{{$current_booking['title']}}</div>
+            <div class="h1">{{$current_booking->title}}</div>
             <div class="h2">
-                {{date('H:i', strtotime($current_booking['start_at']))}}
+                {{date('H:i', strtotime($current_booking->start_at))}}
                 -
-                {{date('H:i', strtotime($current_booking['end_at']))}}
+                {{date('H:i', strtotime($current_booking->end_at))}}
             </div>
             <div class="progress" style="height: 100px">
                 <div style="width: {{$current_booking_progress}}%" aria-valuemax="100" aria-valuemin="0" aria-valuenow="{{$current_booking_progress}}" role="progressbar"
@@ -41,9 +41,9 @@
         </div>
         <div class="row">
             <div class="col-md-12 h2">
-                @if($next_booking_item)
-                    Prochaine réservation à {{date('H:i', strtotime($next_booking['start_at']))}}
-                    - {{$next_booking['title']}}
+                @if($next_booking)
+                    Prochaine réservation à {{date('H:i', strtotime($next_booking->start_at))}}
+                    - {{$next_booking->title}}
                 @else
                     Pas d'autre réservation après celle là
                 @endif
@@ -61,7 +61,7 @@
             <div class="h1">Disponible</div>
             <div class="h2">
                 @if($next_booking)
-                    Jusqu'à {{date('H:i', strtotime($next_booking['start_at']))}}
+                    Jusqu'à {{date('H:i', strtotime($next_booking->start_at))}}
                     <small>({{$free_duration}})</small>
                 @else
                     Disponible toute la journée
@@ -71,10 +71,10 @@
         <div class="row">
             <div class="col-md-12 h2">
                 @if($next_booking)
-                    Prochaine réservation : {{$next_booking['title']}}
-                    ({{date('H:i', strtotime($next_booking['start_at']))}}
+                    Prochaine réservation : {{$next_booking->title}}
+                    ({{date('H:i', strtotime($next_booking->start_at))}}
                     -
-                    {{date('H:i', strtotime($next_booking['end_at']))}})
+                    {{date('H:i', strtotime($next_booking->end_at))}})
                 @endif
             </div>
         </div>
