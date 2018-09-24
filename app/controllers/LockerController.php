@@ -81,16 +81,31 @@ class LockerController extends \BaseController
 </div>
 <div class="page">
     <p>Ce casier est à ta disposition pour laisser tes affaires.</p>
-    <p>Afin de nous permettre de mieux comprendre comment il est utilisé et de mieux gérer les besoins d’ajouts ou de réguler les usages, merci de nous signaler que tu viens de le prendre.</p>
-    <p>Pour cela tu peux :</p>
-    <ul>
-        <li>Activer le QR code ci-dessous<br /> <small>Avec un iPhone il suffit de le cibler avec l'appareil photo,
-        <br />avec un autre smartphone il ta faudra peut être une application capable de lire les QRcode.</small><br />
-        <br /><img src="%locker_qrcode_url%" height="500" width="500" style=" display: block; margin-left: auto; margin-right: auto; width: 50%;" /><br /></li>
-        <li>Aller sur l'intranet dans la section "Casier" et en utilisant le code suivant: <b>%locker_code%</b></li>
-    </ul>
+    <p>Afin de nous permettre de mieux comprendre comment il est utilisé et de mieux gérer les besoins d’ajouts ou de réguler les usages, merci de nous signaler que tu viens de le prendre. Pour cela tu peux :</p>
+    <table>
+    <tr valign="top">
+    <td width="45%">
+    <p>Activer le QR code ci-dessous :</p>
+    <br />
+    </td>
+    <td width="10%" align="center">
+        <p>OU</p>
+    </td>
+    <td width="45%">
+    <p>Aller sur l'intranet dans la section "Casier" et en utilisant le code :</p>
+    </td>
+</tr>
+<tr valign="top">
+<td><img src="%locker_qrcode_url%" height="350" width="350" style="" />
 
+<br /> <p><small>Avec un iPhone il suffit de le cibler avec l'appareil photo, avec un autre smartphone il ta faudra peut être une application capable de lire les QRcode.</small></p>
+</td>
+<td></td>
+<td align="center"><div style="font-size: 60pt">%locker_code%</div></td>
+</tr>
+</table>
     
+      
     
     <p>Quand tu n’en as plus besoin, merci de signaler que tu viens de le libérer en scannant à nouveau ce QRcode ou directement depuis ton intranet dans la section "Casier".</p>
     <p>Si tu as besoin d'aide, contacte un membre de l'équipe dans la zone d’accueil ou au 05 64 88 01 30 (renvoyé sur nos téléphones portables).</p>
