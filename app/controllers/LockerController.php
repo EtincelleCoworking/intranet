@@ -98,7 +98,7 @@ class LockerController extends \BaseController
 <tr valign="top">
 <td><img src="%locker_qrcode_url%" height="350" width="350" style="" />
 
-<br /> <p><small>Avec un iPhone il suffit de le cibler avec l'appareil photo, avec un autre smartphone il ta faudra peut être une application capable de lire les QRcode.</small></p>
+<br /> <p><small>Avec un iPhone il suffit de le cibler avec l'appareil photo, avec un autre smartphone il te faudra peut être une application capable de lire les QRcode.</small></p>
 </td>
 <td></td>
 <td align="center"><div style="font-size: 60pt">%locker_code%</div></td>
