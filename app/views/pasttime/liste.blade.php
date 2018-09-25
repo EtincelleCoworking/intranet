@@ -49,14 +49,16 @@
                     <div class="row">
                         <div class="col-md-3 input-group-sm">{{ Form::text('filtre_start', Session::get('filtre_pasttime.start') ? date('d/m/Y', strtotime(Session::get('filtre_pasttime.start'))) : date('01/m/Y'), array('class' => 'form-control datePicker')) }}</div>
                         <div class="col-md-3 input-group-sm">{{ Form::text('filtre_end', ((Session::get('filtre_pasttime.end')) ? date('d/m/Y', strtotime(Session::get('filtre_pasttime.end'))) : date('t', date('m')).'/'.date('m/Y')), array('class' => 'form-control datePicker')) }}</div>
-                        <div class="col-md-3 input-group-sm">
-                            {{ Form::checkbox('filtre_toinvoice', true, Session::has('filtre_pasttime.toinvoice') ? Session::get('filtre_pasttime.toinvoice') : false) }}
-                            A facturer
-                        </div>
-                        <div class="col-md-3 input-group-sm">
-                            {{ Form::checkbox('filtre_exclude_coworking', true, Session::has('filtre_pasttime.exclude_coworking') ? Session::get('filtre_pasttime.exclude_coworking') : false) }}
-                            Exclure le coworking
-                        </div>
+                        @if (Auth::user()->isSuperAdmin())
+                            <div class="col-md-3 input-group-sm">
+                                {{ Form::checkbox('filtre_toinvoice', true, Session::has('filtre_pasttime.toinvoice') ? Session::get('filtre_pasttime.toinvoice') : false) }}
+                                A facturer
+                            </div>
+                            <div class="col-md-3 input-group-sm">
+                                {{ Form::checkbox('filtre_exclude_coworking', true, Session::has('filtre_pasttime.exclude_coworking') ? Session::get('filtre_pasttime.exclude_coworking') : false) }}
+                                Exclure le coworking
+                            </div>
+                        @endif
                     </div>
                     <div class="row">
                         <div class="col-md-12">
@@ -153,7 +155,9 @@
                                     <th>Total</th>
                                     <th>Confirmation</th>
                                     <th>Facture</th>
-                                    <th>Actions</th>
+                                    @if (Auth::user()->isSuperAdmin())
+                                        <th>Actions</th>
+                                    @endif
                                 </tr>
                                 </thead>
                                 <tbody>
@@ -175,11 +179,12 @@
                                                     @else
                                                         {{ $time->organisation->name }}
                                                     @endif
-                                                        @if ($time->user)
-                                                            (<a href="{{ URL::route('user_modify', $time->user->id) }}">{{ $time->user->fullname }}</a>
-                                                            <a href="?filtre_submitted=1&filtre_user_id={{ $time->user->id }}"><i
-                                                                        class="fa fa-filter"></i></a>)
-                                                        @endif
+                                                    @if ($time->user)
+                                                        (
+                                                        <a href="{{ URL::route('user_modify', $time->user->id) }}">{{ $time->user->fullname }}</a>
+                                                        <a href="?filtre_submitted=1&filtre_user_id={{ $time->user->id }}"><i
+                                                                    class="fa fa-filter"></i></a>)
+                                                    @endif
                                                 @else
                                                     @if ($time->user)
                                                         <a href="{{ URL::route('user_modify', $time->user->id) }}">{{ $time->user->fullname }}</a>
@@ -229,15 +234,16 @@
                                                 @endif
                                             @endif
                                         </td>
+                                        @if (Auth::user()->isSuperAdmin())<a
                                         <td>
                                             <a href="{{ URL::route('pasttime_modify', $time->id) }}"
                                                class="btn btn-xs btn-default">Modifier</a>
-                                            @if (Auth::user()->isSuperAdmin())<a
-                                                    href="{{ URL::route('pasttime_delete', $time->id) }}"
-                                                    class="btn btn-xs btn-danger" data-method="delete"
-                                                    data-confirm="Etes-vous certain de vouloir supprimer cette ligne ?"
-                                                    rel="nofollow">Supprimer</a>@endif
+                                            href="{{ URL::route('pasttime_delete', $time->id) }}"
+                                            class="btn btn-xs btn-danger" data-method="delete"
+                                            data-confirm="Etes-vous certain de vouloir supprimer cette ligne ?"
+                                            rel="nofollow">Supprimer</a>
                                         </td>
+                                        @endif
                                     </tr>
                                 @endforeach
                                 </tbody>
