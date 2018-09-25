@@ -234,7 +234,7 @@
                                                 @endif
                                             @endif
                                         </td>
-                                        @if (Auth::user()->isSuperAdmin())<a
+                                        @if (Auth::user()->isSuperAdmin())
                                         <td>
                                             <a href="{{ URL::route('pasttime_modify', $time->id) }}"
                                                class="btn btn-xs btn-default">Modifier</a>
