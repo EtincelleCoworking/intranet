@@ -238,10 +238,10 @@
                                         <td>
                                             <a href="{{ URL::route('pasttime_modify', $time->id) }}"
                                                class="btn btn-xs btn-default">Modifier</a>
-                                            href="{{ URL::route('pasttime_delete', $time->id) }}"
-                                            class="btn btn-xs btn-danger" data-method="delete"
-                                            data-confirm="Etes-vous certain de vouloir supprimer cette ligne ?"
-                                            rel="nofollow">Supprimer</a>
+                                            <a href="{{ URL::route('pasttime_delete', $time->id) }}"
+                                               class="btn btn-xs btn-danger" data-method="delete"
+                                               data-confirm="Etes-vous certain de vouloir supprimer cette ligne ?"
+                                               rel="nofollow">Supprimer</a>
                                         </td>
                                         @endif
                                     </tr>
