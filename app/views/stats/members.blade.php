@@ -1,13 +1,13 @@
 @extends('layouts.master')
 
 @section('meta_title')
-    Evolution des membres
+    Evolution des membres sur {{Auth::user()->location->city->name}}
 @stop
 
 @section('breadcrumb')
     <div class="row wrapper border-bottom white-bg page-heading">
-        <div class="col-sm-4">
-            <h2>Evolution des membres</h2>
+        <div class="col-sm-12">
+            <h2>Evolution des membres sur {{Auth::user()->location->city->name}}</h2>
         </div>
 
     </div>

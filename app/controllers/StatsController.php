@@ -221,10 +221,13 @@ GROUP BY locations.id, subscription_kind.id', Ressource::TYPE_COWORKING)));
     {
         $items = DB::select(DB::raw(sprintf('SELECT ii.subscription_user_id, if(ii.subscription_from = "0000-00-00 00:00:00", i.days, date_format(ii.subscription_from, "%%Y%%m")) as days
           FROM invoices i JOIN invoices_items ii ON i.id = ii.invoice_id 
+          JOIN users u ON u.id = ii.subscription_user_id
+          JOIN locations on locations.id = u.default_location_id
           WHERE i.type = "F" AND ii.ressource_id = %d 
-            AND ii.subscription_user_id IS NOT NULL 
             AND ii.subscription_from <= "%s 23:59:59"
-            ORDER BY days DESC, i.organisation_id ASC', Ressource::TYPE_COWORKING, date('Y-m-t'))));
+            AND locations.city_id = %d
+            ORDER BY days DESC, i.organisation_id ASC', Ressource::TYPE_COWORKING,
+            date('Y-m-t'), Auth::user()->location->city_id)));
         $results = array();
         $users = array();
         foreach ($items as $item) {
@@ -238,7 +241,8 @@ GROUP BY locations.id, subscription_kind.id', Ressource::TYPE_COWORKING)));
           JOIN users u ON u.id = pt.user_id
           WHERE pt.ressource_id = %d 
             AND u.role <> "superadmin"
-            AND pt.date_past BETWEEN "%s" AND "%s"', Ressource::TYPE_COWORKING, date('Y-m-01'), date('Y-m-t'))));
+            AND pt.date_past BETWEEN "%s" AND "%s"',
+            Ressource::TYPE_COWORKING, date('Y-m-01'), date('Y-m-t'))));
         $period = date('Ym');
         foreach ($items as $item) {
             if (!isset($results[$period])) {
