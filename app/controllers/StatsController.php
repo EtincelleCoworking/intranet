@@ -239,9 +239,11 @@ GROUP BY locations.id, subscription_kind.id', Ressource::TYPE_COWORKING)));
         }
         $items = DB::select(DB::raw(sprintf('SELECT distinct(pt.user_id) FROM past_times pt
           JOIN users u ON u.id = pt.user_id
-          WHERE pt.ressource_id = %d 
+          JOIN locations on locations.id = u.default_location_id
+          WHERE locations.city_id = %d
+            AND pt.ressource_id = %d 
             AND u.role <> "superadmin"
-            AND pt.date_past BETWEEN "%s" AND "%s"',
+            AND pt.date_past BETWEEN "%s" AND "%s"', Auth::user()->location->city_id,
             Ressource::TYPE_COWORKING, date('Y-m-01'), date('Y-m-t'))));
         $period = date('Ym');
         foreach ($items as $item) {
