@@ -832,10 +832,10 @@ GROUP BY organisations.id ORDER by amount DESC');
 
             switch ($kind) {
                 case 'new':
-                    $sql_addon = sprintf('AND (SELECT min(past_times2.time_start) as started_at FROM past_times as past_times2 WHERE past_times2.user_id = past_times.user_id) BETWEEN  "%1$s" AND "%2$s"', $period_start, $lookup_start);
+                    $sql_addon = sprintf('AND users.coworking_started_at BETWEEN  "%1$s" AND "%2$s"', $period_start, $lookup_start);
                     break;
                 case 'old':
-                    $sql_addon = sprintf('AND (SELECT min(past_times2.time_start) as started_at FROM past_times as past_times2 WHERE past_times2.user_id = past_times.user_id) NOT BETWEEN  "%1$s" AND "%2$s"', $period_start, $lookup_start);
+                    $sql_addon = sprintf('AND users.coworking_started_at NOT BETWEEN  "%1$s" AND "%2$s"', $period_start, $lookup_start);
                     break;
                 case 'all':
                 default:

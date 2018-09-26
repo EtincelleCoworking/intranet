@@ -163,6 +163,9 @@ where  subscription_user_id is null;');
         });
         //endregion
 
+
+
+
         $this->checkMonitoring();
         $this->everyFiveMinutes(array($this, 'sendSmsNotificationForCloseMeetings'));
 
@@ -201,6 +204,19 @@ where  subscription_user_id is null;');
 
         $this->dailyAt('06:00', function () {
             Artisan::call('etincelle:update-member-status');
+        });
+
+        $this->hourly(function () {
+            Log::info('Cron: Define users.coworking_started_at');
+            DB::statement('UPDATE  users as B
+ JOIN (
+     SELECT A.id, MIN(past_times.time_start) as started_at
+                  FROM users as A JOIN past_times ON A.id = past_times.user_id
+                  WHERE A.coworking_started_at IS NULL 
+                   AND past_times.ressource_id = ' . Ressource::TYPE_COWORKING . '
+                  GROUP BY A.id
+              ) as A ON B.id = A.id 
+	SET B.coworking_started_at = A.started_at');
         });
 
         $this->finish();
@@ -499,46 +515,6 @@ group by booking.id
         if (date('m', $this->timestamp) === '01' && date('d', $this->timestamp) === '01' && date('H:i', $this->timestamp) === $this->runAt) call_user_func($callback);
     }
 
-
-    protected function slack($endpoint, $data)
-    {
-//        $data = array();
-//        $data['text'] = $message;
-//        if($icon){
-//            $data['icon_emoji'] = $icon;
-//        }
-//
-//        array(
-//            "text"          =>  $message,
-//            "icon_emoji"    =>  ':white_check_mark:',
-//            'attachments'=> array(
-//                array(
-//                    'title'=>'title',
-//                    'title_link'=>'https://frenchwork.fr',
-//                    'text'=>'text',
-//                )
-//            )
-//        )
-        $ch = curl_init($endpoint);
-        curl_setopt($ch, CURLOPT_CUSTOMREQUEST, "POST");
-
-        curl_setopt($ch, CURLOPT_HTTPHEADER, array('Content-Type: application/x-www-form-urlencoded'));
-        curl_setopt($ch, CURLOPT_POSTFIELDS, "payload=" . urlencode(json_encode($data)));
-        curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
-        $result = curl_exec($ch);
-
-        $errors = curl_error($ch);
-        if ($errors) {
-            Log::error($errors, array('context' => 'user.shown'));
-        }
-        $responseCode = curl_getinfo($ch, CURLINFO_HTTP_CODE);
-        Log::info(sprintf('Slack payload: %s', json_encode($data)), array('context' => 'user.shown'));
-        Log::info(sprintf('Slack response (HTTP Code: %s): %s', $responseCode, $result), array('context' => 'user.shown'));
-        curl_close($ch);
-
-        return $result;
-    }
-
     protected function generateMissingBookingKeyForUsers()
     {
         DB::statement('UPDATE users SET booking_key = md5(UUID())  WHERE booking_key IS NULL');
@@ -678,7 +654,7 @@ group by booking.id
                     }
                 }
             }
-            $this->slack(Config::get('etincelle.slack_staff_toulouse'), $slack_message);
+            Slack::postMessage(Config::get('etincelle.slack_staff_toulouse'), $slack_message);
         }
         //endregion
 
@@ -704,7 +680,7 @@ group by booking.id
             if (!empty($equipment->description)) {
                 $data['text'] .= "\n_" . $equipment->description . '_';
             }
-            $this->slack(Config::get('etincelle.slack_staff_toulouse'), $data);
+            Slack::postMessage(Config::get('etincelle.slack_staff_toulouse'), $data);
             $sql = sprintf('UPDATE equipment SET notified_at = NULL WHERE id = %d', $equipment->id);
             DB::statement($sql);
         }
