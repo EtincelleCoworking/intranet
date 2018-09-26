@@ -102,6 +102,7 @@ Route::group(['before' => 'member'], function() {
     Route::post('/locker/take', array('as' => 'locker_take', 'uses' => 'LockerController@take'));
 
     Route::get('/locker/{id}/toggle/{secret}', array('as' => 'locker_toggle', 'uses' => 'LockerController@toggle'));
+    Route::get('/locker/{id}/release', array('as' => 'locker_release', 'uses' => 'LockerController@release'));
 
 });
 
@@ -269,7 +270,6 @@ Route::group(['before' => 'superadmin'], function() {
     Route::get('/lockers/{location_id}/pdf', array('as' => 'locker_admin_pdf', 'uses' => 'LockerController@pdf'));
     Route::get('/lockers/{location_id}', array('as' => 'locker_admin', 'uses' => 'LockerController@admin'));
     Route::get('/locker/{id}/history', array('as' => 'locker_history', 'uses' => 'LockerController@history'));
-    Route::get('/locker/{id}/release', array('as' => 'locker_release', 'uses' => 'LockerController@release'));
     Route::get('/locker/{id}/assign', array('as' => 'locker_assign', 'uses' => 'LockerController@assign'));
     Route::post('/locker/{id}/assign', array('as' => 'locker_assign_check', 'uses' => 'LockerController@assign_check'));
 

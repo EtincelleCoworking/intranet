@@ -178,7 +178,7 @@ EOS;
             return Redirect::route('locker')->with('mError', 'Ce casier est déjà libre');
         }
 
-        if ($locker->current_usage->user_id != Auth::id()) {
+        if (!Auth::user()->isSuperAdmin() && ($locker->current_usage->user_id != Auth::id())) {
             return Redirect::route('locker')->with('mError', 'Vous ne pouvez pas libérer le casier d\'un autre utilisateur');
         }
         $locker->current_usage->released_at = date('Y-m-d H:i:s');
