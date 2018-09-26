@@ -27,7 +27,7 @@
             <p>
 
                 @foreach(array('new' => 'Nouveaux', 'old' => 'Anciens', 'all' => 'Tous') as $value => $kind_caption)
-                    <a href="{{URL::route('stats_loyalty', array('city_id' => $c->id, 'kind' => $value))}}"
+                    <a href="{{URL::route('stats_loyalty', array('city_id' => $city->id, 'kind' => $value))}}"
                        class="btn btn-xs
                             @if($value == $kind)
                                btn-primary
