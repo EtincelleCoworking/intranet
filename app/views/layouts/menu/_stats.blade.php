@@ -37,5 +37,9 @@
         <li{{ Request::is('stats/coworking') ? ' class="active"' : '' }}>
             <a href="{{ URL::route('stats_coworking') }}">Coworking</a>
         </li>
+        <li{{ Request::is('stats/loyalty') ? ' class="active"' : '' }}>
+            <a href="{{ URL::route('stats_loyalty') }}">Fidélité</a>
+        </li>
     </ul>
+
 </li>
