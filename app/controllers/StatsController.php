@@ -805,11 +805,13 @@ GROUP BY organisations.id ORDER by amount DESC');
         );
     }
 
-    public function loyalty($city_id = null)
+    public function loyalty($city_id = null, $kind = null)
     {
         if (null == $city_id) {
             $city_id = Auth::user()->location->city_id;
         }
+
+
         $sql = sprintf('SELECT MIN(time_start) as min, MAX(time_start) as max 
           FROM past_times 
             JOIN users on past_times.user_id = users.id 
@@ -828,19 +830,46 @@ GROUP BY organisations.id ORDER by amount DESC');
             $lookup_start = date('Y-m-01', strtotime('+1 month', $current));
             $lookup_end = date('Y-m-01', strtotime('+3 month', strtotime($lookup_start)));
 
+            switch ($kind) {
+                case 'new':
+                    $sql_addon = sprintf('AND (SELECT min(past_times2.time_start) as started_at FROM past_times as past_times2 WHERE past_times2.user_id = past_times.user_id) BETWEEN  "%1$s" AND "%2$s"', $period_start, $lookup_start);
+                    break;
+                case 'old':
+                    $sql_addon = sprintf('AND (SELECT min(past_times2.time_start) as started_at FROM past_times as past_times2 WHERE past_times2.user_id = past_times.user_id) NOT BETWEEN  "%1$s" AND "%2$s"', $period_start, $lookup_start);
+                    break;
+                case 'all':
+                default:
+                    $kind = 'all';
+                    $sql_addon = '';
+
+            }
+
+
             $sql = sprintf('select was_here , came_again , 100 * came_again / was_here  as ratio
 from (select count(distinct(past_times.user_id)) as was_here 
 from past_times
 join users on users.id = past_times.user_id
 join locations on users.default_location_id = locations.id
-where past_times.time_start >= "%1$s 00:00:00" AND past_times.time_start < "%2$s 00:00:00" AND past_times.ressource_id = %4$d AND users.free_coworking_time = 0 AND users.is_hidden_member = 0 and locations.city_id = %5$d) as was_here,
+where past_times.time_start >= "%1$s 00:00:00" 
+  AND past_times.time_start < "%2$s 00:00:00" 
+  AND past_times.ressource_id = %4$d 
+  AND users.free_coworking_time = 0 
+  AND users.is_hidden_member = 0
+  %6$s  
+  and locations.city_id = %5$d) as was_here,
 (select count(distinct(past_times2.user_id)) as came_again from past_times as past_times2
 where past_times2.time_start >= "%2$s 00:00:00" AND past_times2.time_start < "%3$s" AND past_times2.ressource_id = %4$d AND past_times2.user_id IN (select distinct(past_times.user_id)
 from past_times
 join users on users.id = past_times.user_id
 join locations on users.default_location_id = locations.id
-where past_times.time_start >= "%1$s 00:00:00" AND past_times.time_start < "%2$s 00:00:00" AND past_times.ressource_id = %4$d AND users.free_coworking_time = 0 AND users.is_hidden_member = 0 and locations.city_id = %5$d)) as came_again
-', $period_start, $lookup_start, $lookup_end, Ressource::TYPE_COWORKING, $city_id);
+where past_times.time_start >= "%1$s 00:00:00" 
+AND past_times.time_start < "%2$s 00:00:00" 
+AND past_times.ressource_id = %4$d 
+AND users.free_coworking_time = 0 
+AND users.is_hidden_member = 0
+  %6$s  
+and locations.city_id = %5$d)) as came_again
+', $period_start, $lookup_start, $lookup_end, Ressource::TYPE_COWORKING, $city_id, $sql_addon);
             $item = DB::selectOne($sql);
 
             $result[$period_start] = array(
@@ -854,6 +883,7 @@ where past_times.time_start >= "%1$s 00:00:00" AND past_times.time_start < "%2$s
         return View::make('stats.loyalty', array(
                 'result' => $result,
                 'city' => City::find($city_id),
+                'kind' => $kind,
             )
         );
     }

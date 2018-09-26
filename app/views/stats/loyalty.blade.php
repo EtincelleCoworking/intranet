@@ -8,19 +8,37 @@
     <div class="row wrapper border-bottom white-bg page-heading">
         <div class="col-sm-12">
             <h2>Fidélité Coworking - {{$city->name}}</h2>
+        </div>
+        <div class="col-sm-6">
             <p>
                 @foreach(City::join('locations', 'locations.city_id', '=','cities.id')->select('cities.*')->distinct()->orderBy('cities.name', 'ASC')->get() as $c)
-                    <a href="{{URL::route('stats_loyalty', $c->id)}}"
+                    <a href="{{URL::route('stats_loyalty', array('city_id' => $c->id, 'kind'=>$kind))}}"
                        class="btn btn-xs
                             @if($c->id == $city->id)
                                btn-primary
-                               @else
+@else
                                btn-default
-                               @endif
+@endif
                                ">{{$c->name}}</a>
                 @endforeach
             </p>
         </div>
+        <div class="col-sm-6 text-right">
+            <p>
+
+                @foreach(array('new' => 'Nouveaux', 'old' => 'Anciens', 'all' => 'Tous') as $value => $kind_caption)
+                    <a href="{{URL::route('stats_loyalty', array('city_id' => $c->id, 'kind' => $value))}}"
+                       class="btn btn-xs
+                            @if($value == $kind)
+                               btn-primary
+@else
+                               btn-default
+@endif
+                               ">{{$kind_caption}}</a>
+                @endforeach
+            </p>
+        </div>
+
 
     </div>
 @stop
@@ -36,7 +54,7 @@
                         <tr>
                             <th class="col-md-2">Mois</th>
                             <th class="col-md-2">Coworkers</th>
-                            <th class="col-md-2">Revenus<br />
+                            <th class="col-md-2">Revenus<br/>
                                 <small>dans les 3 mois</small>
                             </th>
                             <th class="col-md-6">Ratio</th>
