@@ -315,7 +315,7 @@ group by booking.id
                             date('H\hi', strtotime($previous['start_at'])),
                             date('H\hi', $previous_ends_at));
 
-                        $this->slack(Config::get('etincelle.slack_staff_toulouse'), array(
+                        Slack::postMessage(Config::get('etincelle.slack_staff_toulouse'), array(
                             'text' => sprintf('SMS envoyé à %s %s <%s> au %s', $previous['user']['firstname'], $previous['user']['lastname'], $previous['user']['email'], User::formatPhoneNumber($phone)),
                             'attachments' => array(
                                 array(
