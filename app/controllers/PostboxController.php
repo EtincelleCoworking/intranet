@@ -37,7 +37,7 @@ class PostboxController extends BaseController
         }
 
         $notifications = PostboxNotification::where('organisation_id', '=', $organisation->id)
-            ->orderBy('occurs_at', 'ASC')
+            ->orderBy('occurs_at', 'DESC')
             ->with('items')
             ->with('reporter')
             ->get();
