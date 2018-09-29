@@ -106,7 +106,8 @@ class Location extends Eloquent
                 '2017-12' => 15080 + 4480,
                 '2018-02' => 17685 + 4480,
                 '2018-08' => 16265 + 4060,// - Caroline
-                '2018-09' => 17685 + 4480,
+                '2018-09' => 17685 + 4480 - 1080, // Julie partiel
+                '2018-10' => 17685 + 4480,
             ),
             //'Toulouse > Espace W' => array(),
             '36 rue Alsace Lorraine' => array(
