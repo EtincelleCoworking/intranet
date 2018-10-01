@@ -40,7 +40,7 @@
                                     </td>
                                     <td class="col-md-2">
                                         @if($item->user_id)
-                                            @if($item->user_id == $item->user_id)
+                                            @if($item->user_id == Auth::id())
                                                 <a href="{{URL::route('gift_photoshoot_cancel', $item->id)}}"
                                                    class="btn btn-danger btn-xs">Annuler</a>
                                             @endif
