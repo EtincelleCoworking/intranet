@@ -887,4 +887,18 @@ and locations.city_id = %5$d)) as came_again
             )
         );
     }
+
+    public function coworking_details($city_id){
+        $sql = 'SELECT users.firstname, users.lastname, users.id, users.email 
+,  MAX(past_times.time_start) as last_seen_at
+FROM users 
+join past_times on users.id = past_times.user_id
+join locations on locations.id = users.default_location_id
+where locations.city_id = 3 AND users.coworking_started_at IS NOT NULL group by users.id order by last_seen_at desc';
+        return View::make('stats.coworking_details', array(
+                'users' => DB::select($sql),
+                'city' => City::find($city_id),
+            )
+        );
+    }
 }

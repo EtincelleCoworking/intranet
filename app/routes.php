@@ -126,6 +126,7 @@ Route::group(['before' => 'shareholder'], function() {
     Route::get('/stats/ressource/{ressource_id}/usage', array('as' => 'stats_ressource_usage', 'uses' => 'StatsController@ressource_usage'));
     Route::get('/stats/devices/{user_id}', array('as' => 'stats_devices', 'uses' => 'StatsController@devices'));
     Route::get('/stats/loyalty/{location_id?}/{kind?}', array('as' => 'stats_loyalty', 'uses' => 'StatsController@loyalty'));
+    Route::get('/stats/coworking/{location_id}', array('as' => 'stats_coworking_details', 'uses' => 'StatsController@coworking_details'));
 });
 
 Route::group(['before' => 'superadmin'], function() {
