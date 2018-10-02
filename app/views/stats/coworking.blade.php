@@ -6,8 +6,15 @@
 
 @section('breadcrumb')
     <div class="row wrapper border-bottom white-bg page-heading">
-        <div class="col-sm-4">
+        <div class="col-sm-8">
             <h2>Coworking - {{$city->name}}</h2>
+        </div>
+        <div class="col-sm-4">
+            <div class="title-action">
+                @if(Auth::user()->isSuperAdmin())
+                    <a href="{{URL::route('stats_coworking_details', $city->id)}}" class="btn btn-primary">Details</a>
+                @endif
+            </div>
         </div>
 
     </div>
@@ -17,8 +24,10 @@
 
     <style type="text/css">
         @foreach($colors as $index => $color)
-            .percent<?php echo 10*$index; ?>                        {
+            .percent<?php echo 10*$index; ?>                          {
             background-color: #{{$color}}
+
+
 
 
 
@@ -27,7 +36,7 @@
 
         }
 
-        table#stats-coworking tr.ferian td.percent<?php echo 10*$index; ?>        {
+        table#stats-coworking tr.ferian td.percent<?php echo 10*$index; ?>          {
             background: none;
         }
 

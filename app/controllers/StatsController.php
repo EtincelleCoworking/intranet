@@ -645,7 +645,7 @@ GROUP BY organisations.id ORDER by amount DESC');
                 'combined' => $combined,
                 'start_at' => $start_at,
                 'end_at' => $end_at,
-                'overall' => array_sum($overall) / count($overall),
+                'overall' => (count($overall) > 0) ? (array_sum($overall) / count($overall) ): 0,
                 'capacity' => $capacity
             )
         );
@@ -888,13 +888,15 @@ and locations.city_id = %5$d)) as came_again
         );
     }
 
-    public function coworking_details($city_id){
-        $sql = 'SELECT users.firstname, users.lastname, users.id, users.email 
-,  MAX(past_times.time_start) as last_seen_at
+    public function coworking_details($city_id)
+    {
+        $sql = sprintf('SELECT users.firstname, users.lastname, users.id, users.email 
+,  MAX(past_times.time_start) as last_seen_at, coworking_started_at
 FROM users 
 join past_times on users.id = past_times.user_id
 join locations on locations.id = users.default_location_id
-where locations.city_id = 3 AND users.coworking_started_at IS NOT NULL group by users.id order by last_seen_at desc';
+where locations.city_id = %d AND users.coworking_started_at IS NOT NULL AND users.role != "superadmin" AND users.is_hidden_member = 0 
+group by users.id order by last_seen_at desc', $city_id);
         return View::make('stats.coworking_details', array(
                 'users' => DB::select($sql),
                 'city' => City::find($city_id),
