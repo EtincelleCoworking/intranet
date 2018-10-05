@@ -768,9 +768,25 @@ LIMIT 1';
     public function signature($user_id)
     {
         $user = User::find($user_id);
+        switch ($user->location->city_id) {
+            case 3: // Albi
+                $twitter = 'etincelle_albi';
+                $facebook = 'https://www.facebook.com/EtincelleAlbi';
+                $url = 'http://www.coworking-albi.com';
+                break;
+            case 1: // Toulouse
+            default:
+                $twitter = 'etincelle_tls';
+                $facebook = 'https://www.facebook.com/EtincelleCoworking';
+                $url = 'http://www.etincelle-coworking.com';
+                break;
+        }
 
         $signature = View::make('user._signature', array(
             'user' => $user,
+            'twitter' => $twitter,
+            'facebook' => $facebook,
+            'url' => $url,
         ));
 
         if (Input::get('download')) {
