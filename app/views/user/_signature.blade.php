@@ -22,16 +22,16 @@
                     <td style="color:rgb(141,141,141);font-size:12px">
                         <p style="margin:0px">
  <span style="display:inline-block">
-<a href="tel:{{urlencode($user->phoneFmt)}}" style="color:rgb(141,141,141);text-decoration:none;font-family:sans-serif" target="_blank">{{$user->phoneFmt}}</a>
+<a href="tel:{{urlencode($user->phoneFmt)}}" style="color:#4F2067;text-decoration:none;font-family:sans-serif" target="_blank">{{$user->phoneFmt}}</a>
 </span>
                         </p>
                     </td>
                 </tr>
                 <tr>
-                    <td style="color:rgb(141,141,141);font-size:12px">
+                    <td style="color:#4F2067;font-size:12px">
                         <p style="margin:0px">
  <span style="white-space:nowrap;display:inline-block">
-<a href="{{$user->website}}" style="color:rgb(141,141,141);text-decoration:none;font-family:sans-serif"
+<a href="{{$user->website}}" style="color:#4F2067;text-decoration:none;font-family:sans-serif"
    target="_blank">{{$user->website}}</a>
 </span>
                         </p>
