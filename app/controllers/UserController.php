@@ -764,5 +764,30 @@ LIMIT 1';
         $user->save();
         return Redirect::route('user_list')->with('mSuccess', sprintf('L\'email de bienvenue a été envoyé à %s &lt;%s&gt;', $user->fullname, $user->email));
     }
+
+    public function signature($user_id)
+    {
+        $user = User::find($user_id);
+
+        $signature = View::make('user._signature', array(
+            'user' => $user,
+        ));
+
+        if (Input::get('download')) {
+            $headers = array(
+                "Content-Description" => "File Transfer",
+                "Content-Transfer-Encoding" => "binary",
+                "Content-type" => "text/html",
+                "Content-Disposition" => "attachment; filename=signature.html"
+            );
+            return Response::make($signature, 200, $headers);
+        }
+
+
+        return View::make('user.signature', array(
+            'user' => $user,
+            'signature' => $signature,
+        ));
+    }
 }
 

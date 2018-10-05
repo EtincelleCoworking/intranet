@@ -24,7 +24,10 @@
                class="btn btn-xs btn-default">Présence</a>
             <a href="{{ URL::route('user_gift', $user->id) }}"
                class="btn btn-xs btn-default">Cadeaux</a>
-
+            @if($user->is_staff)
+                <a href="{{ URL::route('user_signature', $user->id) }}"
+                   class="btn btn-xs btn-default">Signature</a>
+            @endif
         </div>
         <div class="col-sm-2">
             <div class="title-action">

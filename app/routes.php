@@ -149,6 +149,7 @@ Route::group(['before' => 'superadmin'], function() {
 	Route::post('/user/list', array('as' => 'user_filter', 'uses' => 'UserController@liste'));
 	Route::get('/user/reset', array('as' => 'user_filter_reset', 'uses' => 'UserController@cancelFilter'));
 	Route::get('/user/slack/{id}', array('as' => 'user_invite_slack', 'uses' => 'UserController@slackInvite'));
+	Route::get('/user/signature/{id}', array('as' => 'user_signature', 'uses' => 'UserController@signature'));
 	Route::get('/user/send_welcome_email/{user_id}', array('as' => 'user_send_welcome_email', 'uses' => 'UserController@send_welcome_email'));
 
     Route::get('/locations', array('as' => 'location_list', 'uses' => 'LocationController@liste'));
