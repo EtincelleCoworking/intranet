@@ -25,16 +25,26 @@
 @section('content')
     <div class="row">
         <div class="col-sm-6">
-            {{$signature}}
+            <div class="ibox">
+                <div class="ibox-content">
+                    {{$signature}}
+                </div>
+            </div>
         </div>
         <div class="col-sm-6">
             <a href="?download=1" class="btn btn-primary">Télécharger</a>
         </div>
     </div>
-    <hr />
     <div class="row">
         <div class="col-sm-12">
-            <pre>{{htmlentities($signature)}}</pre>
+            <div class="ibox">
+                <div class="ibox-title">
+                    Code HTML correspondant
+                </div>
+                <div class="ibox-content">
+                    <pre>{{htmlentities($signature)}}</pre>
+                </div>
+            </div>
         </div>
     </div>
 
