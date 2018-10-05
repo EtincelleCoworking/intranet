@@ -22,8 +22,8 @@
                     <td style="color:rgb(141,141,141);font-size:12px">
                         <p style="margin:0px">
  <span style="display:inline-block">
-Tél. : <a href="tel:{{urlencode($_ENV['organisation_phone'])}}" style="color:#4F2067;text-decoration:none;font-family:sans-serif" target="_blank">{{$_ENV['organisation_phone']}}</a>
-Mobile : <a href="tel:{{urlencode($user->phoneFmt)}}" style="color:#4F2067;text-decoration:none;font-family:sans-serif" target="_blank">{{$user->phoneFmt}}</a>
+Tél. : <span style="color:#4F2067;font-family:sans-serif">{{$_ENV['organisation_phone']}}</span>
+Mobile : <span style="color:#4F2067;font-family:sans-serif">{{$user->phoneFmt}}</span>
 </span>
                         </p>
                     </td>
