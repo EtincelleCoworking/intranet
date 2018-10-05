@@ -51,16 +51,10 @@ T&eacute;l. : <span style="color:#4F2067;font-family:sans-serif">{{$_ENV['organi
                         </td>
                         <td width="20%" align="right" style="padding-right:5px;text-align:right;padding-top:0px">
                             @if($twitter)
-                                <a href="https://twitter.com/{{$twitter}}" target="_blank">
-                                    <img style="border-radius:0px;border:0px"
-                                         src="{{URL::asset('/img/twitter-logo-button-2.png')}}">
-                                </a>
+                                <a href="https://twitter.com/{{$twitter}}" target="_blank"><img style="border-radius:0px;border:0px" src="{{URL::asset('/img/twitter-logo-button-2.png')}}"></a>
                             @endif
                             @if($facebook)
-                                <a href="{{$facebook}}" target="_blank">
-                                    <img style="border-radius:0px;border:0px"
-                                         src="{{URL::asset('/img/facebook-logo-button-2.png')}}">
-                                </a>
+                                <a href="{{$facebook}}" target="_blank"><img style="border-radius:0px;border:0px" src="{{URL::asset('/img/facebook-logo-button-2.png')}}"></a>
                             @endif
                         </td>
                     </tr>
