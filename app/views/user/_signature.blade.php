@@ -2,7 +2,7 @@
     <tbody>
     <tr valign="top">
         <td style="width:10px;padding-right:10px">
-            <img src="{{$user->getAvatarUrl(100)}}"
+            <img src="{{URL::asset($user->getAvatarUrl(100))}}"
                  width="65" alt="photo"
                  style="border-radius:3px;width:100px;max-width:120px">
         </td>
@@ -13,7 +13,7 @@
                 <b>
                     {{$user->firstname}} {{strtoupper($user->lastname)}}</b>
                 <br>
-                <span>{{$_ENV['organisation_name']}}</span>
+                <span>{{$user->bio_short}}, {{$_ENV['organisation_name']}}</span>
             </div>
             <table style="width:470px;margin-top:5px" width="470" border="0" cellspacing="0"
                    cellpadding="0">
@@ -22,7 +22,8 @@
                     <td style="color:rgb(141,141,141);font-size:12px">
                         <p style="margin:0px">
  <span style="display:inline-block">
-<a href="tel:{{urlencode($user->phoneFmt)}}" style="color:#4F2067;text-decoration:none;font-family:sans-serif" target="_blank">{{$user->phoneFmt}}</a>
+Tél. : <a href="tel:{{urlencode($_ENV['organisation_phone'])}}" style="color:#4F2067;text-decoration:none;font-family:sans-serif" target="_blank">{{$_ENV['organisation_phone']}}</a>
+Mobile : <a href="tel:{{urlencode($user->phoneFmt)}}" style="color:#4F2067;text-decoration:none;font-family:sans-serif" target="_blank">{{$user->phoneFmt}}</a>
 </span>
                         </p>
                     </td>
