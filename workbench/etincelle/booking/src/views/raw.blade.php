@@ -86,6 +86,7 @@
                                 <th>Réservation</th>
                                 <th>Facture</th>
                                 @if (Auth::user()->isSuperAdmin())
+                                    <th>Prix</th>
                                     <th>Temps passé</th>
                                 @endif
                                 <th>Actions</th>
@@ -129,6 +130,13 @@
                                         @endif
                                     </td>
                                     @if (Auth::user()->isSuperAdmin())
+                                        <td>
+                                            @if($item->sold_price)
+                                                {{number_format($item->sold_price, 2, ',', '.')}}€HT
+                                            @else
+                                                -
+                                            @endif
+                                        </td>
                                         <td>
                                             @if ($item->is_free)
                                                 Offert

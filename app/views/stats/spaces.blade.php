@@ -140,6 +140,30 @@
                                             <a href="{{URL::route('stats_spaces_details', array('space_slug'=> $location_slugs[$location], 'period' => $period))}}">
                                             {{ number_format($infos['sales'], 0, ',', '.') }}€
                                             </a>
+                                            @if($period == date('Y-m'))
+                                                <?php
+                                                $pending = DB::selectOne(sprintf('SELECT SUM(IF(booking_item.sold_price IS NULL,0,booking_item.sold_price) ) as result
+FROM booking_item
+JOIN booking ON booking.id= booking_item.booking_id
+JOIN ressources ON booking_item.ressource_id = ressources.id
+JOIN locations ON locations.id = ressources.location_id
+LEFT OUTER JOIN past_times
+  ON past_times.user_id = booking.user_id
+  AND past_times.ressource_id = booking_item.ressource_id
+#  AND past_times.date_past = booking_item.start_at
+  AND past_times.time_start = booking_item.start_at
+  AND past_times.time_end = DATE_ADD(booking_item.start_at, INTERVAL booking_item.duration MINUTE)
+WHERE YEAR(start_at) = YEAR(now()) AND MONTH(start_at) = MONTH(NOW())
+AND ((past_times.id IS NULL) OR (past_times.invoice_id IS NULL) OR (past_times.invoice_id = 0))
+AND locations.slug = "%s"', $location_slugs[$location]));
+                                                ?>
+                                                @if($pending->result>0)
+                                                <small><i>
+                                                    <br />
+                                                    +{{ number_format($pending->result, 0, ',', '.') }}€
+                                                    </i></small>
+                                                @endif
+                                                @endif
                                         </td>
                                         <td style="text-align: right">{{ number_format($infos['cost'], 0, ',', '.') }}
                                             €
@@ -154,6 +178,23 @@
                                             @endif
                                                 @if($infos['cost'])
                                                     <small> ({{ round(100 * $infos['balance'] / $infos['cost'], 2) }}%)</small>
+                                                @endif
+                                                @if($period == date('Y-m') && $pending->result>0)
+                                                        <small><i>
+                                                            <br />
+
+                                                            @if ($infos['balance'] +$pending->result< 0)
+                                                                <span style="color: red">{{ number_format($infos['balance']+$pending->result, 0, ',', '.') }}
+                                                                    €</span>
+                                                            @else
+                                                                <span style="color: green">{{ number_format( $infos['balance']+$pending->result, 0, ',', '.') }}
+                                                                    €</span>
+                                                            @endif
+                                                            @if($infos['cost'])
+                                                                <small> ({{ round(100 *( $infos['balance']+$pending->result) / $infos['cost'], 2) }}%)</small>
+                                                            @endif
+
+                                                            </i></small>
                                                 @endif
                                         </td>
                                         <?php $cumul += $infos['balance']; ?>

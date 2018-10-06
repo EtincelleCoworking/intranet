@@ -600,31 +600,28 @@ class BookingController extends Controller
         if (!preg_match('#^[0-9]{2}:[0-9]{2}$#', Input::get('end'))) {
             $messages['end'] = 'L\'heure de fin doit être renseignée';
         }
-        $rooms = Input::get('rooms');
-        if (empty($rooms)) {
-            $messages['rooms'] = 'La salle doit être renseignée';
-        } else {
-            if (!Auth::user()->isSuperAdmin()) {
-                $start = newDateTime(Input::get('date'), Input::get('start'));
-                $end = newDateTime(Input::get('date'), Input::get('end'));
+        $ressource_id = Input::get('ressource_id');
+        if (!Auth::user()->isSuperAdmin()) {
+            $start = newDateTime(Input::get('date'), Input::get('start'));
+            $end = newDateTime(Input::get('date'), Input::get('end'));
 
-                $items = BookingItem::where('start_at', '<', $end->format('Y-m-d H:i:s'))
-                    ->where(DB::raw('DATE_ADD(start_at, INTERVAL duration MINUTE)'), '>', $start->format('Y-m-d H:i:s'))
-                    ->whereIn('ressource_id', Input::get('rooms'))
-                    ->where('id', '!=', (int)$id)
-                    ->get();
-                foreach ($items as $conflict) {
-                    if (!isset($messages['start'])) {
-                        $messages['start'] = '';
-                    }
-                    $messages['start'] .= sprintf('La salle %s est déjà réservée sur ce créneau' . "\n", $conflict->ressource->name);
+            $items = BookingItem::where('start_at', '<', $end->format('Y-m-d H:i:s'))
+                ->where(DB::raw('DATE_ADD(start_at, INTERVAL duration MINUTE)'), '>', $start->format('Y-m-d H:i:s'))
+                ->where('ressource_id', '=', $ressource_id)
+                ->where('id', '!=', (int)$id)
+                ->get();
+            foreach ($items as $conflict) {
+                if (!isset($messages['start'])) {
+                    $messages['start'] = '';
                 }
+                $messages['start'] .= sprintf('La salle %s est déjà réservée sur ce créneau' . "\n", $conflict->ressource->name);
             }
         }
         $start_at = newDateTime(Input::get('date'), Input::get('start'));
         if (!Auth::user()->isSuperAdmin() && ($start_at->format('Y-m-d H:i:s') < (new \DateTime())->format('Y-m-d H:i:s'))) {
             $messages['start'] = 'Vous ne pouvez pas réserver une salle dans le passé';
         }
+
         if (count($messages)) {
             return Response::json(array(
                 'status' => 'KO',
@@ -633,7 +630,6 @@ class BookingController extends Controller
 
         }
 
-        $booking_items = array();
         $booking = $booking_item->booking;
         if (!Auth::user()->isSuperAdmin() && (Auth::id() != $booking->user_id)) {
             App::abort(403);
@@ -661,8 +657,7 @@ class BookingController extends Controller
             $booking->organisation_id = null;
         }
 
-        $ressources = Input::get('rooms');
-        $ressource = Ressource::where('id', '=', array_pop($ressources))->first();
+        $ressource = Ressource::with('location')->select('ressources.*')->find($ressource_id);
         $location = $ressource->location;
         if ($location->voucher_endpoint) {
             $voucher = Booking::generateVoucher($location->voucher_endpoint, $location->voucher_key, $location->voucher_secret, $start_at->format('Y-m-d H:i'));
@@ -679,53 +674,42 @@ class BookingController extends Controller
         $doConfirmation = Input::get('is_confirmed', Config::get('booking::default_is_confirmed', true));
         $confirmed_at = date('Y-m-d H:i:s');
 
-        foreach (Input::get('rooms') as $ressource_id) {
-            if (isset($booking_items[$ressource_id])) {
-                $booking_item_ = $booking_items[$ressource_id];
-                unset($booking_items[$ressource_id]);
-            } else {
-                $booking_item_ = new BookingItem();
-                $booking_item_->booking_id = $booking->id;
-                $booking_item_->ressource_id = $ressource_id;
-            }
-            $booking_item_->start_at = $start_at;
-            $booking_item_->duration = getDuration(Input::get('start'), Input::get('end'));
-            $booking_item_->is_open_to_registration = Input::get('is_open_to_registration', false);
-            $booking_item_->is_free = Input::get('is_free', false);
-            $booking_item_->invoice_id = Input::get('invoice_id', null);
-            if ($doConfirmation) {
-                if (!$booking_item_->confirmed_at) {
-                    $booking_item_->confirmed_at = $confirmed_at;
-                    $booking_item_->confirmed_by_user_id = Auth::id();
-                }
-            } else {
-                if (Auth::user()->isSuperAdmin()) {
-                    $booking_item_->confirmed_at = null;
-                    $booking_item_->confirmed_by_user_id = null;
-                }
-            }
-            if (!$booking_item_->invoice_id) {
-                $booking_item_->invoice_id = null;
-            }
-            $booking_item_->save();
+        $booking_item->start_at = $start_at;
+        $booking_item->duration = getDuration(Input::get('start'), Input::get('end'));
+        $booking_item->is_open_to_registration = Input::get('is_open_to_registration', false);
+        if (Auth::user()->isSuperAdmin()) {
+            $booking_item->is_free = Input::get('is_free', false);
+            $booking_item->internal_notes = Input::get('internal_notes');
+            $booking_item->sold_price = Input::get('sold_price');
+            $booking_item->participant_count = Input::get('participant_count');
         }
-        foreach ($booking_items as $booking_item_to_delete) {
-            $booking_item_to_delete->delete();
+        if ($doConfirmation) {
+            if (!$booking_item->confirmed_at) {
+                $booking_item->confirmed_at = $confirmed_at;
+                $booking_item->confirmed_by_user_id = Auth::id();
+            }
+        } else {
+            if (Auth::user()->isSuperAdmin()) {
+                $booking_item->confirmed_at = null;
+                $booking_item->confirmed_by_user_id = null;
+            }
         }
+        if (!$booking_item->invoice_id) {
+            $booking_item->invoice_id = null;
+        }
+        $booking_item->save();
 
-        $new = $this->extractPublicProperties($booking_item_);
+        $new = $this->extractPublicProperties($booking_item);
         try {
-            $this->sendUpdatedBookingNotification($booking_item_, $old, $new);
+            $this->sendUpdatedBookingNotification($booking_item, $old, $new);
         } catch (\Exception $e) {
 
         }
 
-//        var_dump($booking_item_);
-//        var_dump($booking_item);
-        //      var_dump($booking_item->booking);
-        //exit;
-
-        return Redirect::route('booking_with_date', array('now' => $booking_item_->start_at->format('Y-m-d')))->with('mSuccess', 'La réservation a été modifiée')->withInput();
+        return Redirect::route('booking_with_date', array(
+            'now' => $booking_item->start_at->format('Y-m-d')))
+            ->with('mSuccess', 'La réservation a été modifiée')
+            ->withInput();
 
     }
 
@@ -741,7 +725,8 @@ class BookingController extends Controller
         return Redirect::route('invoice_modify', $invoice->id)->with('mSuccess', 'Le devis a été créé');
     }
 
-    protected function createQuoteFromBookingItems($booking_items)
+    protected
+    function createQuoteFromBookingItems($booking_items)
     {
         $booking_item = $booking_items[0];
 
@@ -1138,6 +1123,7 @@ EOS;
         ORDER BY booking_item.start_at ASC, booking_item.duration DESC 
         '));
 
+
         $free_duration = null;
         $current_booking = array_shift($bookings);
 
@@ -1288,4 +1274,17 @@ EOS;
         return $response;
     }
 
+    public function sold_price()
+    {
+        $ressource = Ressource::find(Input::get('ressource_id'));
+        $start = newDateTime(Input::get('occurs_at'), Input::get('start_time'));
+        $end = newDateTime(Input::get('occurs_at'), Input::get('end_time'));
+
+        $result = array(
+            'amount' => min(7, ($end->getTimestamp() - $start->getTimestamp()) / 3600) * $ressource->amount
+        );
+
+
+        return Response::json($result);
+    }
 }
