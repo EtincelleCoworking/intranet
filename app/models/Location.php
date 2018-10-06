@@ -110,14 +110,11 @@ class Location extends Eloquent
                 '2018-10' => 17685 + 4480,
             ),
             //'Toulouse > Espace W' => array(),
-            '36 rue Alsace Lorraine' => array(
+            'Alsace Lorraine' => array(
                 '2017-12' => 2170,
                 '2018-02' => 6300,
                 '2018-08' => 5075, // - Caroline - Ménage
                 '2018-09' => 6300,
-            ),
-            '73 rue Alsace Lorraine' => array(
-                '2018-10' => 2900,
             ),
         );
         $periods = array();
@@ -193,7 +190,7 @@ class Location extends Eloquent
                 '2018-10' => 1612.5,
             ),
 
-            '36 rue Alsace Lorraine'=>array(
+            'Alsace Lorraine'=>array(
                 '2018-09' => -1706.25,
                 '2018-10' => 1706.25,
             )
