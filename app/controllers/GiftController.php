@@ -19,7 +19,8 @@ class GiftController extends \BaseController
 
         return View::make('gift.photoshoot', array(
             'data' => $data,
-            'can_book' => is_object($userGift) && ($userGift->used_at == null)));
+            'can_book' => is_object($userGift) && ($userGift->used_at == null)
+        ));
     }
 
     public function photoshoot_book($gift_photoshoot_id)

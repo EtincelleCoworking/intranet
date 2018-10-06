@@ -30,7 +30,7 @@ class InvoicingRuleProcessor
 
     public static function getAvailableItems()
     {
-        $result = array();
+        $result = array('-');
         $dh = dir(__DIR__);
         while ($filename = $dh->read()) {
             if (preg_match('/(.+)\.php$/', $filename, $tokens)) {

@@ -67,7 +67,20 @@ class OrganisationController extends BaseController
     {
         $organisation = $this->dataExist($id);
 
-        return View::make('organisation.modify', array('organisation' => $organisation));
+        $invoices= array();
+        $quotes = array();
+        foreach($organisation->invoices as $item){
+            if($item->type == 'F'){
+                $invoices[] = $item;
+            }elseif($item->type == 'D'){
+                $quotes[] = $item;
+            }
+        }
+        return View::make('organisation.modify', array(
+            'organisation' => $organisation,
+            'invoices' => $invoices,
+            'quotes' => $quotes,
+            ));
     }
 
     /**

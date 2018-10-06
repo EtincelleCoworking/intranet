@@ -221,7 +221,7 @@
                                         <a class="btn btn-xs btn-default"
                                            href="{{ URL::route('organisation_modify', $orga->id) }}">Modifier</a>
                                         <a class="btn btn-xs btn-danger"
-                                           href="{{ URL::route('organisation_delete_user', $orga->id, $user->id) }}">Retirer</a>
+                                           href="{{ URL::route('organisation_delete_user', array('organisation' => $orga->id,'id'=> $user->id)) }}">Retirer</a>
                                     </td>
                                 </tr>
                             @endforeach
