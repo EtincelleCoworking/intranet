@@ -351,7 +351,6 @@ class BookingController extends Controller
             $q->whereRessourceId(Session::get('filtre_booking.ressource_id'));
         }
         if (Session::get('filtre_booking.toinvoice')) {
-            $q->whereNull('invoice_id');
             $q->where('is_free', false);
         }
         if (Auth::user()->isSuperAdmin()) {
@@ -693,9 +692,6 @@ class BookingController extends Controller
                 $booking_item->confirmed_at = null;
                 $booking_item->confirmed_by_user_id = null;
             }
-        }
-        if (!$booking_item->invoice_id) {
-            $booking_item->invoice_id = null;
         }
         $booking_item->save();
 
