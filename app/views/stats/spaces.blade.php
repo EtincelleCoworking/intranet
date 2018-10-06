@@ -78,21 +78,21 @@
 
                                         @if($period == date('Y-m') && $pending_total>0)
                                             <br/>
-<small><i>
-                                            @if ($infos['balance'] < 0)
-                                                <span style="color: red">{{ number_format($infos['balance']+$pending_total, 0, ',', '.') }}
-                                                    €</span>
-                                            @else
-                                                <span style="color: green">{{ number_format( $infos['balance']+$pending_total, 0, ',', '.') }}
-                                                    €</span>
-                                            @endif
-                                            @if($infos['cost'])
-                                                <small>
-                                                    ({{ round(100 * ($infos['balance']+$pending_total) / $infos['cost'], 2) }}
-                                                    %)
-                                                </small>
-                                            @endif
-    </i></small>
+                                            <small><i>
+                                                    @if ($infos['balance'] < 0)
+                                                        <span style="color: red">{{ number_format($infos['balance']+$pending_total, 0, ',', '.') }}
+                                                            €</span>
+                                                    @else
+                                                        <span style="color: green">{{ number_format( $infos['balance']+$pending_total, 0, ',', '.') }}
+                                                            €</span>
+                                                    @endif
+                                                    @if($infos['cost'])
+                                                        <small>
+                                                            ({{ round(100 * ($infos['balance']+$pending_total) / $infos['cost'], 2) }}
+                                                            %)
+                                                        </small>
+                                                    @endif
+                                                </i></small>
                                         @endif
                                     </td>
                                     <?php $cumul += $infos['balance']; ?>
@@ -107,20 +107,21 @@
                                         @endif
                                         @if($period == date('Y-m') && $pending_total>0)
                                             <br/>
-<small><i>
-                                            @if ($cumul < 0)
-                                                <span style="color: red">{{ number_format( $cumul+$pending_total, 0, ',', '.') }}
-                                                    €</span>
-                                            @else
-                                                <span style="color: green">{{ number_format( $cumul+$pending_total, 0, ',', '.') }}
-                                                    €</span>
-                                            @endif
-                                            @if($total_costs)
-                                                <small> ({{ round(100 *( $cumul +$pending_total)/ $total_costs, 2) }}
-                                                    %)
-                                                </small>
-                                            @endif
-                                            </i></small>
+                                            <small><i>
+                                                    @if ($cumul < 0)
+                                                        <span style="color: red">{{ number_format( $cumul+$pending_total, 0, ',', '.') }}
+                                                            €</span>
+                                                    @else
+                                                        <span style="color: green">{{ number_format( $cumul+$pending_total, 0, ',', '.') }}
+                                                            €</span>
+                                                    @endif
+                                                    @if($total_costs)
+                                                        <small>
+                                                            ({{ round(100 *( $cumul +$pending_total)/ $total_costs, 2) }}
+                                                            %)
+                                                        </small>
+                                                    @endif
+                                                </i></small>
                                         @endif
                                     </td>
                                 </tr>
@@ -242,7 +243,26 @@
                                                 @if($total_costs)
                                                     <small> ({{ round(100 * $cumul / $total_costs, 2) }}%)</small>
                                                 @endif
+                                                @if($period == date('Y-m') && $pending[$location_slugs[$location]]>0)
+                                                    <br/>
+                                                    <small><i>
 
+                                                            @if ($cumul < 0)
+                                                                <span style="color: red">{{ number_format( $cumul+$pending[$location_slugs[$location]], 0, ',', '.') }}
+                                                                    €</span>
+                                                            @else
+                                                                <span style="color: green">{{ number_format( $cumul+$pending[$location_slugs[$location]], 0, ',', '.') }}
+                                                                    €</span>
+                                                            @endif
+                                                            @if($total_costs)
+                                                                <small>
+                                                                    ({{ round(100 *( $cumul+$pending[$location_slugs[$location]]) / $total_costs, 2) }}
+                                                                    %)
+                                                                </small>
+                                                            @endif
+
+                                                        </i></small>
+                                                @endif
                                             </td>
                                         </tr>
                                     @endif
