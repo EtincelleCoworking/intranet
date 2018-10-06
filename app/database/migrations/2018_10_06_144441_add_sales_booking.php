@@ -15,6 +15,7 @@ class AddSalesBooking extends Migration
     {
         Schema::table('booking_item', function (Blueprint $table) {
             $table->decimal('sold_price')->nullable();
+            $table->dropForeign('booking_item_invoice_id_foreign');
             $table->dropColumn('invoice_id');
         });
     }
