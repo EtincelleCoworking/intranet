@@ -352,6 +352,24 @@ GROUP BY locations.id, subscription_kind.id', Ressource::TYPE_COWORKING)));
                 }
             }
         }
+        $pending = array();
+        $sql = 'SELECT locations.slug as location_slug, SUM(IF(booking_item.sold_price IS NULL,0,booking_item.sold_price) ) as result
+FROM booking_item
+JOIN booking ON booking.id= booking_item.booking_id
+JOIN ressources ON booking_item.ressource_id = ressources.id
+JOIN locations ON locations.id = ressources.location_id
+LEFT OUTER JOIN past_times
+  ON past_times.user_id = booking.user_id
+  AND past_times.ressource_id = booking_item.ressource_id
+#  AND past_times.date_past = booking_item.start_at
+  AND past_times.time_start = booking_item.start_at
+  AND past_times.time_end = DATE_ADD(booking_item.start_at, INTERVAL booking_item.duration MINUTE)
+WHERE YEAR(start_at) = YEAR(now()) AND MONTH(start_at) = MONTH(NOW())
+AND ((past_times.id IS NULL) OR (past_times.invoice_id IS NULL) OR (past_times.invoice_id = 0)) GROUP BY location_slug';
+        foreach (DB::select($sql) as $item) {
+            $pending[$item->location_slug] = $item->result;
+        }
+
 
         $location_slugs = array();
         // ddd
@@ -363,12 +381,17 @@ from `locations`
 left outer join cities on locations.city_id = cities.id'));
         foreach ($items as $item) {
             $location_slugs[$item->kind] = $item->slug;
+            if(!isset($pending[$item->slug])){
+                $pending[$item->slug]=0;
+            }
         }
 
         return View::make('stats.spaces', array(
             'datas' => $datas,
             'location_slugs' => $location_slugs,
             'global' => $global,
+            'pending' => $pending,
+            'pending_total' => array_sum($pending),
         ));
     }
 
@@ -645,7 +668,7 @@ GROUP BY organisations.id ORDER by amount DESC');
                 'combined' => $combined,
                 'start_at' => $start_at,
                 'end_at' => $end_at,
-                'overall' => (count($overall) > 0) ? (array_sum($overall) / count($overall) ): 0,
+                'overall' => (count($overall) > 0) ? (array_sum($overall) / count($overall)) : 0,
                 'capacity' => $capacity
             )
         );
