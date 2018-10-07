@@ -28,10 +28,14 @@
 
     $ressources_by_location = array();
     $pictures_by_ressource = array();
+    $default_ressource_id = null;
     foreach ($ressources as $ressource) {
         $location_name = $ressource->location->full_name;
         if (!isset($ressources_by_location[$location_name])) {
             $ressources_by_location[$location_name] = array();
+        }
+        if(null == $default_ressource_id){
+            $default_ressource_id = $ressource->id;
         }
         $ressources_by_location[$location_name][$ressource->id] = sprintf('%s &gt; %s', $location_name, $ressource->name);
         if ($ressource->picture) {
@@ -131,12 +135,22 @@
                                 --}}
 
                                 <div class="col-xs-12">
-                                    <img src="{{$pictures_by_ressource[$booking_item->ressource_id]}}"
-                                         class="img-responsive" id="main_picture"/>
+                                    <p>
+
+                                        @if(!empty($booking_item->ressource_id))
+                                            <img src="{{$pictures_by_ressource[$booking_item->ressource_id]}}"
+                                                 class="img-responsive" id="main_picture"/>
+                                        @elseif(!empty($default_ressource_id))
+                                                <img src="{{$pictures_by_ressource[$default_ressource_id]}}"
+                                                     class="img-responsive" id="main_picture"/>
+                                            @else
+                                            <img src="{{URL::asset('/etincelle/logo-400x400.png')}}"
+                                                 class="img-responsive" id="main_picture"/>
+                                        @endif
+                                    </p>
                                 </div>
 
 
-                                <?php /*
                             <div class="col-xs-12">
                                 <label for="meeting-add-isprivate" style="font-weight: normal;">
                                     <p>
@@ -144,12 +158,11 @@
                                         Événement privé
                                         <br/>
                                         <span class="text-muted">
-                                        <small>Les événements publics sont mis en avant dans la communication (site web et réseaux sociaux)</small>
+                                        <small>Les événements publics sont mis en avant auprès de la communauté</small>
                                     </span>
                                     </p>
                                 </label>
                             </div>
- */ ?>
 
 
                             </div>
