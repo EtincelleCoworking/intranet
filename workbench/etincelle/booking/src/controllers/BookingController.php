@@ -136,23 +136,17 @@ class BookingController extends Controller
     }
 
 
-    protected function extractPublicProperties($booking_item)
+    protected function extractPublicProperties($booking_item, $booking = null)
     {
+        if (null == $booking) {
+            $booking = $booking_item->booking;
+        }
         $result = array(
-            'title' => $booking_item->booking->title,
-            'content' => $booking_item->booking->content,
+            'title' => $booking->title,
+            'content' => $booking->content,
             'start_at' => $booking_item->start_at,
             'duration' => $booking_item->duration,
-//            'is_private' => $booking_item->booking->is_private,
-//            'is_open_to_registration' => $booking_item->is_open_to_registration,
-//            'ressources' => array(),
         );
-//        foreach ($booking_item->booking->items() as $item) {
-//            $result['ressources'][$item->ressource->id] = array(
-//                'name' => $item->ressource->name,
-//                'location' => $item->ressource->location->fullname,
-//            );
-//        }
         return $result;
     }
 
@@ -579,15 +573,16 @@ class BookingController extends Controller
     {
         if ($id) {
             $booking_item = $this->dataExist($id);
+            $booking = $booking_item->booking;
             $is_new = false;
         } else {
             $booking_item = new BookingItem();
-            $booking_item->booking = new Booking();
-            $booking_item->booking->user_id = Auth::id();
+            $booking = new Booking();
+            $booking->user_id = Auth::id();
             $is_new = true;
         }
 
-        $old = $this->extractPublicProperties($booking_item);
+        $old = $this->extractPublicProperties($booking_item, $booking);
 
         $messages = array();
         if (!preg_match('#^[0-9]{2}/[0-9]{2}/[0-9]{4}$#', Input::get('date'))) {
@@ -622,14 +617,14 @@ class BookingController extends Controller
         }
 
         if (count($messages)) {
-            return Response::json(array(
-                'status' => 'KO',
-                'messages' => $messages
-            ));
+            return Redirect::route('booking_with_date', array(
+                'now' => $start_at->format('Y-m-d')))
+                ->with('mError', implode('<br />', $messages))
+                ->withInput();
 
         }
 
-        $booking = $booking_item->booking;
+
         if (!Auth::user()->isSuperAdmin() && (Auth::id() != $booking->user_id)) {
             App::abort(403);
         }
@@ -669,10 +664,14 @@ class BookingController extends Controller
         }
 
         $booking->save();
+        if ($is_new) {
+            $booking_item->booking_id = $booking->id;
+        }
 
         $doConfirmation = Input::get('is_confirmed', Config::get('booking::default_is_confirmed', true));
         $confirmed_at = date('Y-m-d H:i:s');
 
+        $booking_item->ressource_id = $ressource->id;
         $booking_item->start_at = $start_at;
         $booking_item->duration = getDuration(Input::get('start'), Input::get('end'));
         $booking_item->is_open_to_registration = Input::get('is_open_to_registration', false);
@@ -695,7 +694,7 @@ class BookingController extends Controller
         }
         $booking_item->save();
 
-        $new = $this->extractPublicProperties($booking_item);
+        $new = $this->extractPublicProperties($booking_item, $booking);
         try {
             $this->sendUpdatedBookingNotification($booking_item, $old, $new);
         } catch (\Exception $e) {
