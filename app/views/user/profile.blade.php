@@ -9,7 +9,10 @@
     <div class="row wrapper border-bottom white-bg page-heading">
         <div class="col-sm-8">
             <h2>{{ $user->fullname }}</h2>
-            {{$user->bio_short}}
+            <p>{{$user->bio_short}}</p>
+            @foreach($user->hashtags as $hashtag)
+                <a href="#"><span class="label label-default">{{$hashtag->name}}</span></a>
+                @endforeach
         </div>
         <div class="col-sm-4">
             <div class="title-action">

@@ -8,6 +8,12 @@
     <div class="row wrapper border-bottom white-bg page-heading">
         <div class="col-sm-4">
             <h2>Membres</h2>
+            <p>
+                @foreach($tags as $tag)
+                    <a href="javascript:void(0);" class="btn btn-xs btn-default tag-filter"
+                       id="tag-{{$tag->slug}}">{{$tag->name}}</a>
+                @endforeach
+            </p>
         </div>
         <div class="col-sm-8">
             @if (Auth::user()->isSuperAdmin())
@@ -20,17 +26,23 @@
 @stop
 
 @section('content')
-
     <div class="row">
         <div id="equalheight">
             @foreach ($users as $index => $user)
-                <div class="col-lg-4 col-md-6 col-xs-12">
+                <div class="col-lg-4 col-md-6 col-xs-12 item
+@foreach($user->hashtags as $hashtag)
+                        tag-{{$hashtag->slug}}
+                @endforeach
+                        ">
                     <div class="contact-box">
-                        <a href="{{URL::Route('user_profile', $user->id)}}">
-                            <div class="col-sm-4 {{$user->getWeeksAgoCss()}}">
+                        <div class="row">
+                            <div class="col-sm-4">
                                 <div class="text-center">
-                                    <img alt="image" class="img-circle m-t-xs img-responsive"
-                                         src="{{$user->avatarUrl}}">
+
+                                    <a href="{{URL::Route('user_profile', $user->id)}}"><img alt="image"
+                                                                                             class="img-circle m-t-xs img-responsive"
+                                                                                             src="{{$user->avatarUrl}}"></a>
+
 
                                     <p>
                                         @if($user->twitter)
@@ -74,40 +86,45 @@
                                         <a href="{{URL::route('user_login_as', $user->id)}}"
                                            title="Se connecter en tant que {{$user->fullname}}"
                                            class="btn btn-xs btn-default"><i class="fa fa-user-secret"></i></a>
-
+{{--
                                         <a href="{{URL::route('user_export_profile', $user->id)}}"
                                            title="Exporter la fiche {{$user->fullname}}"
                                            class="btn btn-xs btn-default"><i class="fa fa-download"></i></a>
+--}}
                                     @endif
 
                                 </div>
                             </div>
-                            <div class="col-sm-8 {{$user->getWeeksAgoCss()}}">
-                                <a href="{{URL::Route('user_profile', $user->id)}}">
-                                    <h3><strong>{{ $user->fullname }}</strong></h3>
-                                    @if($user->bio_short)
-                                        <p>{{ $user->bio_short }}</p>
-                                    @endif
+                            <div class="col-sm-8">
+
+                                <a href="{{URL::Route('user_profile', $user->id)}}" class="btn-link"><h3>
+                                        <strong>{{ $user->fullname }}</strong></h3></a>
+                                @if($user->bio_short)
+                                    <p>{{ $user->bio_short }}</p>
+                                @endif
 
 
-                                    @if($user->phoneFmt)
-                                        <i class="fa fa-phone"></i>
-                                        {{ $user->phoneFmt }}
+                                @if($user->phoneFmt)
+                                    <i class="fa fa-phone"></i>
+                                    {{ $user->phoneFmt }}
+                                    <br/>
+                                @endif
+
+                                @foreach($user->organisations as $company)
+                                    @if($company->name != $user->fullname)
                                         <br/>
+                                        <i class="fa fa-university"></i>
+                                        {{ $company->name }}
                                     @endif
-
-                                    @foreach($user->organisations as $company)
-                                        @if($company->name != $user->fullname)
-                                            <br/>
-                                            <i class="fa fa-university"></i>
-                                            {{ $company->name }}
-                                        @endif
-                                    @endforeach
-                                </a>
+                                @endforeach
 
                             </div>
-                            <div class="clearfix"></div>
-                        </a>
+                            <div class="col-sm-12 text-right">
+                                @foreach($user->hashtags as $hashtag)
+                                    <a href="#"><span class="label label-default">{{$hashtag->name}}</span></a>
+                                @endforeach
+                            </div>
+                        </div>
                     </div>
                 </div>
             @endforeach
@@ -118,10 +135,41 @@
 
 
 @section('javascript')
+    <script type="text/javascript" src="{{URL::asset('/js/isotope.min.js')}}"></script>
     <script type="text/javascript">
         $(window).resize(function () {
-            $('#equalheight div').equalHeights();
+            $('#equalheight .contact-box').equalHeights();
         });
         $(window).resize();
+
+        var selector = '';
+        var separator = '';
+
+        $('.tag-filter').click(function () {
+            if ($(this).hasClass('btn-default')) {
+                $(this).removeClass('btn-default');
+                $(this).addClass('btn-primary');
+            } else {
+                $(this).addClass('btn-default');
+                $(this).removeClass('btn-primary');
+            }
+
+            selector = '';
+            separator = '';
+            $('.tag-filter[class*="btn-primary"]').each(function () {
+                selector += separator + '.' + $(this).attr('id');
+                separator = ', ';
+            });
+            $('#equalheight').isotope({filter: selector});
+        });
+
+        $('#equalheight').isotope({
+            // options
+            percentPosition: true,
+            itemSelector: '.item'
+            , layoutMode: 'fitRows'
+        });
+
+
     </script>
 @stop

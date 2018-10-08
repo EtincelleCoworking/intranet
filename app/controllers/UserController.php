@@ -70,10 +70,12 @@ class UserController extends BaseController
 //            ->where('default_location_id', '=', Auth::user()->default_location_id)
             ->orderBy('last_seen_at', 'desc')
             ->orderBy('lastname', 'asc')
-            ->with('organisations')
+            ->with('organisations', 'hashtags')
             ->get();
 
-        return View::make('user.members', array('users' => $users));
+        return View::make('user.members', array(
+            'users' => $users,
+            'tags' => Hashtag::where('is_highlighted', '=', true)->get()));
     }
 
     /**
@@ -148,6 +150,24 @@ order by invoices.date_invoice desc
                 }
                 $user->bio_short = Input::get('bio_short');
                 $user->bio_long = Input::get('bio_long');
+
+                $tags = array();
+                foreach (Input::get('hashtags') as $hashtag) {
+                    if (ctype_digit($hashtag)) {
+                        $tags[] = $hashtag;
+                    } else {
+                        $newTag = Hashtag::where('name', '=', $hashtag)->first();
+                        if (null == $newTag) {
+                            $newTag = new Hashtag();
+                            $newTag->name = $hashtag;
+                            $newTag->slug = Str::slug($hashtag);
+                            $newTag->save();
+                            $tags[] = $newTag->id;
+                        }
+                    }
+                }
+                $user->hashtags()->sync($tags);
+
                 $user->twitter = Input::get('twitter');
                 $user->website = Input::get('website');
                 $user->phone = Input::get('phone');

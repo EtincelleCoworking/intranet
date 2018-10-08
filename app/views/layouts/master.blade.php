@@ -38,7 +38,7 @@
     {{--{{ HTML::style('css/jquery-ui.theme.css') }}--}}
 
             <!-- Select 2 JS -->
-    {{ HTML::style('css/select2.min.css') }}
+    {{  HTML::style('css/select2.min.css') }}
 
             <!-- Time Picker JS -->
     {{ HTML::style('css/jquery.timepicker.css') }}
@@ -517,8 +517,8 @@
 {{--$.datepicker.setDefaults( $.datepicker.regional[ "fr" ] );--}}
 {{--</script>--}}
 
-{{ HTML::script('js/jquery-2.1.1.js') }}
-{{ HTML::script('js/select2.min.js') }}
+{{ HTML::script('js/jquery-3.3.1.min.js') }}
+{{ HTML::script('js/select2.full.min.js') }}
 {{ HTML::script('js/jquery.timepicker.min.js') }}
 {{ HTML::script('js/bootstrap.min.js') }}
 {{ HTML::script('js/plugins/datapicker/bootstrap-datepicker.js') }}

@@ -91,6 +91,8 @@
                     <p>{{Form::text('bio_short', null, array('class' => 'form-control', 'autocomplete' => 'new-password')) }}</p>
                     {{ Form::label('bio_long', 'Présentation') }}
                     <p>{{Form::textarea('bio_long', null, array('class' => 'form-control')) }}</p>
+                    {{ Form::label('hashtags', 'Tags') }}
+                    <p>{{Form::select('hashtags[]', Hashtag::select(),$user->hashtags->lists('id'), array('class' => 'form-control', 'multiple' => 'multiple', 'id'=>'hashtags')) }}</p>
                 </div>
             </div>
             <div id="tab-internet" class="tab-pane">
@@ -474,6 +476,20 @@
             $('.datePicker').datepicker();
             $('#organisation_selector').select2();
             $('#affiliate_user_id').select2();
+
+            $('#hashtags').select2({
+                tags: true,
+                tokenSeparators: [',', ' '],
+                width: 'resolve'
+            });
+
+            $('.nav-tabs a[href="#tab-intro"]').on('shown.bs.tab', function (event) {
+                $('#hashtags').select2({
+                    tags: true,
+                    tokenSeparators: [',', ' '],
+                    width: 'resolve'
+                });
+            });
         });
     </script>
 @stop
