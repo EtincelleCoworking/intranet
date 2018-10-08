@@ -301,7 +301,6 @@
                 <div class="panel-body">
                     <div class="col-sm-6">
                         @if(count($organisation->users))
-                            {{ Form::model($organisation, array('route' => array('organisation_add_user', $organisation->id))) }}
                             <table class="table table-striped table-hover">
                                 <thead>
                                 <tr>
@@ -335,12 +334,14 @@
                                 </tbody>
 
                             </table>
-                            {{ Form::close() }}
+
                         @else
                             <p>Aucun utilisateur</p>
                         @endif
                     </div>
                     <div class="col-sm-6">
+                        {{ Form::model($organisation, array('route' => array('organisation_add_user', $organisation->id))) }}
+
                         <table>
                             <tr>
                                 <td>{{ Form::select('user_id', User::SelectNotInOrganisation($organisation->id, 'Sélectionnez un utilisateur'), null, array('class' => 'form-control', 'id' => 'user_selector')) }}</td>
@@ -348,6 +349,7 @@
                                 <td>{{ Form::submit('Ajouter', array('class' => 'btn btn-primary')) }}</td>
                             </tr>
                         </table>
+                        {{ Form::close() }}
 
                         {{ Form::model($organisation, array('route' => array('organisation_add_users', $organisation->id))) }}
                         {{ Form::label('content', 'Ajout rapide d\'utilisateurs') }}
