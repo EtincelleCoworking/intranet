@@ -20,10 +20,12 @@
             </h2>
             <a href="{{ URL::route('user_affiliate', $user->id) }}"
                class="btn btn-xs btn-default">Affiliation</a>
+            @if(Auth::user()->isSuperAdmin())
             <a href="{{ URL::route('stats_devices', $user->id) }}"
                class="btn btn-xs btn-default">Présence</a>
             <a href="{{ URL::route('user_gift', $user->id) }}"
                class="btn btn-xs btn-default">Cadeaux</a>
+            @endif
             @if($user->is_staff)
                 <a href="{{ URL::route('user_signature', $user->id) }}"
                    class="btn btn-xs btn-default">Signature</a>
