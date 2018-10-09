@@ -152,17 +152,20 @@ order by invoices.date_invoice desc
                 $user->bio_long = Input::get('bio_long');
 
                 $tags = array();
-                foreach (Input::get('hashtags') as $hashtag) {
-                    if (ctype_digit($hashtag)) {
-                        $tags[] = $hashtag;
-                    } else {
-                        $newTag = Hashtag::where('name', '=', $hashtag)->first();
-                        if (null == $newTag) {
-                            $newTag = new Hashtag();
-                            $newTag->name = $hashtag;
-                            $newTag->slug = Str::slug($hashtag);
-                            $newTag->save();
-                            $tags[] = $newTag->id;
+                $hashtags = Input::get('hashtags');
+                if (!empty($hashtags) && is_array($hashtags)) {
+                    foreach ($hashtags as $hashtag) {
+                        if (ctype_digit($hashtag)) {
+                            $tags[] = $hashtag;
+                        } else {
+                            $newTag = Hashtag::where('name', '=', $hashtag)->first();
+                            if (null == $newTag) {
+                                $newTag = new Hashtag();
+                                $newTag->name = $hashtag;
+                                $newTag->slug = Str::slug($hashtag);
+                                $newTag->save();
+                                $tags[] = $newTag->id;
+                            }
                         }
                     }
                 }
