@@ -276,6 +276,8 @@ Route::group(['before' => 'superadmin'], function() {
     Route::post('/locker/{id}/assign', array('as' => 'locker_assign_check', 'uses' => 'LockerController@assign_check'));
 
     Route::get('/stats/coworking/{location_id}', array('as' => 'stats_coworking_details', 'uses' => 'StatsController@coworking_details'));
+    Route::get('/hashtags', array('as' => 'hashtags', 'uses' => 'HashtagController@index'));
+    Route::post('/hashtags/add', array('as' => 'hashtags_add', 'uses' => 'HashtagController@add'));
 });
 
 // JSON
