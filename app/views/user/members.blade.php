@@ -1,13 +1,13 @@
 @extends('layouts.master')
 
 @section('meta_title')
-    Membres
+    Coworkers
 @stop
 
 @section('breadcrumb')
     <div class="row wrapper border-bottom white-bg page-heading">
         <div class="col-sm-8">
-            <h2>Membres</h2>
+            <h2>Coworkers</h2>
         </div>
         <div class="col-sm-4">
             @if (Auth::user()->isSuperAdmin())
@@ -159,10 +159,10 @@
             }
 
             selector = '';
-            separator = '';
+            //separator = '';
             $('.tag-filter[class*="btn-primary"]').each(function () {
                 selector += separator + '.' + $(this).attr('id');
-                separator = ', ';
+                //separator = ', ';
             });
             $('#equalheight').isotope({filter: selector});
         });
