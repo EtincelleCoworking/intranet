@@ -73,9 +73,17 @@ class UserController extends BaseController
             ->with('organisations', 'hashtags')
             ->get();
 
+        $tags = DB::select('SELECT hashtags.* 
+            FROM hashtags 
+              JOIN user_hashtag ON hashtags.id = user_hashtag.hashtag_id
+            WHERE is_highlighted = true 
+              GROUP BY hashtags.id 
+              ORDER BY hashtags.name ASC');
+
+
         return View::make('user.members', array(
             'users' => $users,
-            'tags' => Hashtag::where('is_highlighted', '=', true)->get()));
+            'tags' => $tags));
     }
 
     /**
