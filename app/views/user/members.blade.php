@@ -6,22 +6,26 @@
 
 @section('breadcrumb')
     <div class="row wrapper border-bottom white-bg page-heading">
-        <div class="col-sm-4">
-            <h2>Membres</h2>
-            <p>
-                @foreach($tags as $tag)
-                    <a href="javascript:void(0);" class="btn btn-xs btn-default tag-filter"
-                       id="tag-{{$tag->slug}}">{{$tag->name}}</a>
-                @endforeach
-            </p>
-        </div>
         <div class="col-sm-8">
+            <h2>Membres</h2>
+        </div>
+        <div class="col-sm-4">
             @if (Auth::user()->isSuperAdmin())
                 <div class="title-action">
                     <a href="{{ URL::route('user_add') }}" class="btn btn-primary">Ajouter un membre</a>
                 </div>
             @endif
         </div>
+        @if(count($tags)>0)
+        <div class="col-sm-12">
+            <p>
+                Filtrez: @foreach($tags as $tag)
+                    <a href="javascript:void(0);" class="btn btn-xs btn-default tag-filter"
+                       id="tag-{{$tag->slug}}">{{$tag->name}}</a>
+                @endforeach
+            </p>
+        </div>
+        @endif
     </div>
 @stop
 
