@@ -39,7 +39,7 @@ if (count($rooms) == 0) {
       LEFT OUTER JOIN booking next_booking ON next_booking_item.booking_id = next_booking.id
     WHERE
       ressources.is_bookable = true
-      AND ressources.location_id = '.Auth::user()->default_location_id.'
+      AND ressources.location_id = '.(int)Auth::user()->default_location_id.'
       AND next_booking_item.start_at BETWEEN DATE_FORMAT(NOW(), "%Y-%m-%d %H:%i:00") AND DATE_FORMAT(NOW(),"%Y-%m-%d 23:59:59")
     GROUP BY ressources.id
 '));
