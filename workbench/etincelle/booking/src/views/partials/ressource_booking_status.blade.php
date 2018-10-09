@@ -1,6 +1,6 @@
 <?php
 
-$cacheKey = 'ressource_booking_status:'.Auth::user()->default_location_id;
+$cacheKey = 'ressource_booking_status:' . Auth::user()->default_location_id;
 //Cache::forget($cacheKey);
 
 // TODO améliorer le cache
@@ -21,9 +21,9 @@ if (count($rooms) == 0) {
     $rooms = array();
     foreach ($results as $item) {
         $rooms[$item->id] = array(
-                'name' => $item->name,
-                'current_event' => null,
-                'next_event' => null
+            'name' => $item->name,
+            'current_event' => null,
+            'next_event' => null
         );
     }
     $results = DB::select(DB::raw('
@@ -39,7 +39,7 @@ if (count($rooms) == 0) {
       LEFT OUTER JOIN booking next_booking ON next_booking_item.booking_id = next_booking.id
     WHERE
       ressources.is_bookable = true
-      AND ressources.location_id = '.((int)Auth::user()->default_location_id + 0).'
+      AND ressources.location_id = ' . (int)Auth::user()->default_location_id . '
       AND next_booking_item.start_at BETWEEN DATE_FORMAT(NOW(), "%Y-%m-%d %H:%i:00") AND DATE_FORMAT(NOW(),"%Y-%m-%d 23:59:59")
     GROUP BY ressources.id
 '));
@@ -47,11 +47,11 @@ if (count($rooms) == 0) {
     foreach ($results as $item) {
         $delay = round((strtotime($item->start_at) - time()) / 60);
         $rooms[$item->id]['next_event'] = array(
-                'start_at' => $item->start_at,
-                'end_at' => $item->end_at,
-                'user_id' => $item->user_id,
-                'is_private' => $item->is_private,
-                'duration' => $item->duration,
+            'start_at' => $item->start_at,
+            'end_at' => $item->end_at,
+            'user_id' => $item->user_id,
+            'is_private' => $item->is_private,
+            'duration' => $item->duration,
             //'delay' => durationToHumanShort($delay)
         );
         if ($delay < 30) {
@@ -73,7 +73,7 @@ FROM ressources
   JOIN booking current_booking ON current_booking_item.booking_id = current_booking.id
 WHERE
   ressources.is_bookable = true
-  AND ressources.location_id = '.Auth::user()->default_location_id.'
+  AND ressources.location_id = ' . (int)Auth::user()->default_location_id . '
   AND NOW() > current_booking_item.start_at
   AND DATE_ADD(current_booking_item.start_at, INTERVAL current_booking_item.duration MINUTE) > NOW()
 GROUP BY ressources.id
@@ -81,10 +81,10 @@ GROUP BY ressources.id
 
     foreach ($results as $item) {
         $rooms[$item->id]['current_event'] = array(
-                'start_at' => $item->start_at,
-                'end_at' => $item->end_at,
-                'user_id' => $item->user_id,
-                'is_private' => $item->is_private
+            'start_at' => $item->start_at,
+            'end_at' => $item->end_at,
+            'user_id' => $item->user_id,
+            'is_private' => $item->is_private
         );
 
     }
@@ -103,7 +103,7 @@ GROUP BY ressources.id
             <div class="media-body">
                 <a href="{{ URL::route('booking') }}">
                     <table class="table table-hover no-margins">
-<?php $is_first = true; ?>
+                        <?php $is_first = true; ?>
                         @foreach($rooms as $room_index => $room)
                             <tr>
                                 <td @if($is_first)  class="no-borders" @endif width="30">
@@ -126,7 +126,7 @@ GROUP BY ressources.id
                                         <small>
                                             <?php
                                             printf('Occupé jusqu\'à %s', date('H:i', strtotime($room['current_event']['end_at'])));
-                                            if($room['next_event']){
+                                            if ($room['next_event']) {
                                                 printf(', occupé à %s', date('H:i', strtotime($room['next_event']['start_at'])));
                                             }
                                             ?>
@@ -146,7 +146,7 @@ GROUP BY ressources.id
                                 </span>
                                 </td>
                             </tr>
-                                            <?php $is_first = false; ?>
+                            <?php $is_first = false; ?>
                         @endforeach
                     </table>
                 </a>
