@@ -43,7 +43,7 @@ class City extends Eloquent
     /**
      * Get list of ressources
      */
-    public function getSlugs()
+    public static function getSlugs()
     {
         $result = array();
         foreach(DB::select('SELECT LOWER(name) as name, id FROM cities') as $item){
