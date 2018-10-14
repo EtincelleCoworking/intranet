@@ -29,7 +29,7 @@ class Hashtag extends Eloquent
     public function scopeSelect($query)
     {
         return $query
-            ->orderBy('hashtags.name', 'ASC')
-            ->lists('hashtags.name', 'hashtags.id');
+            ->orderBy('name', 'ASC')
+            ->lists('name', 'id');
     }
 }
