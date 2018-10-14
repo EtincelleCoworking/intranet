@@ -17,7 +17,7 @@ class UserEventHandler
         //var_dump($_SERVER['REMOTE_ADDR']);
         $ip = LocationIp::where('name', '=', $_SERVER['REMOTE_ADDR'])->first();
         if ($ip) {
-            $user->default_location_id = $ip->location->id;
+            $user->default_location_id = $ip->location_id;
             $user->save();
         }
         //var_dump($ip);

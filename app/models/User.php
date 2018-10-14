@@ -16,6 +16,30 @@ class User extends Eloquent implements UserInterface, RemindableInterface
     use UserTrait, RemindableTrait;
 
     /**
+     * Laravel provides a boot method which is 'a convenient place to register your event bindings.'
+     * See: https://laravel.com/docs/4.2/eloquent#model-events
+     */
+    public static function boot()
+    {
+        parent::boot();
+
+        // registering a callback to be executed upon the creation of an activity AR
+        static::saving(function ($activity) {
+            if (empty($activity->slug)) {
+                // produce a slug based on the activity title
+                $slug = sprintf('%s.%s', \Str::slug($activity->firstname), \Str::slug($activity->lastname));
+
+                // check to see if any other slugs exist that are the same & count them
+                $count = static::whereRaw("slug RLIKE '^{$slug}(-[0-9]+)?$'")->count();
+
+                // if other slugs exist that are the same, append the count to the slug
+                $activity->slug = $count ? "{$slug}-{$count}" : $slug;
+            }
+        });
+
+    }
+
+    /**
      * The database table used by the model.
      *
      * @var string
@@ -222,17 +246,22 @@ class User extends Eloquent implements UserInterface, RemindableInterface
         return $this->getAvatarUrl(80);
     }
 
-    public function getAvatarUrl($size)
+    public static function AvatarUrl($user_id, $user_email, $avatar_filename, $size)
     {
-        if (!empty($this->avatar)) {
-            $src_filename = sprintf('/uploads/users/%d/%s', $this->id, $this->avatar);
+        if (!empty($avatar_filename)) {
+            $src_filename = sprintf('/uploads/users/%d/%s', $user_id, $avatar_filename);
             if (is_file(public_path() . $src_filename)) {
                 $result = Croppa::url($src_filename, $size, $size, array('resize'));
                 //$result = preg_replace('!^(.+)\?.+$!', '$1', $result);
-                return $result;
+                return asset($result);
             }
         }
-        return "https://www.gravatar.com/avatar/" . md5(strtolower(trim($this->email))) . "?d=mm&s=" . $size;
+        return "https://www.gravatar.com/avatar/" . md5(strtolower(trim($user_email))) . "?d=mm&s=" . $size;
+    }
+
+    public function getAvatarUrl($size)
+    {
+        return self::AvatarUrl($this->id, $this->email, $this->avatar, $size);
     }
 
     public function getLargeAvatarUrlAttribute()
@@ -489,7 +518,8 @@ class User extends Eloquent implements UserInterface, RemindableInterface
         return $query->where('is_staff', true);
     }
 
-    public function getUserGift($kind){
+    public function getUserGift($kind)
+    {
         return UserGift::join('gift_kind', 'gift_kind.id', '=', 'user_gift.kind_id')
             ->where('gift_kind.code', '=', $kind)
             ->where('user_id', '=', $this->id)
