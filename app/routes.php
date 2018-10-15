@@ -24,7 +24,8 @@ Route::get('/api/1.0/monitoring/{location_slug}/{key}/agents', array('as' => 'mo
 Route::post('/api/1.0/monitoring/{location_slug}/{key}/agents', array('as' => 'monitoring_feedback', 'uses' => 'MonitoringController@feedback'));
 
 Route::get('/api/1.0/users', array('as' => 'api_users', 'uses' => 'ApiRocksController@users'));
-Route::get('/api/1.0/cities', array('as' => 'api_users', 'uses' => 'ApiRocksController@cities'));
+Route::get('/api/1.0/cities', array('as' => 'api_cities', 'uses' => 'ApiRocksController@cities'));
+Route::get('/api/1.0/jobs', array('as' => 'api_jobs', 'uses' => 'ApiRocksController@jobs'));
 Route::get('/api/1.0/user/{user_slug}', array('as' => 'api_users', 'uses' => 'ApiRocksController@user'));
 
 Route::get('/login', array('as' => 'user_login', 'uses' => 'UserController@login'));

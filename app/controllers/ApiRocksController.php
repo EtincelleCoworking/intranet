@@ -26,6 +26,27 @@ class ApiRocksController extends BaseController
         }
         return $filter_city;
     }
+    protected function validateJob($value)
+    {
+        $all = Job::getSlugs();
+        $unknown = array();
+        $filtered = array();
+
+        if (!is_array($value)) {
+            $value = [$value];
+        }
+        foreach ($value as $slug) {
+            if (isset($all[$slug])) {
+                $filtered[] = $all[$slug];
+            } else {
+                $unknown[] = $slug;
+            }
+        }
+        if (count($unknown) > 0) {
+            throw new \Exception(sprintf('Parameter filter[job] contains unknown value(s): %s', implode(', ', $unknown)), 400);
+        }
+        return $filtered;
+    }
 
     protected function parseParameterFilter($value)
     {
@@ -41,6 +62,9 @@ class ApiRocksController extends BaseController
             }
             if (!empty($value['city'])) {
                 $result['city'] = $this->validateCity($value['city']);
+            }
+            if (!empty($value['job'])) {
+                $result['job'] = $this->validateJob($value['job']);
             }
         }
         return $result;
@@ -66,12 +90,16 @@ class ApiRocksController extends BaseController
             $sql_from[] = ' JOIN locations ON locations.id = users.default_location_id';
             $sql_where[] = sprintf(' locations.city_id IN (%s)', implode(',', $filter['city']));
         }
+        if (!empty($filter['job'])) {
+            $sql_from[] = ' JOIN user_job on user_job.user_id = users.id';
+            $sql_where[] = sprintf(' user_job.job_id IN (%s)', implode(', ', $filter['job']));
+        }
         $sql = 'SELECT users.id, users.firstname, users.lastname, users.slug, users.avatar, users.email, users.bio_short, MAX(past_times.time_start) as last_seen_at'
             . implode(' ', $sql_from)
             . ' WHERE ' . implode(' AND ', $sql_where)
             . ' GROUP BY users.id';;
 
-
+//die($sql);
         $result = array();
         foreach (DB::select($sql) as $item) {
             $result['data'][] = array(
@@ -101,6 +129,28 @@ class ApiRocksController extends BaseController
                 'id' => $item['id'],
                 'slug' => strtolower($item['name']),
                 'name' => $item['name']
+            );
+        }
+        return Response::json($result);
+    }
+
+
+    public function jobs($parent_id = null)
+    {
+        $sql = 'SELECT jobs.name, jobs.slug, COUNT(user_job.user_id) as cnt 
+          FROM jobs JOIN user_job ON user_job.job_id = jobs.id ';
+        if (!empty($parent_id)) {
+            $sql .= sprintf(' WHERE jobs.parent_id = %d', $parent_id);
+        }
+        $sql .= 'HAVING cnt > 0 ORDER BY name ASC';
+        $active_cities = DB::select($sql);
+
+        $result = array('data' => array());
+        foreach ($active_cities as $item) {
+            $result['data'][] = array(
+                'slug' => $item->slug,
+                'name' => $item->name,
+                'count' => $item->cnt,
             );
         }
         return Response::json($result);

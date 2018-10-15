@@ -251,7 +251,7 @@ class User extends Eloquent implements UserInterface, RemindableInterface
         if (!empty($avatar_filename)) {
             $src_filename = sprintf('/uploads/users/%d/%s', $user_id, $avatar_filename);
             if (is_file(public_path() . $src_filename)) {
-                $result = Croppa::url($src_filename, $size, $size, array('resize'));
+                $result = Croppa::url($src_filename, $size, $size, array('resize', 'pad'));
                 //$result = preg_replace('!^(.+)\?.+$!', '$1', $result);
                 return asset($result);
             }
