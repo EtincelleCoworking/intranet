@@ -35,8 +35,8 @@ class Job extends Eloquent
     public static function getSlugs()
     {
         $result = array();
-        foreach(DB::select('SELECT LOWER(name) as name, id FROM jobs') as $item){
-            $result[$item->name] = $item->id;
+        foreach(DB::select('SELECT slug, id FROM jobs') as $item){
+            $result[$item->slug] = $item->id;
         }
         return $result;
     }
