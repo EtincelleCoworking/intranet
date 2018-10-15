@@ -16,8 +16,8 @@ class UserEventHandler
         // define active location
         //var_dump($_SERVER['REMOTE_ADDR']);
         $ip = LocationIp::where('name', '=', $_SERVER['REMOTE_ADDR'])->first();
-        if ($ip) {
-            $user->default_location_id = $ip->location->id;
+        if ($ip && $ip->location_id) {
+            $user->default_location_id = $ip->location_id;
             $user->save();
         }
         //var_dump($ip);
