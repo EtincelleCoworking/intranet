@@ -79,7 +79,7 @@
                                         @if($period == date('Y-m') && $pending_total>0)
                                             <br/>
                                             <small><i>
-                                                    @if ($infos['balance'] < 0)
+                                                    @if ($infos['balance']+$pending_total < 0)
                                                         <span style="color: red">{{ number_format($infos['balance']+$pending_total, 0, ',', '.') }}
                                                             €</span>
                                                     @else
