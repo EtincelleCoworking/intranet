@@ -82,6 +82,10 @@
                             {{ Form::label('sales_presentation', 'Présentation commerciale') }}
                             <p>{{ Form::textarea('sales_presentation', null, array('class' => 'form-control', 'rows' => '15')) }}</p>
                         </div>
+                        <div class="col-md-6">
+                            {{ Form::label('google_calendar_id', 'Synchronisation Google Calendar') }}
+                            <p>{{ Form::text('google_calendar_id', null, array('class' => 'form-control')) }}</p>
+                        </div>
                     </div>
                     <div class="hr-line-dashed"></div>
                     <div class="form-group">

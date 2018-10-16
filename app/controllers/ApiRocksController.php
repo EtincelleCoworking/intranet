@@ -138,11 +138,11 @@ class ApiRocksController extends BaseController
     public function jobs($parent_id = null)
     {
         $sql = 'SELECT jobs.name, jobs.slug, COUNT(user_job.user_id) as cnt 
-          FROM jobs JOIN user_job ON user_job.job_id = jobs.id GROUP BY jobs.id ';
+          FROM jobs JOIN user_job ON user_job.job_id = jobs.id GROUP BY jobs.id';
         if (!empty($parent_id)) {
             $sql .= sprintf(' WHERE jobs.parent_id = %d', $parent_id);
         }
-        $sql .= 'HAVING cnt > 0 ORDER BY name ASC';
+        $sql .= ' HAVING cnt > 0 ORDER BY name ASC';
         $active_cities = DB::select($sql);
 
         $result = array('data' => array());

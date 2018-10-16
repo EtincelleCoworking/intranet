@@ -115,6 +115,10 @@ class RessourceController extends BaseController
             $ressource->sales_presentation = Input::get('sales_presentation') ;
             $ressource->has_paper_summary = (bool)Input::get('has_paper_summary');
             $ressource->intercom_enabled = (bool)Input::get('intercom_enabled');
+            $ressource->google_calendar_id = Input::get('google_calendar_id');
+            if(empty($ressource->google_calendar_id)){
+                $ressource->google_calendar_id = null;
+            }
 
             if ($ressource->save()) {
                 return Redirect::route('ressource_list')->with('mSuccess', 'Cette ressource a bien été modifiée');

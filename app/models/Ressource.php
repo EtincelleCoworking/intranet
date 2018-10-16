@@ -233,4 +233,12 @@ WHERE invoices_items.ressource_id = %1$d ' .
         return $items;
     }
 
+    public function getSynchronizedGoogleCalendarURL()
+    {
+        if (empty($this->google_calendar_id)) {
+            return false;
+        }
+        return 'https://calendar.google.com/calendar/embed?src=' . urlencode($this->google_calendar_id) . '&ctz=Europe%2FParis';
+    }
+
 }

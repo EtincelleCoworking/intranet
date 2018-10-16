@@ -28,3 +28,6 @@ Artisan::add(new ComputeRessourceStatsCommand);
 Artisan::add(new ComputeDeviceSeenCommand);
 Artisan::add(new SlackSyncUsersCommand);
 Artisan::add(new SlackDeleteOldFilesCommand);
+Artisan::add(new SlackInviteAllExceptCommand);
+Artisan::add(new AccountingImportCommand);
+Artisan::add(new BookingSyncGoogleCommand);

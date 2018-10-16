@@ -30,7 +30,8 @@
     "darkaonline/ripcord": "^0.1.6",
     "clegginabox/pdf-merger": "dev-master",
     "sabre/dav": "3.3.x-dev",
-    "ziplr/php-qr-code": "^1.0"
+    "ziplr/php-qr-code": "^1.0",
+    "google/apiclient": "^2.2"
   },
   "autoload": {
     "classmap": [

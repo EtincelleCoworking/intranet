@@ -60,6 +60,12 @@
                                 </td>
                                 <td class="col-md-2">
                                     <a href="{{ URL::route('ressource_modify', $ressource->id) }}">{{ $ressource->name }}</a>
+                                    <?php
+                                    $url = $ressource->getSynchronizedGoogleCalendarURL();
+                                    if(!empty($url)){
+                                        printf('<a href="%s" class="btn btn-default btn-xs" target="_blank" title="Google Calendar Synchronisé"><i class="fa fa-google"></i></a>', $url);
+                                    }
+                                    ?>
                                 </td>
                                 <td class="col-md-2">
                                     @if($ressource->subscription)
