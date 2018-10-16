@@ -247,7 +247,7 @@
                                                     <br/>
                                                     <small><i>
 
-                                                            @if ($cumul < 0)
+                                                            @if ($cumul+$pending[$location_slugs[$location]] < 0)
                                                                 <span style="color: red">{{ number_format( $cumul+$pending[$location_slugs[$location]], 0, ',', '.') }}
                                                                     €</span>
                                                             @else
