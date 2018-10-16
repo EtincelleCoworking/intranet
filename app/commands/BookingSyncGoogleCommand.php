@@ -38,7 +38,7 @@ class BookingSyncGoogleCommand extends Command
      */
     public function fire()
     {
-        $configuration_filename = app_path() . '/../booking-sync-6d0892204a1a.json';
+        $configuration_filename = app_path() . '/../google-calendar-api-credentials.json';
         putenv('GOOGLE_APPLICATION_CREDENTIALS=' . $configuration_filename);
 
         $client = new Google_Client();
@@ -47,47 +47,56 @@ class BookingSyncGoogleCommand extends Command
         $service = new Google_Service_Calendar($client);
 
 
-        foreach (Ressource::whereNotNull('google_calendar_id')->with('locations')->get() as $ressource) {
+        foreach (Ressource::whereNotNull('google_calendar_id')->with('location')->get() as $ressource) {
             $count = 0;
-            $this->output->writeln(sprintf('Starting synchronization of %s', $ressource->fullname));
+            $this->output->writeln(sprintf('Starting synchronization of %s - %s', $ressource->fullname, $ressource->google_calendar_id));
             $this->output->writeln(' - Clearing existing events on Google Calendar');
-            $optParams = array(
-                //    'maxResults' => 10,
-                'orderBy' => 'startTime',
-                'singleEvents' => true,
-                'timeMin' => date('c'),
-            );
-            $results = $service->events->listEvents($ressource->google_calendar_id, $optParams);
-            $events = $results->getItems();
-            foreach ($events as $event) {
-                $service->events->delete($ressource->google_calendar_id, $event->id);
-                $this->output->writeln(sprintf(' - Deleted event %s', $event->id));
-                $count++;
+            try {
+                $optParams = array(
+                    //    'maxResults' => 10,
+                    'orderBy' => 'startTime',
+                    'singleEvents' => true,
+                    'timeMin' => date('c'),
+                );
+                $results = $service->events->listEvents($ressource->google_calendar_id, $optParams);
+                $events = $results->getItems();
+                foreach ($events as $event) {
+                    $service->events->delete($ressource->google_calendar_id, $event->id);
+                    $this->output->writeln(sprintf(' - Deleted event %s', $event->id));
+                    $count++;
+                }
+            } catch (Google_Service_Exception $e) {
+                $this->output->writeln(sprintf('<error>%s</error>', $e->getMessage()));
+                debug_print_backtrace();
             }
             $this->output->writeln(sprintf('Deleted %d events', $count));
-            $this->output->writeln();
+            $this->output->writeln('');
             $count = 0;
+            try {
+                foreach (BookingItem::where('ressource_id', '=', $ressource->id)->where('start_at', '>', date('Y-m-d'))->get() as $booking_item) {
+                    $event = new Google_Service_Calendar_Event(array(
+                        'summary' => sprintf('Booking Item #%d', $booking_item->id),
+                        'start' => array(
+                            'dateTime' => date('c', strtotime($booking_item->start_at)),
+                            'timeZone' => 'Europe/Paris',
+                        ),
+                        'end' => array(
+                            'dateTime' => date('c', strtotime(sprintf('+%d minutes', $booking_item->duration), strtotime($booking_item->start_at))),
+                            'timeZone' => 'Europe/Paris',
+                        ),
+                    ));
+                    $count++;
 
-            foreach (BookingItem::where('ressource_id', '=', $ressource->id)->where('start_at', '>', date('Y-m-d'))->get() as $booking_item) {
-                $event = new Google_Service_Calendar_Event(array(
-                    'summary' => sprintf('Booking #%d', $booking_item->id),
-                    'start' => array(
-                        'dateTime' => date('c', strtotime($booking_item->start_at)),
-                        'timeZone' => 'Europe/Paris',
-                    ),
-                    'end' => array(
-                        'dateTime' => date('c', strtotime(sprintf('+%d minutes', $booking_item->duration), strtotime($booking_item->start_at))),
-                        'timeZone' => 'Europe/Paris',
-                    ),
-                ));
-                $count++;
-
-                $event = $service->events->insert($ressource->google_calendar_id, $event);
-                $start = $event->start->dateTime;
-                if (empty($start)) {
-                    $start = $event->start->date;
+                    $event = $service->events->insert($ressource->google_calendar_id, $event);
+                    $start = $event->start->dateTime;
+                    if (empty($start)) {
+                        $start = $event->start->date;
+                    }
+                    $this->output->writeln(sprintf(' - Created event %s - %s - %s %s', $event->id, $start, $event->getSummary(), $event->htmlLink));
                 }
-                $this->output->writeln(sprintf(' - Created event %s - %s - %s %s', $event->id, $start, $event->getSummary(), $event->htmlLink));
+            } catch (Google_Service_Exception $e) {
+                $this->output->writeln(sprintf('<error>%s</error>', $e->getMessage()));
+                debug_print_backtrace();
             }
             $this->output->writeln(sprintf('Created %d events', $count));
         }
