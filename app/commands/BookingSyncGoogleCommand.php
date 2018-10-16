@@ -47,7 +47,7 @@ class BookingSyncGoogleCommand extends Command
         $service = new Google_Service_Calendar($client);
 
 
-        foreach (Ressource::whereNotNull('google_calendar_id')->get() as $ressource) {
+        foreach (Ressource::whereNotNull('google_calendar_id')->with('locations')->get() as $ressource) {
             $count = 0;
             $this->output->writeln(sprintf('Starting synchronization of %s', $ressource->fullname));
             $this->output->writeln(' - Clearing existing events on Google Calendar');
@@ -62,8 +62,12 @@ class BookingSyncGoogleCommand extends Command
             foreach ($events as $event) {
                 $service->events->delete($ressource->google_calendar_id, $event->id);
                 $this->output->writeln(sprintf(' - Deleted event %s', $event->id));
-
+                $count++;
             }
+            $this->output->writeln(sprintf('Deleted %d events', $count));
+            $this->output->writeln();
+            $count = 0;
+
             foreach (BookingItem::where('ressource_id', '=', $ressource->id)->where('start_at', '>', date('Y-m-d'))->get() as $booking_item) {
                 $event = new Google_Service_Calendar_Event(array(
                     'summary' => sprintf('Booking #%d', $booking_item->id),
@@ -79,7 +83,11 @@ class BookingSyncGoogleCommand extends Command
                 $count++;
 
                 $event = $service->events->insert($ressource->google_calendar_id, $event);
-                $this->output->writeln(sprintf(' - Created event %s - %s', $event->id, $event->htmlLink));
+                $start = $event->start->dateTime;
+                if (empty($start)) {
+                    $start = $event->start->date;
+                }
+                $this->output->writeln(sprintf(' - Created event %s - %s - %s %s', $event->id, $start, $event->getSummary(), $event->htmlLink));
             }
             $this->output->writeln(sprintf('Created %d events', $count));
         }
