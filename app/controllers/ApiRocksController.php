@@ -72,8 +72,7 @@ class ApiRocksController extends BaseController
 
     public function users()
     {
-        $delay = '-6 week';
-        $delay = '-2 month';
+        $delay = '-6 month';
 
         try {
             $filter = $this->parseParameterFilter(Input::get('filter'));
@@ -85,6 +84,7 @@ class ApiRocksController extends BaseController
         $sql_from[] = 'JOIN past_times ON past_times.user_id = users.id AND past_times.ressource_id = ' . Ressource::TYPE_COWORKING;
         $sql_where = ['coworking_started_at IS NOT NULL'];
         $sql_where[] = 'users.is_hidden_member = 0';
+        $sql_where[] = 'users.is_enabled = 1';
         $sql_where[] = sprintf('last_seen_at > "%s"', date('Y-m-d', strtotime($delay)));
         if (!empty($filter['city'])) {
             $sql_from[] = ' JOIN locations ON locations.id = users.default_location_id';
@@ -97,13 +97,13 @@ class ApiRocksController extends BaseController
         $sql = 'SELECT users.id, users.firstname, users.lastname, users.slug, users.avatar, users.email, users.bio_short, MAX(past_times.time_start) as last_seen_at'
             . implode(' ', $sql_from)
             . ' WHERE ' . implode(' AND ', $sql_where)
-            . ' GROUP BY users.id';;
+            . ' GROUP BY users.id ORDER BY last_seen_at DESC ';
 
 //die($sql);
         $result = array();
         foreach (DB::select($sql) as $item) {
             $result['data'][] = array(
-                'id' => $item->id,
+//                'id' => $item->id,
                 'firstname' => $item->firstname,
                 'lastname' => $item->lastname,
                 'slug' => $item->slug,
@@ -165,6 +165,22 @@ class ApiRocksController extends BaseController
         $result = array(
             'firstname' => $user->firstname,
             'lastname' => $user->lastname,
+            'slug' => $user->slug,
+            'email' => $user->email,
+            'bio_short' => $user->bio_short,
+            'bio_long' => $user->bio_long,
+            'picture_url' => User::AvatarUrl($user->id, $user->email, $user->avatar, 350),
+            'picture_url_large' => User::AvatarUrl($user->id, $user->email, $user->avatar, 600),
+            'phone' => $user->phoneFmt,
+            'social_twitter' => $user->twitter,
+            'social_github' => $user->social_github,
+            'social_instagram' => $user->social_instagram,
+            'social_linkedin' => $user->social_linkedin,
+            'social_facebook' => $user->social_facebook,
+            'website' => $user->website,
+            'city_name' => $user->location->city->name,
+            'city_slug' => strtolower($user->location->city->name),
+            'job' => null,
         );
         return Response::json(['data' => $result]);
     }
