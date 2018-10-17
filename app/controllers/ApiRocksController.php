@@ -172,7 +172,7 @@ class ApiRocksController extends BaseController
             'picture_url' => User::AvatarUrl($user->id, $user->email, $user->avatar, 350),
             'picture_url_large' => User::AvatarUrl($user->id, $user->email, $user->avatar, 600),
             'phone' => $user->phoneFmt,
-            'social_twitter' => $user->twitter,
+            'social_twitter' => $user->twitter?str_replace('@', 'https://twitter.com/', $user->twitter):'',
             'social_github' => $user->social_github,
             'social_instagram' => $user->social_instagram,
             'social_linkedin' => $user->social_linkedin,
