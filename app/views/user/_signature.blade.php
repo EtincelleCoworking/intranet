@@ -84,7 +84,7 @@ T&eacute;l. : <span style="color:#4F2067;font-family:sans-serif">{{$_ENV['organi
     </tr>
     </tbody>
 </table>
-<br/><p style="font:12px Arial;color:rgb(100,100,100);font-family:sans-serif">A la recherche de talents ? Trouvez les
+<br/><p style="font:12px Arial;color:rgb(100,100,100);font-family:sans-serif">À la recherche de talents ? Trouvez les
     dans notre <a
             href="http://etincelle.rocks/" style="color:#4F2067;text-decoration:none;font-family:sans-serif">réseau de
         coworkers</a> ! </p>
