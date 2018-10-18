@@ -1,4 +1,4 @@
-<table border="0" cellspacing="0" cellpadding="0" width="355" style="width:355px">
+<table border="0" cellspacing="0" cellpadding="0" width="470" style="width:355px">
     <tbody>
     <tr valign="top">
         <td style="width:100px;padding-right:10px">
@@ -12,7 +12,7 @@
                 <b>{{htmlentities($user->firstname)}} {{htmlentities(strtoupper($user->lastname))}}</b>, {{$user->bio_short}}
                 <br/>
             </div>
-            <table style="width:355px;margin-top:5px" width="370" border="0" cellspacing="0"
+            <table style="width:355px;margin-top:5px" width="355" border="0" cellspacing="0"
                    cellpadding="0">
                 <tbody>
                 <tr>
@@ -32,7 +32,7 @@ T&eacute;l. : <span style="color:#4F2067;font-family:sans-serif">{{$_ENV['organi
 
 
             <div style="margin-top:10px">
-                <table border="0" cellpadding="0" cellspacing="0">
+                <table border="0" width="355" cellpadding="0" cellspacing="0">
                     <tbody>
                     <tr style="padding-top:10px">
                         <td width="70%" align="left"
@@ -51,18 +51,30 @@ T&eacute;l. : <span style="color:#4F2067;font-family:sans-serif">{{$_ENV['organi
 
                         </td>
                         <td width="30%" align="right" style="padding-right:5px;text-align:right;padding-top:0px">
-                            @if($twitter)
-                                <a href="https://twitter.com/{{$twitter}}" target="_blank"><img
-                                            style="border-radius:0px;border:0px"
-                                            src="{{URL::asset('/img/twitter-logo-button-2.png')}}"></a>
-                            @endif
-                            @if($facebook)
-                                <a href="{{$facebook}}" target="_blank"><img style="border-radius:0px;border:0px"
-                                                                             src="{{URL::asset('/img/facebook-logo-button-2.png')}}"></a>
-                            @endif
-                            <a href="https://etincelle.rocks/with/{{$user->slug}}" target="_blank"><img
-                                        style="border-radius:0px;border:0px"
-                                        src="{{URL::asset('/img/icon-etincelle-24.png')}}"></a>
+                            <table border="0" cellpadding="0" cellspacing="0" width="100%">
+                                <tr>
+                                    <td width="33%">
+                                        @if($twitter)
+                                            <a href="https://twitter.com/{{$twitter}}" target="_blank"><img
+                                                        style="border-radius:0px;border:0px"
+                                                        src="{{URL::asset('/img/twitter-logo-button-2.png')}}"></a>
+                                        @endif
+                                    </td>
+                                    <td width="33%">
+                                        @if($facebook)
+                                            <a href="{{$facebook}}" target="_blank"><img
+                                                        style="border-radius:0px;border:0px"
+                                                        src="{{URL::asset('/img/facebook-logo-button-2.png')}}"></a>
+                                        @endif
+                                    </td>
+                                    <td width="34%">
+                                        <a href="https://etincelle.rocks/with/{{$user->slug}}" target="_blank"><img
+                                                    style="border-radius:0px;border:0px"
+                                                    src="{{URL::asset('/img/icon-etincelle-24.png')}}"></a>
+
+                                    </td>
+                                </tr>
+                            </table>
                         </td>
                     </tr>
                     </tbody>
@@ -72,5 +84,7 @@ T&eacute;l. : <span style="color:#4F2067;font-family:sans-serif">{{$_ENV['organi
     </tr>
     </tbody>
 </table>
-<br/><p style="font-family:sans-serif; font-size: 12px">A la recherche de talents ? Trouvez les dans le <a
-            href="http://etincelle.rocks/" style="color:#4F2067;">réseau de coworkers Etincelle Coworking</a> ! </p>
+<br/><p style="font:12px Arial;color:rgb(100,100,100);font-family:sans-serif">A la recherche de talents ? Trouvez les
+    dans notre <a
+            href="http://etincelle.rocks/" style="color:#4F2067;text-decoration:none;font-family:sans-serif">réseau de
+        coworkers</a> ! </p>
