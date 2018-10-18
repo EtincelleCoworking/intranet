@@ -1,19 +1,18 @@
-<table border="0" cellspacing="0" cellpadding="0" width="470" style="width:470px">
+<table border="0" cellspacing="0" cellpadding="0" width="355" style="width:355px">
     <tbody>
     <tr valign="top">
-        <td style="width:10px;padding-right:10px">
+        <td style="width:100px;padding-right:10px">
             <img src="{{URL::asset($user->getAvatarUrl(100))}}"
-                 width="65" alt="photo"
+                 width="100" alt="photo"
                  style="border-radius:3px;width:100px;max-width:120px">
         </td>
-        <td style="border-right:5px solid #4F2067">
-        </td>
+        <td style="border-right:5px solid #4F2067"></td>
         <td style="text-align:initial;font:12px Arial;color:rgb(100,100,100);padding:0px 10px">
             <div style="margin-bottom:5px;margin-top:0px">
                 <b>{{htmlentities($user->firstname)}} {{htmlentities(strtoupper($user->lastname))}}</b>, {{$user->bio_short}}
                 <br/>
             </div>
-            <table style="width:470px;margin-top:5px" width="470" border="0" cellspacing="0"
+            <table style="width:355px;margin-top:5px" width="370" border="0" cellspacing="0"
                    cellpadding="0">
                 <tbody>
                 <tr>
@@ -36,7 +35,7 @@ T&eacute;l. : <span style="color:#4F2067;font-family:sans-serif">{{$_ENV['organi
                 <table border="0" cellpadding="0" cellspacing="0">
                     <tbody>
                     <tr style="padding-top:10px">
-                        <td width="80%" align="left"
+                        <td width="70%" align="left"
                             style="font:12px Arial;color:rgb(100,100,100);padding-right:5px;text-align:left;padding-top:0px">
                             <span><b>{{htmlentities($_ENV['organisation_name'])}}</b></span><br/>
                             <span>
@@ -51,7 +50,7 @@ T&eacute;l. : <span style="color:#4F2067;font-family:sans-serif">{{$_ENV['organi
                             </p>
 
                         </td>
-                        <td width="20%" align="right" style="padding-right:5px;text-align:right;padding-top:0px">
+                        <td width="30%" align="right" style="padding-right:5px;text-align:right;padding-top:0px">
                             @if($twitter)
                                 <a href="https://twitter.com/{{$twitter}}" target="_blank"><img
                                             style="border-radius:0px;border:0px"
@@ -61,6 +60,9 @@ T&eacute;l. : <span style="color:#4F2067;font-family:sans-serif">{{$_ENV['organi
                                 <a href="{{$facebook}}" target="_blank"><img style="border-radius:0px;border:0px"
                                                                              src="{{URL::asset('/img/facebook-logo-button-2.png')}}"></a>
                             @endif
+                            <a href="https://etincelle.rocks/with/{{$user->slug}}" target="_blank"><img
+                                        style="border-radius:0px;border:0px"
+                                        src="{{URL::asset('/img/icon-etincelle-24.png')}}"></a>
                         </td>
                     </tr>
                     </tbody>
@@ -70,3 +72,5 @@ T&eacute;l. : <span style="color:#4F2067;font-family:sans-serif">{{$_ENV['organi
     </tr>
     </tbody>
 </table>
+<br/><p style="font-family:sans-serif; font-size: 12px">A la recherche de talents ? Trouvez les dans le <a
+            href="http://etincelle.rocks/" style="color:#4F2067;">réseau de coworkers Etincelle Coworking</a> ! </p>

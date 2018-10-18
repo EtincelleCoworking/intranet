@@ -24,14 +24,14 @@
 
 @section('content')
     <div class="row">
-        <div class="col-sm-6">
+        <div class="col-sm-10">
             <div class="ibox">
                 <div class="ibox-content">
                     {{$signature}}
                 </div>
             </div>
         </div>
-        <div class="col-sm-6">
+        <div class="col-sm-2">
             <a href="?download=1" class="btn btn-primary">Télécharger</a>
         </div>
     </div>
