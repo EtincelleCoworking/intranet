@@ -12,11 +12,8 @@
         </div>
         <div class="col-sm-4">
             <div class="title-action">
-                <a href="{{ URL::route('user_modify', $user->id) }}" class="btn btn-primary">Modifier</a>
-
-                <a href="{{URL::route('user_login_as', $user->id)}}"
-                   title="Se connecter en tant que {{$user->fullname}}"
-                   class="btn btn-default"><i class="fa fa-user-secret"></i></a>
+                <a href="?download=1" class="btn btn-primary">Télécharger ({{ceil(strlen($signature) / 1024)}}Kb)</a>
+                <a href="{{ URL::route('user_modify', $user->id) }}" class="btn btn-default">Modifier</a>
             </div>
         </div>
     </div>
@@ -24,15 +21,12 @@
 
 @section('content')
     <div class="row">
-        <div class="col-sm-10">
+        <div class="col-sm-12">
             <div class="ibox">
                 <div class="ibox-content">
                     {{$signature}}
                 </div>
             </div>
-        </div>
-        <div class="col-sm-2">
-            <a href="?download=1" class="btn btn-primary">Télécharger</a>
         </div>
     </div>
     <div class="row">

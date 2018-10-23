@@ -796,6 +796,13 @@ LIMIT 1';
         return Redirect::route('user_list')->with('mSuccess', sprintf('L\'email de bienvenue a été envoyé à %s &lt;%s&gt;', $user->fullname, $user->email));
     }
 
+    private function extractExtension($url)
+    {
+        $url_parts = parse_url($url);
+        $parts = explode('.', basename($url_parts ['path']));
+        return $parts[count($parts) - 1];
+    }
+
     public function signature($user_id)
     {
         $user = User::find($user_id);
@@ -813,8 +820,11 @@ LIMIT 1';
                 break;
         }
 
+        $picture_url = $user->getAvatarUrl(100);
         $signature = View::make('user._signature', array(
             'user' => $user,
+            'picture_url' => $picture_url,
+            'extension' => $this->extractExtension($picture_url),
             'twitter' => $twitter,
             'facebook' => $facebook,
             'url' => $url,
@@ -836,5 +846,7 @@ LIMIT 1';
             'signature' => $signature,
         ));
     }
+
+
 }
 

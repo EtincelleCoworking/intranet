@@ -2,7 +2,7 @@
     <tbody>
     <tr valign="top">
         <td style="width:100px;padding-right:10px">
-            <img src="{{URL::asset($user->getAvatarUrl(100))}}"
+            <img src="data:image/{{$extension}};base64,{{base64_encode(file_get_contents($picture_url))}}"
                  width="100" alt="photo"
                  style="border-radius:3px;width:100px;max-width:120px">
         </td>
@@ -57,20 +57,20 @@ T&eacute;l. : <span style="color:#4F2067;font-family:sans-serif">{{$_ENV['organi
                                         @if($twitter)
                                             <a href="https://twitter.com/{{$twitter}}" target="_blank"><img
                                                         style="border-radius:0px;border:0px"
-                                                        src="{{URL::asset('/img/twitter-logo-button-2.png')}}"></a>
+                                                        src="data:image/png;base64,{{base64_encode(file_get_contents(public_path('/img/twitter-logo-button-2.png')))}}"></a>
                                         @endif
                                     </td>
                                     <td width="33%">
                                         @if($facebook)
                                             <a href="{{$facebook}}" target="_blank"><img
                                                         style="border-radius:0px;border:0px"
-                                                        src="{{URL::asset('/img/facebook-logo-button-2.png')}}"></a>
+                                                        src="data:image/png;base64,{{base64_encode(file_get_contents(public_path('/img/facebook-logo-button-2.png')))}}"></a>
                                         @endif
                                     </td>
                                     <td width="34%">
                                         <a href="https://etincelle.rocks/with/{{$user->slug}}" target="_blank"><img
                                                     style="border-radius:0px;border:0px"
-                                                    src="{{URL::asset('/img/icon-etincelle-24.png')}}"></a>
+                                                    src="data:image/png;base64,{{base64_encode(file_get_contents(public_path('/img/icon-etincelle-24.png')))}}"></a>
 
                                     </td>
                                 </tr>
