@@ -92,7 +92,7 @@ class ApiRocksController extends BaseController
         $sql_where = ['coworking_started_at IS NOT NULL'];
         $sql_where[] = 'users.is_hidden_member = 0';
         $sql_where[] = 'users.is_enabled = 1';
-        $sql_where[] = 'users.rocks_status <> '.User::ROCKS_STATUS_DISABLED;
+        $sql_where[] = 'users.rocks_status <> ' . User::ROCKS_STATUS_DISABLED;
         $sql_where[] = sprintf('last_seen_at > "%s"', date('Y-m-d', strtotime($delay)));
         if (!empty($filter['city'])) {
             $sql_from[] = ' JOIN locations ON locations.id = users.default_location_id';
@@ -192,12 +192,12 @@ class ApiRocksController extends BaseController
             'social_linkedin' => $user->social_linkedin,
             'social_facebook' => $user->social_facebook,
             'website' => $user->website,
-            'city_name' => $user->location->city->name,
-            'city_slug' => strtolower($user->location->city->name),
+            'city_name' => ($user->location && $user->location->city) ? $user->location->city->name : '',
+            'city_slug' => ($user->location && $user->location->city) ? strtolower($user->location->city->name) : '',
             'job' => null,
         );
 
-        if(User::ROCKS_STATUS_MASKED == $user->rocks_status){
+        if (User::ROCKS_STATUS_MASKED == $user->rocks_status) {
             $result['email'] = '';
             $result['phone'] = '';
         }
