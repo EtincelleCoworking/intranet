@@ -21,10 +21,10 @@
             <a href="{{ URL::route('user_affiliate', $user->id) }}"
                class="btn btn-xs btn-default">Affiliation</a>
             @if(Auth::user()->isSuperAdmin())
-            <a href="{{ URL::route('stats_devices', $user->id) }}"
-               class="btn btn-xs btn-default">Présence</a>
-            <a href="{{ URL::route('user_gift', $user->id) }}"
-               class="btn btn-xs btn-default">Cadeaux</a>
+                <a href="{{ URL::route('stats_devices', $user->id) }}"
+                   class="btn btn-xs btn-default">Présence</a>
+                <a href="{{ URL::route('user_gift', $user->id) }}"
+                   class="btn btn-xs btn-default">Cadeaux</a>
             @endif
             @if($user->is_staff)
                 <a href="{{ URL::route('user_signature', $user->id) }}"
@@ -89,12 +89,29 @@
             </div>
             <div id="tab-intro" class="tab-pane">
                 <div class="panel-body">
-                    {{ Form::label('bio_short', 'Métier') }}
-                    <p>{{Form::text('bio_short', null, array('class' => 'form-control', 'autocomplete' => 'new-password')) }}</p>
-                    {{ Form::label('bio_long', 'Présentation') }}
-                    <p>{{Form::textarea('bio_long', null, array('class' => 'form-control')) }}</p>
-                    {{ Form::label('hashtags', 'Tags') }}
-                    <p>{{Form::select('hashtags[]', Hashtag::select(),$user->hashtags->lists('id'), array('class' => 'form-control', 'multiple' => 'multiple', 'id'=>'hashtags')) }}</p>
+                    <div class="col-lg-6">
+                        {{ Form::label('bio_short', 'Métier') }}
+                        <p>{{Form::text('bio_short', null, array('class' => 'form-control', 'autocomplete' => 'new-password')) }}</p>
+                        {{ Form::label('hashtags', 'Tags') }}
+                        <p>{{Form::select('hashtags[]', Hashtag::select(),$user->hashtags->lists('id'), array('class' => 'form-control', 'multiple' => 'multiple', 'id'=>'hashtags')) }}</p>
+                        {{ Form::label('bio_long', 'Présentation') }}
+                        <p>{{Form::textarea('bio_long', null, array('class' => 'form-control')) }}</p>
+                    </div>
+                    <div class="col-lg-6">
+                        <p>Votre profil sur notre portail de talents <a
+                                    href="https://etincelle.rocks/with/{{$user->slug}}">https://etincelle.rocks</a> :
+                        </p>
+
+                        {{ Form::radio('rocks_status', User::ROCKS_STATUS_ENABLED) }} <b>Complètement visible</b>
+                        <p>Votre profil est complètement visible avec notamment votre adresse email et votre
+                            numéro de téléphone pour un contact direct.</p>
+                        {{ Form::radio('rocks_status', User::ROCKS_STATUS_MASKED) }} <b>Visible</b>
+                        <p>Votre profil est visible mais votre adresse email et votre
+                            numéro de téléphone ne sont pas affichés.</p>
+                        {{ Form::radio('rocks_status', User::ROCKS_STATUS_DISABLED) }} <b>Absent</b>
+                        <p>Votre profil n'est pas visible.</p>
+                        </ul>
+                    </div>
                 </div>
             </div>
             <div id="tab-internet" class="tab-pane">

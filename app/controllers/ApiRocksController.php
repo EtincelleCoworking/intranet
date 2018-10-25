@@ -26,6 +26,7 @@ class ApiRocksController extends BaseController
         }
         return $filter_city;
     }
+
     protected function validateJob($value)
     {
         $all = Job::getSlugs();
@@ -55,7 +56,7 @@ class ApiRocksController extends BaseController
             if (!is_array($value)) {
                 throw new \Exception('Parameter filter must be an array');
             }
-            $valid_keys = ['city', 'job'];
+            $valid_keys = ['city', 'job', 'page', 'count'];
             $unknown_keys = array_diff(array_keys($value), $valid_keys);
             if (count($unknown_keys) > 0) {
                 throw new \Exception(sprintf('Parameter filter contains unknown value(s): %s', implode(', ', $unknown_keys)));
@@ -65,6 +66,12 @@ class ApiRocksController extends BaseController
             }
             if (!empty($value['job'])) {
                 $result['job'] = $this->validateJob($value['job']);
+            }
+            if (!empty($value['count'])) {
+                $result['count'] = $value['count'];
+            }
+            if (!empty($value['page'])) {
+                $result['page'] = $value['page'];
             }
         }
         return $result;
@@ -85,6 +92,7 @@ class ApiRocksController extends BaseController
         $sql_where = ['coworking_started_at IS NOT NULL'];
         $sql_where[] = 'users.is_hidden_member = 0';
         $sql_where[] = 'users.is_enabled = 1';
+        $sql_where[] = 'users.rocks_status <> '.User::ROCKS_STATUS_DISABLED;
         $sql_where[] = sprintf('last_seen_at > "%s"', date('Y-m-d', strtotime($delay)));
         if (!empty($filter['city'])) {
             $sql_from[] = ' JOIN locations ON locations.id = users.default_location_id';
@@ -99,7 +107,9 @@ class ApiRocksController extends BaseController
             . ' WHERE ' . implode(' AND ', $sql_where)
             . ' GROUP BY users.id ORDER BY last_seen_at DESC ';
 
-//die($sql);
+        if (!empty($filter['count'])) {
+            $sql .= sprintf(' LIMIT %d, %d', empty($filter['page']) ? 0 : ((max(0, $filter['page'] - 1)) * $filter['count']), $filter['count']);
+        }
         $result = array();
         foreach (DB::select($sql) as $item) {
             $result['data'][] = array(
@@ -107,7 +117,7 @@ class ApiRocksController extends BaseController
                 'firstname' => $item->firstname,
                 'lastname' => $item->lastname,
                 'slug' => $item->slug,
-                'email' => $item->email,
+                'email' => '', //$item->email,
                 'bio_short' => $item->bio_short,
                 'picture_url' => User::AvatarUrl($item->id, $item->email, $item->avatar, 300),
                 'job' => null,
@@ -158,8 +168,12 @@ class ApiRocksController extends BaseController
 
     public function user($user_slug)
     {
-        $user = User::where('slug', '=', $user_slug)->first();
+        $user = User::where('slug', '=', $user_slug)
+            ->first();
         if (null == $user) {
+            return Response::make('Unknown user', 404);
+        }
+        if ($user->rocks_status == User::ROCKS_STATUS_DISABLED) {
             return Response::make('Unknown user', 404);
         }
         $result = array(
@@ -172,7 +186,7 @@ class ApiRocksController extends BaseController
             'picture_url' => User::AvatarUrl($user->id, $user->email, $user->avatar, 350),
             'picture_url_large' => User::AvatarUrl($user->id, $user->email, $user->avatar, 600),
             'phone' => $user->phoneFmt,
-            'social_twitter' => $user->twitter?str_replace('@', 'https://twitter.com/', $user->twitter):'',
+            'social_twitter' => $user->twitter ? str_replace('@', 'https://twitter.com/', $user->twitter) : '',
             'social_github' => $user->social_github,
             'social_instagram' => $user->social_instagram,
             'social_linkedin' => $user->social_linkedin,
@@ -182,6 +196,11 @@ class ApiRocksController extends BaseController
             'city_slug' => strtolower($user->location->city->name),
             'job' => null,
         );
+
+        if(User::ROCKS_STATUS_MASKED == $user->rocks_status){
+            $result['email'] = '';
+            $result['phone'] = '';
+        }
         return Response::json(['data' => $result]);
     }
 }

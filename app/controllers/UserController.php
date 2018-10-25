@@ -197,6 +197,7 @@ order by invoices.date_invoice desc
                     $user->affiliate_user_id = Input::get('affiliate_user_id') ? Input::get('affiliate_user_id') : null;
                 }
                 $user->slack_id = Input::get('slack_id');
+                $user->rocks_status = Input::get('rocks_status');
 
                 if (Input::get('birthday')) {
                     $birthday = explode('/', Input::get('birthday'));

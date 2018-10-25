@@ -13,6 +13,9 @@ class User extends Eloquent implements UserInterface, RemindableInterface
     const LEAD_STATUS_TRIED = 4;
     const LEAD_STATUS_CLOSED = 5;
 
+    const ROCKS_STATUS_DISABLED = -1;
+    const ROCKS_STATUS_MASKED = 0;
+    const ROCKS_STATUS_ENABLED = 1;
     use UserTrait, RemindableTrait;
 
     /**
