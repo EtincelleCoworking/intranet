@@ -30,31 +30,103 @@ class TeamPlanningController extends BaseController
 
     public function populate()
     {
-       // TeamPlanningItem::truncate();
+        //TeamPlanningItem::truncate();
+        //region Jehanne
+        $ranges = array('08:15' => '11:00', '13:30' => '15:00');
+        $days = array(1, 2, 3, 4, 5);
+        $count = 60;
+        $now = mktime(0, 0, 0, 10, 31, 2018);
+        while ($count--) {
+            if (in_array(date('N', $now), $days) && !Utils::isFerian(date('Y-m-d', $now))) {
+                foreach ($ranges as $start_time => $end_time) {
+                    $item = new TeamPlanningItem();
+                    $item->user_id = 2410;
+                    $item->location_id = 1;
+                    $item->start_at = date('Y-m-d ', $now) . $start_time;
+                    $item->end_at = date('Y-m-d ', $now) . $end_time;
+                    $item->save();
+                    print_r($item);
+                }
+            }
+            $now = strtotime('+1 day', $now);
+        }
+        //endregion
+
+        //region Suayip
+        $ranges = array('08:30' => '12:30', '14:00' => '17:00');
+        $planning = array();
+        $planning['2018-10-30'] = 2;
+        $planning['2018-11-02'] = 1;
+        $planning['2018-11-05'] = 5;
+        $planning['2018-11-19'] = 5;
+        $planning['2018-11-26'] = 5;
+        $planning['2018-12-17'] = 5;
+        $planning['2018-12-24'] = 1;
+        $planning['2018-12-26'] = 3;
+        $planning['2018-12-31'] = 1;
+        $planning['2019-01-02'] = 3;
+        $planning['2019-01-14'] = 5;
+        $planning['2019-01-21'] = 5;
+        $planning['2019-02-04'] = 5;
+        $planning['2019-02-11'] = 5;
+        $planning['2019-02-25'] = 5;
+        $planning['2019-03-11'] = 5;
+        $planning['2019-03-18'] = 5;
+        $planning['2019-04-01'] = 5;
+        $planning['2019-04-08'] = 5;
+        $planning['2019-04-23'] = 4;
+        $planning['2019-04-29'] = 2;
+        $planning['2019-05-02'] = 2;
+        $planning['2019-05-13'] = 5;
+        $planning['2019-05-20'] = 5;
+        $planning['2019-06-01'] = 1;
+        $planning['2019-06-03'] = 5;
+        $planning['2019-06-11'] = 4;
+        $planning['2019-06-24'] = 5;
+        foreach ($planning as $now => $duration) {
+            $now = strtotime($now);
+            while ($duration--) {
+                foreach ($ranges as $start_time => $end_time) {
+                    $item = new TeamPlanningItem();
+                    $item->user_id = 2648;
+                    $item->location_id = 1;
+                    $item->start_at = date('Y-m-d ', $now) . $start_time;
+                    $item->end_at = date('Y-m-d ', $now) . $end_time;
+                    $item->save();
+                    print_r($item);
+                }
+                $now = strtotime('+1 day', $now);
+            }
+        }
+//endregion
         $days = array(1, 2, 3, 4, 5);
         $ranges = array(
-            array('08:00' => '11:00', '15:00' => '19:00'),
-            array('08:00' => '12:30', '13:30' => '16:00'),
-            array('11:00' => '14:30', '15:30' => '19:00'),
+            array('08:00' => '12:30', '13:30' => '16:00'), // AL
+
+            array('08:00' => '11:30', '14:30' => '18:00'), // Wilson
+
+            array('11:00' => '14:30', '15:30' => '19:00'), // Wilson, repas sur place (12h30 / 13h30), checkout AL
         );
         $members = array();
+        $members[] = 2414; // Julie
         $members[] = 1; // Sébastien
         $members[] = 877; // Aurélie
-        $members[] = 1474; // Caroline
         foreach ($members as $planning_index => $user_id) {
             $count = 60;
-            $now = mktime(0, 0, 0, 7, 1, 2018);
+            $now = mktime(0, 0, 0, 11, 5, 2018);
             while ($count--) {
                 if (in_array(date('N', $now), $days)) {
-                    $range_index = $planning_index++ % 3;
-                    foreach ($ranges[$range_index] as $start_time => $end_time) {
-                        $item = new TeamPlanningItem();
-                        $item->user_id = $user_id;
-                        $item->location_id = ($range_index != 0) ? 1 : 8;
-                        $item->start_at = date('Y-m-d ', $now) . $start_time;
-                        $item->end_at = date('Y-m-d ', $now) . $end_time;
-                        $item->save();
-                        print_r($item);
+                    if (!Utils::isFerian(date('Y-m-d', $now))) {
+                        $range_index = $planning_index++ % 3;
+                        foreach ($ranges[$range_index] as $start_time => $end_time) {
+                            $item = new TeamPlanningItem();
+                            $item->user_id = $user_id;
+                            $item->location_id = ($range_index != 0) ? 1 : 8;
+                            $item->start_at = date('Y-m-d ', $now) . $start_time;
+                            $item->end_at = date('Y-m-d ', $now) . $end_time;
+                            $item->save();
+                            print_r($item);
+                        }
                     }
                 }
                 $now = strtotime('+1 day', $now);
@@ -66,19 +138,34 @@ class TeamPlanningController extends BaseController
     {
         $colors = array();
         $colors[1] = array( // Sébastien
-            'text' => '#ffffff',
-            'background' => '#40A040',
-            'border' => '#008000',
+            'text' => '#000000',
+            'background' => '#FFD800',
+            'border' => adjustBrightness('#FFD800', -32),
         );
         $colors[877] = array( // Aurélie
             'text' => '#ffffff',
-            'background' => '#FFBC40',
-            'border' => '#FFA500',
+            'background' => '#FF9400',
+            'border' => adjustBrightness('#FF9400', -32),
         );
         $colors[1474] = array( // Caroline
             'text' => '#ffffff',
-            'background' => '#6CA5C2',
-            'border' => '#3A87AD',
+            'background' => '#EE1717',
+            'border' => adjustBrightness('#EE1717', -32),
+        );
+        $colors[2410] = array( // Jehanne
+            'text' => '#ffffff',
+            'background' => '#EE1717',
+            'border' => adjustBrightness('#EE1717', -32),
+        );
+        $colors[2414] = array( // Julie
+            'text' => '#ffffff',
+            'background' => '#12ADC9',
+            'border' => adjustBrightness('#12ADC9', -32),
+        );
+        $colors[2648] = array( // Suayip
+            'text' => '#000000',
+            'background' => '#A6F94D',
+            'border' => adjustBrightness('#A6F94D', -32),
         );
         return $colors;
     }
