@@ -238,7 +238,7 @@ class TeamPlanningController extends BaseController
             ->where('booking_item.start_at', '<=', Input::get('end'))
             ->where(function ($query){
                 $query->whereNull('ressources.ignore_planning_until')
-                    ->orWhere('booking_item.start_at', '<', 'ressources.ignore_planning_until');
+                    ->orWhere('booking_item.start_at', '>', 'ressources.ignore_planning_until');
             })
             ->where('locations.city_id', '=', Auth::user()->location->city_id)
             ->where(DB::raw('DATE_ADD(start_at, INTERVAL duration MINUTE)'), '>=', Input::get('start'))
