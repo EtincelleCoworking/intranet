@@ -86,6 +86,11 @@
                             {{ Form::label('google_calendar_id', 'Synchronisation Google Calendar') }}
                             <p>{{ Form::text('google_calendar_id', null, array('class' => 'form-control')) }}</p>
                         </div>
+                        <div class="col-md-6">
+                            {{ Form::label('ignore_planning_until', 'Ignorer dans le planning jusqu\'au') }}
+                            <p>{{ Form::text('ignore_planning_until', $ressource->ignore_planning_until?date('d/m/Y', strtotime($ressource->ignore_planning_until)):null, array('class' => 'form-control datePicker')) }}</p>
+                            <p class="text-muted">Laissez vide pour intégrer cette ressource dans la gestion du planning.</p>
+                        </div>
                     </div>
                     <div class="hr-line-dashed"></div>
                     <div class="form-group">
@@ -99,3 +104,12 @@
         </div>
     </div>
 @stop
+
+@section('javascript')
+    <script type="text/javascript">
+        $().ready(function () {
+            $('.datePicker').datepicker();
+        });
+    </script>
+@stop
+

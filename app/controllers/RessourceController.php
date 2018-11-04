@@ -112,12 +112,19 @@ class RessourceController extends BaseController
             $ressource->location_id = $location_id ? $location_id : null;
             $ressource->ressource_kind_id = Input::get('ressource_kind_id');
             $ressource->subscription_id = Input::get('subscription_id') ? Input::get('subscription_id') : null;
-            $ressource->sales_presentation = Input::get('sales_presentation') ;
+            $ressource->sales_presentation = Input::get('sales_presentation');
             $ressource->has_paper_summary = (bool)Input::get('has_paper_summary');
             $ressource->intercom_enabled = (bool)Input::get('intercom_enabled');
             $ressource->google_calendar_id = Input::get('google_calendar_id');
-            if(empty($ressource->google_calendar_id)){
+            if (empty($ressource->google_calendar_id)) {
                 $ressource->google_calendar_id = null;
+            }
+            $ignore_planning_until = Input::get('ignore_planning_until');
+            if ($ignore_planning_until) {
+                $ignore_planning_until_explode = explode('/', $ignore_planning_until);
+                $ressource->ignore_planning_until = $ignore_planning_until_explode[2] . '-' . $ignore_planning_until_explode[1] . '-' . $ignore_planning_until_explode[0];
+            } else {
+                $ressource->ignore_planning_until = null;
             }
 
             if ($ressource->save()) {
