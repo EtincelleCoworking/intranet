@@ -67,7 +67,7 @@
         var Etincelle = {
                     User: {
                         fullname: '{{str_replace("'", "\\'", Auth::user()->fullname)}}',
-                        avatarTag: '{{Auth::user()->avatarTag}}',
+                        avatarTag: '{{str_replace("'", "\\'", Auth::user()->avatarTag)}}',
                         profileUrl: '{{URL::route('user_profile', Auth::id())}}',
                         last_login: '{{ (new DateTime(Auth::user()->last_login_at))->format('c') }}'
                     }
