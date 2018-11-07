@@ -1,7 +1,7 @@
 <?php
 
 use GuzzleHttp\Client;
-use Illuminate\Http\Response;
+use Illuminate\Support\Facades\Response;
 
 /**
  * UserController Class
@@ -748,10 +748,13 @@ LIMIT 1';
         $data['status'] = 'success';
         $data['code'] = $user->personnal_code;
 
+        return Response::json($data);
+/*
         $result = new Response();
         $result->headers->set('Content-Type', 'application/json');
         $result->setContent(json_encode($data));
         return $result;
+*/
     }
 
     public function send_welcome_email($user_id)
