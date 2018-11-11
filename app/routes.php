@@ -19,6 +19,10 @@ Route::get('/api/1.0/location/{location_slug}/{key}', array('as' => 'api_locatio
 Route::post('/api/1.0/offix/{location_slug}/{key}', array('as' => 'api_offix', 'uses' => 'ApiController@offixUpload'));
 Route::get('/api/1.0/offix/{secure_key}', array('as' => 'api_offix', 'uses' => 'ApiController@offixDownload'));
 Route::get('/api/1.0/user/{secure_key}/{email}', array('as' => 'api_user', 'uses' => 'ApiController@user'));
+Route::get('/api/1.0/invoice/{reference}', array('as' => 'api_invoice', 'uses' => 'ApiController@invoice'));
+Route::get('/api/1.0/invoices', array('as' => 'api_invoices', 'uses' => 'ApiController@invoices'));
+Route::get('/api/1.0/customers', array('as' => 'api_customers', 'uses' => 'ApiController@customers'));
+Route::get('/api/1.0/customer/{id}', array('as' => 'api_customer', 'uses' => 'ApiController@customer'));
 
 Route::get('/api/1.0/monitoring/{location_slug}/{key}/agents', array('as' => 'monitoring_agents', 'uses' => 'MonitoringController@agents'));
 Route::post('/api/1.0/monitoring/{location_slug}/{key}/agents', array('as' => 'monitoring_feedback', 'uses' => 'MonitoringController@feedback'));
