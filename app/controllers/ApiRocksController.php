@@ -92,6 +92,7 @@ class ApiRocksController extends BaseController
         $sql_where = ['coworking_started_at IS NOT NULL'];
         $sql_where[] = 'users.is_hidden_member = 0';
         $sql_where[] = 'users.is_enabled = 1';
+        $sql_where[] = 'users.is_staff = 0';
         $sql_where[] = 'users.rocks_status <> ' . User::ROCKS_STATUS_DISABLED;
         $sql_where[] = sprintf('last_seen_at > "%s"', date('Y-m-d', strtotime($delay)));
         if (!empty($filter['city'])) {

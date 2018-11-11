@@ -402,4 +402,134 @@ class ApiController extends BaseController
         $result->setContent(json_encode($data));
         return $result;
     }
+
+    public function invoice($reference)
+    {
+        $data = array();
+        if (preg_match('/^F([0-9]{6})-([0-9]{4})/', $reference, $tokens)) {
+            $invoice = Invoice::where('type', 'F')
+                ->where('days', $tokens[1])
+                ->where('number', $tokens[2])
+                ->with('items')
+                ->first();
+            $data = array(
+                'reference' => $invoice->getIdentAttribute(),
+                'amount' => (float)$invoice->getTotalWithTaxesAttribute(),
+                'taxes' => $invoice->getTotalWithTaxesAttribute() - $invoice->getTotalAttribute(),
+                'created_at' => $invoice->date_invoice,
+                'paid_at' => $invoice->date_payment,
+                'customer' => array(
+                    'id' => $invoice->organisation_id,
+                    'name' => $invoice->organisation_id ? $invoice->organisation->name : preg_replace("/\n.+/", '', $invoice->address),
+                )
+            );
+        }
+        $result = new Response();
+        $result->headers->set('Content-Type', 'application/json');
+        $result->setContent(json_encode($data));
+        return $result;
+    }
+
+    public function invoices()
+    {
+        $data = array();
+        $invoices = Invoice::where('type', 'F')
+            ->orderBy('date_invoice', 'DESC');
+        $customer_id = Input::get('customer_id');
+        if ($customer_id) {
+            $invoices = $invoices->where('organisation_id', $customer_id);
+        }
+        $unpaid_only = Input::get('unpaid');
+        if ($unpaid_only === true) {
+            $invoices = $invoices->whereNull('date_payment');
+        } elseif ($unpaid_only === false) {
+            $invoices = $invoices->whereNotNull('date_payment');
+        }
+        $date_invoice = Input::get('date_invoice');
+        if (is_array($date_invoice)) {
+            foreach (array('lt' => '<', 'lte' => '<=', 'eq' => '=', 'gt' => '>', 'gte' => '>=') as $op1 => $op2) {
+                if (isset($date_invoice[$op1])) {
+                    $invoices = $invoices->where('date_invoice', $op2, $date_invoice[$op1]);
+                }
+            }
+        }
+        $amount = Input::get('amount');
+        if (is_array($amount)) {
+            $invoices = $invoices
+                ->join('invoices_items', 'invoices.id', '=', 'invoices_items.invoice_id')
+                ->join('vat_types', 'vat_types.id', '=', 'invoices_items.vat_types_id')
+                ->groupby('invoices.id')
+                ->select('invoices.*');
+            $field = DB::raw('sum(invoices_items.amount * (1 + vat_types.value / 100))');
+            foreach (array('lt' => '<', 'lte' => '<=', 'eq' => '=', 'gt' => '>', 'gte' => '>=') as $op1 => $op2) {
+                if (isset($amount[$op1])) {
+                    $invoices = $invoices->having($field, $op2, $amount[$op1]);
+                }
+            }
+        }
+        $invoices = $invoices->with('items')->with('organisation')->get();
+        foreach ($invoices as $invoice) {
+            $item = array(
+                'reference' => $invoice->getIdentAttribute(),
+                'amount' => (float)$invoice->getTotalWithTaxesAttribute(),
+                'taxes' => $invoice->getTotalWithTaxesAttribute() - $invoice->getTotalAttribute(),
+                'created_at' => $invoice->date_invoice,
+                'customer' => array(
+                    'id' => $invoice->organisation_id,
+                    'name' => $invoice->organisation_id ? $invoice->organisation->name : preg_replace("/\n.+/", '', $invoice->address),
+                )
+            );
+            if (!$unpaid_only) {
+                $item['paid_at'] = $invoice->date_payment;
+            }
+            $data[] = $item;
+        }
+        $result = new Response();
+        $result->headers->set('Content-Type', 'application/json');
+        $result->setContent(json_encode($data));
+        return $result;
+    }
+
+
+    public function customers()
+    {
+        $data = array(
+            'results' => array(),
+            'pagination' => array(
+                'more' => false
+            ),
+        );
+
+        foreach (Organisation::orderBy('name', 'ASC')
+                     ->where('name', 'LIKE', sprintf('%%%s%%', Input::get('q')))
+                     ->take(10)
+                     ->skip(Input::get('page', 1) - 1)
+                     ->get() as $organisation) {
+            $data['results'][] = array(
+                'id' => $organisation->id,
+                'text' => $organisation->name,
+            );
+        }
+
+        $result = new Response();
+        $result->headers->set('Content-Type', 'application/json');
+        $result->headers->set('Access-Control-Allow-Origin', '*');
+        $result->setContent(json_encode($data));
+        return $result;
+    }
+
+
+    public function customer($id)
+    {
+        $organisation = Organisation::find($id);
+
+        $result = new Response();
+        $result->headers->set('Content-Type', 'application/json');
+        //$result->headers->set('Access-Control-Allow-Origin', '*');
+        $result->setContent(json_encode(array(
+            'id' => $organisation->id,
+            'name' => $organisation->name,
+        )));
+        return $result;
+    }
 }
