@@ -412,22 +412,29 @@ class ApiController extends BaseController
                 ->where('number', $tokens[2])
                 ->with('items')
                 ->first();
-            $data = array(
-                'reference' => $invoice->getIdentAttribute(),
-                'amount' => (float)$invoice->getTotalWithTaxesAttribute(),
-                'taxes' => $invoice->getTotalWithTaxesAttribute() - $invoice->getTotalAttribute(),
-                'created_at' => $invoice->date_invoice,
-                'paid_at' => $invoice->date_payment,
-                'customer' => array(
-                    'id' => $invoice->organisation_id,
-                    'name' => $invoice->organisation_id ? $invoice->organisation->name : preg_replace("/\n.+/", '', $invoice->address),
-                )
-            );
+            $data = $this->formatJson($invoice);
         }
         $result = new Response();
         $result->headers->set('Content-Type', 'application/json');
         $result->setContent(json_encode($data));
         return $result;
+    }
+
+    protected function formatJson($invoice)
+    {
+        return array(
+            'reference' => $invoice->getIdentAttribute(),
+            'amount' => (float)$invoice->getTotalWithTaxesAttribute(),
+            'taxes' => $invoice->getTotalWithTaxesAttribute() - $invoice->getTotalAttribute(),
+//            'created_at' => $invoice->date_invoice,
+            'occurs_at' => $invoice->date_invoice,
+            'paid_at' => $invoice->date_payment,
+            'update_url' => route('invoice_modify', $invoice->id),
+            'customer' => array(
+                'id' => $invoice->organisation_id,
+                'name' => $invoice->organisation_id ? $invoice->organisation->name : preg_replace("/\n.+/", '', $invoice->address),
+            )
+        );
     }
 
     public function invoices()
@@ -439,19 +446,43 @@ class ApiController extends BaseController
         if ($customer_id) {
             $invoices = $invoices->where('organisation_id', $customer_id);
         }
-        $unpaid_only = Input::get('unpaid');
-        if ($unpaid_only === true) {
-            $invoices = $invoices->whereNull('date_payment');
-        } elseif ($unpaid_only === false) {
-            $invoices = $invoices->whereNotNull('date_payment');
-        }
+        $operators = array('lt' => '<', 'lte' => '<=', 'eq' => '=', 'gt' => '>', 'gte' => '>=');
         $date_invoice = Input::get('date_invoice');
         if (is_array($date_invoice)) {
-            foreach (array('lt' => '<', 'lte' => '<=', 'eq' => '=', 'gt' => '>', 'gte' => '>=') as $op1 => $op2) {
+            foreach ($operators as $op1 => $op2) {
                 if (isset($date_invoice[$op1])) {
-                    $invoices = $invoices->where('date_invoice', $op2, $date_invoice[$op1]);
+                    if ('eq' == $op1 && empty($date_invoice[$op1])) {
+                        $invoices = $invoices->whereNull('date_invoice');
+                    } else {
+                        $invoices = $invoices->where('date_invoice', $op2, $date_invoice[$op1]);
+                    }
                 }
             }
+        }
+        $date_payment = Input::get('date_payment');
+        if (is_array($date_payment)) {
+            foreach ($operators as $op1 => $op2) {
+                if (isset($date_payment[$op1])) {
+                    if (('eq' == $op1) && empty($date_payment[$op1])) {
+                        $invoices = $invoices->whereNull('date_payment');
+                    } else {
+                        $invoices = $invoices->where('date_payment', $op2, $date_payment[$op1]);
+                    }
+                }
+            }
+        }
+        $references = Input::get('reference');
+        if (is_array($references)) {
+            $invoices = $invoices->where(function ($query) use ($references) {
+                foreach ($references as $reference) {
+                    if (preg_match('/^F(\d{6})-(\d{4})$/', $reference, $tokens)) {
+                        $query->orWhere(function ($query) use ($tokens) {
+                            $query->where('days', $tokens[1]);
+                            $query->where('number', (int)$tokens[2]);
+                        });
+                    }
+                }
+            });
         }
         $amount = Input::get('amount');
         if (is_array($amount)) {
@@ -461,7 +492,7 @@ class ApiController extends BaseController
                 ->groupby('invoices.id')
                 ->select('invoices.*');
             $field = DB::raw('sum(invoices_items.amount * (1 + vat_types.value / 100))');
-            foreach (array('lt' => '<', 'lte' => '<=', 'eq' => '=', 'gt' => '>', 'gte' => '>=') as $op1 => $op2) {
+            foreach ($operators as $op1 => $op2) {
                 if (isset($amount[$op1])) {
                     $invoices = $invoices->having($field, $op2, $amount[$op1]);
                 }
@@ -469,20 +500,7 @@ class ApiController extends BaseController
         }
         $invoices = $invoices->with('items')->with('organisation')->get();
         foreach ($invoices as $invoice) {
-            $item = array(
-                'reference' => $invoice->getIdentAttribute(),
-                'amount' => (float)$invoice->getTotalWithTaxesAttribute(),
-                'taxes' => $invoice->getTotalWithTaxesAttribute() - $invoice->getTotalAttribute(),
-                'created_at' => $invoice->date_invoice,
-                'customer' => array(
-                    'id' => $invoice->organisation_id,
-                    'name' => $invoice->organisation_id ? $invoice->organisation->name : preg_replace("/\n.+/", '', $invoice->address),
-                )
-            );
-            if (!$unpaid_only) {
-                $item['paid_at'] = $invoice->date_payment;
-            }
-            $data[] = $item;
+            $data[] = $this->formatJson($invoice);
         }
         $result = new Response();
         $result->headers->set('Content-Type', 'application/json');
