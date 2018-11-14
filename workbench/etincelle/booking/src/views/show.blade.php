@@ -68,7 +68,10 @@
                     <div class="ibox-content">
                         <table class="table table-bordered">
                             <thead>
-                            <th colspan="2">WIFI</th>
+                            <th colspan="2">WIFI
+                                <a href="{{ URL::route('booking_generate_voucher', $booking_item->id) }}"
+                                   class="btn btn-default pull-right">Générer le code WIFI</a>
+                            </th>
                             </thead>
                             <tbody>
                             <tr>
@@ -94,7 +97,6 @@
                 </div>
             </div>
         @endif
-
 
 
     </div>
@@ -138,7 +140,7 @@
 @section('javascript')
     <script type="text/javascript">
         @if($booking_item->isMember(Auth::id()))
-            $('#meeting-view-members-register').hide();
+        $('#meeting-view-members-register').hide();
         @else
         $('#meeting-view-members-unregister').hide();
         @endif

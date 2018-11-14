@@ -188,6 +188,27 @@ class BookingController extends Controller
         return Response::json(array('status' => 'OK', 'data' => $booking_item->toJsonEvent()));
     }
 
+    public function generate_voucher($booking_item_id){
+        $booking_item=BookingItem::find($booking_item_id);
+        $location = $booking_item->ressource->location;
+        if ($location->voucher_endpoint) {
+            $voucher = Booking::generateVoucher($location->voucher_endpoint, $location->voucher_key, $location->voucher_secret, $booking_item->start_at);
+            if ($voucher) {
+                $booking = $booking_item->booking;
+                $booking->wifi_login = $voucher['username'];
+                $booking->wifi_password = $voucher['password'];
+                $booking->save();
+                return Redirect::route('booking_item_show', $booking_item_id)
+                    ->with('mSucces', 'Les accès WIFI ont étés générés');
+            } else {
+                return Redirect::route('booking_item_show', $booking_item_id)
+                    ->with('mError', 'Une erreur est survenue lors de la génération des accès WIFI');
+            }
+        }
+        return Redirect::route('booking_item_show', $booking_item_id)
+            ->with('mError', 'Ce site n\'a pas de portail captif pour le WIFI.');
+    }
+
 
     public function delete($id)
     {
@@ -678,8 +699,8 @@ class BookingController extends Controller
         if (Auth::user()->isSuperAdmin()) {
             $booking_item->is_free = Input::get('is_free', false);
             $booking_item->internal_notes = Input::get('internal_notes');
-            $booking_item->sold_price = Input::get('sold_price');
-            $booking_item->participant_count = Input::get('participant_count');
+            $booking_item->sold_price = (float)Input::get('sold_price');
+            $booking_item->participant_count = (int)Input::get('participant_count');
         }
         if ($doConfirmation) {
             if (!$booking_item->confirmed_at) {
