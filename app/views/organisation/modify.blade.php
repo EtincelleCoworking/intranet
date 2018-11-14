@@ -236,8 +236,9 @@
                             <tr>
                                 <th>#</th>
                                 <th>Créée le</th>
+                                <th>Contact</th>
                                 <th>Echéance</th>
-                                <th>Montant HT</th>
+                                <th>Montant TTC</th>
                                 <th>Actions</th>
                             </tr>
                             </thead>
@@ -252,6 +253,13 @@
                                 >
                                     <td>{{ $invoice->ident }}</td>
                                     <td>{{ $invoice->created_at->format('d/m/Y') }}</td>
+                                    <td>
+                                        @if($invoice->user_id)
+                                            <a href="{{ URL::route('user_modify', $invoice->user->id) }}">{{ $invoice->user->fullname }}</a>
+                                        @else
+                                            -
+                                        @endif
+                                    </td>
                                     <td>
                                         @if ($invoice->date_canceled)
                                             <span class="badge badge-danger">Refusé</span>
@@ -278,7 +286,7 @@
 
 
                                     </td>
-                                    <td style="text-align:right">{{ Invoice::TotalInvoice($invoice->items) }}
+                                    <td style="text-align:right">{{ Invoice::TotalInvoiceWithTaxes($invoice->items) }}
                                         €
                                     </td>
                                     <td>
