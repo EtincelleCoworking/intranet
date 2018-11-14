@@ -188,8 +188,9 @@ class BookingController extends Controller
         return Response::json(array('status' => 'OK', 'data' => $booking_item->toJsonEvent()));
     }
 
-    public function generate_voucher($booking_item_id){
-        $booking_item=BookingItem::find($booking_item_id);
+    public function generate_voucher($booking_item_id)
+    {
+        $booking_item = BookingItem::find($booking_item_id);
         $location = $booking_item->ressource->location;
         if ($location->voucher_endpoint) {
             $voucher = Booking::generateVoucher($location->voucher_endpoint, $location->voucher_key, $location->voucher_secret, $booking_item->start_at);
@@ -207,6 +208,29 @@ class BookingController extends Controller
         }
         return Redirect::route('booking_item_show', $booking_item_id)
             ->with('mError', 'Ce site n\'a pas de portail captif pour le WIFI.');
+    }
+
+    public function wifi_pdf($booking_item_id, $day = null)
+    {
+        if($day == null){
+            $day = date('Y-m-d');
+        }
+
+        $booking_item = BookingItem::find($booking_item_id);
+        $location = $booking_item->ressource->location;
+
+        $content = BookingItem::getWifiHtml($location, $booking_item->ressource->name, $day, $booking_item->booking->title,
+            $booking_item->booking->wifi_login, $booking_item->booking->wifi_password,
+            sprintf('%s - %s', date('H:i', strtotime($booking_item->start_at)), date('H:i', strtotime($booking_item->start_at) + $booking_item->duration * 60)));
+
+        $pdf = App::make('snappy.pdf');
+        $output = $pdf->getOutputFromHtml($content,
+            array(
+                //'orientation' => 'Landscape',
+                'default-header' => false));
+        return new \Illuminate\Http\Response($output, 200, array(
+            'Content-Type' => 'application/pdf',
+            'Content-Disposition' => sprintf('filename="booking%d_wifi.pdf"', $booking_item_id)));
     }
 
 
@@ -1009,89 +1033,9 @@ ORDER BY room ASC , booking_item.start_at ASC ', $day, $day, $location)));
         foreach ($bookings as $room => $meetings) {
             foreach ($meetings as $timerange => $meeting_data) {
                 if ($meeting_data['wifi_login']) {
-                    $html = <<<EOS
-<html>
-<head>
-    <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/></head>
-    <title>%location% - %room% - %day%</title>
-    <style type="text/css">
-    .header {
-/*
-        position: absolute;
-        right: 0;
-        top: 0;
-        left: 0;
-*/
-        padding: 1rem;
-        background-color: #efefef;
-        text-align: left;
-    }
-    .footer {
-        position: absolute;
-        right: 0;
-        bottom: 0;
-        left: 0;
-        padding: 1rem;
-        background-color: #efefef;
-        text-align: right;
-    }
-</style>
-</head>
-<body>
-<div class="header">
-    <img src="http://www.coworking-toulouse.com/wp-content/uploads/2015/04/etincelle-coworking-400x400.gif" height="85" width="85" style="float: right" />
-    <h1>%title%</h1>
-</div>
-<div class="page">
-    <h2>Bienvenue chez Etincelle Coworking</h2>
-    <p>Pour vous connecter au WIFI:
-    <ol>
-        <li>Sélectionnez le réseau "EtincelleCoworking" (réseau ouvert, sans mot de passe) </li>
-        <li>Une page d’identification devrait s’afficher avec le logo Etincelle Coworking. Si ce n’est pas le cas, ouvrez un navigateur internet et allez à l’adresse http://192.168.2.1:8000/</li>
-        <li>Utilisez les informations de connexion ci-dessous en respectant les majuscules et les minuscules.</li>
-    </ol></p>
-    <table>
-        <tr>
-            <td style="font-size: 18pt">Identifiant&nbsp;:&nbsp;</td>
-            <td style="font-size: 18pt">%wifi_login%</td>
-        </tr>
-        <tr>
-            <td style="font-size: 18pt">Mot de passe&nbsp;:&nbsp;</td>
-            <td style="font-size: 18pt">%wifi_password%</td>
-        </tr>
-    </table>
-    
-    <p>NB: Cet accès est valable aujourd'hui uniquement (%day%).</p>
-    <p>Si vous avez besoin d'aide, contactez un membre de l'équipe dans la zone d’accueil ou au 05 64 88 01 30 (renvoyé sur nos téléphones portables).</p>
-    
-    <p>&nbsp;</p>
-    <p>Si tout fonctionne correctement, vous pouvez : 
-    <ul>
-        <li>Aimer notre page Facebook : http://fb.me/EtincelleCoworking</li>
-        <li>Nous suivre sur Twitter : https://twitter.com/etincelle_tls</li>
-        <li>Laisser un avis sur Google : https://goo.gl/vzeXYy</li>
-    </ul>
-    </p>
-    <p>&nbsp;</p>
-    <p>Nous vous souhaitons une excellente réunion!</p>
-</div>
-<div class="footer">
-    <small>%room% - %day% %timeslot%</small>
-</div>
-<div class="page-break"></div>
-</body></html>
-EOS;
-                    $macros = array(
-                        '%location%' => $location,
-                        '%room%' => $room,
-                        '%day%' => date('d/m/Y', strtotime($day)),
-                        '%title%' => $meeting_data['title'],
-                        '%wifi_login%' => $meeting_data['wifi_login'],
-                        '%wifi_password%' => $meeting_data['wifi_password'],
-                        '%timeslot%' => $timerange,
-                    );
-                    $html = str_replace(array_keys($macros), array_values($macros), $html);
-                    $pages[] = $html;
+
+                    $pages[] = BookingItem::getWifiHtml($location, $room, $day, $meeting_data['title'],
+                        $meeting_data['wifi_login'], $meeting_data['wifi_password'], $timerange);
 
                     $mapping[$room]['wifi'][] = count($pages);
                 }

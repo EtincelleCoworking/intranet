@@ -23,6 +23,10 @@
                 <i class="fa fa-user"></i>
                 @if (Auth::user()->isSuperAdmin())
                     <a href="{{ URL::route('user_modify', $booking_item->booking->user->id) }}">{{ $booking_item->booking->user->fullname }}</a>
+                    @if($booking_item->booking->user->phone)
+                        <br/><i class="fa fa-phone"></i> {{ $booking_item->booking->user->phoneFmt}}
+                    @endif
+
                 @else
                     <a href="{{ URL::route('user_profile', $booking_item->booking->user->id) }}">{{ $booking_item->booking->user->fullname }}</a>
                 @endif
@@ -69,14 +73,23 @@
                         <table class="table table-bordered">
                             <thead>
                             <th colspan="2">WIFI
-                                <a href="{{ URL::route('booking_generate_voucher', $booking_item->id) }}"
-                                   class="btn btn-default pull-right">Générer le code WIFI</a>
+                                @if(!empty($booking_item->booking->wifi_login))
+                                    <a href="{{ URL::route('booking_wifi_pdf', $booking_item->id) }}"
+                                       class="btn btn-primary bt-xs pull-right" target="_blank">PDF</a>
+                                @endif
                             </th>
                             </thead>
                             <tbody>
                             <tr>
                                 <th width="50%">Identifiant</th>
-                                <td>{{$booking_item->booking->wifi_login}}</td>
+                                <td>
+                                    @if(empty($booking_item->booking->wifi_login))
+                                        <a href="{{ URL::route('booking_generate_voucher', $booking_item->id) }}"
+                                           class="btn btn-primary btn-xs">Générer</a>
+                                    @else
+                                        {{$booking_item->booking->wifi_login}}
+                                    @endif
+                                </td>
                             </tr>
                             <tr>
                                 <th>Mot de passe</th>

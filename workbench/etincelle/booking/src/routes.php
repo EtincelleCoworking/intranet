@@ -43,6 +43,7 @@ Route::group(['before' => 'superadmin'], function () {
 
     Route::get('/booking/log-time/{id}', array('as' => 'booking_log_time_ajax', 'uses' => 'BookingController@logTimeAjax'));
     Route::get('/booking/generate-voucher/{booking_item_id}', array('as' => 'booking_generate_voucher', 'uses' => 'BookingController@generate_voucher'));
+    Route::get('/booking/wifi/{booking_item_id}', array('as' => 'booking_wifi_pdf', 'uses' => 'BookingController@wifi_pdf'));
     Route::get('/booking/make-gift/{id}', array('as' => 'booking_make_gift', 'uses' => 'BookingController@makeGift'));
 
     Route::get('/booking/daily-pdf/{location}/{day?}', array('as' => 'booking_daily_pdf', 'uses' => 'BookingController@dailyPdf'));
