@@ -8,7 +8,7 @@
     <table width="100%" cellpadding="0" cellspacing="0">
         <tr>
             <td class="content-block">
-                <p>Nous avons réceptionnés à votre attention du courrier en date
+                <p>Nous avons réceptionné à votre attention du courrier en date
                     du {{date('d/m/Y', strtotime($notification->occurs_at))}} dont voici le détail:</p>
 
                 <table>

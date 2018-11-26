@@ -88,6 +88,7 @@ class PostboxController extends BaseController
             $item->kind_id = $data['kind'][$index];
             $item->from_name = $data['from_name'][$index];
             $item->details = $data['details'][$index];
+            $item->is_important = $data['is_important'][$index];
             $item->save();
 
             $items[] = $item;
