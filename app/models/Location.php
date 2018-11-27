@@ -127,15 +127,15 @@ class Location extends Eloquent
         foreach ($costs as $location => $data) {
             foreach ($periods as $period => $value) {
                 if (!isset($costs[$location][$period])) {
-                    $costs[$location][$period] = 0;
+                    $costs[$location][$period] = false;
                 }
             }
             ksort($costs[$location]);
-            //$cost = 0;
+            $cost = 0;
             foreach ($costs[$location] as $period => $value) {
-                //if ($value) {
+                if (is_int($value)) {
                     $cost = $value;
-                //}
+                }
                 $costs[$location][$period] = $cost;
             }
         }
