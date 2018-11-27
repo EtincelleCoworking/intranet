@@ -131,11 +131,11 @@ class Location extends Eloquent
                 }
             }
             ksort($costs[$location]);
-            $cost = 0;
+            //$cost = 0;
             foreach ($costs[$location] as $period => $value) {
-                if ($value) {
+                //if ($value) {
                     $cost = $value;
-                }
+                //}
                 $costs[$location][$period] = $cost;
             }
         }
