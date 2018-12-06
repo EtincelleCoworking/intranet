@@ -29,7 +29,7 @@ class GenerateMissingVoucherCommand extends Command
     public function __construct()
     {
         parent::__construct();
-        $this->addOption('today', null, InputOption::VALUE_NONE, '', true);
+        $this->addOption('today', null, InputOption::VALUE_NONE);
     }
 
     /**
