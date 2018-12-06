@@ -39,7 +39,11 @@ class GenerateMissingVoucherCommand extends Command
      */
     public function fire()
     {
-        $sql = 'SELECT locations.voucher_endpoint, locations.voucher_key, locations.voucher_secret, booking_item.start_at, booking_item.booking_id 
+        $locations = array();
+        foreach (Location::whereNotNull('voucher_endpoint')->get() as $location) {
+            $locations[$location->id] = $location;
+        }
+        $sql = 'SELECT locations.id as location_id, booking_item.start_at, booking_item.booking_id 
 FROM `booking_item`
 JOIN ressources ON booking_item.ressource_id = ressources.id
 JOIN locations ON ressources.location_id = locations.id
@@ -61,12 +65,15 @@ AND booking.wifi_login IS NULL';
             return true;
         }
         foreach ($datas as $data) {
-            $voucher = Booking::generateVoucher($data->voucher_endpoint, $data->voucher_key, $data->voucher_secret, $data->start_at);
-            if (!$voucher) {
-                $this->output->writeln(sprintf("<error>Error while generating voucher for %s (BookingID = %d)</error>", $data->start_at, $data->booking_id));
-            } else {
-                DB::update('update booking set wifi_login = ? , wifi_password = ? where id = ?', [$voucher['username'], $voucher['password'], $data->booking_id]);
-                $this->output->writeln(sprintf("Generated voucher for %s (BookingID = %d): %s / %s", $data->start_at, $data->booking_id, $voucher['username'], $voucher['password']));
+            if (isset($locations[$data->location_id])) {
+                $location = $locations[$data->location_id];
+                $voucher = $location->generateVoucher($data->start_at);
+                if (!$voucher) {
+                    $this->output->writeln(sprintf("<error>Error while generating voucher for %s (BookingID = %d)</error>", $data->start_at, $data->booking_id));
+                } else {
+                    DB::update('update booking set wifi_login = ? , wifi_password = ? where id = ?', [$voucher['username'], $voucher['password'], $data->booking_id]);
+                    $this->output->writeln(sprintf("Generated voucher for %s (BookingID = %d): %s / %s", $data->start_at, $data->booking_id, $voucher['username'], $voucher['password']));
+                }
             }
         }
         return true;
