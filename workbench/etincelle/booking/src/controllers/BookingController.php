@@ -2,6 +2,7 @@
 
 
 use Illuminate\Routing\Controller;
+use Illuminate\Support\Facades\Input;
 use Illuminate\Support\Facades\Response;
 
 class BookingController extends Controller
@@ -161,20 +162,6 @@ class BookingController extends Controller
         $booking_item->duration = floor((strtotime(Input::get('end')) - strtotime(Input::get('start'))) / 60);
         if ($booking_item->ressource_id != Input::get('ressource_id')) {
             $booking_item->ressource_id = Input::get('ressource_id');
-
-            $ressource = Ressource::where('id', '=', $booking_item->ressource_id)->first();
-            $location = $ressource->location;
-            if ($location->voucher_endpoint) {
-                $voucher = Booking::generateVoucher($location->voucher_endpoint, $location->voucher_key, $location->voucher_secret, $booking_item->start_at);
-                if ($voucher) {
-                    $booking = $booking_item->booking;
-                    $booking->wifi_login = $voucher['username'];
-                    $booking->wifi_password = $voucher['password'];
-                    $booking->save();
-                } else {
-                    // log error ?
-                }
-            }
         }
         $booking_item->save();
 
@@ -188,25 +175,24 @@ class BookingController extends Controller
         return Response::json(array('status' => 'OK', 'data' => $booking_item->toJsonEvent()));
     }
 
-    public function generate_voucher($booking_item_id)
+    public function generate_voucher(BookingItem $booking_item)
     {
-        $booking_item = BookingItem::find($booking_item_id);
         $location = $booking_item->ressource->location;
         if ($location->voucher_endpoint) {
-            $voucher = Booking::generateVoucher($location->voucher_endpoint, $location->voucher_key, $location->voucher_secret, $booking_item->start_at);
+            $voucher = $location->generateVoucher($booking_item->start_at);
             if ($voucher) {
                 $booking = $booking_item->booking;
                 $booking->wifi_login = $voucher['username'];
                 $booking->wifi_password = $voucher['password'];
                 $booking->save();
-                return Redirect::route('booking_item_show', $booking_item_id)
+                return Redirect::route('booking_item_show', $booking_item->id)
                     ->with('mSucces', 'Les accès WIFI ont étés générés');
             } else {
-                return Redirect::route('booking_item_show', $booking_item_id)
+                return Redirect::route('booking_item_show', $booking_item->id)
                     ->with('mError', 'Une erreur est survenue lors de la génération des accès WIFI');
             }
         }
-        return Redirect::route('booking_item_show', $booking_item_id)
+        return Redirect::route('booking_item_show', $booking_item->id)
             ->with('mError', 'Ce site n\'a pas de portail captif pour le WIFI.');
     }
 
@@ -696,18 +682,6 @@ class BookingController extends Controller
             $booking->organisation_id = null;
         }
 
-        $ressource = Ressource::with('location')->select('ressources.*')->find($ressource_id);
-        $location = $ressource->location;
-        if ($location->voucher_endpoint) {
-            $voucher = Booking::generateVoucher($location->voucher_endpoint, $location->voucher_key, $location->voucher_secret, $start_at->format('Y-m-d H:i'));
-            if ($voucher) {
-                $booking->wifi_login = $voucher['username'];
-                $booking->wifi_password = $voucher['password'];
-            } else {
-                // log error ?
-            }
-        }
-
         $booking->save();
         if ($is_new) {
             $booking_item->booking_id = $booking->id;
@@ -716,7 +690,7 @@ class BookingController extends Controller
         $doConfirmation = Input::get('is_confirmed', Config::get('booking::default_is_confirmed', true));
         $confirmed_at = date('Y-m-d H:i:s');
 
-        $booking_item->ressource_id = $ressource->id;
+        $booking_item->ressource_id = $ressource_id;
         $booking_item->start_at = $start_at;
         $booking_item->duration = getDuration(Input::get('start'), Input::get('end'));
         $booking_item->is_open_to_registration = Input::get('is_open_to_registration', false);

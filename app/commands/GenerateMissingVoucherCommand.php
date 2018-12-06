@@ -29,6 +29,7 @@ class GenerateMissingVoucherCommand extends Command
     public function __construct()
     {
         parent::__construct();
+        $this->addOption('today', null, InputOption::VALUE_NONE, '', true);
     }
 
     /**
@@ -38,17 +39,24 @@ class GenerateMissingVoucherCommand extends Command
      */
     public function fire()
     {
-        $datas = DB::select(DB::raw(sprintf('SELECT locations.voucher_endpoint, locations.voucher_key, locations.voucher_secret, booking_item.start_at, booking_item.booking_id 
+        $sql = 'SELECT locations.voucher_endpoint, locations.voucher_key, locations.voucher_secret, booking_item.start_at, booking_item.booking_id 
 FROM `booking_item`
 JOIN ressources ON booking_item.ressource_id = ressources.id
 JOIN locations ON ressources.location_id = locations.id
 JOIN booking ON booking_item.booking_id = booking.id
 WHERE locations.voucher_endpoint IS NOT NULL 
-AND booking.wifi_login IS NULL
-AND booking_item.start_at > now()
-GROUP BY booking.id ORDER BY booking_item.start_at ASC')));
+AND booking.wifi_login IS NULL';
 
-        if(count($datas) == 0){
+        if ($this->option('today')) {
+            $sql .= sprintf(' AND booking_item.start_at BETWEEN "%s" AND "%s"', date('Y-m-d 00:00:00'), date('Y-m-d 23:59:59'));
+        } else {
+            $sql .= ' AND booking_item.start_at > now()';
+        }
+        $sql .= ' GROUP BY booking.id ORDER BY booking_item.start_at ASC';
+
+        $datas = DB::select(DB::raw($sql));
+
+        if (count($datas) == 0) {
             $this->output->writeln('All bookings are up to date.');
             return true;
         }

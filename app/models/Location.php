@@ -74,6 +74,7 @@ class Location extends Eloquent
                 '2017-02' => 1350,
                 '2017-07' => 1820,
                 '2018-03' => 2550,
+                '2018-12' => 1550,
             ),
             'Montauban' => array(
                 '2015-09' => 2050,
@@ -107,7 +108,7 @@ class Location extends Eloquent
                 '2018-02' => 17685 + 4480,
                 '2018-08' => 16265 + 4060,// - Caroline
                 '2018-09' => 17685 + 4480 - 1080, // Julie partiel
-                '2018-10' => 17405 + 4480, 
+                '2018-10' => 17405 + 4480,
                 '2018-11' => 17405 + 4480 + 600, // Suayip
             ),
             //'Toulouse > Espace W' => array(),
@@ -192,7 +193,7 @@ class Location extends Eloquent
                 '2018-11' => 1290,
             ),
 
-            'Alsace Lorraine'=>array(
+            'Alsace Lorraine' => array(
                 '2018-09' => -1706.25,
                 '2018-10' => 1706.25,
             )
@@ -299,5 +300,36 @@ order by kind ASC, `period` DESC
 
         }
         return $datas;
+    }
+
+    public function generateVoucher($occurs_at, $validity = 86400 /* ONE DAY */)
+    {
+        if ($this->voucher_endpoint) {
+            $curl = curl_init();
+            curl_setopt($curl, CURLOPT_HTTPAUTH, CURLAUTH_BASIC);
+            curl_setopt($curl, CURLOPT_USERPWD, $this->voucher_key . ':' . $this->voucher_secret);
+            curl_setopt($curl, CURLOPT_POST, 1);
+            curl_setopt($curl, CURLOPT_POSTFIELDS, array(
+                'count' => 1,
+                'validity' => $validity,
+                'expirytime' => 0, // amount in sec
+                'vouchergroup' => date('Ymd', strtotime($occurs_at)),
+            ));
+            curl_setopt($curl, CURLOPT_URL, $this->voucher_endpoint);
+            curl_setopt($curl, CURLOPT_RETURNTRANSFER, 1);
+            $result = json_decode(curl_exec($curl));
+            curl_close($curl);
+
+            if (is_array($result)) {
+                $voucher = array_pop($result);
+                if (is_object($voucher)) {
+                    return array(
+                        'username' => $voucher->username,
+                        'password' => $voucher->password,
+                    );
+                }
+            }
+        }
+        return false;
     }
 }
