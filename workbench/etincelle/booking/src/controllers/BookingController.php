@@ -175,8 +175,9 @@ class BookingController extends Controller
         return Response::json(array('status' => 'OK', 'data' => $booking_item->toJsonEvent()));
     }
 
-    public function generate_voucher(BookingItem $booking_item)
+    public function generate_voucher($booking_item_id)
     {
+        $booking_item = BookingItem::find($booking_item_id);
         $location = $booking_item->ressource->location;
         if ($location->voucher_endpoint) {
             $voucher = $location->generateVoucher($booking_item->start_at);
@@ -198,7 +199,7 @@ class BookingController extends Controller
 
     public function wifi_pdf($booking_item_id, $day = null)
     {
-        if($day == null){
+        if ($day == null) {
             $day = date('Y-m-d');
         }
 
