@@ -39,12 +39,15 @@ class CatalyzSyncCommand extends Command
     public function fire()
     {
         // https://etincelle-coworking.catalyz.fr/api/invoices
-        $json = [];
-        foreach (json_decode(sprintf('%s?count=100000&paid_at[lte]=%s', $this->argument('api_url'))) as $invoice) {
+	    $json = [];
+	    $uri = sprintf('%s?count=100000&paid_at[lte]=%s', $this->argument('uri'), date('Y-m-d'));
+	    
+        foreach (json_decode(file_get_contents($uri)) as $invoice) {
             $json[$invoice->reference] = $invoice;
         }
-        $invoices = Invoice::orderBy('date_invoice', 'DESC')->get();
-        foreach ($invoices as $invoice) {
+        $invoices = Invoice::orderBy('date_invoice', 'DESC')->where('type', 'F')->get();
+	foreach ($invoices as $invoice) {
+		if(isset($json[$invoice->ident])){
             if ($json[$invoice->ident]->paid_at != $invoice->date_payment) {
                 $this->output->writeln(sprintf('<error>%s %10s %10s</error>',
                     $invoice->ident,
@@ -53,10 +56,10 @@ class CatalyzSyncCommand extends Command
                 ));
             }else{
                 $this->output->writeln(sprintf('%s',
-                    $invoice->ident,
+                    $invoice->ident
                 ));
             }
-        }
+        }}
     }
 
     /**
@@ -67,7 +70,7 @@ class CatalyzSyncCommand extends Command
     protected function getArguments()
     {
         return array(
-            array('api_uri', InputArgument::REQUIRED, ''),
+            array('uri', InputArgument::REQUIRED, ''),
         );
     }
 
