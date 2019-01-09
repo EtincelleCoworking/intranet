@@ -31,3 +31,4 @@ Artisan::add(new SlackDeleteOldFilesCommand);
 Artisan::add(new SlackInviteAllExceptCommand);
 Artisan::add(new AccountingImportCommand);
 Artisan::add(new BookingSyncGoogleCommand);
+Artisan::add(new CatalyzSyncCommand);
