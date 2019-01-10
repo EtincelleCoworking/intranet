@@ -40,23 +40,37 @@ class CatalyzSyncCommand extends Command
     {
         // https://etincelle-coworking.catalyz.fr/api/invoices
         $json = [];
-        foreach (json_decode(sprintf('%s?count=100000&paid_at[lte]=%s', $this->argument('api_url'))) as $invoice) {
+        $uri = sprintf('%s?count=100000&paid_at[lte]=%s', $this->argument('api_uri'), date('Y-m-d'));
+
+        foreach (json_decode(file_get_contents($uri)) as $invoice) {
             $json[$invoice->reference] = $invoice;
         }
-        $invoices = Invoice::orderBy('date_invoice', 'DESC')->get();
+        $invoices = Invoice::orderBy('date_invoice', 'DESC')->where('type', 'F')->get();
         foreach ($invoices as $invoice) {
-            if ($json[$invoice->ident]->paid_at != $invoice->date_payment) {
-                $this->output->writeln(sprintf('<error>%s %10s %10s</error>',
-                    $invoice->ident,
-                    $json[$invoice->ident]->paid_at,
-                    $invoice->date_payment
-                ));
-            }else{
-                $this->output->writeln(sprintf('%s',
-                    $invoice->ident,
-                ));
+            if (isset($json[$invoice->ident])) {
+                if ($json[$invoice->ident]->paid_at != $invoice->date_payment) {
+                    if ($json[$invoice->ident]->paid_at) {
+                        $this->output->writeln(sprintf('<fg=green>%s Catalyz : %10s - Intranet : %10s - %s</>',
+                            $invoice->ident,
+                            $json[$invoice->ident]->paid_at,
+                            $invoice->date_payment,
+                            $json[$invoice->ident]->customer->name
+                        ));
+                        $invoice->date_payment = $json[$invoice->ident]->paid_at;
+                        $invoice->save();
+                    } else {
+                        $this->output->writeln(sprintf('%s Catalyz : %10s - Intranet : %10s - %s',
+                            $invoice->ident,
+                            $json[$invoice->ident]->paid_at,
+                            $invoice->date_payment,
+                            $json[$invoice->ident]->customer->name
+                        ));
+                    }
+
+                }
             }
         }
+
     }
 
     /**
