@@ -13,6 +13,7 @@
 Route::get('/', array('as' => 'dashboard', 'uses' => 'UserController@dashboard'));
 
 Route::get('/api/test', array('as' => 'api_test', 'uses' => 'ApiController@test'));
+Route::get('/webhook/aircall/{phone}', array('uses' => 'AircallController@webhook'));
 
 Route::get('/api/1.0/location/{location_slug}/{key}', array('as' => 'api_location_update', 'uses' => 'ApiController@updateLocationIp'));
 //Route::get('/api/1.0/metric/{location_slug}/{key}/{metric_slug}/{metric_value}', array('as' => 'api_metric_update', 'uses' => 'ApiController@updateMetric'));

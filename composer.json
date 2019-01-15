@@ -31,7 +31,10 @@
     "clegginabox/pdf-merger": "dev-master",
     "sabre/dav": "3.3.x-dev",
     "ziplr/php-qr-code": "^1.0",
-    "google/apiclient": "^2.2"
+    "google/apiclient": "^2.2",
+    "ext-json": "*",
+    "ext-curl": "*",
+    "pusher/pusher-php-server": "^3.0@dev"
   },
   "autoload": {
     "classmap": [
