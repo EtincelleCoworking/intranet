@@ -23,22 +23,6 @@ foreach ($ressources as $ressource) {
     <div class="row wrapper border-bottom white-bg page-heading">
         <div class="col-sm-10">
             <h2>Réservations</h2>
-            @if(count($ressources)>1)
-                <form id="ressource_filter" action="#" autocomplete="false">
-                    @if(count($ressources_by_space)>1)
-                        @foreach($ressources_by_space as $locationName => $ressources)
-                            <div class="col-md-6">
-                                <fieldset>
-                                    <legend>{{$locationName}}</legend>
-                                    @include('ressource._ressources', array('ressources' => $ressources))
-                                </fieldset>
-                            </div>
-                        @endforeach
-                    @else
-                        @include('ressource._ressources', array('ressources' => array_shift($ressources_by_space)))
-                    @endif
-                </form>
-            @endif
         </div>
         <div class="col-sm-2">
             @if(count($ressources)>0)
@@ -123,13 +107,38 @@ foreach ($ressources as $ressource) {
     @if(count($ressources)>0)
 
         <div class="row">
-            <div class="col-lg-12">
-                <div class="ibox">
-                    <div class="ibox-content">
-                        <div id="calendar"></div>
+            @if(count($ressources)>1)
+                <div class="col-lg-9">
+                    <div class="ibox">
+                        <div class="ibox-content">
+                            <div id="calendar"></div>
+                        </div>
                     </div>
                 </div>
-            </div>
+                <div class="col-lg-3">
+                    <form id="ressource_filter" action="#" autocomplete="false">
+                        @if(count($ressources_by_space)>1)
+                            @foreach($ressources_by_space as $locationName => $ressources)
+                            <p>
+                                <strong>{{$locationName}}</strong>
+                                @include('ressource._ressources', array('ressources' => $ressources))
+                            </p>
+                            @endforeach
+                        @else
+                            @include('ressource._ressources', array('ressources' => array_shift($ressources_by_space)))
+                        @endif
+                    </form>
+
+                </div>
+            @else
+                <div class="col-lg-12">
+                    <div class="ibox">
+                        <div class="ibox-content">
+                            <div id="calendar"></div>
+                        </div>
+                    </div>
+                </div>
+            @endif
 
         </div>
         <div class="row">
@@ -189,7 +198,7 @@ foreach ($ressources as $ressource) {
 
         @foreach($ressources as $ressource)
 
-.fc-event.booking-ofuscated-{{$ressource->id}}                                     {
+.fc-event.booking-ofuscated-{{$ressource->id}}                                         {
             background: repeating-linear-gradient(
             135deg,
                     {{ adjustBrightness($ressource->booking_background_color, -32)}},
@@ -593,6 +602,12 @@ foreach ($ressources as $ressource) {
 //                maxTime: '22:00',
                 axisFormat: 'HH:mm',
                 scrollTime: '08:30',
+                businessHours: {
+                    // days of week. an array of zero-based day of week integers (0=Sunday)
+                    dow: [1, 2, 3, 4, 5],
+                    start: '08:00',
+                    end: '19:00'
+                },
                 eventTextColor: '#000000',
                 slotDuration: '00:30:00',
                 select: function (start, end) {
@@ -723,6 +738,11 @@ foreach ($ressources as $ressource) {
                             revertFunc();
                         }
                     });
+                },
+                views:{
+                    timelineDay: {
+                        titleFormat: 'dddd DD MMMM YYYY'
+                    }
                 }
             });
 

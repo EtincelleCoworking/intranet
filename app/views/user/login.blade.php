@@ -8,12 +8,10 @@
 
     <title>{{ $_ENV['organisation_name'] }} - Accueil</title>
 
-    <link href="css/bootstrap.min.css" rel="stylesheet">
-    <link href="font-awesome/css/font-awesome.css" rel="stylesheet">
-
-    <link href="css/animate.css" rel="stylesheet">
-    <link href="css/style.css" rel="stylesheet">
-
+    {{ HTML::style('css/bootstrap.min.css') }}
+    {{ HTML::style('font-awesome/css/font-awesome.css') }}
+    {{ HTML::style('css/animate.css') }}
+    {{ HTML::style('css/style.css') }}
 </head>
 
 <body class="gray-bg">

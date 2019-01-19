@@ -17,11 +17,11 @@
             @endif
         </div>
         @if(count($tags)>0)
-        <div class="col-sm-12">
+        <div class="col-sm-12 tag-filter-container">
             <p>
                 Filtrez: @foreach($tags as $tag)
                     <a href="javascript:void(0);" class="btn btn-xs btn-default tag-filter"
-                       id="tag-{{$tag->slug}}">{{$tag->name}}</a>
+                       data-tag="tag-{{$tag->slug}}">{{$tag->name}}</a>
                 @endforeach
             </p>
         </div>
@@ -125,7 +125,7 @@
                             </div>
                             <div class="col-sm-12 text-right">
                                 @foreach($user->hashtags as $hashtag)
-                                    <a href="#"><span class="label label-default">{{$hashtag->name}}</span></a>
+                                    <a href="javascript:void(0);" class="tag-filter" data-tag="tag-{{$tag->slug}}"><span class="label label-default">{{$hashtag->name}}</span></a>
                                 @endforeach
                             </div>
                         </div>
@@ -150,19 +150,18 @@
         var separator = '';
 
         $('.tag-filter').click(function () {
-            if ($(this).hasClass('btn-default')) {
-                $(this).removeClass('btn-default');
-                $(this).addClass('btn-primary');
+            var $tag = $('.tag-filter-container .tag-filter[data-tag="'+$(this).attr('data-tag')+'"]')
+            if ($tag.hasClass('btn-default')) {
+                $tag.removeClass('btn-default');
+                $tag.addClass('btn-primary');
             } else {
-                $(this).addClass('btn-default');
-                $(this).removeClass('btn-primary');
+                $tag.addClass('btn-default');
+                $tag.removeClass('btn-primary');
             }
 
             selector = '';
-            //separator = '';
-            $('.tag-filter[class*="btn-primary"]').each(function () {
-                selector += separator + '.' + $(this).attr('id');
-                //separator = ', ';
+            $('.tag-filter-container .tag-filter[class*="btn-primary"]').each(function () {
+                selector += separator + '.' + $(this).attr('data-tag');
             });
             $('#equalheight').isotope({filter: selector});
         });

@@ -40,40 +40,40 @@ class SlackSyncUsersCommand extends Command
     {
         $slack = new Slack($_ENV['slack_token']);
         $json = $slack->call('users.list');
-        $emails = array();
-        $slack_ids = array();
+        $slack_names_by_email = array();
+        $slack_emails_by_name = array();
 
         $query = User::where('id', '=', -1);
         foreach ($json['members'] as $member) {
             if (!empty($member['profile']['email']) && !$member['deleted']) {
-                $emails[$member['profile']['email']] = $member['name'];
-                $slack_ids[$member['name']] = $member['profile']['email'];
+                $slack_names_by_email[$member['profile']['email']] = $member['name'];
+                $slack_emails_by_name[$member['name']] = $member['profile']['email'];
                 $query->orWhere('email', 'LIKE', $member['profile']['email']);
                 $query->orWhere('slack_id', 'LIKE', $member['name']);
             }
         }
 
-        //$users = User::whereIn('email', array_keys($emails))->get();
+        //$users = User::whereIn('email', array_keys($slack_names_by_email))->get();
         foreach ($query->get() as $user) {
             $user->email = strtolower($user->email);
             if (empty($user->slack_id)) {
-                if (isset($emails[$user->email])) {
-                    if ($user->slack_id != $emails[$user->email]) {
-                        $user->slack_id = $emails[$user->email];
+                if (isset($slack_names_by_email[$user->email])) {
+                    if ($user->slack_id != $slack_names_by_email[$user->email]) {
+                        $user->slack_id = $slack_names_by_email[$user->email];
                         $user->save();
                         $this->output->writeln(sprintf('Updated: %s', $user->fullname));
-                        unset($emails[$user->email]);
-                        unset($slack_ids[$user->slack_id]);
+                        unset($slack_names_by_email[$user->email]);
+                        unset($slack_emails_by_name[$user->slack_id]);
                     }
                 }
-            }elseif(isset($slack_ids[$user->slack_id])) {
-                unset($emails[$slack_ids[$user->slack_id]]);
-                unset($slack_ids[$user->slack_id]);
+            }elseif(isset($slack_emails_by_name[$user->slack_id])) {
+                unset($slack_names_by_email[$slack_emails_by_name[$user->slack_id]]);
+                unset($slack_emails_by_name[$user->slack_id]);
             }
         }
 
-        //print_r($emails);
-        print_r($slack_ids);
+        //print_r($slack_names_by_email);
+        print_r($slack_emails_by_name);
 
     }
 

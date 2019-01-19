@@ -30,13 +30,16 @@ class TeamPlanningController extends BaseController
 
     public function populate()
     {
+        // DELETE from `team_planning_item` WHERE user_id in (1, 2414, 877) and start_at >= "2019-01-03"
+
         //TeamPlanningItem::truncate();
         //region Jehanne
+
         $ranges = array('08:15' => '11:00', '13:30' => '15:00');
         $days = array(1, 2, 3, 4, 5);
-        $count = 60;
-        $now = mktime(0, 0, 0, 1, 3, 2019);
-        while ($count--) {
+        $now = mktime(0, 0, 0, 3, 2, 2019);
+        $ends = mktime(0, 0, 0, 6, 30, 2019);
+        while ($now <= $ends) {
             if (in_array(date('N', $now), $days) && !Utils::isFerian(date('Y-m-d', $now))) {
                 foreach ($ranges as $start_time => $end_time) {
                     $_now = date('Y-m-d', $now);
@@ -104,6 +107,7 @@ class TeamPlanningController extends BaseController
             }
         }*/
 //endregion
+/*
         $days = array(1, 2, 3, 4, 5);
         $ranges = array(
             //array('08:00' => '12:30', '13:30' => '16:00'), // AL
@@ -123,7 +127,7 @@ class TeamPlanningController extends BaseController
                 if (in_array(date('N', $now), $days)) {
                     $_now = date('Y-m-d', $now);
                     if (!Utils::isFerian($_now)) {
-                        $range_index = $planning_index++ % 3;
+                        $range_index = $planning_index++ % count($members);
                         foreach ($ranges[$range_index] as $start_time => $end_time) {
                             $item = new TeamPlanningItem();
                             $item->user_id = $user_id;
@@ -138,7 +142,8 @@ class TeamPlanningController extends BaseController
                 $now = strtotime('+1 day', $now);
             }
         }
-
+        */
+/*
         $ranges = array('08:15' => '12:15', '13:45' => '16:45');
         $member_index = 0;
         $members = array();
@@ -153,16 +158,17 @@ class TeamPlanningController extends BaseController
             if (!Utils::isFerian($_now)) {
                 foreach ($ranges as $start_time => $end_time) {
                     $item = new TeamPlanningItem();
-                    $item->user_id = $members[$member_index++ % 4];
+                    $item->user_id = $members[$member_index % count($members)];
                     $item->location_id = 1; //($range_index != 0) ? 1 : 8;
                     $item->start_at = $_now . ' ' . $start_time;
                     $item->end_at = $_now . ' ' . $end_time;
                     $item->save();
                     print_r($item);
                 }
+                $member_index++;
             }
             $now = strtotime('+7 day', $now);
-        }
+        }*/
     }
 
     protected function getColors()

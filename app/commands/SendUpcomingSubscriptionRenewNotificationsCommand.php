@@ -49,10 +49,10 @@ class SendUpcomingSubscriptionRenewNotificationsCommand extends Command
         foreach ($subscriptions as $subscription) {
             Mail::send('emails.upcoming_subscription_renew', array('subscription' => $subscription), function ($message) use ($subscription) {
                 $message->from($_ENV['mail_address'], $_ENV['mail_name'])
-                    ->bcc($_ENV['mail_address'], $_ENV['mail_name']);
+                    ->bcc($_ENV['mail_bcc']);
 
                 $message->to($subscription->user->email, $subscription->user->fullname);
-                $message->subject(sprintf('%s - Renouvellement de votre abonnement le %s', $_ENV['organisation_name'], date('d/m/Y', strtotime($subscription->renew_at))));
+                $message->subject(sprintf('Renouvellement de ton abonnement le %s', date('d/m/Y', strtotime($subscription->renew_at))));
             });
             $subscription->reminded_at = date('Y-m-d');
             $subscription->save();

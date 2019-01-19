@@ -15,35 +15,18 @@ class AircallController extends BaseController
         return preg_replace('/[^0-9]/', '', $value);
     }
 
-    protected function sendInsightCard($json)
+    protected function sendInsightCard($call_id, $card_data)
     {
         $uri = sprintf('https://%s:%s@api.aircall.io/v1/calls/%s/insight_cards',
-            $_ENV['aircall_id'], $_ENV['aircall_secret'], $json->data->id);
+            $_ENV['aircall_id'], $_ENV['aircall_secret'], $call_id);
 
-        $data = json_encode( [
-            'call_id' => $json->data->id,
-            'creationDate' => time(),
-            'contents' => [
-                [
-                    'type' => 'title',
-                    'text' => 'TITLE',
-                    'link' => 'https://www.google.com/'
-                ],
-                [
-                    'type' => 'shortText',
-                    'text' => 'SHORT_TEXT',
-                    'label' => 'LABEL',
-                    'link' => 'https://www.google.com/'
-                ]
-            ]
-        ]);
         $ch = curl_init($uri);
         curl_setopt($ch, CURLOPT_CUSTOMREQUEST, "POST");
-        curl_setopt($ch, CURLOPT_POSTFIELDS, $data);
+        curl_setopt($ch, CURLOPT_POSTFIELDS, $card_data);
         curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
         curl_setopt($ch, CURLOPT_HTTPHEADER, array(
                 'Content-Type: application/json',
-                'Content-Length: ' . strlen($data))
+                'Content-Length: ' . strlen($card_data))
         );
 
         curl_exec($ch);
@@ -63,7 +46,11 @@ class AircallController extends BaseController
         $one_year_ago = date('Y-m-d', strtotime('-1 year'));
 
         if ($user) {
-            $this->sendInsightCard($json);
+            $card_data = [
+                'call_id' => $json->data->id,
+                'creationDate' => time(),
+                'contents' => []
+            ];
 
             $data['user'] = [
                 'id' => $user->id,
@@ -80,7 +67,23 @@ class AircallController extends BaseController
                     'postal_code' => $organisation->zipcode,
                     'city' => $organisation->city
                 ];
+                $card_data['contents'][] =
+                    [
+                        'type' => 'title',
+                        'text' => $data['organisations'],
+                        'link' => url(route('organisation_modify', ['id' => $organisation->id]))
+                    ];
             }
+            /*if(count($data['organisations'])>0){
+,
+                    [
+                        'type' => 'shortText',
+                        'text' => 'SHORT_TEXT',
+                        'label' => 'LABEL',
+                        'link' => 'https://www.google.com/'
+                    ]
+
+            }*/
             $data['invoices'] = [];
             foreach (Invoice::where('type', 'F')->where('user_id', $user->id)->where('date_invoice', '>', $one_year_ago)->orderBy('date_invoice', 'DESC')->with('items')->get() as $invoice) {
                 $data['invoices'][] = [
@@ -140,6 +143,9 @@ class AircallController extends BaseController
                 'comment' => '...comment...'
             ]
 */];
+
+            $this->sendInsightCard($json->data->id, json_encode($card_data));
+
             $options = array(
                 'cluster' => $_ENV['pusher_app_cluster'],
                 'useTLS' => true,

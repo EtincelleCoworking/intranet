@@ -32,4 +32,5 @@ class Tag extends Eloquent
     public static $rulesAdd = array(
         'name' => 'required|min:1|unique:tags'
     );
+
 }

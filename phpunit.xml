@@ -1,18 +1,25 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<phpunit backupGlobals="false"
-         backupStaticAttributes="false"
-         bootstrap="bootstrap/autoload.php"
-         colors="true"
-         convertErrorsToExceptions="true"
-         convertNoticesToExceptions="true"
-         convertWarningsToExceptions="true"
-         processIsolation="false"
-         stopOnFailure="false"
-         syntaxCheck="false"
->
-    <testsuites>
-        <testsuite name="Application Test Suite">
-            <directory>./app/tests/</directory>
-        </testsuite>
-    </testsuites>
-</phpunit>
+Alain Bonno du 02/03/2018 au 01/06/2018<br />
+Alexis Lesly-Veillard du 16/01/2018 au 13/06/2018<br />
+Antoine Cormouls du 16/01/2018 au 13/06/2018<br />
+Christian Hugé du 16/03/2018 au 15/04/2018<br />
+Christophe Sovran du 16/01/2018 au 13/06/2018<br />
+Faten Megdiche du 16/01/2018 au 15/02/2018<br />
+Faten Megdiche du 19/04/2018 au 18/05/2018<br />
+Felipe Catalan du 16/02/2018 au 13/05/2018<br />
+Jean Ciapa du 16/01/2018 au 13/06/2018<br />
+Joackim Le Moniet du 16/01/2018 au 13/06/2018<br />
+Jordan Fortel du 10/04/2018 au 09/05/2018<br />
+Juliane Woaye-Koi du 26/02/2018 au 24/05/2018<br />
+Kader Djouhri du 16/01/2018 au 15/02/2018<br />
+Kader Djouhri du 21/03/2018 au 18/05/2018<br />
+Kevin Jeanne du 16/01/2018 au 15/03/2018<br />
+Kevin Jeanne du 04/04/2018 au 03/05/2018<br />
+Mathilde Gras du 16/01/2018 au 15/02/2018<br />
+Mathilde Gras du 22/03/2018 au 21/04/2018<br />
+Maxence Pastor du 16/01/2018 au 15/03/2018<br />
+Sam Mhamdi du 16/01/2018 au 15/04/2018<br />
+Thibault Beaufort du 16/01/2018 au 15/02/2018<br />
+Thibault Beaufort du 07/03/2018 au 04/06/2018<br />
+Thibault Delcuze du 06/03/2018 au 04/06/2018<br />
+Tony Moreau du 07/03/2018 au 04/06/2018<br />
+Téo Georget du 16/01/2018 au 14/05/2018<br />
