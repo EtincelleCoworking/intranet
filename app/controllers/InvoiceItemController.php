@@ -61,16 +61,16 @@ class InvoiceItemController extends BaseController
         $fields['subscription_hours_quota'] = 'integer';
         $fields['subscription_from'] = 'date';
         $fields['subscription_to'] = 'date';
-        $fields['coworking_pack_item_count'] = 'integer';
-        $fields['coworking_pack_item_user_id'] = 'object';
-        $coworking_pack_item_count = array();
+        //$fields['coworking_pack_item_count'] = 'integer';
+        //$fields['coworking_pack_item_user_id'] = 'object';
+//        $coworking_pack_item_count = array();
         foreach ($invoice->items as $item) {
             $data = $this->getInputData($item->id, $fields);
             InvoiceItem::where('id', $item->id)->update($data);
-            if (!empty($data['coworking_pack_item_count'])) {
+/*            if (!empty($data['coworking_pack_item_count'])) {
                 $coworking_pack_item_count[$item->id] = $data['coworking_pack_item_count'];
             }
-        }
+*/        }
 
         // Add new line
         if (Input::get('text.0')) {
@@ -80,7 +80,7 @@ class InvoiceItemController extends BaseController
                 $coworking_pack_item_count[$item->id] = $data['coworking_pack_item_count'];
             }
         }
-
+/*
         if (count($coworking_pack_item_count) > 0) {
             foreach ($coworking_pack_item_count as $invoice_item_id => $count) {
 
@@ -97,7 +97,7 @@ class InvoiceItemController extends BaseController
                 }
             }
         }
-
+*/
         return Redirect::route('invoice_modify', $id);
     }
 
