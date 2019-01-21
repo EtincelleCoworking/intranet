@@ -135,7 +135,7 @@ return array(
 
         'Etincelle\Booking\BookingServiceProvider',
         'Etincelle\Sensor\SensorServiceProvider',
-        'Etincelle\\Issues\\IssuesServiceProvider',
+        //'Etincelle\\Issues\\IssuesServiceProvider',
         'Etincelle\Cashflow\CashflowServiceProvider',
         //\Spatie\GoogleCalendar\GoogleCalendarServiceProvider::class,
     ),
