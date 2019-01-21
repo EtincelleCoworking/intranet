@@ -1,7 +1,12 @@
-update user's slack_id:
+Supprimer les codes wifi du jour
 
-1. exporter le fichier de Slack
-2. transformer le CSV en fichier excel et copier/coller les 2 premières colonnes
-3. utiliser cette RegExp:
-    (.+)\t(.+)
-    UPDATE users SET slack_id = '$1' WHERE email = '$2';
+
+update booking join booking_item on booking.id = booking_item.booking_id set wifi_login = null, wifi_password = null where booking_item.start_at BETWEEN date_format(now(), '%Y-%m-%d 00:00:00') and date_format(date_add(now(), INTERVAL 1 DAY), '%Y-%m-%d 00:00:00')
+
+
+SELECT ressource_kind.name, ressources.name, sum(invoices_items.amount) FROM `invoices_items` join ressources on ressources.id = invoices_items.ressource_id
+join invoices on invoices.id = invoices_items.invoice_id
+join ressource_kind on ressource_kind.id = ressources.ressource_kind_id
+WHERE invoices.organisation_id = 617 and invoices.date_invoice >= "2018-01-01"
+and invoices_items.amount < 0
+group by ressources.id

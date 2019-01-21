@@ -28,6 +28,9 @@ class InvoiceItemController extends BaseController
                 }
             } elseif ($fieldKind == 'integer') {
                 $result[$fieldName] = (int)Input::get($fieldName . '.' . $fieldIndex);
+            } elseif ($fieldKind == 'object') {
+                $object_id = (int)Input::get($fieldName . '.' . $fieldIndex);
+                $result[$fieldName] = $object_id ? $object_id : null;
             } elseif ($fieldKind == 'price') {
                 $result[$fieldName] = str_replace(',', '.', Input::get($fieldName . '.' . $fieldIndex));
             } else {
@@ -54,18 +57,45 @@ class InvoiceItemController extends BaseController
 
         $fields['booking_hours'] = 'integer';
 
-        $fields['subscription_user_id'] = null;
+        $fields['subscription_user_id'] = 'object';
         $fields['subscription_hours_quota'] = 'integer';
         $fields['subscription_from'] = 'date';
         $fields['subscription_to'] = 'date';
-
+        $fields['coworking_pack_item_count'] = 'integer';
+        $fields['coworking_pack_item_user_id'] = 'object';
+        $coworking_pack_item_count = array();
         foreach ($invoice->items as $item) {
-            InvoiceItem::where('id', $item->id)->update($this->getInputData($item->id, $fields));
+            $data = $this->getInputData($item->id, $fields);
+            InvoiceItem::where('id', $item->id)->update($data);
+            if (!empty($data['coworking_pack_item_count'])) {
+                $coworking_pack_item_count[$item->id] = $data['coworking_pack_item_count'];
+            }
         }
 
         // Add new line
         if (Input::get('text.0')) {
-            $this->add_check(array_merge(array('invoice_id' => $id), $this->getInputData(0, $fields)));
+            $data = $this->getInputData(0, $fields);
+            $item = $this->add_check(array_merge(array('invoice_id' => $id), $data));
+            if (!empty($data['coworking_pack_item_count'])) {
+                $coworking_pack_item_count[$item->id] = $data['coworking_pack_item_count'];
+            }
+        }
+
+        if (count($coworking_pack_item_count) > 0) {
+            foreach ($coworking_pack_item_count as $invoice_item_id => $count) {
+
+                $current_count = CoworkingPrepaidPackItem::where('invoice_item_id', '=', $invoice_item_id)->count();
+                if ($current_count > $count) {
+                    // trigger error
+                } else {
+                    for ($i = $current_count; $i < $count; $i++) {
+                        $pack_item = new CoworkingPrepaidPackItem();
+                        $pack_item->invoice_item_id = $invoice_item_id;
+                        $pack_item->index = $i + 1;
+                        $pack_item->save();
+                    }
+                }
+            }
         }
 
         return Redirect::route('invoice_modify', $id);

@@ -42,6 +42,13 @@ class OdooUpdateCommand extends Command
             $this->updateUsers($this->option('force'));
         }
 
+        if ($month = $this->option('monthly-invoice')) {
+            if (empty($month)) {
+                $month = date('Y-m', strtotime('-1 month'));
+            }
+            $this->invoiceLastMonth($month);
+        }
+
         if ($this->option('pending-pos-to-orders')) {
             $occurs_at = date('Y-m-d');
             if ($occurs_at > '2018-03-16') {
@@ -60,6 +67,16 @@ class OdooUpdateCommand extends Command
     {
         $xmlrpc = new Odoo();
         $xmlrpc->createOrderFromPendingPosSales($occurs_at);
+    }
+
+    protected function invoiceLastMonth($period)
+    {
+        $xmlrpc = new Odoo();
+        try {
+            $xmlrpc->invoiceMonth($period);
+        } catch (\Exception $e) {
+            $this->output->writeln(sprintf('<error>%s</error>', $e->getMessage()));
+        }
     }
 
     protected function updateUsers($force = false)
@@ -99,7 +116,7 @@ class OdooUpdateCommand extends Command
                         printf("- name: [%s] / [%s] %s\n", $odoo_datas[$item->id]['name'], $item->name, ($odoo_datas[$item->id]['name'] != $item->name) ? '<--' : '');
                         printf("- email: [%s] / [%s] %s\n", $odoo_datas[$item->id]['email'], $item->email, ($odoo_datas[$item->id]['email'] != $item->email) ? '<--' : '');
                         printf("- phone: [%s] / [%s] %s\n", $odoo_datas[$item->id]['phone'], $item->phone, ($odoo_datas[$item->id]['phone'] != $item->phone) ? '<--' : '');
-                        printf("- barcode: [%s] / [%s] %s\n", $odoo_datas[$item->id]['barcode'],$xmlrpc->getUserBarcode($item->id), ($odoo_datas[$item->id]['barcode'] != $xmlrpc->getUserBarcode($item->id)) ? '<--' : '');
+                        printf("- barcode: [%s] / [%s] %s\n", $odoo_datas[$item->id]['barcode'], $xmlrpc->getUserBarcode($item->id), ($odoo_datas[$item->id]['barcode'] != $xmlrpc->getUserBarcode($item->id)) ? '<--' : '');
 
                         $result = $xmlrpc->updateUser($odoo_datas[$item->id]['id'], $item->id, $item->name, $item->email, $item->phone);
                         if (is_array($result)) {
@@ -145,6 +162,7 @@ class OdooUpdateCommand extends Command
             array('users', null, InputOption::VALUE_NONE),
             array('force', null, InputOption::VALUE_NONE),
             array('pending-pos-to-orders', null, InputOption::VALUE_NONE),
+            array('monthly-invoice', null, InputOption::VALUE_OPTIONAL),
         );
     }
 

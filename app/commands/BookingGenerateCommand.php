@@ -38,15 +38,15 @@ class BookingGenerateCommand extends Command
      */
     public function fire()
     {
-        $from_date = '2018-06-25 08:00';
-        $to_date = '2018-09-12';
+        $from_date = '2018-12-03 08:00';
+        $to_date = strtotime('2019-02-28 23:59:59');
         $duration = 14 * 60;
-        $ressource_id = 3;
-        $user_id = 1921;
-        $organisation_id = 255;
-        $booking_title = 'Simplon.co';
+        $ressource_id = 4;
+        $user_id = 2623;
+        $organisation_id = 1620;
+        $booking_title = 'Boston Storage';
 
-        $now = $from_date;
+        $now = strtotime($from_date);
         while ($now <= $to_date) {
             $booking = new Booking();
             $booking->organisation_id = $organisation_id;
@@ -57,13 +57,16 @@ class BookingGenerateCommand extends Command
 
             $booking_item = new BookingItem();
             $booking_item->booking_id = $booking->id;
-            $booking_item->start_at = $now;
+            $booking_item->start_at = date('Y-m-d H:i', $now);
             $booking_item->duration = $duration;
             $booking_item->ressource_id = $ressource_id;
             $booking_item->is_free = false;
             $booking_item->confirmed_at = date('Y-m-d H:i');
             $booking_item->confirmed_by_user_id = 1;
             $booking_item->save();
+
+            $this->getOutput()->writeln(sprintf('%s', date('Y-m-d H:i', $now)));
+            $now = strtotime('+1 day', $now);
         }
     }
 

@@ -130,6 +130,31 @@ class AccountingExportCommand extends Command
 
         $export_infos = Excel::create($this->argument('filename') . '-' . date('Y-m-d'), function ($excel) {
             $excel->sheet('Ventes', function ($sheet) {
+
+                $styleArray = [
+//                    'font' => [
+//                        'bold' => true,
+//                    ],
+//                    'alignment' => [
+//                        'horizontal' => PHPExcel_Style_Alignment::HORIZONTAL_RIGHT,
+//                    ],
+//                    'borders' => [
+//                        'top' => [
+//                            'borderStyle' => PHPExcel_Style_Border::BORDER_THIN,
+//                        ],
+//                    ],
+                    'fill' => [
+                        'fillType' => PHPExcel_Style_Fill::FILL_SOLID,
+//                        'rotation' => 90,
+                        'startColor' => [
+                            'argb' => 'FFFF0000',
+                        ],
+//                        'endColor' => [
+//                            'argb' => 'FFFFFFFF',
+//                        ],
+                    ],
+                ];
+
                 $sheet->freezeFirstRow();
                 $sheet->setAutoSize(true);
 
@@ -214,13 +239,17 @@ class AccountingExportCommand extends Command
                             $row[] = sprintf('%0.2f', $item->amount * (1 + ($item->vat->value) / 100));
                             $row[] = $invoice->date_payment ? date('d/m/Y', strtotime($invoice->date_payment)) : '';
 
-                            $sheet->appendRow($row);
+                            $sheetRow = $sheet->appendRow($row);
+                            if($invoice->is_lost){
+                                $sheet->getStyle(sprintf('A%1$d:%2$s%1$d', $sheetRow->getRowIndex(), chr(ord('A' + count($row)))))->applyFromArray($styleArray);
+                            }
                         }
                     }
                 }
 
 
             });
+            /*
             $excel->sheet('Stripe', function ($sheet) {
                 $sheet->freezeFirstRow();
                 $sheet->setAutoSize(true);
@@ -244,24 +273,30 @@ class AccountingExportCommand extends Command
                     }
                     $Transfers = Transfer::all($params);
                     foreach ($Transfers->data as $Transfer) {
-                        $items = BalanceTransaction::all(array('limit' => 100, 'transfer' => $Transfer->id, 'type' => 'charge'));
-                        foreach ($items->data as $item) {
-                            $this->output->write('.');
-                            $row = array();
-                            $row[] = $Transfer->id;
-                            $row[] = date('d/m/Y', $item->available_on);
-                            $row[] = $item->description;
-                            $row[] = $item->amount / 100;
-                            $row[] = $item->fee / 100;
-                            $row[] = $item->net / 100;
-                            $sheet->appendRow($row);
+                        try {
+
+                            $items = BalanceTransaction::all(array('limit' => 100, 'transfer' => $Transfer->id, 'type' => 'charge'));
+                            foreach ($items->data as $item) {
+                                $this->output->write('.');
+                                $row = array();
+                                $row[] = $Transfer->id;
+                                $row[] = date('d/m/Y', $item->available_on);
+                                $row[] = $item->description;
+                                $row[] = $item->amount / 100;
+                                $row[] = $item->fee / 100;
+                                $row[] = $item->net / 100;
+                                $sheet->appendRow($row);
+                            }
+                            $sheet->appendRow(array('', '', '', '', '', '', $Transfer->amount / 100));
+                            $this->output->writeln('');
+                        } catch (\Stripe\Error\InvalidRequest $e) {
+                            $this->output->writeln(sprintf('<error>%s</error>', $e->getMessage()));
                         }
-                        $sheet->appendRow(array('', '', '', '', '', '', $Transfer->amount / 100));
-                        $this->output->writeln('');
                     }
                 } while ($Transfers->has_more);
 
             });
+            */
         })->store('xls', false, true);
         $this->output->writeln(sprintf('Le fichier %s a été créé', $export_infos['full']));
     }
@@ -288,8 +323,8 @@ class AccountingExportCommand extends Command
     function getOptions()
     {
         return array(
-            array('from', null, InputOption::VALUE_OPTIONAL, 'Date de début de l\'export comptable.', null),
-            array('to', null, InputOption::VALUE_OPTIONAL, 'Date de fin de l\'export comptable.', null),
+//            array('from', null, InputOption::VALUE_OPTIONAL, 'Date de début de l\'export comptable.', null),
+//            array('to', null, InputOption::VALUE_OPTIONAL, 'Date de fin de l\'export comptable.', null),
         );
     }
 
@@ -373,7 +408,7 @@ class AccountingExportCommand extends Command
                     return '708230';
             }
 
-            if($item->ressource){
+            if ($item->ressource) {
                 return $item->ressource->name;
             }
             return $item->id;

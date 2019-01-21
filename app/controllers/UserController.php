@@ -643,15 +643,11 @@ order by invoices.date_invoice desc
 
         $months = array_keys($items);
         $current_month = date('m');
-        $month = null;
-        do {
-            if ($month) {
-                $months[] = $month;
-            }
+        $month = 1;
+        while ($month < $current_month) {
             $month = array_shift($months);
-
-        } while ($month < $current_month - 1);
-        $months[] = $month;
+            $months[] = $month;
+        }
 
         return View::make('user.birthday', array(
             'months' => $months,
@@ -749,12 +745,12 @@ LIMIT 1';
         $data['code'] = $user->personnal_code;
 
         return Response::json($data);
-/*
-        $result = new Response();
-        $result->headers->set('Content-Type', 'application/json');
-        $result->setContent(json_encode($data));
-        return $result;
-*/
+        /*
+                $result = new Response();
+                $result->headers->set('Content-Type', 'application/json');
+                $result->setContent(json_encode($data));
+                return $result;
+        */
     }
 
     public function send_welcome_email($user_id)

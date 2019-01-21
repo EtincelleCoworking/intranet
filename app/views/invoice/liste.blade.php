@@ -9,7 +9,7 @@
         <div class="col-sm-4">
             <h2>Liste des factures</h2>
         </div>
-        <div class="col-sm-8">
+        <div class="col-sm-4">
             <div class="title-action">
                 @if (Auth::user()->isSuperAdmin())
                     <a href="{{ URL::route('invoice_add', 'F') }}" class="btn btn-primary">Ajouter une facture</a>
@@ -39,13 +39,13 @@
                     @if (Auth::user()->isSuperAdmin())
                         <div class="row">
                             <div class="col-md-4">
-                                {{ Form::select('filtre_organisation_id', Organisation::SelectAll('Sélectionnez une société'), Session::get('filtre_invoice.organisation_id') ? Session::get('filtre_invoice.organisation_id') : null, array('id' => 'filter-organisation','class' => 'form-control')) }}
+                                {{ Form::select('filtre_organisation_id', Organisation::SelectAll(null), Session::get('filtre_invoice.organisation_id') ? Session::get('filtre_invoice.organisation_id') : null, array('id' => 'filter-organisation','class' => 'form-control')) }}
                             </div>
                             <div class="col-md-4">
-                                {{ Form::select('filtre_user_id', User::Select('Sélectionnez un client'), Session::get('filtre_invoice.user_id') ? Session::get('filtre_invoice.user_id') : null, array('id' => 'filter-client','class' => 'form-control')) }}
+                                {{ Form::select('filtre_user_id', User::Select(null), Session::get('filtre_invoice.user_id') ? Session::get('filtre_invoice.user_id') : null, array('id' => 'filter-client','class' => 'form-control')) }}
                             </div>
                             <div class="col-md-4">
-                                {{ Form::select('filtre_location_id', Location::SelectAll('Sélectionnez un espace', true), Session::get('filtre_invoice.location_id') ? Session::get('filtre_invoice.location_id') : null, array('id' => 'filter-location','class' => 'form-control')) }}
+                                {{ Form::select('filtre_location_id', Location::SelectAll(null, true), Session::get('filtre_invoice.location_id') ? Session::get('filtre_invoice.location_id') : null, array('id' => 'filter-location','class' => 'form-control')) }}
                             </div>
                         </div>
                     @else
@@ -55,10 +55,10 @@
 
                         <div class="col-md-3 input-group-sm">{{ Form::text('filtre_start', Session::get('filtre_invoice.start') ? date('d/m/Y', strtotime(Session::get('filtre_invoice.start'))) : date('01/12/2014'), array('class' => 'form-control datePicker')) }}</div>
                         <div class="col-md-3 input-group-sm">{{ Form::text('filtre_end', ((Session::get('filtre_invoice.end')) ? date('d/m/Y', strtotime(Session::get('filtre_invoice.end'))) : date('t', date('m')).'/'.date('m/Y')), array('class' => 'form-control datePicker')) }}</div>
-                        <div class="col-md-3 input-group-sm">
-                            {{ Form::checkbox('filtre_unpaid', true, Session::has('filtre_invoice.filtre_unpaid') ? Session::get('filtre_invoice.filtre_unpaid') : false) }}
-                            Impayé
-                        </div>
+                            <div class="col-md-3 input-group-sm">
+                                {{ Form::checkbox('filtre_unpaid', true, Session::has('filtre_invoice.filtre_unpaid') ? Session::get('filtre_invoice.filtre_unpaid') : false) }}
+                                Impayé
+                            </div>
                         <div class="col-md-3">
                             {{ Form::submit('Filtrer', array('class' => 'btn btn-sm btn-primary')) }}
                             <a href="{{URL::route('invoice_filter_reset')}}" class="btn btn-sm btn-default">Réinitialiser</a>
@@ -117,7 +117,8 @@
                                                 {{ preg_replace("/\n.+/", '', $invoice->address) }}
                                             @endif
                                             @if ($invoice->user)
-                                                (<a href="{{ URL::route('user_modify', $invoice->user->id) }}">{{ $invoice->user->fullname }}</a>
+                                                (
+                                                <a href="{{ URL::route('user_modify', $invoice->user->id) }}">{{ $invoice->user->fullname }}</a>
                                                 <a href="?filtre_submitted=1&filtre_user_id={{ $invoice->user->id }}"><i
                                                             class="fa fa-filter"></i></a>)
                                             @endif
@@ -249,7 +250,7 @@
 
             @foreach ($invoices as $invoice)
 
-    $('#stripe{{$invoice->id}}').on('click', function (e) {
+            $('#stripe{{$invoice->id}}').on('click', function (e) {
 
                 e.preventDefault();
 
@@ -274,9 +275,9 @@
             });
 
             $('.datePicker').datepicker();
-            $('#filter-client').select2();
-            $('#filter-organisation').select2();
-            $('#filter-location').select2();
+            $('#filter-organisation').select2({placeholder: 'Sélectionnez une société', allowClear: true});
+            $('#filter-client').select2({placeholder: 'Sélectionnez un client', allowClear: true});
+            $('#filter-location').select2({placeholder: 'Sélectionnez un espace', allowClear: true});
         });
     </script>
 @stop

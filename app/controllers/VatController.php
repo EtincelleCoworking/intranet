@@ -63,7 +63,6 @@ class VatController extends BaseController
 
         krsort($overview);
 
-
         return View::make('vat.overview', array('paid' => $paid, 'received' => $received,
             'sum' => $sum,
             'overview' => $overview,

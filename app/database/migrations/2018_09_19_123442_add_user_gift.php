@@ -101,13 +101,7 @@ class AddUserGift extends Migration
         $kind->code = GiftKind::PHOTOSHOOT;
         $kind->description = 'Shooting Photo';
         $kind->save();
-
-        $user_gift = new UserGift();
-        $user_gift->kind_id = $kind->id;
-        $user_gift->user_id = Auth::id();
-        $user_gift->save();
-
-    }
+        }
 
     /**
      * Reverse the migrations.

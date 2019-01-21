@@ -96,9 +96,9 @@
                             @foreach($items as $item)
                                 <tr>
                                     @if (Auth::user()->isSuperAdmin())
-                                        <th>
+                                        <td>
                                             {{ Form::checkbox('items[]', $item->id, false, array('class' => 'check')) }}
-                                        </th>
+                                        </td>
                                         <td>
                                             <a href="{{ route('user_modify', $item->booking->user->id) }}">{{ $item->booking->user->fullname }}</a>
                                             <a href="?filtre_submitted=1&filtre_user_id={{ $item->booking->user->id }}"><i

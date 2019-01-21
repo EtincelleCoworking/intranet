@@ -75,7 +75,7 @@ class ImportUsersFromSkeddaCommand extends Command
                             Mail::send('emails.skedda-migration', array('user' => $user), function($m) use ($user)
                             {
                                 $m->from($_ENV['mail_address'], $_ENV['mail_name'])
-                                    ->bcc($_ENV['mail_address'], $_ENV['mail_name'])
+                                    ->bcc($_ENV['mail_bcc'])
                                     ->to($user->email, $user->fullname)
                                     ->subject(sprintf('%s - Outil de réservation de salles', $_ENV['organisation_name']));
 
