@@ -84,7 +84,7 @@ return array(
 
     'key' => $_ENV['key_secure'],
 
-    'cipher' => 'AES-128-CBC',
+    'cipher' => MCRYPT_RIJNDAEL_256,
 
     /*
     |--------------------------------------------------------------------------
