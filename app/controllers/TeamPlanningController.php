@@ -458,3 +458,4 @@ class TeamPlanningController extends BaseController
         return Redirect::route('planning_list')->with('mSuccess', 'Ce planning a bien été supprimé');
     }
 }
+
