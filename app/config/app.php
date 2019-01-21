@@ -131,7 +131,7 @@ return array(
         'Bkwld\Croppa\ServiceProvider',
         'Maatwebsite\Excel\ExcelServiceProvider',
         //'Sentry\SentryLaravel\SentryLaravelServiceProvider',
-        \Tomgrohl\Laravel\Encryption\EncryptionServiceProvider::class,
+        //\Tomgrohl\Laravel\Encryption\EncryptionServiceProvider::class,
 
         'Etincelle\Booking\BookingServiceProvider',
         'Etincelle\Sensor\SensorServiceProvider',
