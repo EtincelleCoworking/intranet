@@ -110,6 +110,7 @@ class Location extends Eloquent
                 '2018-09' => 17685 + 4480 - 1080, // Julie partiel
                 '2018-10' => 17405 + 4480,
                 '2018-11' => 17405 + 4480 + 600, // Suayip
+                '2018-12' => 17405 + 4480 + 600 + 815, // Suayip + Albert 1er
             ),
             //'Toulouse > Espace W' => array(),
             'Alsace Lorraine' => array(
