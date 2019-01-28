@@ -7,7 +7,11 @@
             <div class="row">
                 <div class="col-lg-4 col-md-4 col-sm-6 col-xs-6">
                     @include('partials.member.component')
-                    @include('partials.slack')
+                    @if (Auth::user()->isSuperAdmin())
+                        @include('partials.intercom')
+                    @else
+                        @include('partials.slack')
+                    @endif
                 </div>
                 <div class="col-lg-4 col-md-4 col-sm-6 col-xs-6">
                     @include('partials.checkin.availability')
