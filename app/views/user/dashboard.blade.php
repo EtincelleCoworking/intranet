@@ -56,6 +56,37 @@
     <?php ; ?>
     {{ HTML::script('js/jquery.waypoints.min.js') }}
     {{ HTML::script('js/infinite.min.js') }}
+
+    @if (Auth::user()->isSuperAdmin())
+        <script type="application/javascript">
+            function updateIntercomStatus(widget, uri) {
+                $.get(uri, function (data) {
+                    if ('Yes' == data) {
+                        $(widget)
+                            .removeClass('label-danger')
+                            .addClass('label-success')
+                            .text('OK');
+                    } else {
+                        $(widget)
+                            .removeClass('label-success')
+                            .addClass('label-danger')
+                            .text('KO');
+                    }
+                });
+            }
+
+            $(function () {
+                @foreach(Config::get('etincelle.intercoms') as $key => $data)
+                setInterval(function () {
+                    updateIntercomStatus('#intercom-{{$key}}', '{{$data['uri']}}')
+                }, 60000);
+
+                updateIntercomStatus('#intercom-{{$key}}', '{{$data['uri']}}');
+                @endforeach
+            });
+        </script>
+    @endif
+
 @stop
 
 
