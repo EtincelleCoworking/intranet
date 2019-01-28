@@ -64,13 +64,13 @@
                     if ('Yes' == data) {
                         $(widget)
                             .removeClass('label-danger')
-                            .addClass('label-success')
-                            .text('OK');
+                            .addClass('label-primary')
+                            .html('OK');
                     } else {
                         $(widget)
                             .removeClass('label-success')
                             .addClass('label-danger')
-                            .text('KO');
+                            .html('KO');
                     }
                 });
             }
