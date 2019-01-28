@@ -7,7 +7,7 @@
             @foreach(Config::get('etincelle.intercoms') as $key => $data)
                 <tr>
                     <td width="40">
-                        <div id="intercom-{{$key}}" class="label label-danger">KO</div>
+                        <div id="intercom-{{$key}}" class="label"></div>
                     </td>
                     <td>
                         {{$data['name']}}
