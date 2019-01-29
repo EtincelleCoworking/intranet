@@ -612,8 +612,8 @@ order by invoices.date_invoice desc
         $slack = new Slack($_ENV['slack_token']);
         $json = $slack->call('users.admin.invite', $fields);
 
-        if (false == $json->ok) {
-            return sprintf('Erreur: %s', $json->error);
+        if (false == $json['ok']) {
+            return sprintf('Erreur: %s', $json['error']);
         }
 
         $user->slack_invite_sent_at = new \DateTime();
