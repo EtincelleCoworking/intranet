@@ -532,6 +532,8 @@ class ApiController extends BaseController
         $result = new Response();
         $result->headers->set('Content-Type', 'application/json');
         $result->headers->set('Access-Control-Allow-Origin', '*');
+        $result->headers->set('Access-Control-Allow-Methods', 'GET');
+        $result->headers->set('Access-Control-Allow-Headers', 'Origin, Content-Type, X-Auth-Token');
         $result->setContent(json_encode($data));
         return $result;
     }
