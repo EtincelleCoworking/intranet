@@ -11,15 +11,19 @@
 |
 */
 
-App::before(function($request)
-{
-	//
+App::before(function ($request) {
+    if ($_SERVER['REQUEST_METHOD'] === 'OPTIONS') {
+        header('Access-Control-Allow-Origin: *');
+        header('Allow: GET, POST, OPTIONS');
+        header('Access-Control-Allow-Headers: Origin, Content-Type, Accept, Authorization, X-Request-With, X-CSRF-TOKEN');
+        header('Access-Control-Allow-Credentials: true');
+        exit;
+    }
 });
 
 
-App::after(function($request, $response)
-{
-	//
+App::after(function ($request, $response) {
+//
 });
 
 /*
@@ -33,55 +37,39 @@ App::after(function($request, $response)
 |
 */
 
-Route::filter('auth', function()
-{
-	if (Auth::guest())
-	{
-		if (Request::ajax())
-		{
-			return Response::make('Unauthorized', 401);
-		}
-		else
-		{
-			return Redirect::guest('login');
-		}
-	}
-});
-
-Route::filter('member', function()
-{
-    if (Auth::guest())
-    {
-        return Redirect::guest('login');
-    }
-    else
-    {
-        if (!User::getRoles('member'))
-        {
+Route::filter('auth', function () {
+    if (Auth::guest()) {
+        if (Request::ajax()) {
+            return Response::make('Unauthorized', 401);
+        } else {
             return Redirect::guest('login');
         }
     }
 });
 
-Route::filter('superadmin', function()
-{
-    if (Auth::guest())
-    {
+Route::filter('member', function () {
+    if (Auth::guest()) {
         return Redirect::guest('login');
+    } else {
+        if (!User::getRoles('member')) {
+            return Redirect::guest('login');
+        }
     }
-    else
-    {
-        if (!User::getRoles('superadmin'))
-        {
+});
+
+Route::filter('superadmin', function () {
+    if (Auth::guest()) {
+        return Redirect::guest('login');
+    } else {
+        if (!User::getRoles('superadmin')) {
             return Redirect::guest('login');
         }
     }
 });
 
 
-Route::filter('auth.basic', function()
-{
-	return Auth::basic();
+Route::filter('auth.basic', function () {
+    return Auth::basic();
 });
 
 /*
@@ -95,9 +83,8 @@ Route::filter('auth.basic', function()
 |
 */
 
-Route::filter('guest', function()
-{
-	if (Auth::check()) return Redirect::to('/');
+Route::filter('guest', function () {
+    if (Auth::check()) return Redirect::to('/');
 });
 
 /*
@@ -111,10 +98,8 @@ Route::filter('guest', function()
 |
 */
 
-Route::filter('csrf', function()
-{
-	if (Session::token() !== Input::get('_token'))
-	{
-		throw new Illuminate\Session\TokenMismatchException;
-	}
+Route::filter('csrf', function () {
+    if (Session::token() !== Input::get('_token')) {
+        throw new Illuminate\Session\TokenMismatchException;
+    }
 });
