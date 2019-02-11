@@ -103,7 +103,7 @@ class ApiController extends BaseController
 
         $users = array();
         foreach (User::whereIn('email', $emails)->get() as $user) {
-            $users[$user->email] = $user;
+            $users[strtolower($user->email)] = $user;
         }
         // var_dump(array_keys($devices));
         $notified_users = array();
@@ -153,6 +153,7 @@ class ApiController extends BaseController
                         $device->ip = $item['ip'];
                     }
                     if (isset($item['email'])) {
+                        $item['email'] = strtolower($item['email']);
                         if (isset($users[$item['email']])) {
                             $device->user_id = $users[$item['email']]->id;
                         } else {
@@ -164,7 +165,8 @@ class ApiController extends BaseController
                 }
                 if (isset($devices[$item['mac']])) {
                     $device = $devices[$item['mac']];
-                    if (isset($item['email']) && empty($device->user_id)) {
+                    if (isset($item['email'])/* && empty($device->user_id)*/) {
+                        $item['email'] = strtolower($item['email']);
                         if (isset($users[$item['email']])) {
                             $device->user_id = $users[$item['email']]->id;
                             $device->save();
