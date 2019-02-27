@@ -34,7 +34,7 @@ class TeamPlanningController extends BaseController
 
         //TeamPlanningItem::truncate();
         //region Jehanne
-
+/*
         $ranges = array('08:15' => '11:00', '13:30' => '15:00');
         $days = array(1, 2, 3, 4, 5);
         $now = mktime(0, 0, 0, 3, 2, 2019);
@@ -47,6 +47,32 @@ class TeamPlanningController extends BaseController
                         $item = new TeamPlanningItem();
                         $item->user_id = 2410;
                         $item->location_id = 1;
+                        $item->start_at = $_now . ' ' . $start_time;
+                        $item->end_at = $_now . ' ' . $end_time;
+                        $item->save();
+                        print_r($item);
+                    }
+                }
+            }
+            $now = strtotime('+1 day', $now);
+        }
+*/
+        //endregion
+
+        //region Lyne
+
+        $ranges = array('08:00' => '10:30', '12:15' => '14:15', '15:15' => '17:45');
+        $days = array(1, 2, 3, 4, 5);
+        $now = mktime(0, 0, 0, 2, 26, 2019);
+        $ends = mktime(0, 0, 0, 8, 5, 2019);
+        while ($now <= $ends) {
+            if (in_array(date('N', $now), $days) && !Utils::isFerian(date('Y-m-d', $now))) {
+                foreach ($ranges as $start_time => $end_time) {
+                    $_now = date('Y-m-d', $now);
+                    if (!Utils::isFerian($_now)) {
+                        $item = new TeamPlanningItem();
+                        $item->user_id = 2951;
+                        $item->location_id = 8;
                         $item->start_at = $_now . ' ' . $start_time;
                         $item->end_at = $_now . ' ' . $end_time;
                         $item->save();
