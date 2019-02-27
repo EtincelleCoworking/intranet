@@ -230,6 +230,12 @@ class TeamPlanningController extends BaseController
             'background' => '#A6F94D',
             'border' => adjustBrightness('#A6F94D', -32),
         );
+        $colors[2951] = array( // Lyne
+            'text' => '#ffffff',
+            'background' => '#EE1717',
+            'border' => adjustBrightness('#EE1717', -32),
+        );
+
         return $colors;
     }
 
