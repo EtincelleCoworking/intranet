@@ -202,38 +202,38 @@ class TeamPlanningController extends BaseController
         $colors = array();
         $colors[1] = array( // Sébastien
             'text' => '#000000',
-            'background' => '#FFD800',
-            'border' => adjustBrightness('#FFD800', -32),
+            'background' => '#A4C400',
+            'border' => adjustBrightness('#A4C400', -32),
         );
         $colors[877] = array( // Aurélie
             'text' => '#ffffff',
-            'background' => '#FF9400',
-            'border' => adjustBrightness('#FF9400', -32),
+            'background' => '#00ABA9',
+            'border' => adjustBrightness('#00ABA9', -32),
         );
         $colors[1474] = array( // Caroline
             'text' => '#ffffff',
-            'background' => '#EE1717',
-            'border' => adjustBrightness('#EE1717', -32),
+            'background' => '#0050EF',
+            'border' => adjustBrightness('#0050EF', -32),
         );
         $colors[2410] = array( // Jehanne
             'text' => '#ffffff',
-            'background' => '#EE1717',
-            'border' => adjustBrightness('#EE1717', -32),
+            'background' => '#AA00FF',
+            'border' => adjustBrightness('#AA00FF', -32),
         );
         $colors[2414] = array( // Julie
             'text' => '#ffffff',
-            'background' => '#12ADC9',
-            'border' => adjustBrightness('#12ADC9', -32),
+            'background' => '#FA6800',
+            'border' => adjustBrightness('#FA6800', -32),
         );
         $colors[2648] = array( // Suayip
             'text' => '#000000',
-            'background' => '#A6F94D',
-            'border' => adjustBrightness('#A6F94D', -32),
+            'background' => '#E3C800',
+            'border' => adjustBrightness('#E3C800', -32),
         );
         $colors[2951] = array( // Lyne
             'text' => '#ffffff',
-            'background' => '#EE1717',
-            'border' => adjustBrightness('#EE1717', -32),
+            'background' => '#6D8764',
+            'border' => adjustBrightness('#6D8764', -32),
         );
 
         return $colors;
