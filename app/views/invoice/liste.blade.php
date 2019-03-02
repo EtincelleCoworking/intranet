@@ -39,13 +39,13 @@
                     @if (Auth::user()->isSuperAdmin())
                         <div class="row">
                             <div class="col-md-4">
-                                {{ Form::select('filtre_organisation_id', Organisation::SelectAll(null), Session::get('filtre_invoice.organisation_id') ? Session::get('filtre_invoice.organisation_id') : null, array('id' => 'filter-organisation','class' => 'form-control')) }}
+                                {{ Form::select('filtre_organisation_id', Organisation::SelectAll('Organisation'), Session::get('filtre_invoice.organisation_id') ? Session::get('filtre_invoice.organisation_id') : null, array('id' => 'filter-organisation','class' => 'form-control')) }}
                             </div>
                             <div class="col-md-4">
-                                {{ Form::select('filtre_user_id', User::Select(null), Session::get('filtre_invoice.user_id') ? Session::get('filtre_invoice.user_id') : null, array('id' => 'filter-client','class' => 'form-control')) }}
+                                {{ Form::select('filtre_user_id', User::Select('Utilisateur'), Session::get('filtre_invoice.user_id') ? Session::get('filtre_invoice.user_id') : null, array('id' => 'filter-client','class' => 'form-control')) }}
                             </div>
                             <div class="col-md-4">
-                                {{ Form::select('filtre_location_id', Location::SelectAll(null, true), Session::get('filtre_invoice.location_id') ? Session::get('filtre_invoice.location_id') : null, array('id' => 'filter-location','class' => 'form-control')) }}
+                                {{ Form::select('filtre_location_id', Location::SelectAll('Site', true), Session::get('filtre_invoice.location_id') ? Session::get('filtre_invoice.location_id') : null, array('id' => 'filter-location','class' => 'form-control')) }}
                             </div>
                         </div>
                     @else
