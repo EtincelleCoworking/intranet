@@ -123,7 +123,7 @@ class Location extends Eloquent
                 '2018-02' => 6300,
                 '2018-08' => 5075, // - Caroline - Ménage
                 '2018-09' => 6300,
-                '2019-02' => 7785, // Lyne
+                '2019-02' => 8635, // Lyne
             ),
         );
         $periods = array();
