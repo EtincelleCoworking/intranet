@@ -15,8 +15,7 @@ class Invoice extends Eloquent
 
     public function scopeInvoiceOnly($query)
     {
-        return $query->whereType('F')
-            //->whereNull('date_canceled')
+        return $query->whereType('F')//->whereNull('date_canceled')
             ;
     }
 
@@ -133,9 +132,16 @@ class Invoice extends Eloquent
         $total = 0;
 
         if ($this->items) {
+            $rates = array();
             /** @var InvoiceItem $value */
             foreach ($this->items as $key => $value) {
-                $total += $value->amount * (1 + $value->vat->value / 100);;
+                if (!isset($rates[$value->vat->value])) {
+                    $rates[$value->vat->value] = 0;
+                }
+                $rates[$value->vat->value] += $value->amount;
+            }
+            foreach ($rates as $rate => $amount) {
+                $total += $amount * (1 + $rate / 100);
             }
         }
 
