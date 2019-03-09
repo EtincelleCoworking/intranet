@@ -15,8 +15,7 @@ class Invoice extends Eloquent
 
     public function scopeInvoiceOnly($query)
     {
-        return $query->whereType('F')
-            //->whereNull('date_canceled')
+        return $query->whereType('F')//->whereNull('date_canceled')
             ;
     }
 
@@ -133,9 +132,16 @@ class Invoice extends Eloquent
         $total = 0;
 
         if ($this->items) {
+            $rates = array();
             /** @var InvoiceItem $value */
             foreach ($this->items as $key => $value) {
-                $total += $value->amount * (1 + $value->vat->value / 100);;
+                if (!isset($rates[$value->vat->value])) {
+                    $rates[$value->vat->value] = 0;
+                }
+                $rates[$value->vat->value] += $value->amount;
+            }
+            foreach ($rates as $rate => $amount) {
+                $total += $amount * (1 + $rate / 100);
             }
         }
 
@@ -178,8 +184,16 @@ class Invoice extends Eloquent
         $total = 0;
 
         if ($items) {
+            $rates = array();
+            /** @var InvoiceItem $value */
             foreach ($items as $key => $value) {
-                $total += $value->amount * (1 + $value->vat->value / 100);
+                if (!isset($rates[$value->vat->value])) {
+                    $rates[$value->vat->value] = 0;
+                }
+                $rates[$value->vat->value] += $value->amount;
+            }
+            foreach ($rates as $rate => $amount) {
+                $total += $amount * (1 + $rate / 100);
             }
         }
 
@@ -293,23 +307,12 @@ class Invoice extends Eloquent
                                         </thead>
                                         <tbody>';
         $vats = array();
-        $vat_total = array(
-            'ht' => 0,
-            'vat' => 0
-        );
+
         foreach ($this->items as $item) {
-            if (!array_key_exists($item->vat->id, $vats)) {
-                $vats[$item->vat->id] = array(
-                    'base' => 0,
-                    'montant' => 0,
-                    'taux' => $item->vat->value
-                );
+            if (!isset($vats[$item->vat->value])) {
+                $vats[$item->vat->value] = 0;
             }
-            $vats[$item->vat->id]['base'] += $item->amount;
-            $calc_vat = round((($item->amount * $item->vat->value) / 100), 2);
-            $vats[$item->vat->id]['montant'] += $calc_vat;
-            $vat_total['ht'] += $item->amount;
-            $vat_total['vat'] += $calc_vat;
+            $vats[$item->vat->value] += $item->amount;
             if ($item->ressource_id) {
 
                 $html .= '
@@ -328,6 +331,12 @@ class Invoice extends Eloquent
                                             </tr>
                                             ';
             }
+        }
+        $total_ht = 0;
+        $total_taxes = 0;
+        foreach ($vats as $vat => $amount) {
+            $total_ht += $amount;
+            $total_taxes += $vat / 100 * $amount;
         }
         $html .= '
                                         </tbody>
@@ -354,12 +363,12 @@ class Invoice extends Eloquent
                                                             </tr>
                                                         </thead>
                                                         <tbody>';
-            foreach ($vats as $vat) {
+            foreach ($vats as $vat => $amount) {
                 $html .= '
                                                                 <tr>
-                                                                    <td style="text-align:right">' . sprintf('%0.2f', $vat['taux']) . '%</td>
-                                                                    <td style="text-align:right">' . sprintf('%0.2f', $vat['base']) . '€</td>
-                                                                    <td style="text-align:right">' . sprintf('%0.2f', $vat['montant']) . '€</td>
+                                                                    <td style="text-align:right">' . sprintf('%0.2f', $vat) . '%</td>
+                                                                    <td style="text-align:right">' . sprintf('%0.2f', $amount) . '€</td>
+                                                                    <td style="text-align:right">' . sprintf('%0.2f', $vat / 100 * $amount) . '€</td>
                                                                 </tr>
                                                             ';
             }
@@ -374,15 +383,16 @@ class Invoice extends Eloquent
                                                         <tbody>
                                                             <tr>
                                                                 <th style="width: 60%; text-align:left; border-right:1px solid #666;" width="50%">Total HT</th>
-                                                                <td style="padding-left:5px; text-align:right; border-bottom:1px dashed #666" width="50%">' . sprintf('%0.2f', $vat_total['ht']) . '€</td>
+                                                                <td style="padding-left:5px; text-align:right; border-bottom:1px dashed #666" width="50%">' . sprintf('%0.2f', array_sum($vats)) . '€</td>
                                                             </tr>
+                                                            
                                                             <tr>
                                                                 <th style="text-align:left; border-right:1px solid #666;">Montant TVA</th>
-                                                                <td style="padding-left:5px; text-align:right; border-bottom:1px dashed #666">' . sprintf('%0.2f', $vat_total['vat']) . '€</td>
+                                                                <td style="padding-left:5px; text-align:right; border-bottom:1px dashed #666">' . sprintf('%0.2f', $total_ht) . '€</td>
                                                             </tr>
                                                             <tr>
                                                                 <th style="text-align:left; border-right:1px solid #666;">Total TTC</th>
-                                                                <td style="padding-left:5px; text-align:right;">' . sprintf('%0.2f', ($vat_total['ht'] + $vat_total['vat'])) . '€</td>
+                                                                <td style="padding-left:5px; text-align:right;">' . sprintf('%0.2f', $total_ht + $total_taxes) . '€</td>
                                                             </tr>
                                                         </tbody>
                                                     </table>
