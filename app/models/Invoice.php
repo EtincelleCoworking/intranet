@@ -383,12 +383,12 @@ class Invoice extends Eloquent
                                                         <tbody>
                                                             <tr>
                                                                 <th style="width: 60%; text-align:left; border-right:1px solid #666;" width="50%">Total HT</th>
-                                                                <td style="padding-left:5px; text-align:right; border-bottom:1px dashed #666" width="50%">' . sprintf('%0.2f', array_sum($vats)) . '€</td>
+                                                                <td style="padding-left:5px; text-align:right; border-bottom:1px dashed #666" width="50%">' . sprintf('%0.2f', $total_ht) . '€</td>
                                                             </tr>
                                                             
                                                             <tr>
                                                                 <th style="text-align:left; border-right:1px solid #666;">Montant TVA</th>
-                                                                <td style="padding-left:5px; text-align:right; border-bottom:1px dashed #666">' . sprintf('%0.2f', $total_ht) . '€</td>
+                                                                <td style="padding-left:5px; text-align:right; border-bottom:1px dashed #666">' . sprintf('%0.2f', $total_taxes) . '€</td>
                                                             </tr>
                                                             <tr>
                                                                 <th style="text-align:left; border-right:1px solid #666;">Total TTC</th>
