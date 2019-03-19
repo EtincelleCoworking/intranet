@@ -345,10 +345,7 @@ class InvoiceController extends BaseController
     public function print_pdf($id)
     {
         /** @var Invoice $invoice */
-        $invoice = $this->dataExist($id, 'invoice_list');
-
-
-        //echo $invoice->getPdfHtml();exit;
+        $invoice = Invoice::find($id);
 
         $pdf = App::make('snappy.pdf.wrapper');
         $pdf->loadHTML($invoice->getPdfHtml());
