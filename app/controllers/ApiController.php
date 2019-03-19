@@ -432,6 +432,7 @@ class ApiController extends BaseController
             'occurs_at' => $invoice->date_invoice,
             'paid_at' => $invoice->date_payment,
             'update_url' => route('invoice_modify', $invoice->id),
+            'pdf_url' => route('invoice_print_pdf', $invoice->id),
             'customer' => array(
                 'id' => $invoice->organisation_id,
                 'name' => $invoice->organisation_id ? $invoice->organisation->name : preg_replace("/\n.+/", '', $invoice->address),

@@ -43,6 +43,9 @@ Route::post('/phonebox/{location_slug}/{key}/{box_id}/auth', array('as' => 'phon
 Route::post('/phonebox/{location_slug}/{key}/{box_id}/update', array('as' => 'phonebox_update', 'uses' => 'PhoneBoxController@update'));
 Route::post('/phonebox/{location_slug}/{key}/{box_id}/stop', array('as' => 'phonebox_stop', 'uses' => 'PhoneBoxController@stop'));
 
+Route::get('/invoice/{id}/print/pdf', array('as' => 'invoice_print_pdf', 'uses' => 'InvoiceController@print_pdf'))->where(array('id' => '[0-9]+'));
+
+
 Route::group(['before' => 'member'], function() {
     Route::get('/profile/{id}', array('as' => 'user_profile', 'uses' => 'UserController@profile'))->where(array('id' => '[0-9]+'));
 //    Route::get('/users/directory', array('as' => 'user_directory', 'uses' => 'UserController@directory'));
@@ -78,7 +81,6 @@ Route::group(['before' => 'member'], function() {
     Route::get('/invoices/reset-filter', array('as' => 'invoice_filter_reset', 'uses' => 'InvoiceController@cancelFilter'));
     Route::post('/invoices', array('as' => 'invoice_list', 'uses' => 'InvoiceController@invoiceList'));
     Route::get('/quotes/{filtre}', array('as' => 'quote_list', 'uses' => 'InvoiceController@quoteList'));
-    Route::get('/invoice/{id}/print/pdf', array('as' => 'invoice_print_pdf', 'uses' => 'InvoiceController@print_pdf'))->where(array('id' => '[0-9]+'));
     Route::post('/invoice/stripe/{id}', array('as' => 'invoice_stripe', 'uses' => 'InvoiceController@stripe'))->where(array('id' => '[0-9]+'));
 
     Route::post('/wall/add', array('as' => 'wall_add_check', 'uses' => 'WallPostController@add_check'));
