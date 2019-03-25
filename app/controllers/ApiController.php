@@ -433,10 +433,8 @@ class ApiController extends BaseController
             'paid_at' => $invoice->date_payment,
             'update_url' => route('invoice_modify', $invoice->id),
             'pdf_url' => route('invoice_print_pdf', $invoice->id),
-            'customer' => array(
-                'id' => $invoice->organisation_id,
-                'name' => $invoice->organisation_id ? $invoice->organisation->name : preg_replace("/\n.+/", '', $invoice->address),
-            )
+            'customer' =>
+                $invoice->organisation_id ? $this->getOrganisationJson($invoice->organisation) : $this->getOrganisationJsonFromInvoice($invoice)
         );
     }
 
@@ -501,7 +499,12 @@ class ApiController extends BaseController
                 }
             }
         }
-        $invoices = $invoices->with('items')->with('organisation')->get();
+        $invoices = $invoices
+            ->with('items')
+            ->with('organisation')
+            ->with('organisation.country')
+            ->with('organisation.accountant')
+            ->get();
         foreach ($invoices as $invoice) {
             $data[] = $this->formatJson($invoice);
         }
@@ -541,6 +544,47 @@ class ApiController extends BaseController
         return $result;
     }
 
+    protected function getOrganisationJson($organisation)
+    {
+        $address = explode("\n", $organisation->address);
+        foreach ($address as $index => $line) {
+            $address[$index] = trim($line);
+        }
+        $line1 = array_shift($address);
+        $line2 = implode("\n", $address);
+
+        return array(
+            'id' => $organisation->id,
+            'name' => $organisation->name,
+            'address_line1' => $line1,
+            'address_line2' => $line2,
+            'address_postalcode' => $organisation->zipcode,
+            'address_city' => $organisation->city,
+            'address_country' => $organisation->country->name,
+            'contact_name' => $organisation->accountant ? $organisation->accountant->fullname : '',
+            'contact_email' => $organisation->accountant ? $organisation->accountant->email : '',
+        );
+    }
+
+    protected function getOrganisationJsonFromInvoice($invoice)
+    {
+        $address = explode("\n", $invoice->address);
+        foreach ($address as $index => $line) {
+            $address[$index] = trim($line);
+        }
+
+        return array(
+            'id' => null,
+            'name' => array_shift($address),
+            'address_line1' => array_shift($address),
+            'address_line2' => array_shift($address),
+            'address_postalcode' => null,
+            'address_city' => array_shift($address),
+            'address_country' => null,
+            'contact_name' => $invoice->user_id ? $invoice->user->fullname : '',
+            'contact_email' => $invoice->user_id ? $invoice->user->email : '',
+        );
+    }
 
     public function customer($id)
     {
@@ -549,10 +593,7 @@ class ApiController extends BaseController
         $result = new Response();
         $result->headers->set('Content-Type', 'application/json');
         //$result->headers->set('Access-Control-Allow-Origin', '*');
-        $result->setContent(json_encode(array(
-            'id' => $organisation->id,
-            'name' => $organisation->name,
-        )));
+        $result->setContent(json_encode($this->getOrganisationJson($organisation)));
         return $result;
     }
 }
