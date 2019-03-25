@@ -434,7 +434,7 @@ class ApiController extends BaseController
             'update_url' => route('invoice_modify', $invoice->id),
             'pdf_url' => route('invoice_print_pdf', $invoice->id),
             'customer' =>
-                $invoice->organisation_id ? $this->getOrganisationJson($invoice->organisation) : $this->getOrganisationJsonFromInvoice($invoice)
+                $invoice->organisation_id ? $this->getOrganisationJson($invoice->organisation, $invoice->user) : $this->getOrganisationJsonFromInvoice($invoice)
         );
     }
 
@@ -544,7 +544,7 @@ class ApiController extends BaseController
         return $result;
     }
 
-    protected function getOrganisationJson($organisation)
+    protected function getOrganisationJson($organisation, $user = null)
     {
         $address = explode("\n", $organisation->address);
         foreach ($address as $index => $line) {
@@ -561,8 +561,8 @@ class ApiController extends BaseController
             'address_postalcode' => $organisation->zipcode,
             'address_city' => $organisation->city,
             'address_country' => $organisation->country->name,
-            'contact_name' => $organisation->accountant ? $organisation->accountant->fullname : '',
-            'contact_email' => $organisation->accountant ? $organisation->accountant->email : '',
+            'contact_name' => $organisation->accountant ? $organisation->accountant->fullname : ($user?$user->fullname:''),
+            'contact_email' => $organisation->accountant ? $organisation->accountant->email : ($user?$user->email:''),
         );
     }
 
@@ -593,7 +593,7 @@ class ApiController extends BaseController
         $result = new Response();
         $result->headers->set('Content-Type', 'application/json');
         //$result->headers->set('Access-Control-Allow-Origin', '*');
-        $result->setContent(json_encode($this->getOrganisationJson($organisation)));
+        $result->setContent(json_encode($this->getOrganisationJson($organisation, null)));
         return $result;
     }
 }
