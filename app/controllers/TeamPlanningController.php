@@ -370,13 +370,13 @@ class TeamPlanningController extends BaseController
             );
         }
 
-        $result = new Response();
-        $result->headers->set('Content-Type', 'application/json');
-        $result->headers->set('Access-Control-Allow-Origin', '*');
-        $result->headers->set('Access-Control-Allow-Methods', 'GET');
-        $result->headers->set('Access-Control-Allow-Headers', 'Origin, Content-Type, X-Auth-Token');
-        $result->setContent(json_encode(array_values($result)));
-        return $result;
+        $response = new Response();
+        $response->headers->set('Content-Type', 'application/json');
+        $response->headers->set('Access-Control-Allow-Origin', '*');
+        $response->headers->set('Access-Control-Allow-Methods', 'GET');
+        $response->headers->set('Access-Control-Allow-Headers', 'Origin, Content-Type, X-Auth-Token');
+        $response->setContent(json_encode(array_values($result)));
+        return $response;
     }
 
 
