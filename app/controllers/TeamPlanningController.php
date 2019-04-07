@@ -341,14 +341,13 @@ class TeamPlanningController extends BaseController
 
     public function api()
     {
-        $result = array();
         $events = TeamPlanningItem::join('users', 'team_planning_item.user_id', '=', 'users.id')
             ->join('locations', 'team_planning_item.location_id', '=', 'locations.id')
             ->where('users.is_staff', true)
             ->where('is_holiday', false)
-            ->where('start_at', '<=', Input::get('end'))
-            ->where('end_at', '>=', Input::get('start'))
-            ->with('location', 'user')
+            ->where('start_at', '>=', date('Y-m-d 00:00:00'))
+            ->where('end_at', '<=', date('Y-m-d 23:59:59'))
+            ->with('location', 'location.city', 'user')
             ->select('team_planning_item.*');
 
         $result = array();
@@ -362,15 +361,14 @@ class TeamPlanningController extends BaseController
                 );
             }
 
-
             $result[$event->user_id]['timesheets'][] = array(
                 'from' => $event->start_at,
                 'to' => $event->end_at,
-                'location' => $event->location->name
+                'location' => $event->location->fullname
             );
         }
 
-        return Response::json($result);
+        return Response::json(array_values($result));
     }
 
 
