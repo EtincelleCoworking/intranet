@@ -34,29 +34,29 @@ class TeamPlanningController extends BaseController
 
         //TeamPlanningItem::truncate();
         //region Jehanne
-/*
-        $ranges = array('08:15' => '11:00', '13:30' => '15:00');
-        $days = array(1, 2, 3, 4, 5);
-        $now = mktime(0, 0, 0, 3, 2, 2019);
-        $ends = mktime(0, 0, 0, 6, 30, 2019);
-        while ($now <= $ends) {
-            if (in_array(date('N', $now), $days) && !Utils::isFerian(date('Y-m-d', $now))) {
-                foreach ($ranges as $start_time => $end_time) {
-                    $_now = date('Y-m-d', $now);
-                    if (!Utils::isFerian($_now)) {
-                        $item = new TeamPlanningItem();
-                        $item->user_id = 2410;
-                        $item->location_id = 1;
-                        $item->start_at = $_now . ' ' . $start_time;
-                        $item->end_at = $_now . ' ' . $end_time;
-                        $item->save();
-                        print_r($item);
+        /*
+                $ranges = array('08:15' => '11:00', '13:30' => '15:00');
+                $days = array(1, 2, 3, 4, 5);
+                $now = mktime(0, 0, 0, 3, 2, 2019);
+                $ends = mktime(0, 0, 0, 6, 30, 2019);
+                while ($now <= $ends) {
+                    if (in_array(date('N', $now), $days) && !Utils::isFerian(date('Y-m-d', $now))) {
+                        foreach ($ranges as $start_time => $end_time) {
+                            $_now = date('Y-m-d', $now);
+                            if (!Utils::isFerian($_now)) {
+                                $item = new TeamPlanningItem();
+                                $item->user_id = 2410;
+                                $item->location_id = 1;
+                                $item->start_at = $_now . ' ' . $start_time;
+                                $item->end_at = $_now . ' ' . $end_time;
+                                $item->save();
+                                print_r($item);
+                            }
+                        }
                     }
+                    $now = strtotime('+1 day', $now);
                 }
-            }
-            $now = strtotime('+1 day', $now);
-        }
-*/
+        */
         //endregion
 
         //region Lyne
@@ -133,68 +133,68 @@ class TeamPlanningController extends BaseController
             }
         }*/
 //endregion
-/*
-        $days = array(1, 2, 3, 4, 5);
-        $ranges = array(
-            //array('08:00' => '12:30', '13:30' => '16:00'), // AL
+        /*
+                $days = array(1, 2, 3, 4, 5);
+                $ranges = array(
+                    //array('08:00' => '12:30', '13:30' => '16:00'), // AL
 
-            array('08:00' => '12:45', '14:00' => '16:00'), // Wilson
+                    array('08:00' => '12:45', '14:00' => '16:00'), // Wilson
 
-            array('11:00' => '14:30', '15:30' => '18:45'), // Wilson, repas sur place (12h30 / 13h30), checkout AL
-        );
-        $members = array();
-        $members[] = 2414; // Julie
-        //$members[] = 1; // Sébastien
-        $members[] = 877; // Aurélie
-        $ends = mktime(0, 0, 0, 6, 30, 2019);
-        foreach ($members as $planning_index => $user_id) {
-            $now = mktime(0, 0, 0, 1, 3, 2019);
-            while ($now <= $ends) {
-                if (in_array(date('N', $now), $days)) {
+                    array('11:00' => '14:30', '15:30' => '18:45'), // Wilson, repas sur place (12h30 / 13h30), checkout AL
+                );
+                $members = array();
+                $members[] = 2414; // Julie
+                //$members[] = 1; // Sébastien
+                $members[] = 877; // Aurélie
+                $ends = mktime(0, 0, 0, 6, 30, 2019);
+                foreach ($members as $planning_index => $user_id) {
+                    $now = mktime(0, 0, 0, 1, 3, 2019);
+                    while ($now <= $ends) {
+                        if (in_array(date('N', $now), $days)) {
+                            $_now = date('Y-m-d', $now);
+                            if (!Utils::isFerian($_now)) {
+                                $range_index = $planning_index++ % count($members);
+                                foreach ($ranges[$range_index] as $start_time => $end_time) {
+                                    $item = new TeamPlanningItem();
+                                    $item->user_id = $user_id;
+                                    $item->location_id = 1; //($range_index != 0) ? 1 : 8;
+                                    $item->start_at = $_now . ' ' . $start_time;
+                                    $item->end_at = $_now . ' ' . ((($end_time == '18:45') && (date('N', $now) == 5)) ? '17:45' : $end_time);
+                                    $item->save();
+                                    print_r($item);
+                                }
+                            }
+                        }
+                        $now = strtotime('+1 day', $now);
+                    }
+                }
+                */
+        /*
+                $ranges = array('08:15' => '12:15', '13:45' => '16:45');
+                $member_index = 0;
+                $members = array();
+                $members[] = 1; // Sébastien
+                $members[] = 877; // Aurélie
+                $members[] = 1; // Sébastien
+                $members[] = 2414; // Julie
+                $ends = mktime(0, 0, 0, 6, 30, 2019);
+                $now = mktime(0, 0, 0, 1, 5, 2019);
+                while ($now <= $ends) {
                     $_now = date('Y-m-d', $now);
                     if (!Utils::isFerian($_now)) {
-                        $range_index = $planning_index++ % count($members);
-                        foreach ($ranges[$range_index] as $start_time => $end_time) {
+                        foreach ($ranges as $start_time => $end_time) {
                             $item = new TeamPlanningItem();
-                            $item->user_id = $user_id;
+                            $item->user_id = $members[$member_index % count($members)];
                             $item->location_id = 1; //($range_index != 0) ? 1 : 8;
                             $item->start_at = $_now . ' ' . $start_time;
-                            $item->end_at = $_now . ' ' . ((($end_time == '18:45') && (date('N', $now) == 5)) ? '17:45' : $end_time);
+                            $item->end_at = $_now . ' ' . $end_time;
                             $item->save();
                             print_r($item);
                         }
+                        $member_index++;
                     }
-                }
-                $now = strtotime('+1 day', $now);
-            }
-        }
-        */
-/*
-        $ranges = array('08:15' => '12:15', '13:45' => '16:45');
-        $member_index = 0;
-        $members = array();
-        $members[] = 1; // Sébastien
-        $members[] = 877; // Aurélie
-        $members[] = 1; // Sébastien
-        $members[] = 2414; // Julie
-        $ends = mktime(0, 0, 0, 6, 30, 2019);
-        $now = mktime(0, 0, 0, 1, 5, 2019);
-        while ($now <= $ends) {
-            $_now = date('Y-m-d', $now);
-            if (!Utils::isFerian($_now)) {
-                foreach ($ranges as $start_time => $end_time) {
-                    $item = new TeamPlanningItem();
-                    $item->user_id = $members[$member_index % count($members)];
-                    $item->location_id = 1; //($range_index != 0) ? 1 : 8;
-                    $item->start_at = $_now . ' ' . $start_time;
-                    $item->end_at = $_now . ' ' . $end_time;
-                    $item->save();
-                    print_r($item);
-                }
-                $member_index++;
-            }
-            $now = strtotime('+7 day', $now);
-        }*/
+                    $now = strtotime('+7 day', $now);
+                }*/
     }
 
     protected function getColors()
@@ -335,6 +335,41 @@ class TeamPlanningController extends BaseController
                 'resourceId' => $location_id,
             );
         }
+        return Response::json($result);
+    }
+
+
+    public function api()
+    {
+        $result = array();
+        $events = TeamPlanningItem::join('users', 'team_planning_item.user_id', '=', 'users.id')
+            ->join('locations', 'team_planning_item.location_id', '=', 'locations.id')
+            ->where('users.is_staff', true)
+            ->where('is_holiday', false)
+            ->where('start_at', '<=', Input::get('end'))
+            ->where('end_at', '>=', Input::get('start'))
+            ->with('location', 'user')
+            ->select('team_planning_item.*');
+
+        $result = array();
+
+        foreach ($events->get() as $event) {
+            if (!isset($result[$event->user_id])) {
+                $result[$event->user_id] = array(
+                    'name' => $event->user->fullname,
+                    'picture' => $event->user->avatarUrl,
+                    'timesheets' => array()
+                );
+            }
+
+
+            $result[$event->user_id]['timesheets'][] = array(
+                'from' => $event->start_at,
+                'to' => $event->end_at,
+                'location' => $event->location->name
+            );
+        }
+
         return Response::json($result);
     }
 

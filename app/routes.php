@@ -32,6 +32,7 @@ Route::get('/api/1.0/users', array('as' => 'api_users', 'uses' => 'ApiRocksContr
 Route::get('/api/1.0/cities', array('as' => 'api_cities', 'uses' => 'ApiRocksController@cities'));
 Route::get('/api/1.0/jobs', array('as' => 'api_jobs', 'uses' => 'ApiRocksController@jobs'));
 Route::get('/api/1.0/user/{user_slug}', array('as' => 'api_users', 'uses' => 'ApiRocksController@user'));
+Route::get('/api/1.0/planning', array('as' => 'api_users', 'uses' => 'TeamPlanningController@api'));
 
 Route::get('/login', array('as' => 'user_login', 'uses' => 'UserController@login'));
 Route::post('/login_check', array('before' => 'csrf', 'as' => 'user_login_check', 'uses' => 'UserController@login_check'));
