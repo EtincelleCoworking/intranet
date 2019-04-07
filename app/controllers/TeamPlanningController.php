@@ -1,7 +1,9 @@
 <?php
 
+use Illuminate\Http\Response;
+
 /**
- * Cashflow Controller
+ * TeamPlanningController Controller
  */
 class TeamPlanningController extends BaseController
 {
@@ -368,7 +370,13 @@ class TeamPlanningController extends BaseController
             );
         }
 
-        return Response::json(array_values($result));
+        $result = new Response();
+        $result->headers->set('Content-Type', 'application/json');
+        $result->headers->set('Access-Control-Allow-Origin', '*');
+        $result->headers->set('Access-Control-Allow-Methods', 'GET');
+        $result->headers->set('Access-Control-Allow-Headers', 'Origin, Content-Type, X-Auth-Token');
+        $result->setContent(json_encode(array_values($result)));
+        return $result;
     }
 
 
