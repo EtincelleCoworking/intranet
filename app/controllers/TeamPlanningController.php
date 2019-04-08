@@ -1,7 +1,5 @@
 <?php
 
-use Illuminate\Http\Response;
-
 /**
  * TeamPlanningController Controller
  */
