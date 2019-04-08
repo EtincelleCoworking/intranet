@@ -368,8 +368,11 @@ class TeamPlanningController extends BaseController
                 'location' => $event->location->name
             );
         }
-
-        return Response::json(array_values($result));
+        $response = Response::json(array_values($result));
+        $response->header('Access-Control-Allow-Origin', '*');
+        $response->header('Access-Control-Allow-Methods', 'GET');
+        $response->header('Access-Control-Allow-Headers', 'Origin, Content-Type, X-Auth-Token');
+        return $response;
     }
 
 
