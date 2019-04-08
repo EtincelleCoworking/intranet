@@ -349,7 +349,8 @@ class TeamPlanningController extends BaseController
             ->where('is_holiday', false)
             ->where('start_at', '>=', date('Y-m-d 00:00:00'))
             ->where('end_at', '<=', date('Y-m-d 23:59:59'))
-            ->with('location', 'location.city', 'user')
+            ->with('location', 'user')
+            ->orderBy('start_at', 'ASC')
             ->select('team_planning_item.*');
 
         $result = array();
@@ -366,17 +367,11 @@ class TeamPlanningController extends BaseController
             $result[$event->user_id]['timesheets'][] = array(
                 'from' => $event->start_at,
                 'to' => $event->end_at,
-                'location' => $event->location->fullname
+                'location' => $event->location->name
             );
         }
 
-        $response = new Response();
-        $response->headers->set('Content-Type', 'application/json');
-        $response->headers->set('Access-Control-Allow-Origin', '*');
-        $response->headers->set('Access-Control-Allow-Methods', 'GET');
-        $response->headers->set('Access-Control-Allow-Headers', 'Origin, Content-Type, X-Auth-Token, X-Requested-With');
-        $response->setContent(json_encode(array_values($result)));
-        return $response;
+        return Response::json(array_values($result));
     }
 
 
