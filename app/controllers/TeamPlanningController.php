@@ -374,7 +374,7 @@ class TeamPlanningController extends BaseController
         $response->headers->set('Content-Type', 'application/json');
         $response->headers->set('Access-Control-Allow-Origin', '*');
         $response->headers->set('Access-Control-Allow-Methods', 'GET');
-        $response->headers->set('Access-Control-Allow-Headers', 'Origin, Content-Type, X-Auth-Token');
+        $response->headers->set('Access-Control-Allow-Headers', 'Origin, Content-Type, X-Auth-Token, X-Requested-With');
         $response->setContent(json_encode(array_values($result)));
         return $response;
     }
