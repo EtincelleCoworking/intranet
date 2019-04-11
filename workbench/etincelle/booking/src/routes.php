@@ -8,6 +8,7 @@ Route::get('/api/booking/{booking_item_id}/members', array('as' => 'api_booking_
 Route::get('/api/booking/{booking_item_id}/register/{user_id?}', array('as' => 'api_booking_register', 'uses' => 'BookingApiController@register'));
 Route::get('/api/booking/{booking_item_id}/unregister/{user_id?}', array('as' => 'api_booking_unregister', 'uses' => 'BookingApiController@unregister'));
 Route::get('/api/1.0/intercom/{location_slug}/{key}/allowed', array('as' => 'api_booking_intercom_allowed', 'uses' => 'BookingApiController@intercom'));
+Route::get('/api/1.0/bookings/{location_slug}/{key}/{occurs_at?}', array('as' => 'api_bookings', 'uses' => 'BookingApiController@bookings'));
 
 Route::get('/ressource/status/{id}', array('as' => 'ressource_status', 'uses' => 'BookingController@status'));
 
