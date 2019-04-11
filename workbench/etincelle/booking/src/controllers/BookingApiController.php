@@ -105,4 +105,20 @@ class BookingApiController extends Controller
             AND DATE_ADD(booking_item.start_at, INTERVAL booking_item.duration MINUTE) > now()')));
         return $result->cnt ? 'Yes' : 'No';
     }
+
+
+    public function bookings($location_slug, $key, $occurs_at)
+    {
+        $result = DB::select(DB::raw(str_replace(
+            array(':location_slug', ':key', ':occurs_at'), array($location_slug, $key, $occurs_at),
+            'SELECT ressources.name as room, booking.name as title, booking_item.start_at as start_at, DATE_ADD(booking_item.start_at, INTERVAL booking_item.duration MINUTES) as ends_at 
+          FROM booking_item
+            JOIN booking on booking_item.booking_id = booking.id
+            JOIN ressources on ressources.id = booking_item.ressource_id
+            JOIN locations on locations.id = ressources.location_id
+          WHERE locations.slug = ":location_slug"
+            AND locations.key = ":key"
+            AND DATE(booking_item.start_at) = ":occurs_at"')));
+        return Response::json($result);
+    }
 }
