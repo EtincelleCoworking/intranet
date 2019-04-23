@@ -599,10 +599,10 @@ class ApiController extends BaseController
 
     public function products()
     {
-        $items = Ressource::with('kind')->orderBy('order_index', 'ASC')->get();
+        $items = Ressource::with('kind')->with('location')->orderBy('order_index', 'ASC')->get();
         $data = [];
         foreach ($items as $item) {
-            $data[$item->kind->name][] = ['id' => $item->id, 'name' => $item->name];
+            $data[$item->kind->name][$item->id] = $item->fullname;
         }
 
         $result = new Response();
