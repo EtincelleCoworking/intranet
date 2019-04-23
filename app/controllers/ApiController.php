@@ -561,8 +561,8 @@ class ApiController extends BaseController
             'address_postalcode' => $organisation->zipcode,
             'address_city' => $organisation->city,
             'address_country' => $organisation->country->name,
-            'contact_name' => $organisation->accountant ? $organisation->accountant->fullname : ($user?$user->fullname:''),
-            'contact_email' => $organisation->accountant ? $organisation->accountant->email : ($user?$user->email:''),
+            'contact_name' => $organisation->accountant ? $organisation->accountant->fullname : ($user ? $user->fullname : ''),
+            'contact_email' => $organisation->accountant ? $organisation->accountant->email : ($user ? $user->email : ''),
         );
     }
 
@@ -596,4 +596,20 @@ class ApiController extends BaseController
         $result->setContent(json_encode($this->getOrganisationJson($organisation, null)));
         return $result;
     }
+
+    public function products()
+    {
+        $items = Ressource::with('kind')->orderBy('order_index', 'ASC')->get();
+        $data = [];
+        foreach ($items as $item) {
+            $data[$item->kind->name][] = ['id' => $item->id, 'name' => $item->name];
+        }
+
+        $result = new Response();
+        $result->headers->set('Content-Type', 'application/json');
+        //$result->headers->set('Access-Control-Allow-Origin', '*');
+        $result->setContent(json_encode($data));
+        return $result;
+    }
+
 }
