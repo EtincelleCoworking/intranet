@@ -434,8 +434,23 @@ class ApiController extends BaseController
             'update_url' => route('invoice_modify', $invoice->id),
             'pdf_url' => route('invoice_print_pdf', $invoice->id),
             'customer' =>
-                $invoice->organisation_id ? $this->getOrganisationJson($invoice->organisation, $invoice->user) : $this->getOrganisationJsonFromInvoice($invoice)
+                $invoice->organisation_id ? $this->getOrganisationJson($invoice->organisation, $invoice->user) : $this->getOrganisationJsonFromInvoice($invoice),
+            'lines' => $this->formatInvoiceLines($invoice->items)
         );
+    }
+
+    protected function formatInvoiceLines($items)
+    {
+        $result = [];
+        foreach ($items as $item) {
+            $result[] = [
+                'product_id' => $item->ressource_id,
+                'caption' => $item->text,
+                'amount' => $item->amount,
+                'taxes' => $item->vat_types_id ? $item->vat->value / 100 * $item->amount : 0
+            ];
+        }
+        return $result;
     }
 
     public function invoices()
