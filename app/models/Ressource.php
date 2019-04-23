@@ -244,7 +244,7 @@ WHERE invoices_items.ressource_id = %1$d ' .
     public function getFullNameAttribute()
     {
         if ($this->location_id) {
-            return sprintf('%s > %s', $this->location->name, $this->name);
+            return sprintf('%s > %s', $this->location->fullname, $this->name);
         }
         return $this->name;
     }
