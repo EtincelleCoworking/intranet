@@ -22,6 +22,7 @@ Route::get('/api/1.0/offix/{secure_key}', array('as' => 'api_offix', 'uses' => '
 Route::get('/api/1.0/user/{secure_key}/{email}', array('as' => 'api_user', 'uses' => 'ApiController@user'));
 Route::get('/api/1.0/invoice/{reference}', array('as' => 'api_invoice', 'uses' => 'ApiController@invoice'));
 Route::get('/api/1.0/invoices', array('as' => 'api_invoices', 'uses' => 'ApiController@invoices'));
+Route::get('/api/1.0/products', array('as' => 'api_products', 'uses' => 'ApiController@products'));
 Route::get('/api/1.0/customers', array('as' => 'api_customers', 'uses' => 'ApiController@customers'));
 Route::get('/api/1.0/customer/{id}', array('as' => 'api_customer', 'uses' => 'ApiController@customer'));
 
