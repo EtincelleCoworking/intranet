@@ -33,9 +33,15 @@ class LockerController extends \BaseController
             }
         }
         $subscriptions = [];
-        foreach (Subscription::whereIn('user_id', $users)->with('kind')->with('kind.ressource')->get() as $subscription) {
-            $subscriptions[$subscription->user_id] = $subscription->kind->name;
+        if (count($users)) {
+            $sql = 'SELECT subscriptions.user_id, subscription_kind.name FROM subscriptions
+            JOIN subscription_kind ON subscription_kind.id = subscriptions.kind_id
+            WHERE subscriptions.user_id IN (' . implode(',', $users) . ')';
+            foreach (DB::select($sql) as $item) {
+                $subscriptions[$item->user_id] = SubscriptionKind::ShortNameAttribute($item->name);
+            }
         }
+
 
         return View::make('locker.admin', array(
                 'location' => Location::find($location_id),
