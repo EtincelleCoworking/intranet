@@ -24,9 +24,21 @@ class LockerController extends \BaseController
         $cabinets = LockerCabinet::where('location_id', '=', $location_id)
             ->orderBy('name', 'asc')->with('lockers', 'lockers.current_usage')->get();
 
+        $users = [];
+        foreach ($cabinets as $cabinet) {
+            foreach ($cabinet->lockers as $locker) {
+                $users[] = $locker->user_id;
+            }
+        }
+        $subscriptions = [];
+        foreach (Subscription::whereIn('user_id', $users)->with('kind')->with('kind.ressource')->get() as $subscription) {
+            $subscriptions[$subscription->user_id] = $subscription->kind->name;
+        }
+
         return View::make('locker.admin', array(
                 'location' => Location::find($location_id),
-                'cabinets' => $cabinets
+                'cabinets' => $cabinets,
+                'subscriptions' => $subscriptions
             )
         );
     }
@@ -245,6 +257,7 @@ EOS;
             )
         );
     }
+
     public function assign_check($id)
     {
         $locker = Locker::where('id', $id)
