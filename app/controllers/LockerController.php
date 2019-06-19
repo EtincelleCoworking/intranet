@@ -27,7 +27,9 @@ class LockerController extends \BaseController
         $users = [];
         foreach ($cabinets as $cabinet) {
             foreach ($cabinet->lockers as $locker) {
-                $users[] = $locker->current_usage->user_id;
+                if ($locker->current_usage) {
+                    $users[] = $locker->current_usage->user_id;
+                }
             }
         }
         $subscriptions = [];
