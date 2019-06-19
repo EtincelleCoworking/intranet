@@ -36,6 +36,7 @@
                             <thead>
                             <th>Nom</th>
                             <th>Utilisateur</th>
+                            <th>Abonnement</th>
                             <th>Depuis le</th>
                             <th>Actions</th>
                             </thead>
@@ -45,17 +46,25 @@
                                         {{$locker->name}}
                                     </td>
                                     @if($locker->current_usage)
-                                        <td class="col-md-4">
-                                            <a href="{{ URL::route('user_profile', $locker->current_usage->user->id) }}">{{ $locker->current_usage->user->fullname }}</a>
+                                        <td class="col-md-3">
+                                            <a href="{{ URL::route('user_profile', $locker->current_usage->user_id) }}">{{ $locker->current_usage->user->fullname }}</a>
                                         </td>
-                                        <td class="col-md-4">
+                                        <td class="col-md-3">
+                                            @if(isset($subscriptions[$locker->current_usage->user_id]))
+                                                {{$subscriptions[$locker->current_usage->user_id]}}
+                                            @else
+                                                -
+                                            @endif
+                                        </td>
+                                        <td class="col-md-2">
                                             {{date('d/m/Y H:i', strtotime($locker->current_usage->taken_at))}}
                                         </td>
                                     @else
-                                        <td class="col-md-4">
+                                        <td class="col-md-3">
                                             <i> -- Disponible --</i>
                                         </td>
-                                        <td class="col-md-4">-</td>
+                                        <td class="col-md-3">-</td>
+                                        <td class="col-md-2">-</td>
                                     @endif
                                     <td class="col-md-2">
                                         <a href="{{URL::route('locker_history', $locker->id)}}"
