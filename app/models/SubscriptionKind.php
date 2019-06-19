@@ -30,8 +30,14 @@ class SubscriptionKind extends Eloquent
     }
 
 
-    public function getShortNameAttribute(){
-        return str_replace(array('Coworking - ', ' - %UserName%', 'Abonnement '), array('', '', ''), $this->name);
+    public function getShortNameAttribute()
+    {
+        return self::ShortNameAttribute($this->name);
+    }
+
+    public static function ShortNameAttribute($value)
+    {
+        return str_replace(array('Coworking - ', ' - %UserName%', 'Abonnement '), array('', '', ''), $value);
     }
 
 }
