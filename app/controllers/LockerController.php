@@ -35,7 +35,7 @@ class LockerController extends \BaseController
         $subscriptions = [];
         if (count($users)) {
             $sql = 'SELECT subscription.user_id, subscription_kind.name FROM subscription
-            JOIN subscription_kind ON subscription_kind.id = subscription.kind_id
+            JOIN subscription_kind ON subscription_kind.id = subscription.subscription_kind_id
             WHERE subscription.user_id IN (' . implode(',', $users) . ')';
             foreach (DB::select($sql) as $item) {
                 $subscriptions[$item->user_id] = SubscriptionKind::ShortNameAttribute($item->name);
