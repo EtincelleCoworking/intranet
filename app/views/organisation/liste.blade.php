@@ -149,7 +149,7 @@
     <script type="text/javascript">
         $().ready(function () {
             $('#filter-organisation').select2();
-            $('#filter-domiciliation').select2();
+            //$('#filter-domiciliation').select2();
         });
     </script>
 @stop
