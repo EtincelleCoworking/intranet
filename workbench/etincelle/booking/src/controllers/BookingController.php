@@ -542,7 +542,7 @@ class BookingController extends Controller
 
         $items = BookingItem::where('start_at', '>=', date('Y-m-d'))
             ->join('booking', 'booking_item.booking_id', '=', 'booking.id')
-            ->join('ressources', 'ressources.id', '=', 'booking_items.ressource_id')
+            ->join('ressources', 'ressources.id', '=', 'booking_item.ressource_id')
             ->join('locations', 'locations.id', '=', 'ressources.location_id')
             ->where('locations.slug', '=', $location_slug);
         $items = $items->with('booking', 'ressource')->get();
