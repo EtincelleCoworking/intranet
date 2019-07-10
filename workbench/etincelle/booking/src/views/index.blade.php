@@ -119,10 +119,10 @@ foreach ($ressources as $ressource) {
                     <form id="ressource_filter" action="#" autocomplete="false">
                         @if(count($ressources_by_space)>1)
                             @foreach($ressources_by_space as $locationName => $ressources)
-                            <p>
-                                <strong>{{$locationName}}</strong>
-                                @include('ressource._ressources', array('ressources' => $ressources))
-                            </p>
+                                <p>
+                                    <strong>{{$locationName}}</strong>
+                                    @include('ressource._ressources', array('ressources' => $ressources))
+                                </p>
                             @endforeach
                         @else
                             @include('ressource._ressources', array('ressources' => array_shift($ressources_by_space)))
@@ -157,6 +157,11 @@ foreach ($ressources as $ressource) {
                         <p>Vous pouvez exporter toutes les réservations via cette adresse:</p>
                         <pre>{{route('booking_ical', Auth::user()->booking_key.'_all')}}</pre>
 
+                        @if(Auth::user()->isSuperAdmin())
+                            <p>Vous pouvez exporter toutes les réservations de {{Auth::user()->location->name}}via cette
+                                adresse:</p>
+                            <pre>{{route('booking_location_ical', ['location_slug' => Auth::user()->location->slug, 'key' => Auth::user()->booking_key])}}</pre>
+                        @endif
                     </div>
                 </div>
             </div>
@@ -198,7 +203,7 @@ foreach ($ressources as $ressource) {
 
         @foreach($ressources as $ressource)
 
-.fc-event.booking-ofuscated-{{$ressource->id}}                                         {
+.fc-event.booking-ofuscated-{{$ressource->id}}                                          {
             background: repeating-linear-gradient(
             135deg,
                     {{ adjustBrightness($ressource->booking_background_color, -32)}},
@@ -739,7 +744,7 @@ foreach ($ressources as $ressource) {
                         }
                     });
                 },
-                views:{
+                views: {
                     timelineDay: {
                         titleFormat: 'dddd DD MMMM YYYY'
                     }
