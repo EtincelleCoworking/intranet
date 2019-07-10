@@ -535,7 +535,7 @@ class BookingController extends Controller
     {
         /** @var User $owner */
         $owner = User::where('booking_key', '=', $key)->first();
-        if (!$owner || !$owner->isSuperAdmin()) {
+        if (!$owner || ($owner->role !== 'superadmin')) {
             App::abort(404);
             return false;
         }
