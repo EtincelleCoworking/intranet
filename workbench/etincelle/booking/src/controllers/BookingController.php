@@ -528,7 +528,29 @@ class BookingController extends Controller
 
                 break;
         }
+        return $this->bookingsToiCal($items, $description);
+    }
 
+    public function location_ical($location_slug, $key)
+    {
+        /** @var User $owner */
+        $owner = User::where('booking_key', '=', $key)->first();
+        if (!$owner || !$owner->isSuperAdmin()) {
+            App::abort(404);
+            return false;
+        }
+
+        $items = BookingItem::where('start_at', '>=', date('Y-m-d'))
+            ->join('booking', 'booking_item.booking_id', '=', 'booking.id')
+            ->join('ressources', 'ressources.id', '=', 'booking_items.ressource_id')
+            ->join('locations', 'locations.id', '=', 'ressources.location_id')
+            ->where('locations.slug', '=', $location_slug);
+        $items = $items->with('booking', 'ressource')->get();
+        return $this->bookingsToiCal($items);
+    }
+
+    protected function bookingsToiCal($items, $description = '')
+    {
         $tz = new DateTimeZone(date_default_timezone_get());
         $offset = (new DateTime("now", $tz))->getOffset();
 
