@@ -64,12 +64,12 @@
                         $(widget)
                             .removeClass('label-danger')
                             .addClass('label-primary')
-                            .html('OK');
+                            .html('ON');
                     } else {
                         $(widget)
                             .removeClass('label-success')
                             .addClass('label-danger')
-                            .html('KO');
+                            .html('OFF');
                     }
                 });
             }
