@@ -660,7 +660,7 @@ class ApiController extends BaseController
     public function phonebox_pick()
     {
         $redirect = Request::get('redirect');
-        if (Auth::check()) {
+        if (Auth::id()) {
             $ch = curl_init();
 
             curl_setopt($ch, CURLOPT_URL, $redirect);
@@ -682,6 +682,6 @@ class ApiController extends BaseController
         }
 
         Session::put('url.intended', $redirect);
-        return Redirect::route('login');
+        return Redirect::route('user_login');
     }
 }
