@@ -15,6 +15,7 @@ Route::get('/', array('as' => 'dashboard', 'uses' => 'UserController@dashboard')
 Route::get('/api/test', array('as' => 'api_test', 'uses' => 'ApiController@test'));
 Route::post('/webhook/aircall', array('uses' => 'AircallController@webhook'));
 
+Route::get('/api/1.0/phonebox/auth', array('as' => 'api_phonebox_pick', 'uses' => 'ApiController@phonebox_pick'));
 Route::post('/api/1.0/phonebox/auth', array('as' => 'api_phonebox', 'uses' => 'ApiController@phonebox'));
 
 
@@ -52,6 +53,7 @@ Route::get('/invoice/{id}/print/pdf', array('as' => 'invoice_print_pdf', 'uses' 
 
 
 Route::group(['before' => 'member'], function() {
+
     Route::get('/profile/{id}', array('as' => 'user_profile', 'uses' => 'UserController@profile'))->where(array('id' => '[0-9]+'));
 //    Route::get('/users/directory', array('as' => 'user_directory', 'uses' => 'UserController@directory'));
     Route::get('/profile/edit', array('as' => 'user_edit', 'uses' => 'UserController@edit'));
