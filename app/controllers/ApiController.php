@@ -446,7 +446,7 @@ class ApiController extends BaseController
             $result[] = [
                 'product_id' => $item->ressource_id,
                 'caption' => $item->text,
-                'amount' => $item->amount,
+                'amount' => (float)$item->amount,
                 'taxes' => $item->vat_types_id ? $item->vat->value / 100 * $item->amount : 0
             ];
         }
@@ -624,6 +624,35 @@ class ApiController extends BaseController
         $result->headers->set('Content-Type', 'application/json');
         //$result->headers->set('Access-Control-Allow-Origin', '*');
         $result->setContent(json_encode($data));
+        return $result;
+    }
+
+    public function phonebox()
+    {
+        if (Request::get('api_key') != $_ENV['PHONEBOX_API_KEY']) {
+            $result = new Response();
+            $result->headers->set('Content-Type', 'application/json');
+            $result->setContent(json_encode(['status' => 'error']));
+            return $result;
+        }
+
+        $user = User::where('personnal_code', Request::get('code'))->first();
+        if (!$user) {
+            $result = new Response();
+            $result->headers->set('Content-Type', 'application/json');
+            $result->setContent(json_encode(['status' => 'error']));
+            return $result;
+        }
+
+        $result = new Response();
+        $result->headers->set('Content-Type', 'application/json');
+        $result->setContent(json_encode([
+            'status' => 'success',
+            'user' => [
+                'id' => $user->id,
+                'name' => $user->fullname,
+                'profile_url' => $user->avatar,
+            ]]));
         return $result;
     }
 
