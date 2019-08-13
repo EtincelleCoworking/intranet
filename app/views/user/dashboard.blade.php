@@ -74,6 +74,29 @@
                 });
             }
 
+            function updateBoxesStatus() {
+                $.get('https://phonebox.etincelle.at/api/status', function (data) {
+                    var result = '';
+                    for (room in data.data) {
+                        result += '<tr><td width="40">';
+                        if (room.session.started_at) {
+                            result += '<div class="label label-danger">KO</div>';
+                        } else {
+                            result += '<div class="label label-primary">OK</div>';
+
+                        }
+                        result += '</td>';
+                        if (room.session.started_at) {
+                            result += '<a href="" class="pull-right">'
+                                + room.session.user.picture_url +
+                                '</a>';
+                        }
+                        result += room.name + '</td></tr>';
+                    }
+                    $('#phonebox').innerHTML = result;
+                });
+            }
+
             $(function () {
                 @foreach(Config::get('etincelle.intercoms') as $key => $data)
                 setInterval(function () {
@@ -82,6 +105,10 @@
 
                 updateIntercomStatus('#intercom-{{$key}}', '{{$data['uri']}}');
                 @endforeach
+
+                setInterval(function () {
+                    updateBoxesStatus()
+                }, 15000);
             });
         </script>
     @endif
