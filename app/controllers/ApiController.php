@@ -660,13 +660,20 @@ class ApiController extends BaseController
     {
         $redirect = Request::get('redirect');
         if (Auth::check()) {
-            $result = new Response();
-            $result->setStatusCode(302);
-            $result->headers->set('Location', $redirect . '?' . http_build_query(array(
+            $ch = curl_init();
+
+            curl_setopt($ch, CURLOPT_URL, $redirect);
+            curl_setopt($ch, CURLOPT_POST, 1);
+            curl_setopt($ch, CURLOPT_POSTFIELDS,
+                http_build_query(array(
                     'api_key' => $_ENV['PHONEBOX_API_KEY'],
                     'user_id' => Auth::id()
                 )));
-            return $result;
+            curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+            $response_content = curl_exec($ch);
+            curl_close($ch);
+
+            return new Response($response_content);
         }
 
         Session::put('url.intended', $redirect);
