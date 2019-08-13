@@ -23,7 +23,8 @@
 
         <p><a href="#" class="btn btn-primary" id="btn-refresh-personnal-code">Nouveau code</a></p>
         <p class="text-muted">Ce code vous permettra d'utiliser les box téléphonique. Si le code ne vous convient pas, vous pouvez en générer un nouveau.</p>
-        <table class="table">
+        <table class="table" id="phonebox">
+            {{--
             @foreach($rooms as $room)
                 <tr>
                     <td width="40">
@@ -44,6 +45,7 @@
                     </td>
                 </tr>
             @endforeach
+            --}}
         </table>
     </div>
 </div>
