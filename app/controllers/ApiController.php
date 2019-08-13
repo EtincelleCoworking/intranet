@@ -651,7 +651,7 @@ class ApiController extends BaseController
             'user' => [
                 'id' => $user->id,
                 'name' => $user->fullname,
-                'profile_url' => $user->avatarUrl,
+                'profile_url' => $user->getAvatarUrl(300),
             ]]));
         return $result;
     }
