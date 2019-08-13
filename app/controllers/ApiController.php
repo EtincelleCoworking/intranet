@@ -1,6 +1,7 @@
 <?php
 
 use Illuminate\Http\Response;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Input;
 use Illuminate\Support\Facades\Request;
 
@@ -671,7 +672,7 @@ class ApiController extends BaseController
                     'api_key' => $_ENV['PHONEBOX_API_KEY'],
                     'user_id' => $user->id,
                     'user_name' => $user->fullname,
-                    'user_picture' => $user->getAvatarUrl(300),
+                    'user_picture' => $user->getAvatarUrl(300)
                 )));
             curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
             $response_content = curl_exec($ch);
@@ -681,6 +682,6 @@ class ApiController extends BaseController
         }
 
         Session::put('url.intended', $redirect);
-        return Redirect::to('login');
+        return Redirect::route('login');
     }
 }
