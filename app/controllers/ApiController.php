@@ -656,4 +656,20 @@ class ApiController extends BaseController
         return $result;
     }
 
+    public function phonebox_pick()
+    {
+        $redirect = Request::get('redirect');
+        if (Auth::check()) {
+            $result = new Response();
+            $result->setStatusCode(302);
+            $result->headers->set('Location', $redirect . '?' . http_build_query(array(
+                    'api_key' => $_ENV['PHONEBOX_API_KEY'],
+                    'user_id' => Auth::id()
+                )));
+            return $result;
+        }
+
+        Session::put('url.intended', $redirect);
+        return Redirect::to('login');
+    }
 }
