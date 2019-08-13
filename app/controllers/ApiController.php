@@ -664,16 +664,20 @@ class ApiController extends BaseController
 
             curl_setopt($ch, CURLOPT_URL, $redirect);
             curl_setopt($ch, CURLOPT_POST, 1);
+
+            $user = Auth::user();
             curl_setopt($ch, CURLOPT_POSTFIELDS,
                 http_build_query(array(
                     'api_key' => $_ENV['PHONEBOX_API_KEY'],
-                    'user_id' => Auth::id()
+                    'user_id' => $user->id,
+                    'user_name' => $user->fullname,
+                    'user_picture' => $user->getAvatarUrl(300),
                 )));
             curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
             $response_content = curl_exec($ch);
             curl_close($ch);
 
-            return new Response($response_content);
+            return new Response((string)$response_content);
         }
 
         Session::put('url.intended', $redirect);
