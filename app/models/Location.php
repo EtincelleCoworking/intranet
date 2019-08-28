@@ -116,7 +116,7 @@ class Location extends Eloquent
                 '2019-01' => 17405 + 4480 + 500 + 815, // Suayip + Albert 1er
                 '2019-02' => 17405 + 4480 + 500 + 210, // Suayip + Albert 1er
                 '2019-03' => 24530,
-                '2019-07' => 2400, // -Suayip
+                '2019-07' => 24000, // -Suayip
             ),
             //'Toulouse > Espace W' => array(),
             'Alsace Lorraine' => array(
