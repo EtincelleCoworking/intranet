@@ -1038,20 +1038,25 @@ ORDER BY room ASC , booking_item.start_at ASC ', $day, $day, $location)));
                 }
             }
         }
-        $pdf = App::make('snappy.pdf');
-        $output = $pdf->getOutputFromHtml($pages,
-            array(
-                //'orientation' => 'Landscape',
-                'default-header' => false));
-        $pdf2filename = tempnam(sys_get_temp_dir(), 'intranet_pdf_') . '.pdf';
-        file_put_contents($pdf2filename, $output);
+        if (count($pages) > 0) {
 
+
+            $pdf = App::make('snappy.pdf');
+            $output = $pdf->getOutputFromHtml($pages,
+                array(
+                    //'orientation' => 'Landscape',
+                    'default-header' => false));
+            $pdf2filename = tempnam(sys_get_temp_dir(), 'intranet_pdf_') . '.pdf';
+            file_put_contents($pdf2filename, $output);
+        } else {
+            $pdf2filename = null;
+        }
         //endregion
 
         $pdf = new \Clegginabox\PDFMerger\PDFMerger;
         foreach ($mapping as $room => $data) {
             $pdf->addPDF($pdf1filename, $data['index'], 'L');
-            if (count($data['wifi'])) {
+            if (count($data['wifi']) && $pdf2filename) {
                 $pdf->addPDF($pdf2filename, implode(',', $data['wifi']), 'P');
             }
         }
