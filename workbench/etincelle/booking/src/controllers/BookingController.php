@@ -1064,7 +1064,9 @@ ORDER BY room ASC , booking_item.start_at ASC ', $day, $day, $location)));
             'Content-Type' => 'application/pdf',
             'Content-Disposition' => sprintf('filename="%s_%s.pdf"', $day, $location)));
         unlink($pdf1filename);
-        unlink($pdf2filename);
+        if ($pdf2filename) {
+            unlink($pdf2filename);
+        }
         return $result;
         //attachment;
     }
