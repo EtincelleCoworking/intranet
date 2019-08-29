@@ -204,7 +204,7 @@ class BookingItem extends Illuminate\Database\Eloquent\Model
 </head>
 <body>
 <div class="header">
-    <img src="http://www.coworking-toulouse.com/wp-content/uploads/2015/04/etincelle-coworking-400x400.gif" height="85" width="85" style="float: right" />
+    <img src="https://www.coworking-toulouse.com/wp-content/uploads/2015/04/etincelle-coworking-400x400.gif" height="85" width="85" style="float: right" />
     <h1>%title%</h1>
 </div>
 <div class="page">
