@@ -123,4 +123,24 @@ booking_item.participant_count, concat(users.firstname, " ", users.lastname) as 
             AND DATE(booking_item.start_at) = ":occurs_at"')));
         return Response::json($result);
     }
+
+    public function ressources($city_slug)
+    {
+        $result = DB::select(DB::raw(str_replace(
+            array(':city_slug'), array($city_slug),
+            'SELECT ressources.id, ressources.name
+          FROM ressources on ressources.id = booking_item.ressource_id
+            JOIN locations on locations.id = ressources.location_id
+            JOIN cities on locations.city_id = cities.id
+          WHERE cities.slug = ":city_slug"')));
+        return Response::json($result);
+    }
+
+    public function ressource_status($city_slug, $ressource_id)
+    {
+        $periods = Input::get('periods');
+        dump($periods);
+        $result = array();
+        return Response::json($result);
+    }
 }
