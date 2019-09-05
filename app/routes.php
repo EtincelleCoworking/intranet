@@ -29,6 +29,8 @@ Route::get('/api/1.0/invoices', array('as' => 'api_invoices', 'uses' => 'ApiCont
 Route::get('/api/1.0/products', array('as' => 'api_products', 'uses' => 'ApiController@products'));
 Route::get('/api/1.0/customers', array('as' => 'api_customers', 'uses' => 'ApiController@customers'));
 Route::get('/api/1.0/customer/{id}', array('as' => 'api_customer', 'uses' => 'ApiController@customer'));
+Route::get('/api/1.0/city/{city_slug}/ressources', array('as' => 'api_booking_ressources', 'uses' => 'BookingApiController@ressources'));
+Route::get('/api/1.0/city/{city_slug}/ressource/{ressource_id}/status', array('as' => 'api_booking_ressource_status', 'uses' => 'BookingApiController@ressource_status'));
 
 Route::get('/api/1.0/monitoring/{location_slug}/{key}/agents', array('as' => 'monitoring_agents', 'uses' => 'MonitoringController@agents'));
 Route::post('/api/1.0/monitoring/{location_slug}/{key}/agents', array('as' => 'monitoring_feedback', 'uses' => 'MonitoringController@feedback'));
