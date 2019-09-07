@@ -126,21 +126,71 @@ booking_item.participant_count, concat(users.firstname, " ", users.lastname) as 
 
     public function ressources($city_slug)
     {
-        $result = DB::select(DB::raw(str_replace(
+        $result = array();
+        $data = DB::select(DB::raw(str_replace(
             array(':city_slug'), array($city_slug),
-            'SELECT ressources.id, ressources.name
-          FROM ressources on ressources.id = booking_item.ressource_id
+            'SELECT ressources.id, ressources.name, ressources.amount, locations.name as location
+          FROM ressources 
             JOIN locations on locations.id = ressources.location_id
             JOIN cities on locations.city_id = cities.id
-          WHERE cities.slug = ":city_slug"')));
+          WHERE LOWER(cities.name) = ":city_slug"
+          AND ressources.is_bookable = 1
+          ORDER BY locations.name, ressources.order_index')));
+        foreach ($data as $item) {
+            $result[$item->location][] = array(
+                'id' => $item->id,
+                'name' => $item->name,
+                'hourly_pricing' => $item->amount,
+            );
+        }
         return Response::json($result);
     }
 
     public function ressource_status($city_slug, $ressource_id)
     {
-        $periods = Input::get('periods');
-        dump($periods);
-        $result = array();
-        return Response::json($result);
+        if (!$from = Input::get('from')) {
+            return Response::json(array('status' => 'error', 'message' => 'Missing from parameter'));
+        }
+        if (!$to = Input::get('to')) {
+            return Response::json(array('status' => 'error', 'message' => 'Missing to parameter'));
+        }
+        $status = null;
+        $booking_count = 0;
+
+        $result = DB::select(DB::raw(str_replace(
+            array(':from', ':to', ':ressource_id'), array($from, $to, $ressource_id),
+            'SELECT booking_item.is_confirmed
+          FROM booking_item
+            JOIN booking on booking_item.booking_id = booking.id
+            JOIN ressources on ressources.id = 
+            JOIN locations on locations.id = ressources.location_id
+            JOIN users on users.id = booking.user_id
+          WHERE booking_item.ressource_id = :ressource_id
+            AND booking_item.start_at >= ":from"
+            AND DATE_ADD(start_at, INTERVAL duration MINUTE) <= ":to"')));
+        foreach ($result as $item) {
+            $booking_count++;
+            $status = max($status, (int)$item->is_confirmed);
+        }
+        switch ($status) {
+            case null :
+                $status = 'available';
+                break;
+            case 0 :
+                $status = 'confirmation_pending';
+                break;
+            case 1 :
+                $status = 'booked';
+                break;
+        }
+
+        return Response::json(array(
+            'status' => 'success',
+            'data' => array(
+                'from' => $from,
+                'to' => $to,
+                'status' => $status,
+                'booking_count' => $booking_count
+            )));
     }
 }
