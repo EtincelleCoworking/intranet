@@ -159,18 +159,14 @@ booking_item.participant_count, concat(users.firstname, " ", users.lastname) as 
 
         $result = DB::select(DB::raw(str_replace(
             array(':from', ':to', ':ressource_id'), array($from, $to, $ressource_id),
-            'SELECT booking_item.is_confirmed
+            'SELECT booking_item.confirmed_at
           FROM booking_item
-            JOIN booking on booking_item.booking_id = booking.id
-            JOIN ressources on ressources.id = 
-            JOIN locations on locations.id = ressources.location_id
-            JOIN users on users.id = booking.user_id
           WHERE booking_item.ressource_id = :ressource_id
             AND booking_item.start_at >= ":from"
-            AND DATE_ADD(start_at, INTERVAL duration MINUTE) <= ":to"')));
+            AND DATE_ADD(booking_item.start_at, INTERVAL duration MINUTE) <= ":to"')));
         foreach ($result as $item) {
             $booking_count++;
-            $status = max($status, (int)$item->is_confirmed);
+            $status = max($status, ($item->confirmed_at != null));
         }
         switch ($status) {
             case null :
