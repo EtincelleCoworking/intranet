@@ -27,7 +27,12 @@ class BookingController extends Controller
             $end_at = date('Y-m-d H:i', strtotime($end_at) + Config::get('booking::default_meeting_duration', 1) * 3600);
         }
 
+        $ressource_id = Input::get('ressource_id');
+
         $item = new BookingItem();
+        if ($ressource_id) {
+            $item->ressource_id = $ressource_id;
+        }
         $item->booking = new Booking();
         $item->booking->user_id = Auth::id();
         $organisations = Auth::user()->organisations;

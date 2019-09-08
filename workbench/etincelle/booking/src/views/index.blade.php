@@ -203,7 +203,7 @@ foreach ($ressources as $ressource) {
 
         @foreach($ressources as $ressource)
 
-.fc-event.booking-ofuscated-{{$ressource->id}}                                          {
+.fc-event.booking-ofuscated-{{$ressource->id}}                                             {
             background: repeating-linear-gradient(
             135deg,
                     {{ adjustBrightness($ressource->booking_background_color, -32)}},
@@ -615,18 +615,17 @@ foreach ($ressources as $ressource) {
                 },
                 eventTextColor: '#000000',
                 slotDuration: '00:30:00',
-                select: function (start, end) {
-//                    activeEvent = new Etincelle.Event();
-//                    activeEvent.start = start;
-//                    activeEvent.end = end;
-//                    activeEvent.edit();
-//                    $('#calendar').fullCalendar('unselect');
+                select: function (start, end, jsEvent, view, resource) {
                     var startMoment = moment(start);
                     var endMoment = moment(end);
-
-                    window.location.href = '{{ URL::route('booking_new_full', array('start_at' => 999999, 'end_at' => 888888)) }}'
-                        .replace('999999', startMoment.format('YYYY-MM-DD HH:mm')).replace('888888', endMoment.format('YYYY-MM-DD HH:mm'));
-
+                    var url = '{{ URL::route('booking_new_full', array('start_at' => 999999, 'end_at' => 888888)) }}'
+                        .replace('999999', startMoment.format('YYYY-MM-DD HH:mm')).replace('888888', endMoment.format('YYYY-MM-DD HH:mm'))
+                    ;
+                    if (typeof resource != 'undefined') {
+                        var ressource_id = resource.id.toString().replace('res', '');
+                        url += '?ressource_id=' + ressource_id;
+                    }
+                    window.location.href = url;
                 },
                 eventClick: function (calEvent, jsEvent, view) {
                     activeEvent = new Etincelle.Event();
