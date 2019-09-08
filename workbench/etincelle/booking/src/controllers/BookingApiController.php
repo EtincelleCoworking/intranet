@@ -143,9 +143,22 @@ booking_item.participant_count, concat(users.firstname, " ", users.lastname) as 
                 'hourly_pricing' => $item->amount,
             );
         }
-        return Response::json($result);
+        $response = new \Illuminate\Http\Response();
+        $response->headers->set('Content-Type', 'application/json');
+        $response->headers->set('Access-Control-Allow-Origin', '*');
+        $response->headers->set('Access-Control-Allow-Methods', 'GET');
+        $response->headers->set('Access-Control-Allow-Headers', 'Origin, Content-Type, X-Auth-Token');
+        $response->setContent(json_encode(array('status' => 'success', 'data' => $result)));
+        return $response;
     }
 
+    /**
+     * GET Parameters :
+     * - from : datetime
+     * - to : datetime
+     *
+     * Returns if ressource is available in the given range, with status and booking count
+     */
     public function ressource_status($city_slug, $ressource_id)
     {
         if (!$from = Input::get('from')) {
@@ -154,7 +167,7 @@ booking_item.participant_count, concat(users.firstname, " ", users.lastname) as 
         if (!$to = Input::get('to')) {
             return Response::json(array('status' => 'error', 'message' => 'Missing to parameter'));
         }
-        $status = null;
+        $status = -1;
         $booking_count = 0;
 
         $result = DB::select(DB::raw(str_replace(
@@ -162,14 +175,14 @@ booking_item.participant_count, concat(users.firstname, " ", users.lastname) as 
             'SELECT booking_item.confirmed_at
           FROM booking_item
           WHERE booking_item.ressource_id = :ressource_id
-            AND booking_item.start_at >= ":from"
-            AND DATE_ADD(booking_item.start_at, INTERVAL duration MINUTE) <= ":to"')));
+            AND booking_item.start_at <= ":to"
+            AND DATE_ADD(booking_item.start_at, INTERVAL duration MINUTE) >= ":from"')));
         foreach ($result as $item) {
             $booking_count++;
-            $status = max($status, ($item->confirmed_at != null));
+            $status = max($status, (int)($item->confirmed_at != null));
         }
         switch ($status) {
-            case null :
+            case -1 :
                 $status = 'available';
                 break;
             case 0 :
@@ -180,13 +193,21 @@ booking_item.participant_count, concat(users.firstname, " ", users.lastname) as 
                 break;
         }
 
-        return Response::json(array(
+        $result = array(
             'status' => 'success',
             'data' => array(
                 'from' => $from,
                 'to' => $to,
                 'status' => $status,
                 'booking_count' => $booking_count
-            )));
+            ));
+
+        $response = new \Illuminate\Http\Response();
+        $response->headers->set('Content-Type', 'application/json');
+        $response->headers->set('Access-Control-Allow-Origin', '*');
+        $response->headers->set('Access-Control-Allow-Methods', 'GET');
+        $response->headers->set('Access-Control-Allow-Headers', 'Origin, Content-Type, X-Auth-Token');
+        $response->setContent(json_encode($result));
+        return $response;
     }
 }
