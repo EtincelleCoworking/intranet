@@ -56,62 +56,71 @@
     {{ HTML::script('js/jquery.waypoints.min.js') }}
     {{ HTML::script('js/infinite.min.js') }}
 
-    @if (Auth::user()->isSuperAdmin())
-        <script type="application/javascript">
-            function updateIntercomStatus(widget, uri) {
-                $.get(uri, function (data) {
-                    if ('Yes' == data) {
-                        $(widget)
-                            .removeClass('label-danger')
-                            .addClass('label-primary')
-                            .html('ON');
-                    } else {
-                        $(widget)
-                            .removeClass('label-success')
-                            .addClass('label-danger')
-                            .html('OFF');
-                    }
-                });
-            }
-
-            function updateBoxesStatus() {
-                $.get('https://phonebox.etincelle.at/api/status', function (data) {
-                    var result = '';
-                    for (room in data.data) {
-                        result += '<tr><td width="40">';
-                        if (room.session.started_at) {
-                            result += '<div class="label label-danger">KO</div>';
-                        } else {
-                            result += '<div class="label label-primary">OK</div>';
-
-                        }
-                        result += '</td>';
-                        if (room.session.started_at) {
-                            result += '<a href="" class="pull-right">'
-                                + room.session.user.picture_url +
-                                '</a>';
-                        }
-                        result += room.name + '</td></tr>';
-                    }
-                    $('#phonebox').innerHTML = result;
-                });
-            }
-
-            $(function () {
-                @foreach(Config::get('etincelle.intercoms') as $key => $data)
-                setInterval(function () {
-                    updateIntercomStatus('#intercom-{{$key}}', '{{$data['uri']}}')
-                }, 60000);
-
-                updateIntercomStatus('#intercom-{{$key}}', '{{$data['uri']}}');
-                @endforeach
-
-                setInterval(function () {
-                    updateBoxesStatus()
-                }, 15000);
+    <script type="application/javascript">
+        @if (Auth::user()->isSuperAdmin())
+        function updateIntercomStatus(widget, uri) {
+            $.get(uri, function (data) {
+                if ('Yes' == data) {
+                    $(widget)
+                        .removeClass('label-danger')
+                        .addClass('label-primary')
+                        .html('ON');
+                } else {
+                    $(widget)
+                        .removeClass('label-success')
+                        .addClass('label-danger')
+                        .html('OFF');
+                }
             });
-        </script>
-    @endif
+        }
+
+        @endif
+        function updateBoxesStatus() {
+            $.get('https://phonebox.etincelle.at/api/status', function (data) {
+                var result = '<table class="table" id="phonebox">';
+                for (room_id in data) {
+                    var room = data[room_id];
+                    console.log(room);
+                    result += '<tr><td width="40">';
+                    if (room.session.start_at) {
+                        result += '<div class="label label-danger">KO</div>';
+                    } else {
+                        result += '<div class="label label-primary">OK</div>';
+
+                    }
+                    result += '</td><td>';
+                    if (room.session.start_at) {
+                        result += '<a href="" class="pull-right"><img src="'
+                            + room.session.user.picture_url +
+                            '" class="img-circle m-t-xs" width="38" /></a>';
+                    }
+                    result += room.name + '</td></tr>';
+                }
+                result += '</table>';
+                $('#phonebox').html(result);
+            });
+        }
+
+
+        $(function () {
+            @if (Auth::user()->isSuperAdmin())
+            @foreach(Config::get('etincelle.intercoms') as $key => $data)
+            setInterval(function () {
+                updateIntercomStatus('#intercom-{{$key}}', '{{$data['uri']}}')
+            }, 60000);
+
+            updateIntercomStatus('#intercom-{{$key}}', '{{$data['uri']}}');
+            @endforeach
+            @endif
+
+            updateBoxesStatus();
+
+            setInterval(function () {
+                updateBoxesStatus()
+            }, 15000);
+        });
+    </script>
+
 
 @stop
 
