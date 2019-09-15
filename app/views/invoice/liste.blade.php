@@ -254,22 +254,19 @@
 
             @if($invoice->date_payment === null)
             <?php
-            \Stripe\Stripe::setApiKey($_ENV['stripe_pk']);
+            \Stripe\Stripe::setApiKey($_ENV['stripe_sk']);
 
             $session = \Stripe\Checkout\Session::create([
                 'payment_method_types' => ['card'],
                 'line_items' => [[
-                    'name' => $_ENV['organisation_name'],
-                    'description' => 'Facture {{$invoice->ident}}',
+                    'name' => 'Facture '.$invoice->ident,
+                    'description' => $invoice->user ? $invoice->user->email : '',
                     'amount' => Invoice::TotalInvoiceWithTaxes($invoice->items) * 100,
                     'currency' => 'eur',
-                    'quantity' => 1,
-                    'panelLabel' => 'Payer {{amount}}',
-                    'email' => $invoice->user ? $invoice->user->email : '',
-                    'allowRememberMe' => false
+                    'quantity' => 1
                 ]],
-                //         'success_url' => 'https://example.com/success',
-                //         'cancel_url' => 'https://example.com/cancel',
+                'success_url' => URL::route('invoice_list'),
+                'cancel_url' => URL::route('invoice_list'),
             ]);
             ?>
             $('#stripe{{$invoice->id}}').on('click', function (e) {
@@ -286,7 +283,8 @@
                     }
                 });
 
-            });
+            })
+            ;
             @endif
             @endforeach
 
@@ -299,6 +297,7 @@
             $('#filter-organisation').select2({placeholder: 'Sélectionnez une société', allowClear: true});
             $('#filter-client').select2({placeholder: 'Sélectionnez un client', allowClear: true});
             $('#filter-location').select2({placeholder: 'Sélectionnez un espace', allowClear: true});
-        });
+        })
+        ;
     </script>
 @stop

@@ -1,5 +1,7 @@
 <?php
 
+use Illuminate\Http\Response;
+
 /**
  * Invoice Controller
  */
@@ -352,43 +354,55 @@ class InvoiceController extends BaseController
         return $pdf->stream($invoice->ident . '.pdf');
     }
 
-    public function stripe($id)
+    public function stripe()
     {
-        $invoice = $this->dataExist($id, 'invoice_list');
+        $json = json_decode(Request::getContent());
+        file_put_contents(sprintf('stripe_%s.json', date('Ymd_His')), json_encode($json, JSON_PRETTY_PRINT));
 
-        // Set your secret key: remember to change this to your live secret key in production
-// See your keys here https://dashboard.stripe.com/account/apikeys
-        \Stripe\Stripe::setApiKey($_ENV['stripe_sk']);
+        $data = array();
 
-// Get the credit card details submitted by the form
-        $stripeToken = Request::input('stripeToken');
+        $result = new Response();
+        $result->headers->set('Content-Type', 'application/json');
+        $result->headers->set('Access-Control-Allow-Origin', '*');
+        $result->headers->set('Access-Control-Allow-Methods', 'GET');
+        $result->headers->set('Access-Control-Allow-Headers', 'Origin, Content-Type, X-Auth-Token');
+        $result->setContent(json_encode($data));
+        return $result;
 
-// Create the charge on Stripe's servers - this will charge the user's card
-        try {
-            $amount = Invoice::TotalInvoiceWithTaxes($invoice->items) * 100;
-            if ($amount) {
-                $charge = \Stripe\Charge::create(array(
-                        "amount" => $amount, // amount in cents, again
-                        "currency" => "eur",
-                        "source" => $stripeToken,
-                        "description" => "Facture " . $invoice->ident)
-                );
-            }
-            $invoice->date_payment = date('Y-m-d');
-            $invoice->save();
+        /*
+                \Stripe\Stripe::setApiKey($_ENV['stripe_sk']);
 
-            $invoice_comment = new InvoiceComment();
-            $invoice_comment->invoice_id = $invoice->id;
-            $invoice_comment->user_id = Auth::user()->id;
-            $invoice_comment->content = 'Payé par CB avec Stripe';
-            $invoice_comment->save();
+        // Get the credit card details submitted by the form
+                $stripeToken = Request::input('stripeToken');
 
-            return Redirect::route('invoice_list')
-                ->with('mSuccess', sprintf('La facture %s a été payée', $invoice->ident));
+        // Create the charge on Stripe's servers - this will charge the user's card
+                try {
+                    $amount = Invoice::TotalInvoiceWithTaxes($invoice->items) * 100;
+                    if ($amount) {
+                        $charge = \Stripe\Charge::create(array(
+                                "amount" => $amount, // amount in cents, again
+                                "currency" => "eur",
+                                "source" => $stripeToken,
+                                "description" => "Facture " . $invoice->ident)
+                        );
+                    }
+                    $invoice->date_payment = date('Y-m-d');
+                    $invoice->save();
 
-        } catch (\Stripe\Error\Card $e) {
-            // The card has been declined
-        }
+                    $invoice_comment = new InvoiceComment();
+                    $invoice_comment->invoice_id = $invoice->id;
+                    $invoice_comment->user_id = Auth::user()->id;
+                    $invoice_comment->content = 'Payé par CB avec Stripe';
+                    $invoice_comment->save();
+
+                    return Redirect::route('invoice_list')
+                        ->with('mSuccess', sprintf('La facture %s a été payée', $invoice->ident));
+
+                } catch (\Stripe\Error\Card $e) {
+                    // The card has been declined
+                }
+        */
+
     }
 
     public function send($invoice_id)
