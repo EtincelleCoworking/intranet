@@ -15,7 +15,7 @@
     "guilhermeguitte/behat-laravel": "dev-master",
     "phpunit/phpunit": "4.0.*",
     "h4cc/wkhtmltopdf-amd64": "0.12.x",
-    "stripe/stripe-php": "2.*",
+    "stripe/stripe-php": "7.*",
     "gzero/eloquent-tree": "v2.0",
     "league/csv": "^7.1@dev",
     "eluceo/ical": "*",

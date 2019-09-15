@@ -55,10 +55,10 @@
 
                         <div class="col-md-3 input-group-sm">{{ Form::text('filtre_start', Session::get('filtre_invoice.start') ? date('d/m/Y', strtotime(Session::get('filtre_invoice.start'))) : date('01/12/2014'), array('class' => 'form-control datePicker')) }}</div>
                         <div class="col-md-3 input-group-sm">{{ Form::text('filtre_end', ((Session::get('filtre_invoice.end')) ? date('d/m/Y', strtotime(Session::get('filtre_invoice.end'))) : date('t', date('m')).'/'.date('m/Y')), array('class' => 'form-control datePicker')) }}</div>
-                            <div class="col-md-3 input-group-sm">
-                                {{ Form::checkbox('filtre_unpaid', true, Session::has('filtre_invoice.filtre_unpaid') ? Session::get('filtre_invoice.filtre_unpaid') : false) }}
-                                Impayé
-                            </div>
+                        <div class="col-md-3 input-group-sm">
+                            {{ Form::checkbox('filtre_unpaid', true, Session::has('filtre_invoice.filtre_unpaid') ? Session::get('filtre_invoice.filtre_unpaid') : false) }}
+                            Impayé
+                        </div>
                         <div class="col-md-3">
                             {{ Form::submit('Filtrer', array('class' => 'btn btn-sm btn-primary')) }}
                             <a href="{{URL::route('invoice_filter_reset')}}" class="btn btn-sm btn-default">Réinitialiser</a>
@@ -230,43 +230,64 @@
 @stop
 
 @section('javascript')
-    <script src="https://checkout.stripe.com/checkout.js"></script>
+    <script src="https://js.stripe.com/v3/"></script>
 
     <script type="text/javascript">
         $().ready(function () {
-            var stripeForm = null;
-            var stripeHandler = StripeCheckout.configure({
-                key: '{{$_ENV['stripe_pk']}}',
+            var stripe = Stripe('{{$_ENV['stripe_pk']}}');
+            /*
+                        var stripeForm = null;
+                        var stripeHandler = StripeCheckout.configure({
+                            key: '{{$_ENV['stripe_pk']}}',
                 token: function (token) {
                     {{--// Use the token to create the charge with a server-side script.--}}
-                    {{--// You can access the token ID with `token.id`--}}
-                    stripeForm.append($('<input>').attr({
-                        type: 'hidden',
-                        name: 'stripeToken',
-                        value: token.id
-                    })).submit();
-                }
-            });
-
+            {{--// You can access the token ID with `token.id`--}}
+            stripeForm.append($('<input>').attr({
+                type: 'hidden',
+                name: 'stripeToken',
+                value: token.id
+            })).submit();
+        }
+    });
+*/
             @foreach ($invoices as $invoice)
 
+            @if($invoice->date_payment === null)
+            <?php
+            \Stripe\Stripe::setApiKey($_ENV['stripe_pk']);
+
+            $session = \Stripe\Checkout\Session::create([
+                'payment_method_types' => ['card'],
+                'line_items' => [[
+                    'name' => $_ENV['organisation_name'],
+                    'description' => 'Facture {{$invoice->ident}}',
+                    'amount' => Invoice::TotalInvoiceWithTaxes($invoice->items) * 100,
+                    'currency' => 'eur',
+                    'quantity' => 1,
+                    'panelLabel' => 'Payer {{amount}}',
+                    'email' => $invoice->user ? $invoice->user->email : '',
+                    'allowRememberMe' => false
+                ]],
+                //         'success_url' => 'https://example.com/success',
+                //         'cancel_url' => 'https://example.com/cancel',
+            ]);
+            ?>
             $('#stripe{{$invoice->id}}').on('click', function (e) {
-
                 e.preventDefault();
-
-                stripeForm = $(this).parent('form');
-
-                // Open Checkout with further options
-                stripeHandler.open({
-                    name: '{{ $_ENV['organisation_name'] }}',
-                    description: 'Facture {{$invoice->ident}}',
-                    currency: "eur",
-                    amount: {{ Invoice::TotalInvoiceWithTaxes($invoice->items) * 100 }},
-                    panelLabel: 'Payer \{\{amount\}\}',
-                    email: '{{$invoice->user?$invoice->user->email:''}}',
-                    allowRememberMe: false
+                stripe.redirectToCheckout({
+                    sessionId: '{{$session->id}}'
+                }).then(function (result) {
+                    // If `redirectToCheckout` fails due to a browser or network
+                    // error, display the localized error message to your customer
+                    // using `result.error.message`.
+                    console.log(result);
+                    if (typeof result.error.message !== undefined) {
+                        alert(result.error.message);
+                    }
                 });
+
             });
+            @endif
             @endforeach
 
             // Close Checkout on page navigation
