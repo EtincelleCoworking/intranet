@@ -359,7 +359,7 @@ class InvoiceController extends BaseController
     public function stripe()
     {
         $json = json_decode(Request::getContent());
-        file_put_contents(sprintf('stripe_%s.json', date('Ymd_His')), json_encode($json, JSON_PRETTY_PRINT));
+       // file_put_contents(sprintf('stripe_%s.json', date('Ymd_His')), json_encode($json, JSON_PRETTY_PRINT));
 
         $invoice_id = $json->data->object->charges->data[0]->metadata->invoice_id;
         $user_id = $json->data->object->charges->data[0]->metadata->user_id;
@@ -373,16 +373,7 @@ class InvoiceController extends BaseController
         $invoice_comment->content = 'Payé par CB avec Stripe';
         $invoice_comment->save();
 
-
-        $data = array();
-
-        $result = new Response();
-        $result->headers->set('Content-Type', 'application/json');
-        $result->headers->set('Access-Control-Allow-Origin', '*');
-        $result->headers->set('Access-Control-Allow-Methods', 'GET');
-        $result->headers->set('Access-Control-Allow-Headers', 'Origin, Content-Type, X-Auth-Token');
-        $result->setContent(json_encode($data));
-        return $result;
+        return new Response('OK');
 
         /*
                 \Stripe\Stripe::setApiKey($_ENV['stripe_sk']);
