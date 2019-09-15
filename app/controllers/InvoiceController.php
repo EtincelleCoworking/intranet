@@ -1,6 +1,7 @@
 <?php
 
 use Illuminate\Http\Response;
+use Stripe\Stripe;
 
 /**
  * Invoice Controller
@@ -358,6 +359,19 @@ class InvoiceController extends BaseController
     {
         $json = json_decode(Request::getContent());
         file_put_contents(sprintf('stripe_%s.json', date('Ymd_His')), json_encode($json, JSON_PRETTY_PRINT));
+
+        $invoice_id = $json->object->charges->data[0]->metadata->invoice_id;
+        $user_id = $json->object->charges->data[0]->metadata->user_id;
+        $invoice = Invoice::findOrFail($invoice_id);
+        $invoice->date_payment = date('Y-m-d');
+        $invoice->save();
+
+        $invoice_comment = new InvoiceComment();
+        $invoice_comment->invoice_id = $invoice->id;
+        $invoice_comment->user_id = $user_id;
+        $invoice_comment->content = 'Payé par CB avec Stripe';
+        $invoice_comment->save();
+
 
         $data = array();
 

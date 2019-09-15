@@ -258,9 +258,17 @@
 
             $session = \Stripe\Checkout\Session::create([
                 'payment_method_types' => ['card'],
+                'customer_email' => $invoice->user ? $invoice->user->email : '',
+                'payment_intent_data' => array(
+                    'description' => 'Facture ' . $invoice->ident,
+                    'receipt_email' => $invoice->user ? $invoice->user->email : '',
+                    'metadata' => array(
+                        'invoice_id' => $invoice->id,
+                        'user_id' => Auth::user()->id
+                    )
+                ),
                 'line_items' => [[
-                    'name' => 'Facture '.$invoice->ident,
-                    'description' => $invoice->user ? $invoice->user->email : '',
+                    'name' => 'Facture ' . $invoice->ident,
                     'amount' => Invoice::TotalInvoiceWithTaxes($invoice->items) * 100,
                     'currency' => 'eur',
                     'quantity' => 1
