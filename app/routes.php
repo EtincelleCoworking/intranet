@@ -50,7 +50,7 @@ Route::post('/phonebox/{location_slug}/{key}/{box_id}/update', array('as' => 'ph
 Route::post('/phonebox/{location_slug}/{key}/{box_id}/stop', array('as' => 'phonebox_stop', 'uses' => 'PhoneBoxController@stop'));
 
 Route::get('/invoice/{id}/print/pdf', array('as' => 'invoice_print_pdf', 'uses' => 'InvoiceController@print_pdf'))->where(array('id' => '[0-9]+'));
-Route::get('/webhook/stripe', array('uses' => 'InvoiceController@stripe'));
+Route::post('/webhook/stripe', array('uses' => 'InvoiceController@stripe'));
 
 
 Route::group(['before' => 'member'], function() {

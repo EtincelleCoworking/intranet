@@ -80,8 +80,7 @@
             <th class="col-md-2">Nom</th>
             <th class="col-md-1">Espace</th>
             <th class="col-md-1">Membre</th>
-            <th class="col-md-1">Périphériques</th>
-            <th class="col-md-1">Abonnement</th>
+            <th class="col-md-2">Périphériques</th>
             @if(!empty($_ENV['slack_url']))
                 <th class="col-md-1">Slack</th>
             @endif
@@ -214,24 +213,6 @@
                         echo date('d/m/Y', strtotime($user->welcome_email_sent_at));
                     }
                     printf('<a href="%s" class="btn btn-xs btn-primary">Inviter</a>', URL::route('user_send_welcome_email', $user->id));
-                    ?>
-                </td>
-                <td>
-                    <?php
-                    if ($subscription) {
-
-                        if ($duration) {
-                            echo durationToHuman($duration);
-                        } else {
-                            echo '0';
-                        }
-                        if ($subscription['subscription_hours_quota'] == -1) {
-                            echo ' / Illimité';
-                        } else {
-                            printf(' / %d heures', $subscription['subscription_hours_quota']);
-                        }
-
-                    }
                     ?>
                 </td>
                 <td>
