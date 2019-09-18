@@ -274,9 +274,9 @@ booking_item.participant_count, concat(users.firstname, " ", users.lastname) as 
 
         $response = new \Illuminate\Http\Response();
         $response->headers->set('Content-Type', 'application/json');
-//        $response->headers->set('Access-Control-Allow-Origin', '*');
-//        $response->headers->set('Access-Control-Allow-Methods', 'GET');
-//        $response->headers->set('Access-Control-Allow-Headers', 'Origin, Content-Type, X-Auth-Token');
+        $response->headers->set('Access-Control-Allow-Origin', '*');
+        $response->headers->set('Access-Control-Allow-Methods', 'GET');
+        $response->headers->set('Access-Control-Allow-Headers', 'Origin, Content-Type, X-Auth-Token');
         $response->setContent(json_encode($result));
         return $response;
 
