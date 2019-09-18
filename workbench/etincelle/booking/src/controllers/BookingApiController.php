@@ -239,8 +239,8 @@ booking_item.participant_count, concat(users.firstname, " ", users.lastname) as 
         $booking->save();
         $booking_items = array();
         foreach ($json->bookings as $booking_json) {
-            $start_at = sprintf('%s %s:00', $booking->day, $booking->from);
-            $end_at = sprintf('%s %s:00', $booking->day, $booking->to);
+            $start_at = sprintf('%s %s:00', $booking_json->day, $booking_json->from);
+            $end_at = sprintf('%s %s:00', $booking_json->day, $booking_json->to);
 
             $item = new BookingItem();
             $item->booking_id = $booking->id;
