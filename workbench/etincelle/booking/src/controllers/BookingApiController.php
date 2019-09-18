@@ -135,7 +135,7 @@ booking_item.participant_count, concat(users.firstname, " ", users.lastname) as 
             JOIN cities on locations.city_id = cities.id
           WHERE LOWER(cities.name) = ":city_slug"
           AND ressources.is_bookable = 1
-          ORDER BY locations.name, ressources.order_index')));
+          ORDER BY locations.name ASC, ressources.order_index ASC, ressources.name ASC')));
         foreach ($data as $item) {
             $result[$item->location][] = array(
                 'id' => $item->id,
@@ -214,6 +214,9 @@ booking_item.participant_count, concat(users.firstname, " ", users.lastname) as 
     public function bookings_book()
     {
         $json = json_decode(Request::getContent());
+        $json = $json->params;
+
+        //dump($json);
 
         $user_id = $json->customer_id;
         $user = User::findOrFail($user_id);
@@ -240,7 +243,7 @@ booking_item.participant_count, concat(users.firstname, " ", users.lastname) as 
             $end_at = sprintf('%s %s:00', $booking->day, $booking->to);
 
             $item = new BookingItem();
-            $item->booking = $booking;
+            $item->booking_id = $booking->id;
             $item->ressource_id = $booking_json->ressource_id;
             if (Config::get('booking::default_is_confirmed', true)) {
                 $item->confirmed_at = date('Y-m-d H:i:s');
@@ -257,11 +260,7 @@ booking_item.participant_count, concat(users.firstname, " ", users.lastname) as 
             ->with('booking')
             ->orderBy('start_at', 'ASC')
             ->get();
-        try {
-            $invoice = $this->createQuoteFromBookingItems($items);
-        } catch (\Exception $e) {
-            return Redirect::route('booking_list')->with('mError', $e->getMessage());
-        }
+        $invoice = BookingController::createQuoteFromBookingItems($items);
 
         $result = array(
             'status' => 'success',

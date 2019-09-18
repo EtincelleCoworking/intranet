@@ -762,13 +762,12 @@ class BookingController extends Controller
         if (!$booking_item) {
             return Redirect::route('quote_list')->with('mError', 'Réservation inconnue');
         }
-        $invoice = $this->createQuoteFromBookingItems(array($booking_item));
+        $invoice = BookingController::createQuoteFromBookingItems(array($booking_item));
 
         return Redirect::route('invoice_modify', $invoice->id)->with('mSuccess', 'Le devis a été créé');
     }
 
-    protected
-    function createQuoteFromBookingItems($booking_items)
+    static public function createQuoteFromBookingItems($booking_items)
     {
         $booking_item = $booking_items[0];
 
@@ -1000,12 +999,14 @@ ORDER BY room ASC , booking_item.start_at ASC ', $day, $day, $location)));
             $pages[] = $html;
             $mapping[$room] = array('index' => count($pages), 'wifi' => array());
         }
-        $pdf = App::make('snappy.pdf');
-        $output = $pdf->getOutputFromHtml($pages,
-            array('orientation' => 'Landscape',
-                'default-header' => false));
-        $pdf1filename = tempnam(sys_get_temp_dir(), 'intranet_pdf_') . '.pdf';
-        file_put_contents($pdf1filename, $output);
+        if (count($pages) > 0) {
+            $pdf = App::make('snappy.pdf');
+            $output = $pdf->getOutputFromHtml($pages,
+                array('orientation' => 'Landscape',
+                    'default-header' => false));
+            $pdf1filename = tempnam(sys_get_temp_dir(), 'intranet_pdf_') . '.pdf';
+            file_put_contents($pdf1filename, $output);
+        }
         //endregion
 
         //region WIFI
@@ -1034,7 +1035,7 @@ ORDER BY room ASC , booking_item.start_at ASC ', $day, $day, $location)));
 
         foreach ($bookings as $room => $meetings) {
             foreach ($meetings as $timerange => $meeting_data) {
-                if ($meeting_data['wifi_login']) {
+                if (!empty($meeting_data['wifi_login'])) {
 
                     $pages[] = BookingItem::getWifiHtml($location, $room, $day, $meeting_data['title'],
                         $meeting_data['wifi_login'], $meeting_data['wifi_password'], $timerange);
@@ -1044,8 +1045,6 @@ ORDER BY room ASC , booking_item.start_at ASC ', $day, $day, $location)));
             }
         }
         if (count($pages) > 0) {
-
-
             $pdf = App::make('snappy.pdf');
             $output = $pdf->getOutputFromHtml($pages,
                 array(
@@ -1201,7 +1200,7 @@ ORDER BY room ASC , booking_item.start_at ASC ', $day, $day, $location)));
             ->orderBy('start_at', 'ASC')
             ->get();
         try {
-            $invoice = $this->createQuoteFromBookingItems($items);
+            $invoice = BookingController::createQuoteFromBookingItems($items);
         } catch (\Exception $e) {
             return Redirect::route('booking_list')->with('mError', $e->getMessage());
         }
