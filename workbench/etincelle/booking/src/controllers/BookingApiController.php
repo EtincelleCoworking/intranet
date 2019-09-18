@@ -210,4 +210,81 @@ booking_item.participant_count, concat(users.firstname, " ", users.lastname) as 
         $response->setContent(json_encode($result));
         return $response;
     }
+
+    public function bookings_book()
+    {
+        $json = json_decode(Request::getContent());
+
+        $user_id = $json->customer_id;
+        $user = User::findOrFail($user_id);
+
+        $caption = $user->fullname;
+        $organisation_id = $json->organisation_id;
+        if ($organisation_id) {
+            $organisation = Organisation::find($organisation_id);
+            $caption = sprintf('%s (%s)', $organisation->name, $caption);
+        } else {
+            $organisation = null;
+        }
+        $booking = new Booking();
+        $booking->user_id = $user->id;
+        $booking->title = $caption;
+        if ($organisation) {
+            $booking->organisation_id = $organisation->id;
+        }
+        $booking->is_private = Config::get('booking::default_is_private', true);
+        $booking->save();
+        $booking_items = array();
+        foreach ($json->bookings as $booking_json) {
+            $start_at = sprintf('%s %s:00', $booking->day, $booking->from);
+            $end_at = sprintf('%s %s:00', $booking->day, $booking->to);
+
+            $item = new BookingItem();
+            $item->booking = $booking;
+            $item->ressource_id = $booking_json->ressource_id;
+            if (Config::get('booking::default_is_confirmed', true)) {
+                $item->confirmed_at = date('Y-m-d H:i:s');
+                $item->confirmed_by_user_id = $user->id;
+            }
+            $item->start_at = $start_at;
+            $item->duration = (strtotime($end_at) - strtotime($start_at)) / 60;
+            $item->save();
+            $booking_items[$item->id] = $item;
+        }
+
+        $items = BookingItem::query()
+            ->whereIn('id', array_keys($booking_items))
+            ->with('booking')
+            ->orderBy('start_at', 'ASC')
+            ->get();
+        try {
+            $invoice = $this->createQuoteFromBookingItems($items);
+        } catch (\Exception $e) {
+            return Redirect::route('booking_list')->with('mError', $e->getMessage());
+        }
+
+        $result = array(
+            'status' => 'success',
+            'data' => array(
+                'id' => $invoice->id,
+                'modify_url' => URL::route('invoice_modify', array('id' => $invoice->id)),
+                'pdf_url' => URL::route('invoice_print_pdf', array('id' => $invoice->id))
+            )
+        );
+
+        $response = new \Illuminate\Http\Response();
+        $response->headers->set('Content-Type', 'application/json');
+//        $response->headers->set('Access-Control-Allow-Origin', '*');
+//        $response->headers->set('Access-Control-Allow-Methods', 'GET');
+//        $response->headers->set('Access-Control-Allow-Headers', 'Origin, Content-Type, X-Auth-Token');
+        $response->setContent(json_encode($result));
+        return $response;
+
+        // récupérer le client
+        // récupérer l'organisation si elle est spécifiée
+        // créer les bookings et garder les ids
+        // créer le devis
+        // renvoyer l'url vers le devis + le pdf du devis
+
+    }
 }
