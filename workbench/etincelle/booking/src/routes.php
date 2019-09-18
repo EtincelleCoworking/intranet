@@ -11,6 +11,8 @@ Route::get('/api/booking/{booking_item_id}/unregister/{user_id?}', array('as' =>
 Route::get('/api/1.0/intercom/{location_slug}/{key}/allowed', array('as' => 'api_booking_intercom_allowed', 'uses' => 'BookingApiController@intercom'));
 Route::get('/api/1.0/bookings/{location_slug}/{key}/{occurs_at?}', array('as' => 'api_bookings', 'uses' => 'BookingApiController@bookings'));
 
+Route::post('/api/1.0/bookings', array('uses' => 'BookingApiController@bookings_book'));
+
 Route::get('/api/1.0/city/{city_slug}/ressources', array('as' => 'api_booking_ressources', 'uses' => 'BookingApiController@ressources'));
 Route::get('/api/1.0/city/{city_slug}/ressource/{ressource_id}/status', array('as' => 'api_booking_ressource_status', 'uses' => 'BookingApiController@ressource_status'));
 
