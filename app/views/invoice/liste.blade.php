@@ -250,11 +250,14 @@
         }
     });
 */
+            <?php
+            \Stripe\Stripe::setApiKey($_ENV['stripe_sk']);
+?>
             @foreach ($invoices as $invoice)
 
             @if($invoice->date_payment === null)
+            @if($total_amount = Invoice::TotalInvoiceWithTaxes($invoice->items) > 0)
             <?php
-            \Stripe\Stripe::setApiKey($_ENV['stripe_sk']);
 
             $session = \Stripe\Checkout\Session::create([
                 'payment_method_types' => ['card'],
@@ -269,7 +272,7 @@
                 ),
                 'line_items' => [[
                     'name' => 'Facture ' . $invoice->ident,
-                    'amount' => Invoice::TotalInvoiceWithTaxes($invoice->items) * 100,
+                    'amount' => $total_amount * 100,
                     'currency' => 'eur',
                     'quantity' => 1
                 ]],
@@ -293,6 +296,7 @@
 
             })
             ;
+            @endif
             @endif
             @endforeach
 
