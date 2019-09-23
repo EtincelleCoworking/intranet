@@ -252,13 +252,15 @@
 */
             <?php
             \Stripe\Stripe::setApiKey($_ENV['stripe_sk']);
-            $total_amount = Invoice::TotalInvoiceWithTaxes($invoice->items);
+
 ?>
             @foreach ($invoices as $invoice)
 
             @if($invoice->date_payment === null)
             @if($total_amount > 0)
             <?php
+
+            $total_amount = Invoice::TotalInvoiceWithTaxes($invoice->items);
 
             $session = \Stripe\Checkout\Session::create([
                 'payment_method_types' => ['card'],
