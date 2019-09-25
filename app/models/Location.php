@@ -99,6 +99,7 @@ class Location extends Eloquent
                 '2018-02' => 3705,
                 '2018-08' => 3430,
                 '2019-03' => 4440,
+                '2019-09' => 4150,
             ),
             'Wilson' => array(
                 '2015-01' => 7000,
@@ -117,6 +118,7 @@ class Location extends Eloquent
                 '2019-02' => 17405 + 4480 + 500 + 210, // Suayip + Albert 1er
                 '2019-03' => 24530,
                 '2019-07' => 24000, // -Suayip
+                '2019-09' => 25100, // +Marina
             ),
             //'Toulouse > Espace W' => array(),
             'Alsace Lorraine' => array(
@@ -126,7 +128,7 @@ class Location extends Eloquent
                 '2018-09' => 6300,
                 '2019-02' => 8480, // +Lyne
                 '2019-08' => 8380, // -Lyne
-                '2019-09' => 5920, // -Lyne
+                '2019-09' => 7650, // +Marina
             ),
         );
         $periods = array();
