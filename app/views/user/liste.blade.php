@@ -77,16 +77,16 @@
     <table class="table table-striped table-hover">
         <thead>
         <tr>
-            <th class="col-md-2">Nom</th>
-            <th class="col-md-1">Espace</th>
-            <th class="col-md-1">Membre</th>
-            <th class="col-md-2">Périphériques</th>
+            <th>Nom</th>
+            <th>Espace</th>
+            <th>Membre</th>
+            <th>Périphériques</th>
             @if(!empty($_ENV['slack_url']))
-                <th class="col-md-1">Slack</th>
+                <th>Slack</th>
             @endif
-            <th class="col-md-1">Intranet</th>
-            <th class="col-md-1">Invité Coworking</th>
-            <th class="col-md-2">Actions</th>
+            <th>Intranet</th>
+            <th>Invité Coworking</th>
+            <th>Actions</th>
         </tr>
         </thead>
         <tbody>
