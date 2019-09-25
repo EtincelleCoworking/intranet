@@ -159,6 +159,7 @@
 
                     ?>
                 </td>
+                <?php /*
                 <td>
                     <?php
                     $subscription = $user->getLastSubscription();
@@ -195,7 +196,7 @@
                     }
 
                     ?>
-                </td>
+                </td> */ ?>
                 @if(!empty($_ENV['slack_url']))
                     <td><?php
                         if ($user->slack_invite_sent_at) {
