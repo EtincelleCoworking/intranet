@@ -176,7 +176,7 @@
 
 
                                             @if(!$invoice->date_payment)
-                                                <form action="{{ URL::route('invoice_stripe', $invoice->id) }}"
+                                                <form action="#"
                                                       method="POST"
                                                       id="stripe{{$invoice->id}}form">
 
@@ -286,6 +286,7 @@
             ?>
             $('#stripe{{$invoice->id}}').on('click', function (e) {
                 e.preventDefault();
+
                 stripe.redirectToCheckout({
                     sessionId: '{{$session->id}}'
                 }).then(function (result) {
