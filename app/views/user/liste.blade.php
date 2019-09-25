@@ -85,7 +85,6 @@
                 <th class="col-md-1">Slack</th>
             @endif
             <th class="col-md-1">Intranet</th>
-            <th class="col-md-1">Temps passé</th>
             <th class="col-md-1">Invité Coworking</th>
             <th class="col-md-2">Actions</th>
         </tr>
