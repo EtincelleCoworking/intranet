@@ -77,6 +77,10 @@
                                 {{ Form::label('domiciliation_end_at', 'Fin') }}
                                 <p>{{ Form::text('domiciliation_end_at', $organisation->domiciliation_end_at?date('d/m/Y', strtotime($organisation->domiciliation_end_at)):null, array('class' => 'form-control datePicker')) }}</p>
                             </div>
+                            <div>
+                                {{ Form::label('domiciliation_address', 'Adresse') }}
+                                <p>{{ Form::textarea('domiciliation_address', $organisation->domiciliation_address, array('class' => 'form-control')) }}</p>
+                            </div>
                         </div>
                     </div>
 
