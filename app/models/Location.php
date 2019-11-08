@@ -132,6 +132,9 @@ class Location extends Eloquent
                 '2019-10' => 7620, // +Marina
                 '2019-09' => 7620, // +Marina
             ),
+            'Baour Lormian' => array(
+                '2019-11' => 3400
+            )
         );
         $periods = array();
         $when = Config::get('etincelle.activity_started');
