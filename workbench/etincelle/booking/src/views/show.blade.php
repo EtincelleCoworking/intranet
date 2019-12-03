@@ -88,6 +88,8 @@
                                            class="btn btn-primary btn-xs">Générer</a>
                                     @else
                                         {{$booking_item->booking->wifi_login}}
+                                        <a href="{{ URL::route('booking_generate_voucher', $booking_item->id) }}"
+                                           class="btn btn-primary btn-xs">Regénérer</a>
                                     @endif
                                 </td>
                             </tr>
