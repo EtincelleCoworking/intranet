@@ -91,6 +91,7 @@ class Location extends Eloquent
                 '2017-12' => 11820,
                 '2018-02' => 10415,
                 '2019-03' => 8350,
+                '2019-12' => 6650,
             ),
             'Victor Hugo' => array(
                 '2016-09' => 3415,
@@ -100,6 +101,7 @@ class Location extends Eloquent
                 '2018-08' => 3430,
                 '2019-03' => 4440,
                 '2019-09' => 4150,
+                '2019-12' => 4075,
             ),
             'Wilson' => array(
                 '2015-01' => 7000,
@@ -120,6 +122,7 @@ class Location extends Eloquent
                 '2019-07' => 24000, // -Suayip
                 '2019-09' => 21650, // +Marina 50% -Julie AM
                 '2019-10' => 21950, // +Marina 100%
+                '2019-12' => 24050, // +Tamara+Léa
             ),
             //'Toulouse > Espace W' => array(),
             'Alsace Lorraine' => array(
@@ -131,6 +134,7 @@ class Location extends Eloquent
                 '2019-08' => 8380, // -Lyne
                 '2019-10' => 7620, // +Marina
                 '2019-09' => 7620, // +Marina
+                '2019-12' => 8175, // +Tamara+Léa
             ),
             'Baour Lormian' => array(
                 '2019-11' => 3400
@@ -182,6 +186,9 @@ class Location extends Eloquent
                 '2019-09' => -2*14475.28,
                 '2019-10' => 14475.28,
                 '2019-11' => 14475.28,
+                '2019-12' => -2*13475.18,
+                '2020-01' => 13475.18,
+                '2020-02' => 13475.18,
             ),
             'Victor Hugo' => array(
                 // Loyer 12/2016 A. T.
