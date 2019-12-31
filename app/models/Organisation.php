@@ -50,6 +50,16 @@ class Organisation extends Eloquent
         return $this->belongsTo('DomiciliationKind');
     }
 
+    public function getDomiciliationFrequency()
+    {
+        if ($kind = $this->domiciliation_kind) {
+            if ('Domiciliation commerciale' != $kind->name) {
+                return str_replace('Domiciliation commerciale avec renvoi de courrier ', '', $kind->name);
+            }
+        }
+        return '-';
+    }
+
     /**
      * Organisation has many invoices
      */
