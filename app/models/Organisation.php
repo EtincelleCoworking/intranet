@@ -52,9 +52,9 @@ class Organisation extends Eloquent
 
     public function getDomiciliationFrequency()
     {
-        if ($kind = $this->domiciliation_kind) {
-            if ('Domiciliation commerciale' != $kind->name) {
-                return str_replace('Domiciliation commerciale avec renvoi de courrier ', '', $kind->name);
+        if (null != $this->domiciliation_kind) {
+            if ('Domiciliation commerciale' != $this->domiciliation_kind->name) {
+                return str_replace('Domiciliation commerciale avec renvoi de courrier ', '', $this->domiciliation_kind->name);
             }
         }
         return '-';
