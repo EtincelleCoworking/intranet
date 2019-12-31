@@ -10,6 +10,8 @@ class PostboxController extends BaseController
     public function index()
     {
         $organisationsQuery = Organisation::whereNotNull('domiciliation_kind_id')
+            ->join('domiciliation_kind', 'domiciliation_kind.id', '=', 'organisations.domiciliation_kind_id', 'LEFT OUTER')
+            ->select('organisations.*')
             /*
                          ->where(function ($query) {
                             $query->whereNull('domiciliation_end_at')

@@ -25,6 +25,7 @@
                             <tr>
                                 <th>Organisation</th>
                                 <th>Contact</th>
+                                <th>Réexpédition</th>
                                 <th>Début</th>
                                 <th>Fin</th>
                                 <th>Actions</th>
@@ -55,6 +56,9 @@
                                             -
                                         @endif
                                     </td>
+                                    <td class="col-md-2">
+                                        {{$organisation->getDomiciliationFrequency()}}
+                                    </td>
                                     <td class="col-md-1">
                                         @if($organisation->domiciliation_start_at)
                                             {{date('d/m/Y', strtotime($organisation->domiciliation_start_at))}}
@@ -67,7 +71,7 @@
                                             -
                                         @endif
                                     </td>
-                                    <td class="col-md-4">
+                                    <td class="col-md-2">
                                         @if(Auth::user()->isSuperAdmin())
                                             <a href="{{ URL::route('postbox_notify', $organisation->id) }}"
                                                class="btn btn-primary btn-xs">Notifier</a>
