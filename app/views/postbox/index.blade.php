@@ -38,14 +38,14 @@
                                         class="text-muted"
                                         @endif
                                 >
-                                    <td class="col-md-4">
+                                    <td class="col-md-3">
                                         @if(Auth::user()->isSuperAdmin())
                                             <a href="{{URL::route('organisation_modify', $organisation->id)}}">{{$organisation->name}}</a>
                                         @else
                                             {{$organisation->name}}
                                         @endif
                                     </td>
-                                    <td class="col-md-4">
+                                    <td class="col-md-3">
                                         @if($organisation->accountant_id)
                                             @if(Auth::user()->isSuperAdmin())
                                                 <a href="{{URL::route('user_modify', $organisation->accountant->id)}}">{{$organisation->accountant->fullname}}</a>
@@ -71,7 +71,7 @@
                                             -
                                         @endif
                                     </td>
-                                    <td class="col-md-2">
+                                    <td class="col-md-4">
                                         @if(Auth::user()->isSuperAdmin())
                                             <a href="{{ URL::route('postbox_notify', $organisation->id) }}"
                                                class="btn btn-primary btn-xs">Notifier</a>
