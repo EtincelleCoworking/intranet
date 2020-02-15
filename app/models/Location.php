@@ -141,6 +141,10 @@ class Location extends Eloquent
             'Baour Lormian' => array(
                 '2019-11' => 3400,
                 '2020-02' => 4050,
+            ),
+            'Wilson 4+5' => array(
+                '2020-02' => 4890,
+                '2020-03' => 9780,
             )
         );
         $periods = array();
