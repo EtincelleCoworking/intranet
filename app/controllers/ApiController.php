@@ -73,12 +73,14 @@ class ApiController extends BaseController
             ->firstOrFail();
 
         //region Update location public IP
-        LocationIp::where('id', '=', $location->id)->delete();
+        \Illuminate\Support\Facades\DB::transaction(function () use ($location) {
+            LocationIp::where('id', '=', $location->id)->delete();
 
-        $locationIp = new LocationIp();
-        $locationIp->id = $location->id;
-        $locationIp->name = $_SERVER['REMOTE_ADDR'];
-        $locationIp->save();
+            $locationIp = new LocationIp();
+            $locationIp->id = $location->id;
+            $locationIp->name = $_SERVER['REMOTE_ADDR'];
+            $locationIp->save();
+        });
         //endregion
 
         $json = json_decode(Request::getContent(), true);
@@ -653,6 +655,7 @@ class ApiController extends BaseController
                 'id' => $user->id,
                 'name' => $user->fullname,
                 'profile_url' => $user->getAvatarUrl(300),
+                'phone' => CronRunCommand::getPhoneNumberFormattedForSms($user->phone)
             ]]));
         return $result;
     }
@@ -672,7 +675,8 @@ class ApiController extends BaseController
                     'api_key' => $_ENV['PHONEBOX_API_KEY'],
                     'user_id' => $user->id,
                     'user_name' => $user->fullname,
-                    'user_picture' => $user->getAvatarUrl(300)
+                    'user_picture' => $user->getAvatarUrl(300),
+                    'user_phone' => CronRunCommand::getPhoneNumberFormattedForSms($user->phone)
                 )));
             curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
             $response_content = curl_exec($ch);
