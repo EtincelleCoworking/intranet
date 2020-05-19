@@ -76,6 +76,10 @@ class Location extends Eloquent
                 '2018-03' => 2550,
                 '2018-12' => 1550,
                 '2019-02' => 2035,
+                '2019-04' => 1335,
+                '2019-05' => 1335,
+                '2019-06' => 1035,
+                '2019-07' => 1735,
             ),
             'Montauban' => array(
                 '2015-09' => 2050,
@@ -237,6 +241,8 @@ class Location extends Eloquent
             'Albi' => array(
                 '2017-11' => -425,
                 '2017-12' => 425,
+                '2020-03' => 759, // Fond de solidarité
+                '2020-04' => 1500, // Fond de solidarité
             ),
             'Wilson' => array(
                 '2018-06' => -2590,
