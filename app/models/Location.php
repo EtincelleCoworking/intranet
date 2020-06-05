@@ -107,6 +107,7 @@ class Location extends Eloquent
                 '2019-09' => 4150,
                 '2019-12' => 4125,
                 '2020-03' => 4280,
+                '2020-06' => 4380,
             ),
             'Wilson' => array(
                 '2015-01' => 7000,
@@ -130,6 +131,7 @@ class Location extends Eloquent
                 '2019-12' => 24050, // +Tamara+Léa
                 '2020-02' => 19750, // -Aurélie -Julie
                 '2020-03' => 20700, // +Zoé +Line-Rose
+                '2020-06' => 19970,
             ),
             //'Toulouse > Espace W' => array(),
             'Alsace Lorraine' => array(
@@ -144,6 +146,7 @@ class Location extends Eloquent
                 '2019-12' => 8175, // +Tamara+Léa
                 '2020-02' => 8435,
                 '2020-03' => 8600,
+                '2020-06' => 7760,
             ),
             'Baour Lormian' => array(
                 '2019-11' => 3400,
@@ -153,6 +156,7 @@ class Location extends Eloquent
             'Wilson 4+5' => array(
                 '2020-02' => 4890,
                 '2020-03' => 12480,
+                '2020-06' => 9890,
             )
         );
         $periods = array();
