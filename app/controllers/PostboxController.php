@@ -30,10 +30,11 @@ class PostboxController extends BaseController
                 $organisations_ids[] = $organisation->id;
             }
 
-            $subscription_datas = Subscription::whereIn('organisation_id', $organisations_ids)
-                ->join('ressources', 'ressources.id', 'subscriptions.ressource_id')
-                ->where('ressources.ressource_kind_id', 3)
-                ->select('subscriptions.*')
+            $subscription_datas = Subscription::whereIn('subscription.organisation_id', $organisations_ids)
+                ->join('subscription_kind', 'subscriptions.subscription_kind_id', 'subscription_kind.id')
+                ->join('ressources', 'ressources.id', 'subscription_kind.ressource_id')
+                ->where('subscriptions.subscription_kind_id', 3)
+                ->select('subscription.*')
                 ->get();
             foreach ($subscription_datas as $subscription) {
                 $subscriptions[$subscription->organisation_id] = $subscription;
