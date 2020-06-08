@@ -21,9 +21,28 @@ class PostboxController extends BaseController
         if (!Auth::user()->isSuperAdmin()) {
             $organisationsQuery->where('accountant_id', '=', Auth::id());
         }
+        $organisations = $organisationsQuery->get();
+
+        $subscriptions = [];
+        if (Auth::user()->isSuperAdmin()) {
+            $organisations_ids = array();
+            foreach ($organisations as $organisation) {
+                $organisations_ids[] = $organisation->id;
+            }
+
+            $subscription_datas = Subscription::whereIn('organisation_id', $organisations_ids)
+                ->join('ressources', 'ressources.id', 'subscriptions.ressource_id')
+                ->where('ressources.ressource_kind_id', 3)
+                ->select('subscriptions.*')
+                ->get();
+            foreach ($subscription_datas as $subscription) {
+                $subscriptions[$subscription->organisation_id] = $subscription;
+            }
+        }
 
         return View::make('postbox.index', array(
-            'organisations' => $organisationsQuery->get()
+            'organisations' => $organisations,
+            'subscriptions' => $subscriptions
         ));
     }
 
@@ -89,7 +108,7 @@ class PostboxController extends BaseController
             $item->kind_id = $data['kind'][$index];
             $item->from_name = $data['from_name'][$index];
             $item->details = $data['details'][$index];
-            $item->is_important = isset($data['is_important'][$index])?$data['is_important'][$index]:false;
+            $item->is_important = isset($data['is_important'][$index]) ? $data['is_important'][$index] : false;
             $item->save();
 
             $items[] = $item;

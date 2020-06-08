@@ -28,6 +28,9 @@
                                 <th>Réexpédition</th>
                                 <th>Début</th>
                                 <th>Fin</th>
+                                @if(Auth::user()->isSuperAdmin())
+                                    <th>Abonnement</th>
+                                @endif
                                 <th>Actions</th>
                             </tr>
                             </thead>
@@ -38,14 +41,14 @@
                                         class="text-muted"
                                         @endif
                                 >
-                                    <td class="col-md-3">
+                                    <td>
                                         @if(Auth::user()->isSuperAdmin())
                                             <a href="{{URL::route('organisation_modify', $organisation->id)}}">{{$organisation->name}}</a>
                                         @else
                                             {{$organisation->name}}
                                         @endif
                                     </td>
-                                    <td class="col-md-3">
+                                    <td>
                                         @if($organisation->accountant_id)
                                             @if(Auth::user()->isSuperAdmin())
                                                 <a href="{{URL::route('user_modify', $organisation->accountant->id)}}">{{$organisation->accountant->fullname}}</a>
@@ -56,31 +59,40 @@
                                             -
                                         @endif
                                     </td>
-                                    <td class="col-md-2">
+                                    <td>
                                         {{$organisation->getDomiciliationFrequency()}}
                                     </td>
-                                    <td class="col-md-1">
+                                    <td>
                                         @if($organisation->domiciliation_start_at)
                                             {{date('d/m/Y', strtotime($organisation->domiciliation_start_at))}}
                                         @endif
                                     </td>
-                                    <td class="col-md-1">
+                                    <td>
                                         @if($organisation->domiciliation_end_at)
                                             {{date('d/m/Y', strtotime($organisation->domiciliation_end_at))}}
                                         @else
                                             -
                                         @endif
                                     </td>
-                                    <td class="col-md-4">
+                                    @if(Auth::user()->isSuperAdmin())
+                                        <td>
+                                            @if(isset($subscriptions[$organisation->id]))
+                                                @if($subscriptions[$organisation->id]->is_automatic_renew_enabled)
+                                                    <i class="fa fa-refresh" title="Renouvellement automatique"></i>
+                                                @endif
+                                                {{date('d/m/Y', strtotime($subscriptions[$organisation->id]->renew_at))}}
+                                            @else
+                                                <i class="fa fa-times text-danger"></i>
+                                            @endif
+                                        </td>
+                                    @endif
+                                    <td>
                                         @if(Auth::user()->isSuperAdmin())
                                             <a href="{{ URL::route('postbox_notify', $organisation->id) }}"
                                                class="btn btn-primary btn-xs">Notifier</a>
-                                            <a href="{{ URL::route('postbox_details', $organisation->id) }}"
-                                               class="btn btn-default btn-xs">Historique</a>
-                                        @else
-                                            <a href="{{ URL::route('postbox_details', $organisation->id) }}"
-                                               class="btn btn-primary btn-xs">Historique</a>
                                         @endif
+                                        <a href="{{ URL::route('postbox_details', $organisation->id) }}"
+                                           class="btn btn-default btn-xs">Historique</a>
                                     </td>
                                 </tr>
                             @endforeach
