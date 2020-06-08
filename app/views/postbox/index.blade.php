@@ -41,7 +41,7 @@
                                             class="text-muted"
                                         @else
                                             @if(!isset($subscriptions[$organisation->id]) || !$subscriptions[$organisation->id]->is_automatic_renew_enabled)
-                                                class="table-warning"
+                                                class="bg-danger"
                                             @endif
                                         @endif
                                 >
