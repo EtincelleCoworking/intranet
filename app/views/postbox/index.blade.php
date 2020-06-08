@@ -38,7 +38,11 @@
                             @foreach($organisations as $organisation)
                                 <tr
                                         @if($organisation->domiciliation_end_at && ($organisation->domiciliation_end_at < date('Y-m-d')))
-                                        class="text-muted"
+                                            class="text-muted"
+                                        @else
+                                            @if(!isset($subscriptions[$organisation->id]) || !$subscriptions[$organisation->id]->is_automatic_renew_enabled)
+                                                class="table-warning"
+                                            @endif
                                         @endif
                                 >
                                     <td>
@@ -76,13 +80,16 @@
                                     </td>
                                     @if(Auth::user()->isSuperAdmin())
                                         <td>
-                                            @if(isset($subscriptions[$organisation->id]))
-                                                @if($subscriptions[$organisation->id]->is_automatic_renew_enabled)
-                                                    <i class="fa fa-refresh" title="Renouvellement automatique"></i>
-                                                @endif
-                                                {{date('d/m/Y', strtotime($subscriptions[$organisation->id]->renew_at))}}
+                                            @if($organisation->domiciliation_end_at && ($organisation->domiciliation_end_at < date('Y-m-d')))
                                             @else
-                                                <i class="fa fa-times text-danger"></i>
+                                                @if(isset($subscriptions[$organisation->id]))
+                                                    @if($subscriptions[$organisation->id]->is_automatic_renew_enabled)
+                                                        <i class="fa fa-refresh" title="Renouvellement automatique"></i>
+                                                    @endif
+                                                    {{date('d/m/Y', strtotime($subscriptions[$organisation->id]->renew_at))}}
+                                                @else
+                                                    <i class="fa fa-times text-danger"></i>
+                                                @endif
                                             @endif
                                         </td>
                                     @endif
