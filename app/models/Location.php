@@ -240,6 +240,10 @@ class Location extends Eloquent
                 '2019-10' => 2253,
                 '2019-11' => 2253,
                 '2019-12' => 2254,
+                '2020-06' => -1700, // DataSoluce
+                '2020-07' => 800, // DataSoluce
+                '2020-08' => 500, // DataSoluce
+                '2020-09' => 400, // DataSoluce
 
             ),
             'Albi' => array(
@@ -273,6 +277,11 @@ class Location extends Eloquent
                 '2019-09' => 800 - 422 - 422,
                 '2019-10' => 422,
                 '2019-11' => 422,
+            )
+        ,
+
+            'Wilson 4+5' => array(
+                '2020-06' => -2410, // Diagoris
             )
         );
     }
