@@ -79,7 +79,7 @@ class Location extends Eloquent
                 '2020-04' => 1035, // - Loyer - Samuel
                 '2020-05' => 1335, // - Loyer
                 '2020-06' => 1035, // - Loyer - Samuel
-                '2020-07' => 1735, // - Samuel
+                '2020-07' => 1850, // - Samuel
             ),
             'Montauban' => array(
                 '2015-09' => 2050,
@@ -146,7 +146,7 @@ class Location extends Eloquent
                 '2019-12' => 8175, // +Tamara+Léa
                 '2020-02' => 8435,
                 '2020-03' => 8600,
-                '2020-06' => 7760,
+                '2020-06' => 8200,
             ),
             'Baour Lormian' => array(
                 '2019-11' => 3400,
@@ -156,7 +156,7 @@ class Location extends Eloquent
             'Wilson 4+5' => array(
                 '2020-02' => 4890,
                 '2020-03' => 12480,
-                '2020-06' => 9890,
+                '2020-06' => 10500,
             )
         );
         $periods = array();
