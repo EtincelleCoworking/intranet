@@ -79,7 +79,7 @@ class Location extends Eloquent
                 '2020-04' => 1035, // - Loyer - Samuel
                 '2020-05' => 1335, // - Loyer
                 '2020-06' => 1035, // - Loyer - Samuel
-                '2020-07' => 2050, // - Samuel
+                '2020-07' => 1870, // - Samuel
             ),
             'Montauban' => array(
                 '2015-09' => 2050,
@@ -97,7 +97,7 @@ class Location extends Eloquent
                 '2019-03' => 8350,
                 '2019-12' => 6650,
                 '2020-07' => 7400,
-                '2020-07' => 10900,
+                '2020-07' => 7400,
             ),
             'Victor Hugo' => array(
                 '2016-09' => 3415,
@@ -109,7 +109,7 @@ class Location extends Eloquent
                 '2019-09' => 4150,
                 '2019-12' => 4125,
                 '2020-03' => 4280,
-                '2020-07' => 4380,
+                '2020-07' => 4280,
             ),
             'Wilson' => array(
                 '2015-01' => 7000,
@@ -133,7 +133,7 @@ class Location extends Eloquent
                 '2019-12' => 24050, // +Tamara+Léa
                 '2020-02' => 19750, // -Aurélie -Julie
                 '2020-03' => 20700, // +Zoé +Line-Rose
-                '2020-07' => 19900,
+                '2020-07' => 20140,
             ),
             //'Toulouse > Espace W' => array(),
             'Alsace Lorraine' => array(
@@ -148,7 +148,7 @@ class Location extends Eloquent
                 '2019-12' => 8175, // +Tamara+Léa
                 '2020-02' => 8435,
                 '2020-03' => 8600,
-                '2020-07' => 8960,
+                '2020-07' => 8050,
             ),
             'Baour Lormian' => array(
                 '2019-11' => 3400,
@@ -158,7 +158,7 @@ class Location extends Eloquent
             'Wilson 4+5' => array(
                 '2020-02' => 4890,
                 '2020-03' => 12480,
-                '2020-07' => 10040,
+                '2020-07' => 9780,
             )
         );
         $periods = array();
@@ -284,6 +284,7 @@ class Location extends Eloquent
 
             'Wilson 4+5' => array(
                 '2020-06' => -2410, // Diagoris
+                '2020-07' => 2410, // Diagoris
             )
         );
     }
