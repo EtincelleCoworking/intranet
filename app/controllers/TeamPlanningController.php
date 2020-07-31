@@ -5,6 +5,14 @@
  */
 class TeamPlanningController extends BaseController
 {
+    const TEAM_SEBASTIEN = 1;
+    const TEAM_JEHANNE = 2410;
+    const TEAM_MARINA = 3509;
+    const TEAM_TAMARA = 3666;
+    const TEAM_ZOE = 3852;
+    const TEAM_LINE_ROSE = 3867;
+    const TEAM_VALENTIN = 3989;
+
     public function index()
     {
         $user_id = Input::get('user_id');
@@ -28,213 +36,191 @@ class TeamPlanningController extends BaseController
         ));
     }
 
-    public function populate()
+    protected function generateTimesheet($start, $end, $ranges, $member_id, $location_id, $days = array(1, 2, 3, 4, 5))
     {
-        // DELETE from `team_planning_item` WHERE user_id in (1, 2414, 877) and start_at >= "2019-01-03"
-
-        //TeamPlanningItem::truncate();
-        //region Jehanne
-        /*
-                $ranges = array('08:15' => '11:00', '13:30' => '15:00');
-                $days = array(1, 2, 3, 4, 5);
-                $now = mktime(0, 0, 0, 3, 2, 2019);
-                $ends = mktime(0, 0, 0, 6, 30, 2019);
-                while ($now <= $ends) {
-                    if (in_array(date('N', $now), $days) && !Utils::isFerian(date('Y-m-d', $now))) {
-                        foreach ($ranges as $start_time => $end_time) {
-                            $_now = date('Y-m-d', $now);
-                            if (!Utils::isFerian($_now)) {
-                                $item = new TeamPlanningItem();
-                                $item->user_id = 2410;
-                                $item->location_id = 1;
-                                $item->start_at = $_now . ' ' . $start_time;
-                                $item->end_at = $_now . ' ' . $end_time;
-                                $item->save();
-                                print_r($item);
-                            }
-                        }
-                    }
-                    $now = strtotime('+1 day', $now);
-                }
-        */
-        //endregion
-
-        //region Lyne
-
-        $ranges = array('08:00' => '10:30', '12:15' => '14:15', '15:15' => '17:45');
-        $days = array(1, 2, 3, 4, 5);
-        $now = mktime(0, 0, 0, 2, 26, 2019);
-        $ends = mktime(0, 0, 0, 8, 5, 2019);
+        $now = strtotime($start);
+        $ends = strtotime($end);
         while ($now <= $ends) {
-            if (in_array(date('N', $now), $days) && !Utils::isFerian(date('Y-m-d', $now))) {
+            $_now = date('Y-m-d', $now);
+            if (in_array(date('N', $now), $days) && !Utils::isFerian($_now)) {
                 foreach ($ranges as $start_time => $end_time) {
-                    $_now = date('Y-m-d', $now);
-                    if (!Utils::isFerian($_now)) {
+                    if (empty($this->existing_holidays[$member_id][$_now])) {
                         $item = new TeamPlanningItem();
-                        $item->user_id = 2951;
-                        $item->location_id = 8;
+                        $item->user_id = $member_id;
+                        $item->location_id = $location_id;
                         $item->start_at = $_now . ' ' . $start_time;
                         $item->end_at = $_now . ' ' . $end_time;
                         $item->save();
-                        print_r($item);
+                        //print_r($item);
                     }
                 }
             }
             $now = strtotime('+1 day', $now);
         }
+    }
 
-        //endregion
 
-        //region Suayip
-        /*
-        $ranges = array('08:30' => '12:30', '14:00' => '17:00');
-        $planning = array();
-        $planning['2018-10-30'] = 2;
-        $planning['2018-11-02'] = 1;
-        $planning['2018-11-05'] = 5;
-        $planning['2018-11-19'] = 5;
-        $planning['2018-11-26'] = 5;
-        $planning['2018-12-17'] = 5;
-        $planning['2018-12-24'] = 1;
-        $planning['2018-12-26'] = 3;
-        $planning['2018-12-31'] = 1;
-        $planning['2019-01-02'] = 3;
-        $planning['2019-01-14'] = 5;
-        $planning['2019-01-21'] = 5;
-        $planning['2019-02-04'] = 5;
-        $planning['2019-02-11'] = 5;
-        $planning['2019-02-25'] = 5;
-        $planning['2019-03-11'] = 5;
-        $planning['2019-03-18'] = 5;
-        $planning['2019-04-01'] = 5;
-        $planning['2019-04-08'] = 5;
-        $planning['2019-04-23'] = 4;
-        $planning['2019-04-29'] = 2;
-        $planning['2019-05-02'] = 2;
-        $planning['2019-05-13'] = 5;
-        $planning['2019-05-20'] = 5;
-        $planning['2019-06-01'] = 1;
-        $planning['2019-06-03'] = 5;
-        $planning['2019-06-11'] = 4;
-        $planning['2019-06-24'] = 5;
-        foreach ($planning as $now => $duration) {
-            $now = strtotime($now);
-            while ($duration--) {
-                foreach ($ranges as $start_time => $end_time) {
-                    $item = new TeamPlanningItem();
-                    $item->user_id = 2648;
-                    $item->location_id = 1;
-                    $item->start_at = date('Y-m-d ', $now) . $start_time;
-                    $item->end_at = date('Y-m-d ', $now) . $end_time;
-                    $item->save();
-                    print_r($item);
-                }
-                $now = strtotime('+1 day', $now);
+    protected function generateHolidays($start, $end, $member_id, $days = array(1, 2, 3, 4, 5))
+    {
+        $now = strtotime($start);
+        $ends = strtotime($end);
+        while ($now <= $ends) {
+            $_now = date('Y-m-d', $now);
+            if (in_array(date('N', $now), $days) && !Utils::isFerian($_now)) {
+                $item = new TeamPlanningItem();
+                $item->user_id = $member_id;
+                $item->location_id = 1;
+                $item->start_at = $_now . ' 00:00:00';
+                $item->end_at = $_now . ' 00:00:00';
+                $item->is_holiday = true;
+                $item->save();
+                //print_r($item);
             }
-        }*/
-//endregion
-        /*
-                $days = array(1, 2, 3, 4, 5);
-                $ranges = array(
-                    //array('08:00' => '12:30', '13:30' => '16:00'), // AL
+            $now = strtotime('+1 day', $now);
+        }
+    }
 
-                    array('08:00' => '12:45', '14:00' => '16:00'), // Wilson
+    protected $existing_holidays;
 
-                    array('11:00' => '14:30', '15:30' => '18:45'), // Wilson, repas sur place (12h30 / 13h30), checkout AL
-                );
-                $members = array();
-                $members[] = 2414; // Julie
-                //$members[] = 1; // Sébastien
-                $members[] = 877; // Aurélie
-                $ends = mktime(0, 0, 0, 6, 30, 2019);
-                foreach ($members as $planning_index => $user_id) {
-                    $now = mktime(0, 0, 0, 1, 3, 2019);
-                    while ($now <= $ends) {
-                        if (in_array(date('N', $now), $days)) {
-                            $_now = date('Y-m-d', $now);
-                            if (!Utils::isFerian($_now)) {
-                                $range_index = $planning_index++ % count($members);
-                                foreach ($ranges[$range_index] as $start_time => $end_time) {
-                                    $item = new TeamPlanningItem();
-                                    $item->user_id = $user_id;
-                                    $item->location_id = 1; //($range_index != 0) ? 1 : 8;
-                                    $item->start_at = $_now . ' ' . $start_time;
-                                    $item->end_at = $_now . ' ' . ((($end_time == '18:45') && (date('N', $now) == 5)) ? '17:45' : $end_time);
-                                    $item->save();
-                                    print_r($item);
-                                }
-                            }
-                        }
-                        $now = strtotime('+1 day', $now);
-                    }
+    public function populate()
+    {
+//        $this->generateHolidays('2020-07-15', '2020-08-04', self::TEAM_MARINA);
+//        $this->generateHolidays('2020-08-03', '2020-08-28', self::TEAM_JEHANNE);
+
+        $location_wilson = 1;
+        $location_alsace_lorraine = 8;
+
+
+        // DELETE from `team_planning_item` WHERE start_at >= "2019-12-01"
+        //TeamPlanningItem::truncate();
+
+        //region Marina
+
+
+        $sql = 'select distinct(date(start_at)) as occurs_at, user_id from team_planning_item where start_at > now() and is_holiday = true';
+        $this->existing_holidays = [];
+        foreach (\Illuminate\Support\Facades\DB::select($sql) as $row) {
+            if (!isset($this->existing_holidays[$row->user_id])) {
+                $this->existing_holidays[$row->user_id] = [];
+            }
+            $this->existing_holidays[$row->user_id][$row->occurs_at] = true;
+        }
+
+        $start_at = '2020-05-18';
+        foreach ([self::TEAM_MARINA, self::TEAM_ZOE, self::TEAM_LINE_ROSE, self::TEAM_JEHANNE] as $member) {
+            \Illuminate\Support\Facades\DB::delete('DELETE FROM team_planning_item WHERE start_at >= ? AND user_id = ? AND is_holiday = false', [$start_at, $member]);
+        }
+
+        $now = strtotime('2020-05-18');
+        $ends = strtotime('2020-06-30');
+
+        $current = $now;
+        while ($current <= $ends) {
+            // lundi
+            $day = date('Y-m-d', $current);
+            $this->generateTimesheet($day, $day, array('08:00' => '11:00', '13:30' => '17:30'), self::TEAM_LINE_ROSE, $location_alsace_lorraine);
+            $this->generateTimesheet($day, $day, array('10:45' => '13:45', '15:00' => '19:00'), self::TEAM_MARINA, $location_alsace_lorraine);
+            $this->generateTimesheet($day, $day, array('08:00' => '12:30', '13:30' => '16:00'), self::TEAM_ZOE, $location_wilson);
+
+            // mardi
+            $day = date('Y-m-d', strtotime($day) + 24 * 3600);
+            if ($day <= $ends) {
+                $this->generateTimesheet($day, $day, array('08:00' => '11:00', '13:30' => '17:30'), self::TEAM_LINE_ROSE, $location_alsace_lorraine);
+                $this->generateTimesheet($day, $day, array('10:45' => '13:45', '15:00' => '19:00'), self::TEAM_MARINA, $location_alsace_lorraine);
+                $this->generateTimesheet($day, $day, array('08:00' => '12:30', '13:30' => '16:00'), self::TEAM_ZOE, $location_wilson);
+            }
+            // mercredi
+            $day = date('Y-m-d', strtotime($day) + 24 * 3600);
+            if ($day <= $ends) {
+                $this->generateTimesheet($day, $day, array('08:00' => '11:00', '13:30' => '17:30'), self::TEAM_MARINA, $location_alsace_lorraine);
+                $this->generateTimesheet($day, $day, array('10:45' => '13:45', '15:00' => '19:00'), self::TEAM_LINE_ROSE, $location_alsace_lorraine);
+                $this->generateTimesheet($day, $day, array('08:00' => '12:30', '13:30' => '16:00'), self::TEAM_ZOE, $location_wilson);
+            }
+            // jeudi
+            $day = date('Y-m-d', strtotime($day) + 24 * 3600);
+            if ($day <= $ends) {
+                $this->generateTimesheet($day, $day, array('08:00' => '11:00', '13:30' => '17:30'), self::TEAM_MARINA, $location_alsace_lorraine);
+                $this->generateTimesheet($day, $day, array('10:45' => '13:45', '15:00' => '19:00'), self::TEAM_LINE_ROSE, $location_alsace_lorraine);
+                $this->generateTimesheet($day, $day, array('08:00' => '12:30', '13:30' => '16:00'), self::TEAM_ZOE, $location_wilson);
+            }
+            // vendredi
+            $day = date('Y-m-d', strtotime($day) + 24 * 3600);
+            if ($day <= $ends) {
+                if (date('W', $current) % 2) {
+                    $this->generateTimesheet($day, $day, array('08:00' => '11:00', '13:30' => '17:30'), self::TEAM_LINE_ROSE, $location_alsace_lorraine);
+                    $this->generateTimesheet($day, $day, array('10:45' => '13:45', '15:00' => '19:00'), self::TEAM_MARINA, $location_alsace_lorraine);
+                } else {
+                    $this->generateTimesheet($day, $day, array('08:00' => '11:00', '13:30' => '17:30'), self::TEAM_MARINA, $location_alsace_lorraine);
+                    $this->generateTimesheet($day, $day, array('10:45' => '13:45', '15:00' => '19:00'), self::TEAM_LINE_ROSE, $location_alsace_lorraine);
                 }
-                */
-        /*
-                $ranges = array('08:15' => '12:15', '13:45' => '16:45');
-                $member_index = 0;
-                $members = array();
-                $members[] = 1; // Sébastien
-                $members[] = 877; // Aurélie
-                $members[] = 1; // Sébastien
-                $members[] = 2414; // Julie
-                $ends = mktime(0, 0, 0, 6, 30, 2019);
-                $now = mktime(0, 0, 0, 1, 5, 2019);
-                while ($now <= $ends) {
-                    $_now = date('Y-m-d', $now);
-                    if (!Utils::isFerian($_now)) {
-                        foreach ($ranges as $start_time => $end_time) {
-                            $item = new TeamPlanningItem();
-                            $item->user_id = $members[$member_index % count($members)];
-                            $item->location_id = 1; //($range_index != 0) ? 1 : 8;
-                            $item->start_at = $_now . ' ' . $start_time;
-                            $item->end_at = $_now . ' ' . $end_time;
-                            $item->save();
-                            print_r($item);
-                        }
-                        $member_index++;
-                    }
-                    $now = strtotime('+7 day', $now);
-                }*/
+                $this->generateTimesheet($day, $day, array('08:00' => '12:30', '13:30' => '16:00'), self::TEAM_ZOE, $location_wilson);
+            }
+            $current += 7 * 24 * 3600;
+        }
+
+        return 'OK';
+
     }
 
     protected function getColors()
     {
         $colors = array();
-        $colors[1] = array( // Sébastien
+        $colors[self::TEAM_SEBASTIEN] = array(
             'text' => '#000000',
             'background' => '#A4C400',
             'border' => adjustBrightness('#A4C400', -32),
         );
-        $colors[877] = array( // Aurélie
+        $colors[self::TEAM_ZOE] = array(
             'text' => '#ffffff',
             'background' => '#00ABA9',
             'border' => adjustBrightness('#00ABA9', -32),
         );
-        $colors[1474] = array( // Caroline
-            'text' => '#ffffff',
-            'background' => '#0050EF',
-            'border' => adjustBrightness('#0050EF', -32),
-        );
-        $colors[2410] = array( // Jehanne
+        $colors[self::TEAM_JEHANNE] = array(
             'text' => '#ffffff',
             'background' => '#AA00FF',
             'border' => adjustBrightness('#AA00FF', -32),
         );
-        $colors[2414] = array( // Julie
+        $colors[self::TEAM_LINE_ROSE] = array(
             'text' => '#ffffff',
             'background' => '#FA6800',
             'border' => adjustBrightness('#FA6800', -32),
         );
+        /*
         $colors[2648] = array( // Suayip
             'text' => '#000000',
             'background' => '#E3C800',
             'border' => adjustBrightness('#E3C800', -32),
         );
+        */
+        /*
         $colors[2951] = array( // Lyne
             'text' => '#ffffff',
             'background' => '#6D8764',
             'border' => adjustBrightness('#6D8764', -32),
         );
+*/
+        $colors[self::TEAM_MARINA] = array( // Marina
+            'text' => '#ffffff',
+            'background' => '#6D8764',
+            'border' => adjustBrightness('#6D8764', -32),
+        );
+        $colors[self::TEAM_TAMARA] = array( // Tamara
+            'text' => '#ffffff',
+            'background' => '#0050EF',
+            'border' => adjustBrightness('#0050EF', -32),
+        );
+        $colors[self::TEAM_VALENTIN] = array(
+            'text' => '#ffffff',
+            'background' => '#0050EF',
+            'border' => adjustBrightness('#0050EF', -32),
+        );
+        /*
+                $colors[3667] = array( // Léa
+                    'text' => '#ffffff',
+                    'background' => '#FA6800',
+                    'border' => adjustBrightness('#FA6800', -32),
+                );
+        */
 
         return $colors;
     }
