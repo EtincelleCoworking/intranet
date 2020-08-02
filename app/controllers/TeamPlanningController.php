@@ -108,7 +108,7 @@ class TeamPlanningController extends BaseController
         }
 
         $start_at = '2020-08-03';
-        foreach ([self::TEAM_VALENTIN] as $member) {
+        foreach ([self::TEAM_VALENTIN, self::TEAM_MARINA] as $member) {
             \Illuminate\Support\Facades\DB::delete('DELETE FROM team_planning_item WHERE start_at >= ? AND user_id = ? AND is_holiday = false', [$start_at, $member]);
         }
 
@@ -119,6 +119,7 @@ class TeamPlanningController extends BaseController
         while ($current <= $ends) {
             $day = date('Y-m-d', $current);
             $this->generateTimesheet($day, $day, array('08:30' => '11:00', '12:45' => '17:15'), self::TEAM_VALENTIN, $location_carmes);
+            $this->generateTimesheet($day, $day, array('08:30' => '11:00', '12:45' => '17:15'), self::TEAM_MARINA, $location_alsace_lorraine);
             $current += 24 * 3600;
            /*
             // lundi
