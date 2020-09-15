@@ -399,6 +399,7 @@ order by kind ASC, `period` DESC
             curl_setopt($curl, CURLOPT_HTTPAUTH, CURLAUTH_BASIC);
             curl_setopt($curl, CURLOPT_USERPWD, $this->voucher_key . ':' . $this->voucher_secret);
             curl_setopt($curl, CURLOPT_POST, 1);
+            curl_setopt($curl, CURLOPT_SSL_VERIFYPEER, FALSE);
             curl_setopt($curl, CURLOPT_POSTFIELDS, array(
                 'count' => 1,
                 'validity' => $validity,
