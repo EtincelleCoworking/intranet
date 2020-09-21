@@ -175,8 +175,8 @@ booking_item.participant_count, concat(users.firstname, " ", users.lastname) as 
             'SELECT booking_item.confirmed_at
           FROM booking_item
           WHERE booking_item.ressource_id = :ressource_id
-            AND booking_item.start_at <= ":to"
-            AND DATE_ADD(booking_item.start_at, INTERVAL duration MINUTE) >= ":from"')));
+            AND booking_item.start_at < ":to"
+            AND DATE_ADD(booking_item.start_at, INTERVAL duration MINUTE) > ":from"')));
         foreach ($result as $item) {
             $booking_count++;
             $status = max($status, (int)($item->confirmed_at != null));
