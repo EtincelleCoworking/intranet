@@ -47,7 +47,7 @@ class LockerGenerateCommand extends Command
             $this->output->writeln($data['name']);
             for ($i = 1; $i < $data['count']; $i++) {
                 $locker = new Locker();
-                $locker->cabinet_id = $cabinet->id;
+                $locker->locker_cabinet_id = $cabinet->id;
                 $locker->name = str_pad($i, '0', STR_PAD_LEFT);
                 $locker->secret = substr(bin2hex(random_bytes(32)), 0, 32);
                 $locker->save();
