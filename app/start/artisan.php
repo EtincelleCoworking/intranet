@@ -12,7 +12,7 @@
 */
 Artisan::add(new ImportUsersFromSkeddaCommand);
 Artisan::add(new WordpressSyncCommand);
-Artisan::add(new AccountingExportCommand);
+//Artisan::add(new AccountingExportCommand);
 Artisan::add(new BirthdayPostCommand);
 Artisan::add(new UpdateMemberStatusCommand);
 Artisan::add(new CronRunCommand);
@@ -23,6 +23,7 @@ Artisan::add(new GenerateMissingVoucherCommand);
 Artisan::add(new RenewPendingSubscriptionsCommand);
 Artisan::add(new SendUpcomingSubscriptionRenewNotificationsCommand);
 Artisan::add(new BookingGenerateCommand);
+Artisan::add(new LockerGenerateCommand);
 Artisan::add(new ComputeCoworkingStatsCommand);
 Artisan::add(new ComputeRessourceStatsCommand);
 Artisan::add(new ComputeDeviceSeenCommand);
