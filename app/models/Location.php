@@ -80,6 +80,7 @@ class Location extends Eloquent
                 '2020-05' => 1335, // - Loyer
                 '2020-06' => 1035, // - Loyer - Samuel
                 '2020-07' => 1870, // - Samuel
+                '2020-09' => 2090, // + Zoé
             ),
             'Montauban' => array(
                 '2015-09' => 2050,
@@ -216,7 +217,8 @@ class Location extends Eloquent
                 '2020-05' => 80851.68 / 6,
                 '2020-06' => 80851.68 / 6,
                 '2020-07' => 80851.68 / 6,
-                '2020-08' => 80851.68 / 6,
+                '2020-08' => 80851.68 / 6 + 600,
+                '2020-09' => -600,
             ),
             'Victor Hugo' => array(
                 // Loyer 12/2016 A. T.
@@ -280,12 +282,16 @@ class Location extends Eloquent
                 '2019-09' => 800 - 422 - 422,
                 '2019-10' => 422,
                 '2019-11' => 422,
-            )
-        ,
+            ),
 
             'Wilson 4+5' => array(
                 '2020-06' => -2410, // Diagoris
                 '2020-07' => 2410, // Diagoris
+            ),
+
+            'Baour Lormian' => array(
+                '2020-08' => 313.13, // Iriade
+                '2020-09' => -313.13, // Iriade
             )
         );
     }
