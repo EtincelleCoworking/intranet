@@ -139,7 +139,7 @@ class Location extends Eloquent
                 '2020-02' => 19750, // -Aurélie -Julie
                 '2020-03' => 20700, // +Zoé +Line-Rose
                 '2020-07' => 20050,
-                '2021-01' => 19150,
+                '2021-01' => 11375,
             ),
             //'Toulouse > Espace W' => array(),
             'Alsace Lorraine' => array(
@@ -167,7 +167,7 @@ class Location extends Eloquent
                 '2020-02' => 4890,
                 '2020-03' => 12480,
                 '2020-07' => 9780,
-                '2021-01' => 5620,
+                '2021-01' => 3200,
                 '2021-05' => 0,
             )
         );
