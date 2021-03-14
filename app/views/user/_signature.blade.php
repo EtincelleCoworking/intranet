@@ -56,20 +56,20 @@ T&eacute;l. : <span style="color:#4F2067;font-family:sans-serif">{{$_ENV['organi
                                     <td width="33%">
                                         @if($twitter)
                                             <a href="https://twitter.com/{{$twitter}}" target="_blank"><img
-                                                        style="border-radius:0px;border:0px"
+                                                        style="border-radius:0px;border:0px" alt="Twitter"
                                                         src="{{url('/img/twitter-logo-button-2.png')}}"></a>
                                         @endif
                                     </td>
                                     <td width="33%">
                                         @if($facebook)
                                             <a href="{{$facebook}}" target="_blank"><img
-                                                        style="border-radius:0px;border:0px"
+                                                        style="border-radius:0px;border:0px" alt="Facebook"
                                                         src="{{url('/img/facebook-logo-button-2.png')}}"></a>
                                         @endif
                                     </td>
                                     <td width="34%">
                                         <a href="https://etincelle.rocks/with/{{$user->slug}}" target="_blank"><img
-                                                    style="border-radius:0px;border:0px"
+                                                    style="border-radius:0px;border:0px" alt="Etincelle.rocks"
                                                     src="{{url('/img/icon-etincelle-24.png')}}"></a>
 
                                     </td>
