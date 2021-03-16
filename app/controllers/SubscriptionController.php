@@ -322,6 +322,8 @@ order by invoices_items.subscription_overuse_managed ASC, invoices_items.subscri
 
     public function manage()
     {
+        return View::make('subscription.manage2021');
+
         $subscription = Subscription::where('user_id', '=', Auth::id())->first();
         $items = array();
         $options = SubscriptionKind::where('ressource_id', '=', Ressource::TYPE_COWORKING)->get();
