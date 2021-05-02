@@ -149,7 +149,7 @@ class ApiController extends BaseController
                     if (isset($item['name'])) {
                         $device->name = $item['name'];
                     }
-                    if (isset($item['brand']) && ($item['brand'] != 'Unknown')) {
+                    if (isset($item['brand']) && ($item['brand'] !== 'Unknown')) {
                         $device->brand = $item['brand'];
                     }
                     if (isset($item['ip'])) {
@@ -687,5 +687,114 @@ class ApiController extends BaseController
 
         Session::put('url.intended', $redirect);
         return Redirect::route('user_login');
+    }
+
+    public function make_invoice()
+    {
+        $json = json_decode(Request::getContent());
+
+        //dump($json);
+
+        $user_id = $json->user_id;
+        $user = User::findOrFail($user_id);
+
+        $caption = $user->fullname;
+        $organisation_id = $json->organisation_id;
+        if ($organisation_id) {
+            $organisation = Organisation::find($organisation_id);
+        } else {
+            $organisation = null;
+        }
+
+        $invoice = new Invoice();
+        $invoice->type = 'F';
+        $invoice->user_id = $user_id;
+        $invoice->days = date('Ym');
+        $invoice->date_invoice = date('Y-m-d');
+        $invoice->number = Invoice::next_invoice_number($invoice->type, $invoice->days);
+        if ($organisation) {
+            $invoice->organisation_id = $organisation_id;
+        } else {
+            $organisation = Organisation::where('name', '=', $user->fullname)->first();
+            if (!$organisation) {
+                $organisation = new Organisation();
+                $organisation->name = $user->fullname;
+                $organisation->country_id = Country::where('name', '=', 'France')->first()->id;
+                $organisation->save();
+
+                $link = new OrganisationUser();
+                $link->organisation_id = $organisation->id;
+                $link->user_id = $user->id;
+                $link->save();
+            }
+
+            $invoice->organisation_id = $organisation->id;
+
+        }
+        $invoice->address = $organisation->fulladdress;
+
+        $date = new DateTime($invoice->date_invoice);
+        $date->modify('+1 month');
+        $invoice->deadline = $date->format('Y-m-d');
+        $invoice->expected_payment_at = $invoice->deadline;
+        $invoice->save();
+
+        $line_index = 1;
+        foreach ($json->items as $item) {
+            $invoice_line = new InvoiceItem();
+            $invoice_line->invoice_id = $invoice->id;
+            $invoice_line->order_index = $line_index++;
+            $invoice_line->vat_types_id = VatType::where('value', $item->tax_rate)->first()->id;
+            $invoice_line->text = $item->description;
+            $invoice_line->amount = $item->amount;
+            if (empty($item->user_id) && ($item->tax_rate == 0)) {
+                $invoice_line->ressource_id = Ressource::TYPE_DEPOSIT;
+            } else {
+                $invoice_line->ressource_id = Ressource::TYPE_COWORKING;
+                $invoice_line->subscription_user_id = $item->user_id;
+                $invoice_line->subscription_from = $item->start_at;
+                $invoice_line->subscription_to = $item->ends_at;
+
+                switch ($item->kind) {
+                    case 'coworking.v2021.opale':
+                        $invoice_line->subscription_hours_quota = 0;
+                        break;
+                    case 'coworking.v2021.saphir':
+                        $invoice_line->subscription_hours_quota = 40;
+                        break;
+                    case 'coworking.v2021.rubis':
+                        $invoice_line->subscription_hours_quota = 80;
+                        break;
+                    case 'coworking.v2021.diamant':
+                        $invoice_line->subscription_hours_quota = 80;
+                        break;
+                    case 'coworking.v2021.unlimited':
+                    case 'coworking.v2021.reserved':
+                        $invoice_line->subscription_hours_quota = -1;
+                        break;
+                }
+            }
+
+            $invoice_line->save();
+            //$invoice_lines[] = $invoice_line;
+        }
+
+        $result = array(
+            'status' => 'success',
+            'data' => array(
+                'id' => $invoice->id,
+                'reference' => $invoice->ident,
+                'modify_url' => URL::route('invoice_modify', array('id' => $invoice->id)),
+                'pdf_url' => URL::route('invoice_print_pdf', array('id' => $invoice->id))
+            )
+        );
+
+        $response = new \Illuminate\Http\Response();
+        $response->headers->set('Content-Type', 'application/json');
+        $response->headers->set('Access-Control-Allow-Origin', '*');
+        $response->headers->set('Access-Control-Allow-Methods', 'GET');
+        $response->headers->set('Access-Control-Allow-Headers', 'Origin, Content-Type, X-Auth-Token');
+        $response->setContent(json_encode($result));
+        return $response;
     }
 }
