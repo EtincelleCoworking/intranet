@@ -747,7 +747,7 @@ class ApiController extends BaseController
             $invoice_line->vat_types_id = VatType::where('value', $item->tax_rate)->first()->id;
             $invoice_line->text = $item->description;
             $invoice_line->amount = $item->amount;
-            if (empty($item->user_id) && ($item->tax_rate == 0)) {
+            if (empty($item->user_id) && ($item->tax_rate == 0) && ($item->kind !== 'coworking')) {
                 $invoice_line->ressource_id = Ressource::TYPE_DEPOSIT;
             } else {
                 $invoice_line->ressource_id = Ressource::TYPE_COWORKING;
