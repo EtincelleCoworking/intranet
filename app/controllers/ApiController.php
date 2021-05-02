@@ -751,9 +751,15 @@ class ApiController extends BaseController
                 $invoice_line->ressource_id = Ressource::TYPE_DEPOSIT;
             } else {
                 $invoice_line->ressource_id = Ressource::TYPE_COWORKING;
-                $invoice_line->subscription_user_id = $item->user_id;
-                $invoice_line->subscription_from = $item->start_at;
-                $invoice_line->subscription_to = $item->ends_at;
+                if ($item->user_id) {
+                    $invoice_line->subscription_user_id = $item->user_id;
+                }
+                if ($item->start_at) {
+                    $invoice_line->subscription_from = $item->start_at;
+                }
+                if ($item->ends_at) {
+                    $invoice_line->subscription_to = $item->ends_at;
+                }
 
                 switch ($item->kind) {
                     case 'coworking.v2021.opale':
