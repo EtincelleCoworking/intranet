@@ -282,6 +282,8 @@ class Location extends Eloquent
                 '2020-02' => 1312.50 + 300,// Simplon + ELPMSN
                 '2020-03' => 1312.50 + 300,// Simplon + ELPMSN
                 '2020-04' => 1312.50 + 300,// Simplon + ELPMSN
+                '2021-06' => -600 - 240,// i-read, mutuelle du rempart
+                '2021-07' => 600 + 240,// i-read, mutuelle du rempart
             ),
 
             'Alsace Lorraine' => array(
