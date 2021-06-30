@@ -11,7 +11,7 @@ class GiftController extends \BaseController
     public function photoshoot()
     {
         $data = GiftPhotoshootSession::with('slots', 'slots.user')
-            ->where('occurs_at', '>', date('Y-m-d'))
+ //           ->where('occurs_at', '>', date('Y-m-d'))
             ->orderBy('occurs_at', 'ASC')
             ->get();
 

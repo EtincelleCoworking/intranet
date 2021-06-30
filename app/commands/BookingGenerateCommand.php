@@ -38,8 +38,8 @@ class BookingGenerateCommand extends Command
      */
     public function fire()
     {
-        $from_date = '2018-12-03 08:00';
-        $to_date = strtotime('2019-02-28 23:59:59');
+        $from_date = '2019-03-01 08:00';
+        $to_date = strtotime('2019-04-30 23:59:59');
         $duration = 14 * 60;
         $ressource_id = 4;
         $user_id = 2623;
@@ -93,3 +93,4 @@ class BookingGenerateCommand extends Command
     }
 
 }
+

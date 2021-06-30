@@ -98,7 +98,7 @@ class Subscription extends Eloquent
         } else {
             $params['subscription_used'] = array('hours' => 0, 'minutes' => 0);
         }
-        if ($active_subscription && $params['subscription_used']) {
+        if ($active_subscription && $params['subscription_used'] && $active_subscription->subscription_hours_quota) {
             $params['subscription_ratio'] = round(100 * ($params['subscription_used']->hours + $params['subscription_used']->minutes / 60) / $active_subscription->subscription_hours_quota);
         } else {
             $params['subscription_ratio'] = 0;

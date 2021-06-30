@@ -87,7 +87,7 @@ class OdooUpdateCommand extends Command
         $odoo_datas = array();
         foreach ($result as $item) {
             if (empty($item['ref'])) {
-                printf('empty ref for %s <%s>' . "\n", $item['name'], $item['email']);
+                printf('empty ref for %s <%s>: %s' . "\n", @$item['name'], @$item['email'], print_r($item, true));
             } else {
                 $odoo_datas[$item['ref']] = $item;
             }

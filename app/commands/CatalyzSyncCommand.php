@@ -97,3 +97,4 @@ class CatalyzSyncCommand extends Command
     }
 
 }
+
