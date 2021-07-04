@@ -9,7 +9,7 @@
         <td style="border-right:5px solid #4F2067"></td>
         <td style="text-align:initial;font:12px Arial;color:rgb(100,100,100);padding:0px 10px">
             <div style="margin-bottom:5px;margin-top:0px">
-                <b>{{htmlentities($user->firstname)}} {{htmlentities(strtoupper($user->lastname))}}</b>, {{$user->bio_short}}
+                <b>{{htmlentities($user->firstname)}} {{htmlentities(mb_strtoupper($user->lastname))}}</b>, {{$user->bio_short}}
                 <br/>
             </div>
             <table style="width:355px;margin-top:5px" width="355" border="0" cellspacing="0"
