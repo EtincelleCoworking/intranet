@@ -82,6 +82,7 @@ class Location extends Eloquent
                 '2020-07' => 1870, // - Samuel
                 '2020-09' => 2090, // + Zoé
                 '2021-01' => 1780, // - Zoé
+                '2021-07' => 0,
             ),
             'Montauban' => array(
                 '2015-09' => 2050,
@@ -142,6 +143,7 @@ class Location extends Eloquent
                 '2020-07' => 20050,
                 //'2021-01' => 11375,
                 '2021-01' => 18600,
+                '2021-07' => 21350,
             ),
             //'Toulouse > Espace W' => array(),
             'Alsace Lorraine' => array(
