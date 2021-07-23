@@ -297,6 +297,8 @@ class Location extends Eloquent
                 '2019-09' => 800 - 422 - 422,
                 '2019-10' => 422,
                 '2019-11' => 422,
+                '2021-07' => -225,
+                '2021-08' => -225,
             ),
 
             'Wilson 4+5' => array(
@@ -378,6 +380,12 @@ order by kind ASC, `period` DESC
 
 
         $costs = Location::getCostPerLocation();
+
+        $location = 'Albi';
+        foreach (['2021-07', '2021-08', '2021-09', '2021-10', '2021-11', '2021-12'] as $period) {
+            $costs[$location][$period] = $result[$location][$period];
+        }
+
         $operations = self::getOperationTweaks();
 
         $this_month = date('Y-m');
