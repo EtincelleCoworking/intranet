@@ -383,7 +383,9 @@ order by kind ASC, `period` DESC
 
         $location = 'Albi';
         foreach (['2021-07', '2021-08', '2021-09', '2021-10', '2021-11', '2021-12'] as $period) {
-            $costs[$location][$period] = $result[$location][$period];
+            if (isset($result[$location][$period])) {
+                $costs[$location][$period] = $result[$location][$period];
+            }
         }
 
         $operations = self::getOperationTweaks();
