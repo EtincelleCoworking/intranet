@@ -60,7 +60,7 @@ class UpdateCoworkerLocationCommand extends Command
                 $processed_users[$item->user_id] = true;
                 if ($item->default_location_id != $item->location_id) {
                     $users[$item->user_id] = [
-                        'name' => $item->firstname . ' ' . $item->lastname,
+                //        'name' => $item->firstname . ' ' . $item->lastname,
                         'current_location' => $item->default_location_id,
                         'target_location' => $item->location_id
                     ];
@@ -80,7 +80,7 @@ class UpdateCoworkerLocationCommand extends Command
 
         foreach (User::whereIn('id', array_keys($users))->get() as $user) {
             $this->output->writeln(sprintf('%-30s %-15s -> %-15s',
-                $user->name, $locations[$users[$user->id]['current_location']]
+                $user->fullname, $locations[$users[$user->id]['current_location']]
                 , $locations[$users[$user->id]['target_location']]
             ));
             if (!$this->option('dry-run')) {
