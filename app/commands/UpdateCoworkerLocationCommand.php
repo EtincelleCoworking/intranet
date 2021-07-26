@@ -79,7 +79,7 @@ class UpdateCoworkerLocationCommand extends Command
         }
 
         foreach (User::whereIn('id', array_keys($users))->get() as $user) {
-            $this->output->writeln(mb_sprintf('%-30s %-15s -> %-15s',
+            $this->output->writeln(sprintf('%-30s %-15s -> %-15s',
                 $user->name, $locations[$users[$user->id]['current_location']]
                 , $locations[$users[$user->id]['target_location']]
             ));
@@ -91,18 +91,4 @@ class UpdateCoworkerLocationCommand extends Command
 
         return 0;
     }
-}
-
-function mb_sprintf($format, ...$args)
-{
-    $params = $args;
-
-    $callback = function ($length) use (&$params) {
-        $value = array_shift($params);
-        return strlen($value) - mb_strlen($value) + $length[0];
-    };
-
-    $format = preg_replace_callback('/(?<=%|%-)\d+(?=s)/', $callback, $format);
-
-    return sprintf($format, ...$args);
 }
