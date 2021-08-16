@@ -12,6 +12,8 @@ class TeamPlanningController extends BaseController
     const TEAM_ZOE = 3852;
     const TEAM_LINE_ROSE = 3867;
     const TEAM_VALENTIN = 3989;
+    const TEAM_PAULINE = 4495;
+    const TEAM_ANAIS = 4506;
 
     public function index()
     {
@@ -179,7 +181,7 @@ class TeamPlanningController extends BaseController
             'background' => '#A4C400',
             'border' => adjustBrightness('#A4C400', -32),
         );
-        $colors[self::TEAM_ZOE] = array(
+        $colors[self::TEAM_PAULINE] = array(
             'text' => '#ffffff',
             'background' => '#00ABA9',
             'border' => adjustBrightness('#00ABA9', -32),
@@ -189,7 +191,7 @@ class TeamPlanningController extends BaseController
             'background' => '#AA00FF',
             'border' => adjustBrightness('#AA00FF', -32),
         );
-        $colors[self::TEAM_LINE_ROSE] = array(
+        $colors[self::TEAM_ANAIS] = array(
             'text' => '#ffffff',
             'background' => '#FA6800',
             'border' => adjustBrightness('#FA6800', -32),
