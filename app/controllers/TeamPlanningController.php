@@ -120,7 +120,7 @@ class TeamPlanningController extends BaseController
         $current = $now;
         while ($current <= $ends) {
             $day = date('Y-m-d', $current);
-            $this->generateTimesheet($day, $day, array('08:30' => '11:00', '13:30' => '17:30'), self::TEAM_ANAIS, $location_alsace_lorraine);
+            $this->generateTimesheet($day, $day, array('08:00' => '11:00', '13:30' => '17:30'), self::TEAM_ANAIS, $location_alsace_lorraine);
             $this->generateTimesheet($day, $day, array('08:00' => '12:00', '13:30' => '16:30'), self::TEAM_PAULINE, $location_wilson);
             $this->generateTimesheet($day, $day, array('08:15' => '11:00', '13:00' => '15:30'), self::TEAM_JEHANNE, $location_wilson);
             $current += 24 * 3600;
