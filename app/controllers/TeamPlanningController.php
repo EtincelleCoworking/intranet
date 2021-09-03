@@ -109,13 +109,13 @@ class TeamPlanningController extends BaseController
             $this->existing_holidays[$row->user_id][$row->occurs_at] = true;
         }
 
-        $start_at = '2021-08-23';
+        $start_at = '2021-09-06';
         foreach ([self::TEAM_JEHANNE, self::TEAM_PAULINE, self::TEAM_ANAIS] as $member) {
             \Illuminate\Support\Facades\DB::delete('DELETE FROM team_planning_item WHERE start_at >= ? AND user_id = ? AND is_holiday = false', [$start_at, $member]);
         }
 
-        $now = strtotime('2021-08-23');
-        $ends = strtotime('2021-09-05');
+        $now = strtotime($start_at);
+        $ends = strtotime('2021-10-02');
 
         $current = $now;
         while ($current <= $ends) {
