@@ -105,6 +105,7 @@ class Location extends Eloquent
                 '2021-01' => 11070,
                 '2021-07' => 8310,
                 '2021-08' => 9200,
+                '2021-10' => 8650, // Anais 100% AL
             ),
             'Victor Hugo' => array(
                 '2016-09' => 3415,
@@ -119,6 +120,7 @@ class Location extends Eloquent
                 '2020-07' => 4280,
                 '2021-01' => 4000,
                 '2021-08' => 4100,
+                '2021-10' => 4150,
             ),
             'Wilson' => array(
                 '2015-01' => 7000,
@@ -147,6 +149,7 @@ class Location extends Eloquent
                 '2021-01' => 18600,
                 '2021-07' => 21350,
                 '2021-08' => 22000,
+
             ),
             //'Toulouse > Espace W' => array(),
             'Alsace Lorraine' => array(
@@ -164,6 +167,7 @@ class Location extends Eloquent
                 '2020-07' => 8020,
                 '2021-01' => 7450,
                 '2021-08' => 8050,
+                '2021-10' => 8950, // Anais 100%
             ),
             'Baour Lormian' => array(
                 '2019-11' => 3400,
