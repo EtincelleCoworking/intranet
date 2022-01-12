@@ -17,6 +17,7 @@
                 </div>
                 <div class="col-lg-4 col-md-4 col-sm-6 col-xs-6">
                     @include('partials.active_subscription')
+                    @include('partials.lunch')
                     @include('partials.personnal_code.component')
                 </div>
             </div>
