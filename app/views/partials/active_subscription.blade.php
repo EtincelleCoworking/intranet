@@ -1,5 +1,14 @@
+<div class="ibox">
+    <div class="ibox-title">
+        <h5>Abonnement en cours</h5>
+    </div>
+    <div class="ibox-content">
+        Pour suivre l'utilisation de ton abonnement c'est ici:
+        <a href="https://intranet2021.etincelle-coworking.com/coworking" target="_blank">https://intranet2021.etincelle-coworking.com/coworking</a>
+    </div>
+</div>
 <?php
-
+/*
 extract(Subscription::getActiveSubscriptionInfos());
 ?>
 @if($active_subscription)
@@ -45,3 +54,7 @@ extract(Subscription::getActiveSubscriptionInfos());
     </div>
 </div>
 @endif
+
+<?php
+*/
+?>
