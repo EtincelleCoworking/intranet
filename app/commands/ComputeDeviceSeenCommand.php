@@ -2,7 +2,6 @@
 
 use Illuminate\Console\Command;
 use Symfony\Component\Console\Input\InputOption;
-use Symfony\Component\Console\Input\InputArgument;
 
 class ComputeDeviceSeenCommand extends Command
 {
@@ -44,14 +43,14 @@ class ComputeDeviceSeenCommand extends Command
 
         foreach ($dates as $date) {
             $this->output->writeln(sprintf('Processing %s', $date));
-            $sql = 'SELECT DISTINCT(device_id) as id, location_id FROM devices_seen WHERE DATE(last_seen_at) = "' . $date . '" ORDER BY device_id ASC';
+            $sql = 'SELECT DISTINCT(device_id) as id, location_id FROM devices_seen WHERE last_seen_at >= "' . $date . ' 00:00:00" AND last_seen_at <= "'.$date.' 23:59:59" ORDER BY device_id ASC';
             if ($this->output->isDebug()) {
                 $this->output->writeln($sql);
             }
             $devices = DB::select($sql);
             foreach ($devices as $device) {
                 $this->output->write(sprintf(' - Device #%-6d', $device->id));
-                $sql = 'SELECT id, last_seen_at FROM devices_seen WHERE DATE(last_seen_at) = "' . $date . '" AND device_id = ' . $device->id . ' AND location_id = ' . $device->location_id . ' ORDER BY last_seen_at ASC';
+                $sql = 'SELECT id, last_seen_at FROM devices_seen WHERE last_seen_at >= "' . $date . ' 00:00:00" AND last_seen_at <= "'.$date.' 23:59:59" AND device_id = ' . $device->id . ' AND location_id = ' . $device->location_id . ' ORDER BY last_seen_at ASC';
                 if ($this->output->isDebug()) {
                     $this->output->writeln($sql);
                 }
@@ -84,8 +83,10 @@ class ComputeDeviceSeenCommand extends Command
                     $this->createRange($range_start, $current, $device->id, $device->location_id);
                 }
                 $this->output->writeln('');
+                $this->flushRanges();
                 if (!$this->option('dry-run')) {
-                    DeviceSeen::destroy($ids_to_remove);
+                    DeviceSeen::whereIn('id', $ids_to_remove)->delete();
+                    //DeviceSeen::destroy($ids_to_remove);
                     if ($this->output->isVerbose()) {
                         $this->output->writeln(sprintf('Removing DeviceSeen IDs = %s', implode(', ', $ids_to_remove)));
                     }
@@ -94,19 +95,38 @@ class ComputeDeviceSeenCommand extends Command
         }
     }
 
+    protected $ranges = [];
+
+    protected function flushRanges()
+    {
+        if (!$this->option('dry-run')) {
+            DeviceSeenRange::insert($this->ranges);
+        }
+        $this->ranges = [];
+    }
+
+
     protected function createRange($start_at, $end_at, $device_id, $location_id)
     {
-        $range = new DeviceSeenRange();
-        $range->location_id = $location_id;
-        $range->device_id = $device_id;
-        $range->start_at = date('Y-m-d H:i:s', $start_at);
-        $range->end_at = date('Y-m-d H:i:s', $end_at);
+        $this->ranges[] = [
+            'location_id' => $location_id,
+            'device_id' => $device_id,
+            'start_at' => date('Y-m-d H:i:s', $start_at),
+            'end_at' => date('Y-m-d H:i:s', $end_at),
+        ];
         $this->output->write(sprintf(' / %s - %s', date('H:i', $start_at), date('H:i', $end_at)));
+        /*
+        $range-> = $location_id;
+        $range->device_id = $device_id;
+        $range->start_at = ;
+        $range->end_at = date('Y-m-d H:i:s', $end_at);
         if ($this->option('dry-run')) {
             $this->output->writeln('');
         } else {
             $range->save();
         }
+*/
+
     }
 
     /**
