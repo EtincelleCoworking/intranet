@@ -302,7 +302,7 @@ class Location extends Eloquent
                 '2021-06' => -600 - 240,// i-read, mutuelle du rempart
                 '2021-07' => 600 + 240,// i-read, mutuelle du rempart
                 '2021-08' => 1200, // Data Soluce
-                '2021-09' => -1200-1200, // Data Soluce+Amplexor
+                '2021-09' => -1200 - 1200, // Data Soluce+Amplexor
                 '2021-10' => 1200, // Amplexor
             ),
 
@@ -316,6 +316,8 @@ class Location extends Eloquent
                 '2019-11' => 422,
                 '2021-07' => -225,
                 '2021-08' => -225,
+                '2022-01' => -3 * 105, // Smart Diagnostics
+                '2022-02' => 3 * 105,// Smart Diagnostics
             ),
 
             'Wilson 4+5' => array(
