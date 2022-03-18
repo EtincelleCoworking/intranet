@@ -8,6 +8,8 @@ use Illuminate\Support\Facades\Response;
 class BookingController extends Controller
 {
 
+    const ROOM_BONSAI = 63;
+
     public function index($now = false)
     {
         $params = array();
@@ -668,6 +670,10 @@ class BookingController extends Controller
                     $messages['start'] = '';
                 }
                 $messages['start'] .= sprintf('La salle %s est déjà réservée sur ce créneau' . "\n", $conflict->ressource->name);
+            }
+
+            if(in_array($ressource_id, array(self::ROOM_BONSAI))){
+                $messages['start'] .= 'Cette salle n\'est pas réservable directement. Contacter l\'équipe' . "\n";
             }
         }
         $start_at = newDateTime(Input::get('date'), Input::get('start'));
