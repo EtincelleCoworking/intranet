@@ -672,7 +672,10 @@ class BookingController extends Controller
                 $messages['start'] .= sprintf('La salle %s est déjà réservée sur ce créneau' . "\n", $conflict->ressource->name);
             }
 
-            if(in_array($ressource_id, array(self::ROOM_BONSAI))){
+            if (in_array($ressource_id, array(self::ROOM_BONSAI))) {
+                if (!isset($messages['start'])) {
+                    $messages['start'] = '';
+                }
                 $messages['start'] .= 'Cette salle n\'est pas réservable directement. Contacter l\'équipe' . "\n";
             }
         }
