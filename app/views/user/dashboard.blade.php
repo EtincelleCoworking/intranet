@@ -17,28 +17,30 @@
                 </div>
                 <div class="col-lg-4 col-md-4 col-sm-6 col-xs-6">
                     @include('partials.active_subscription')
-                    @include('partials.lunch')
-                    @include('partials.personnal_code.component')
-                </div>
-            </div>
-            <?php
-            $items = DB::select(DB::raw('SELECT count(*) as cnt FROM past_times WHERE date_past < CURRENT_DATE() AND device_id IS NOT NULL AND confirmed IS NULL AND is_free = 0 AND (invoice_id = 0 OR invoice_id IS NULL) AND user_id = ' . Auth::id()));
-            if ($items[0]->cnt) {
-                echo '<div class="alert alert-warning" role="alert">';
-                printf('<p>Vous avez actuellement %d plage horaire qui ont été détectées automatiquement et que vous n\'avez pas confirmées</p>', $items[0]->cnt);
-                printf('<p><a href="%s" class="btn btn-warning">Confirmez les maintenant</a></p>', route('pasttime_list'));
-                echo '</div>';
-            }
-            ?>
-            @include('partials.wall.component')
-        </div>
-        <div class="col-lg-3 col-md-4 col-sm-6 col-xs-4">
-            {{--
-            @include('partials.checkin.component')
-            {{--
-            @if (Auth::user()->isSuperAdmin())
-            @elseif (Auth::user()->role == 'member')
-            --}}
+                    {{--
+                   @include('partials.lunch')
+                   --}}
+                   @include('partials.personnal_code.component')
+               </div>
+           </div>
+           <?php
+           $items = DB::select(DB::raw('SELECT count(*) as cnt FROM past_times WHERE date_past < CURRENT_DATE() AND device_id IS NOT NULL AND confirmed IS NULL AND is_free = 0 AND (invoice_id = 0 OR invoice_id IS NULL) AND user_id = ' . Auth::id()));
+           if ($items[0]->cnt) {
+               echo '<div class="alert alert-warning" role="alert">';
+               printf('<p>Vous avez actuellement %d plage horaire qui ont été détectées automatiquement et que vous n\'avez pas confirmées</p>', $items[0]->cnt);
+               printf('<p><a href="%s" class="btn btn-warning">Confirmez les maintenant</a></p>', route('pasttime_list'));
+               echo '</div>';
+           }
+           ?>
+           @include('partials.wall.component')
+       </div>
+       <div class="col-lg-3 col-md-4 col-sm-6 col-xs-4">
+           {{--
+           @include('partials.checkin.component')
+           {{--
+           @if (Auth::user()->isSuperAdmin())
+           @elseif (Auth::user()->role == 'member')
+           --}}
             {{--
             @endif
             --}}
