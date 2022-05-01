@@ -107,7 +107,7 @@ class Location extends Eloquent
                 '2021-08' => 9200,
                 '2021-10' => 8650, // Anais 100% AL
                 '2021-12' => 8865, // -VH
-                '2022-05' => 9515, // PGE
+                '2022-05' => 10850, // PGE + Rania
             ),
             'Victor Hugo' => array(
                 '2016-09' => 3415,
@@ -153,7 +153,7 @@ class Location extends Eloquent
                 '2021-07' => 21350,
                 '2021-08' => 22000,
                 '2021-12' => 22430,
-                '2022-05' => 23485, // PGE
+                '2022-05' => 23585, // PGE
 
             ),
             //'Toulouse > Espace W' => array(),
