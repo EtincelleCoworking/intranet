@@ -14,6 +14,7 @@ class TeamPlanningController extends BaseController
     const TEAM_VALENTIN = 3989;
     const TEAM_PAULINE = 4495;
     const TEAM_ANAIS = 4506;
+    const TEAM_RANIA = 5036;
 
     public function index()
     {
@@ -193,6 +194,10 @@ class TeamPlanningController extends BaseController
         $colors[self::TEAM_ANAIS] = array(
             'text' => '#ffffff',
             'background' => '#FA6800',
+            'border' => adjustBrightness('#FA6800', -32),
+        ); $colors[self::TEAM_RANIA] = array(
+        'text' => '#000000',
+        'background' => '#E3C800',
             'border' => adjustBrightness('#FA6800', -32),
         );
         /*
