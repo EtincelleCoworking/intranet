@@ -9,6 +9,7 @@ class BookingController extends Controller
 {
 
     const ROOM_BONSAI = 63;
+    const ROOM_ESPACE4 = 44;
 
     public function index($now = false)
     {
@@ -671,12 +672,23 @@ class BookingController extends Controller
                 }
                 $messages['start'] .= sprintf('La salle %s est déjà réservée sur ce créneau' . "\n", $conflict->ressource->name);
             }
-
-            if (in_array($ressource_id, array(self::ROOM_BONSAI))) {
-                if (!isset($messages['start'])) {
-                    $messages['start'] = '';
-                }
-                $messages['start'] .= 'Cette salle n\'est pas réservable directement. Contacter l\'équipe' . "\n";
+            switch ($ressource_id) {
+                case self::ROOM_BONSAI:
+                    if (!isset($messages['start'])) {
+                        $messages['start'] = '';
+                    }
+                    $messages['start'] .= 'Cette salle n\'est pas réservable directement. Contactez l\'équipe' . "\n";
+                    break;
+                case self::ROOM_ESPACE4:
+                    $booking_period = \Carbon\CarbonPeriod::create($start, $end);
+                    $forbidden_range = \Carbon\CarbonPeriod::create(newDateTime(Input::get('date'), '12:00'), newDateTime(Input::get('date'), '14:00'));
+                    if ($booking_period->overlaps($forbidden_range)) {
+                        if (!isset($messages['start'])) {
+                            $messages['start'] = '';
+                        }
+                        $messages['start'] .= 'Cette salle ne peut pas être réservée le midi. Contactez l\'équipe' . "\n";
+                    }
+                    break;
             }
         }
         $start_at = newDateTime(Input::get('date'), Input::get('start'));
