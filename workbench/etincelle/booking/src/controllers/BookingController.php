@@ -680,13 +680,29 @@ class BookingController extends Controller
                     $messages['start'] .= 'Cette salle n\'est pas réservable directement. Contactez l\'équipe' . "\n";
                     break;
                 case self::ROOM_ESPACE4:
-                    $booking_period = \Carbon\CarbonPeriod::create($start, $end);
-                    $forbidden_range = \Carbon\CarbonPeriod::create(newDateTime(Input::get('date'), '12:00'), newDateTime(Input::get('date'), '14:00'));
-                    if ($booking_period->overlaps($forbidden_range)) {
+                    $forbidden = array(
+                        '07:30' => '08:30',
+                        '12:00' => '14:00'
+                    );
+                    $forbidden_msg = array();
+                    //$booking_period = \Carbon\CarbonPeriod::create($start, $end);
+                    $has_problem = false;
+                    foreach ($forbidden as $forbidden_start => $forbiden_end) {
+                        $forbidden_range_start = newDateTime(Input::get('date'), $forbidden_start);
+                        $forbidden_range_end = newDateTime(Input::get('date'), $forbiden_end);
+                        $has_problem = $has_problem
+                            || (
+                                ($start < $forbidden_range_end) && ($end > $forbidden_range_start)
+                            );
+
+                        $forbidden_msg [] = sprintf('%s - %s', $forbidden_start, $forbiden_end);
+                    }
+
+                    if ($has_problem) {
                         if (!isset($messages['start'])) {
                             $messages['start'] = '';
                         }
-                        $messages['start'] .= 'Cette salle ne peut pas être réservée le midi. Contactez l\'équipe' . "\n";
+                        $messages['start'] .= sprintf('Cette salle ne peut pas être réservée sur ce créneau (%s). Contactez l\'équipe' . "\n", implode(',', $forbidden_msg));
                     }
                     break;
             }
