@@ -9,7 +9,7 @@ class BookingController extends Controller
 {
 
     const ROOM_BONSAI = 63;
-    const ROOM_ESPACE4 = 44;
+    const ROOM_ESPACE5 = 45;
 
     public function index($now = false)
     {
@@ -679,7 +679,7 @@ class BookingController extends Controller
                     }
                     $messages['start'] .= 'Cette salle n\'est pas réservable directement. Contactez l\'équipe' . "\n";
                     break;
-                case self::ROOM_ESPACE4:
+                case self::ROOM_ESPACE5:
                     $forbidden = array(
                         '07:30' => '08:30',
                         '12:00' => '14:00'
@@ -702,7 +702,7 @@ class BookingController extends Controller
                         if (!isset($messages['start'])) {
                             $messages['start'] = '';
                         }
-                        $messages['start'] .= sprintf('Cette salle ne peut pas être réservée sur ce créneau (%s). Contactez l\'équipe' . "\n", implode(',', $forbidden_msg));
+                        $messages['start'] .= sprintf('Cette salle ne peut pas être réservée sur ce créneau (%s). Contactez l\'équipe' . "\n", implode(', ', $forbidden_msg));
                     }
                     break;
             }
