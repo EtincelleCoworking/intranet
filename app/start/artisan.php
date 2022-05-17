@@ -34,3 +34,4 @@ Artisan::add(new AccountingImportCommand);
 Artisan::add(new UpdateCoworkerLocationCommand);
 Artisan::add(new BookingSyncGoogleCommand);
 Artisan::add(new CatalyzSyncCommand);
+Artisan::add(new UserMergeCommand);
