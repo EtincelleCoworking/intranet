@@ -87,6 +87,7 @@ class UserMergeCommand extends Command
             DB::table('user_job')->update(['user_id' => $user->id])->whereIn('user_id', $old_ids);
             DB::table('wall_posts')->update(['user_id' => $user->id])->whereIn('user_id', $old_ids);
             DB::table('user')->whereIn('id', $old_ids)->delete();
+            $this->output->writeln('Merge completed');
         });
     }
 
