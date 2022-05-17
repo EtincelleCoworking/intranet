@@ -66,27 +66,77 @@ class UserMergeCommand extends Command
             return false;
         }
         DB::transaction(function () use ($user, $old_ids) {
-            DB::table('booking')->update(['user_id' => $user->id])->whereIn('user_id', $old_ids);
-            DB::table('booking_item')->update(['confirmed_by_user_id' => $user->id])->whereIn('confirmed_by_user_id', $old_ids);
-            DB::table('devices')->update(['user_id' => $user->id])->whereIn('user_id', $old_ids);
-            DB::table('door_tokens')->update(['user_id' => $user->id])->whereIn('user_id', $old_ids);
-            DB::table('gift_photoshoot_slot')->update(['user_id' => $user->id])->whereIn('user_id', $old_ids);
-            DB::table('invoices')->update(['user_id' => $user->id])->whereIn('user_id', $old_ids);
-            DB::table('invoices_comments')->update(['user_id' => $user->id])->whereIn('user_id', $old_ids);
-            DB::table('invoices_items')->update(['subscription_user_id' => $user->id])->whereIn('subscription_user_id', $old_ids);
-            DB::table('locker_history')->update(['user_id' => $user->id])->whereIn('user_id', $old_ids);
-            DB::table('organisation_user')->update(['user_id' => $user->id])->whereIn('user_id', $old_ids);
-            DB::table('past_times')->update(['user_id' => $user->id])->whereIn('user_id', $old_ids);
-            DB::table('phonebox_session')->update(['user_id' => $user->id])->whereIn('user_id', $old_ids);
-            DB::table('skills')->update(['user_id' => $user->id])->whereIn('user_id', $old_ids);
-            DB::table('subscription')->update(['user_id' => $user->id])->whereIn('user_id', $old_ids);
-            DB::table('team_planning_item')->update(['user_id' => $user->id])->whereIn('user_id', $old_ids);
-            DB::table('users')->update(['affiliate_user_id' => $user->id])->whereIn('affiliate_user_id', $old_ids);
-            DB::table('user_gift')->update(['user_id' => $user->id])->whereIn('user_id', $old_ids);
-            DB::table('user_hashtag')->update(['user_id' => $user->id])->whereIn('user_id', $old_ids);
-            DB::table('user_job')->update(['user_id' => $user->id])->whereIn('user_id', $old_ids);
-            DB::table('wall_posts')->update(['user_id' => $user->id])->whereIn('user_id', $old_ids);
-            DB::table('user')->whereIn('id', $old_ids)->delete();
+            DB::table('booking')
+                ->whereIn('user_id', $old_ids)
+                ->update(['user_id' => $user->id]);
+            DB::table('booking_item')
+                ->whereIn('confirmed_by_user_id', $old_ids)
+                ->update(['confirmed_by_user_id' => $user->id]);
+            DB::table('devices')
+                ->whereIn('user_id', $old_ids)
+                ->update(['user_id' => $user->id]);
+            DB::table('door_tokens')
+                ->whereIn('user_id', $old_ids)
+                ->update(['user_id' => $user->id]);
+            DB::table('gift_photoshoot_slot')
+                ->whereIn('user_id', $old_ids)
+                ->update(['user_id' => $user->id]);
+            DB::table('invoices')
+                ->whereIn('user_id', $old_ids)
+                ->update(['user_id' => $user->id]);
+            DB::table('invoices_comments')
+                ->whereIn('user_id', $old_ids)
+                ->update(['user_id' => $user->id]);
+            DB::table('invoices_items')
+                ->whereIn('subscription_user_id', $old_ids)
+                ->update(['subscription_user_id' => $user->id]);
+            DB::table('locker_history')
+                ->whereIn('user_id', $old_ids)
+                ->update(['user_id' => $user->id]);
+
+            foreach ($old_ids as $old_id) {
+                try {
+                    DB::table('organisation_user')
+                        ->where('user_id', '=', $old_id)
+                        ->update(['user_id' => $user->id]);
+                } catch (\Illuminate\Database\QueryException $e) {
+                    // ignore if user is already linked to that organisation
+                }
+            }
+
+            DB::table('past_times')
+                ->whereIn('user_id', $old_ids)
+                ->update(['user_id' => $user->id]);
+            DB::table('phonebox_session')
+                ->whereIn('user_id', $old_ids)
+                ->update(['user_id' => $user->id]);
+            DB::table('skills')
+                ->whereIn('user_id', $old_ids)
+                ->update(['user_id' => $user->id]);
+            DB::table('subscription')
+                ->whereIn('user_id', $old_ids)
+                ->update(['user_id' => $user->id]);
+            DB::table('team_planning_item')
+                ->whereIn('user_id', $old_ids)
+                ->update(['user_id' => $user->id]);
+            DB::table('users')
+                ->whereIn('affiliate_user_id', $old_ids)
+                ->update(['affiliate_user_id' => $user->id]);
+            DB::table('user_gift')
+                ->whereIn('user_id', $old_ids)
+                ->update(['user_id' => $user->id]);
+            DB::table('user_hashtag')
+                ->whereIn('user_id', $old_ids)
+                ->update(['user_id' => $user->id]);
+            DB::table('user_job')
+                ->whereIn('user_id', $old_ids)
+                ->update(['user_id' => $user->id]);
+            DB::table('wall_posts')
+                ->whereIn('user_id', $old_ids)
+                ->update(['user_id' => $user->id]);
+            DB::table('users')
+                ->whereIn('id', $old_ids)
+                ->delete();
             $this->output->writeln('Merge completed');
         });
     }
