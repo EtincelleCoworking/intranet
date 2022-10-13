@@ -250,6 +250,8 @@ class Location extends Eloquent
                 '2020-09' => -600,
                 '2021-12' => -623,
                 '2022-01' => 623, // Galec
+                '2022-10' => -395, // SMCP
+                '2022-12' => 395, // SMCP
             ),
             'Victor Hugo' => array(
                 // Loyer 12/2016 A. T.
@@ -322,6 +324,10 @@ class Location extends Eloquent
                 '2021-08' => -225,
                 '2022-01' => -3 * 105, // Smart Diagnostics
                 '2022-02' => 3 * 105,// Smart Diagnostics
+                '2022-06' => -377,// Eclipse
+                '2022-07' => 377,// Eclipse
+                '2022-10' => -750 / 1.2,// Idēhô
+                '2023-01' => +750 / 1.2,// Idēhô
             ),
 
             'Wilson 4+5' => array(
