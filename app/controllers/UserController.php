@@ -652,7 +652,7 @@ order by invoices.date_invoice desc
         $others = User::join('locations', 'users.default_location_id', '=', 'locations.id')
             ->whereIn('birthday', ['0000-00-00', '1970-01-01'])
             ->where('locations.city_id', '=', Auth::user()->location->city_id)
-            ->orderBy('users.is_member', 'DESC')
+            ->where('users.is_member', '=', true)
             ->distinct()
             ->get(array('users.*'));
 
