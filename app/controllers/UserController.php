@@ -623,8 +623,7 @@ order by invoices.date_invoice desc
 
     public function birthday()
     {
-        $users = User::
-        join('locations', 'users.default_location_id', '=', 'locations.id')
+        $users = User::join('locations', 'users.default_location_id', '=', 'locations.id')
             ->where('birthday', '!=', '0000-00-00')
             ->where('birthday', '!=', '1970-01-01')
             ->where('locations.city_id', '=', Auth::user()->location->city_id)
@@ -650,9 +649,17 @@ order by invoices.date_invoice desc
             $months[] = $month;
         }
 
+        $others = User::join('locations', 'users.default_location_id', '=', 'locations.id')
+            ->whereIn('birthday', ['0000-00-00', '1970-01-01'])
+            ->where('locations.city_id', '=', Auth::user()->location->city_id)
+            ->orderBy('users.is_member', 'DESC')
+            ->distinct()
+            ->get(array('users.*'));
+
         return View::make('user.birthday', array(
             'months' => $months,
-            'users' => $items
+            'users' => $items,
+            'others' => $others
         ));
     }
 
