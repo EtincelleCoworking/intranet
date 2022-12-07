@@ -52,7 +52,7 @@
                 </td>
                 <td>
                     <?php
-                    if ($u->birthday && $u->birthday != '0000-00-00') {
+                    if ($u->birthday && $u->birthday != '0000-00-00' && $u->birthday != '1970-01-01') {
                         echo date('d/m/Y', strtotime($u->birthday));
                     } else {
                         echo '-';
@@ -61,7 +61,7 @@
                 </td><td>
                     <?php
 
-                    if ($u->last_seen_at && $u->last_seen_at != '0000-00-00') {
+                    if ($u->last_seen_at && $u->last_seen_at != '0000-00-00' && $u->last_seen_at != '1970-01-01') {
                         echo date('d/m/Y', strtotime($u->last_seen_at));
                     } else {
                         echo '-';
