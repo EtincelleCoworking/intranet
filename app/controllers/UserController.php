@@ -654,6 +654,7 @@ order by invoices.date_invoice desc
             ->where('locations.city_id', '=', Auth::user()->location->city_id)
             ->where('users.is_member', '=', true)
             ->distinct()
+            ->orderBy('users.last_seen_at', 'DESC')
             ->get(array('users.*'));
 
         return View::make('user.birthday', array(
