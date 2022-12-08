@@ -626,6 +626,7 @@ order by invoices.date_invoice desc
         $users = User::join('locations', 'users.default_location_id', '=', 'locations.id')
             ->where('birthday', '!=', '0000-00-00')
             ->where('birthday', '!=', '1970-01-01')
+            ->where('users.is_enabled', '=', true)
             ->where('locations.city_id', '=', Auth::user()->location->city_id)
 //            ->where('users.id', '!=', Auth::id())
             ->orderBy('users.is_member', 'DESC')
@@ -653,6 +654,7 @@ order by invoices.date_invoice desc
             ->whereIn('birthday', ['0000-00-00', '1970-01-01'])
             ->where('locations.city_id', '=', Auth::user()->location->city_id)
             ->where('users.is_member', '=', true)
+            ->where('users.is_enabled', '=', true)
             ->distinct()
             ->orderBy('users.last_seen_at', 'DESC')
             ->get(array('users.*'));
