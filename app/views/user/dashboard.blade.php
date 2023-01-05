@@ -45,10 +45,10 @@
             @endif
             --}}
 
+            @include('partials.next_birthday.component')
             @include('booking::partials.upcoming_events')
             @include('booking::partials.ressource_booking_status')
 
-            @include('partials.next_birthday.component')
         </div>
     </div>
 
