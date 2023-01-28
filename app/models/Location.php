@@ -108,6 +108,7 @@ class Location extends Eloquent
                 '2021-10' => 8650, // Anais 100% AL
                 '2021-12' => 8865, // -VH
                 '2022-05' => 10850, // PGE + Rania
+                '2023-05' => 11240,
             ),
             'Victor Hugo' => array(
                 '2016-09' => 3415,
@@ -154,6 +155,7 @@ class Location extends Eloquent
                 '2021-08' => 22000,
                 '2021-12' => 22430,
                 '2022-05' => 23585, // PGE
+                '2023-01' => 27410, // +Aurélie
 
             ),
             //'Toulouse > Espace W' => array(),
@@ -176,6 +178,7 @@ class Location extends Eloquent
                 '2021-12' => 9275, // -VH
                 '2022-03' => 9460, // Augmentation Anais
                 '2022-05' => 10035, // PGE
+                '2023-01' => 10400,
             ),
             'Baour Lormian' => array(
                 '2019-11' => 3400,
