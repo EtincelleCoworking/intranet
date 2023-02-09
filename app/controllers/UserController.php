@@ -644,8 +644,7 @@ order by invoices.date_invoice desc
 
         $months = array_keys($items);
         $current_month = date('n');
-        $month = 1;
-        while ($month < $current_month) {
+        for($i = 1; $i < $current_month; $i++){
             $month = array_shift($months);
             $months[] = $month;
         }
