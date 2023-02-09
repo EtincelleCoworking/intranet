@@ -643,7 +643,7 @@ order by invoices.date_invoice desc
         ksort($items);
 
         $months = array_keys($items);
-        $current_month = date('m');
+        $current_month = date('n');
         $month = 1;
         while ($month < $current_month) {
             $month = array_shift($months);
