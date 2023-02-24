@@ -183,7 +183,7 @@
                                     <div class="form-group"><label
                                                 class="col-sm-2 control-label">Abonnement</label>
                                         <div class="col-sm-10">
-                                            {{ Form::select('subscription_hours_quota['.$item->id.']',SubscriptionKind::SelectOptions(), $item->subscription_hours_quota, array('class' => 'form-control', 'id' => 'subscription_hours_quota'.$item->id, 'onchange' => '$(\'#update_text_coworking'.$item->id.'\').click(); return true;')) }}
+                                            {{ Form::select('subscription_hours_quota['.$item->id.']',SubscriptionKind::where('ressource_id', Ressource::TYPE_COWORKING)->SelectOptions(), $item->subscription_hours_quota, array('class' => 'form-control', 'id' => 'subscription_hours_quota'.$item->id, 'onchange' => '$(\'#update_text_coworking'.$item->id.'\').click(); return true;')) }}
                                         </div>
                                     </div>
                                     <div class="form-group"><label
