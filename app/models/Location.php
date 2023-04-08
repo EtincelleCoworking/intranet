@@ -156,7 +156,7 @@ class Location extends Eloquent
                 '2021-12' => 22430,
                 '2022-05' => 23585, // PGE
                 '2023-01' => 27410, // +Aurélie
-                '2023-04' => 24550, // -Pauline
+                //'2023-04' => 24550, // -Pauline
 
             ),
             //'Toulouse > Espace W' => array(),
