@@ -309,7 +309,7 @@ group by booking.id
                             $client = new \Twilio\Rest\Client($account_sid, $auth_token);
                         }
 
-                        $message_content = sprintf('Bonjour, "%1$s" est réservé à %2$s. Merci de bien penser à libérer la salle pour %4$s comme prévu. @Etincelle',
+                        $message_content = sprintf('Bonjour, merci de bien penser à libérer la salle "%1$s" pour %4$s comme prévu, elle est réservé ensuite à %2$s. @Etincelle',
                             $data['name'],
                             date('H\hi', $current_start_at),
                             date('H\hi', strtotime($previous['start_at'])),
