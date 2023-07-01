@@ -263,6 +263,8 @@ class Location extends Eloquent
                 '2023-02' => -6058,
                 '2023-03' => 3870,
                 '2023-04' => 2188,
+                '2023-07' => -2000, // TTMO
+                '2023-08' => 2000,// TTMO
             ),
             'Victor Hugo' => array(
                 // Loyer 12/2016 A. T.
