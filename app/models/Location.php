@@ -110,6 +110,7 @@ class Location extends Eloquent
                 '2022-05' => 10850, // PGE + Rania
                 '2023-03' => 10000,
                 '2023-06' => 10640,
+                '2023-09' => 10880,
             ),
             'Victor Hugo' => array(
                 '2016-09' => 3415,
@@ -159,6 +160,7 @@ class Location extends Eloquent
                 '2023-01' => 27410, // +Aurélie
                 '2023-06' => 28860 + 1300, // +Lucien
                 '2023-07' => 28860, // -Jehanne
+                '2023-09' => 27320, // -Jehanne
                 //'2023-04' => 24550, // -Pauline
 
             ),
@@ -184,6 +186,7 @@ class Location extends Eloquent
                 '2022-05' => 10035, // PGE
                 '2023-01' => 10400,
                 '2023-06' => 11340,
+                '2023-09' => 11450,
             ),
             'Baour Lormian' => array(
                 '2019-11' => 3400,
