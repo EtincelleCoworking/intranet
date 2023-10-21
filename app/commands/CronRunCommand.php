@@ -29,8 +29,6 @@
 # 3. Done. Now go push your cron logic into version control!
 
 use Illuminate\Console\Command;
-use Symfony\Component\Console\Input\InputOption;
-use Symfony\Component\Console\Input\InputArgument;
 
 class CronRunCommand extends Command
 {
@@ -162,8 +160,6 @@ where  subscription_user_id is null;');
         AND user_id in (SELECT id FROM users WHERE free_coworking_time = 1)');
         });
         //endregion
-
-
 
 
         $this->checkMonitoring();
@@ -309,7 +305,7 @@ group by booking.id
                             $client = new \Twilio\Rest\Client($account_sid, $auth_token);
                         }
 
-                        $message_content = sprintf('Bonjour, merci de bien penser à libérer la salle "%1$s" pour %4$s comme prévu, elle est réservée ensuite à %2$s. @Etincelle',
+                        $message_content = sprintf('Bonjour, vous avez réservé la salle "%1$s" jusqu’à %4$s. Elle est réservée à %2$s, après vous. @Etincelle',
                             $data['name'],
                             date('H\hi', $current_start_at),
                             date('H\hi', strtotime($previous['start_at'])),
@@ -333,7 +329,8 @@ group by booking.id
                             )
                         );
                         $sql = sprintf('UPDATE booking SET sms_uid = "%s" WHERE id = %d', $result->sid, $previous['id']);
-                        DB::statement($sql);
+                        $sqL_result = DB::statement($sql);
+                        Log::debug($sql . ' ' . $sqL_result);
                     }
                 }
 
@@ -403,7 +400,7 @@ group by booking.id
     /**
      * Called every hour at the minute specified
      *
-     * @param  integer $minute
+     * @param integer $minute
      */
     protected function hourlyAt($minute, callable $callback)
     {
@@ -421,7 +418,7 @@ group by booking.id
     /**
      * Called every day at the 24h-format time specified
      *
-     * @param  string $time [HH:MM]
+     * @param string $time [HH:MM]
      */
     protected function dailyAt($time, callable $callback)
     {
@@ -491,8 +488,8 @@ group by booking.id
     /**
      * Called once every week at the specified day and time
      *
-     * @param  string $day [Three letter format (Mon, Tue, ...)]
-     * @param  string $time [HH:MM]
+     * @param string $day [Three letter format (Mon, Tue, ...)]
+     * @param string $time [HH:MM]
      */
     protected function weeklyOn($day, $time, callable $callback)
     {
