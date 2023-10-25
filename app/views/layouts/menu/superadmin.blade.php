@@ -75,8 +75,7 @@
                 <a href="{{ URL::route('booking_list') }}"><i class="fa fa-calendar-o"></i> Liste</a>
             </li>
             <li{{ Request::is('booking/dashboard') ? ' class="active"' : '' }}>
-                <a href="{{ URL::route('booking_dashboard') }}"
-                   target="_blank"><i class="fa fa-th-large"></i> Tableau de bord</a>
+                <a href="{{ URL::route('booking_dashboard') }}"><i class="fa fa-th-large"></i> Tableau de bord</a>
             </li>
         </ul>
     </li>

@@ -11,8 +11,8 @@
             <p>Cette page affiche toutes les réservations à venir dans les 45 prochains jours.
             <ul>
                 <li>En vert, celles qui sont confirmées,</li>
-                <li>en orange celles qui ne le sont pas, mais sont dans plus de 15 jours</li>
-                <li>en rouge celles qui ne sont aps confirmées et dans les 15 prochains jours</li>
+                <li>en orange celles qui ne le sont pas, mais sont dans plus de 15 jours,</li>
+                <li>en rouge celles qui ne sont pas confirmées et dans les 15 prochains jours.</li>
             </ul>
             </p>
         </div>
