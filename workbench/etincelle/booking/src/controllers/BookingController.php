@@ -1292,4 +1292,21 @@ ORDER BY room ASC , booking_item.start_at ASC ', $day, $day, $location)));
 
         return Response::json($result);
     }
+    public function dashboard()
+    {
+        $bookings = BookingItem::query()
+            ->whereIn('start_at', '>', date('Y-m-d'))
+            ->with('booking')
+            ->with('resource')
+            ->with('booking.user')
+            ->with('confirmed_by_user')
+            ->orderBy('start_at', 'ASC')
+            ->get();
+
+
+        $data = array(
+            'bookings' => $bookings
+        );
+        return View::make('booking::dashboard', $data);
+    }
 }
