@@ -15,10 +15,10 @@
                 <table class="table table-bordered table-hover">
                     <thead>
                     <th>Client</th>
-                    <th>Créée le</th>
                     <th>Date</th>
                     <th>Salle</th>
                     <th>Confirmée</th>
+                    <th>Créée le</th>
                     <th>Actions</th>
                     </thead>
                     <tbody>
@@ -34,7 +34,6 @@
                                         <br/><i class="fa fa-phone"></i> {{ $booking->booking->user->phoneFmt}}
                                     @endif
                                 </td>
-                                <td>{{date('d/m/Y H:i', strtotime($booking->created_at))}}</td>
                                 <td>
                                     {{date('d/m/Y', strtotime($booking->start_at))}}
                                     <br/>
@@ -54,6 +53,7 @@
                                         -
                                     @endif
                                 </td>
+                                <td>{{date('d/m/Y H:i', strtotime($booking->created_at))}}</td>
                                 <td>
                                     <a href="{{ route('booking_modify', array('id' => $booking->id)) }}"
                                        class="btn btn-xs btn-primary">Modifier</a>
