@@ -1295,11 +1295,11 @@ ORDER BY room ASC , booking_item.start_at ASC ', $day, $day, $location)));
     public function dashboard()
     {
         $bookings = BookingItem::query()
-            ->whereIn('start_at', '>', date('Y-m-d'))
+            ->where('start_at', '>', date('Y-m-d'))
             ->with('booking')
-            ->with('resource')
+            ->with('ressource')
             ->with('booking.user')
-            ->with('confirmed_by_user')
+            ->with('confirmedByUser')
             ->orderBy('start_at', 'ASC')
             ->get();
 

@@ -9,16 +9,7 @@
 @stop
 
 @section('content')
-    <div class="row">
         @if (Auth::user()->isSuperAdmin())
-            <div class="col-lg-8">
-                <div class="ibox">
-                    <div class="ibox-content">
-                        Suivi des réservations
-                    </div>
-                </div>
-            </div>
-            <div class="col-lg-4">
                 <div class="ibox">
                     <div class="ibox-content">
                         <table class="table table-bordered">
@@ -32,14 +23,19 @@
                             <tbody>
                             @foreach($bookings as $booking)
                                 <tr>
-                                    <td>{{$booking->booking->user->fullname}}</td>
+                                    <td>
+                                        <a href="{{ URL::route('user_modify', $booking->booking->user->id) }}">{{ $booking->booking->user->fullname }}</a>
+                                        @if($booking->booking->user->phone)
+                                            <br/><i class="fa fa-phone"></i> {{ $booking->booking->user->phoneFmt}}
+                                        @endif
+                                    </td>
                                     <td>{{date('d/m/Y H:i', strtotime($booking->created_at))}}</td>
                                     <td>
                                         {{date('d/m/Y H:i', strtotime($booking->start_at))}}
-                                        - {{date('H:i', strtotime($booking->start_at + $booking->duration * 60))}}
+                                        - {{date('H:i', strtotime($booking->start_at) + $booking->duration * 60)}}
                                     </td>
                                     <td>
-
+                                        {{ $booking->ressource->name }}
                                     </td>
                                     <td>
                                         @if($booking->confirmed_at)
@@ -58,11 +54,7 @@
 
                     </div>
                 </div>
-            </div>
         @endif
-
-
-    </div>
 @stop
 
 @section('javascript')

@@ -39,7 +39,7 @@ Route::group(['before' => 'member'], function () {
     Route::get('/booking/confirm/{id}', array('as' => 'booking_confirm', 'uses' => 'BookingController@confirm'));
 
     Route::get('/booking/invoicing', array('as' => 'booking_invoicing', 'uses' => 'BookingOrderController@invoicing'));
-    Route::get('/booking/dashboard', array('as' => 'booking_dashboard', 'uses' => 'BookingOrderController@dashboard'));
+    Route::get('/booking/dashboard', array('as' => 'booking_dashboard', 'uses' => 'BookingController@dashboard'));
 
     Route::get('/booking/quote/{booking_item_id}', array('as' => 'booking_quote', 'uses' => 'BookingController@createQuoteFromBookingItem'));
 });
