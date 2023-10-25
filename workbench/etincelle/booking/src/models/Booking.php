@@ -82,17 +82,4 @@ class Booking extends Illuminate\Database\Eloquent\Model
         parent::__construct($attributes);
     }
 
-    public function getConfirmationStatus(){
-        if($this->confirmed_at){
-            return 'success';
-        }
-        $diff = date_diff(date_create($this->start_at), date_create(date('Y-m-d')));
-        $age_in_days =$diff->format("%a");
-        if($age_in_days < 15){
-            return 'danger';
-        }
-        if($age_in_days < 30){
-            return 'warning';
-        }
-    }
 }
