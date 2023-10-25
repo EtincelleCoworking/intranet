@@ -12,18 +12,19 @@
     @if (Auth::user()->isSuperAdmin())
         <div class="ibox">
             <div class="ibox-content">
-                <table class="table table-bordered">
+                <table class="table table-bordered table-hover">
                     <thead>
                     <th>Client</th>
                     <th>Créée le</th>
                     <th>Date</th>
                     <th>Salle</th>
                     <th>Confirmée</th>
+                    <th>Actions</th>
                     </thead>
                     <tbody>
                     @foreach($bookings as $booking)
                         @if($status = $booking->getConfirmationStatus())
-                            <tr class="table-{{$status}}">
+                            <tr class="bg-{{$status}}">
                         @else
                             <tr class="">
                                 @endif
@@ -52,6 +53,10 @@
                                     @else
                                         -
                                     @endif
+                                </td>
+                                <td>
+                                    <a href="{{ route('booking_modify', array('id' => $booking->id)) }}"
+                                       class="btn btn-xs btn-primary">Modifier</a>
                                 </td>
                             </tr>
                             @endforeach

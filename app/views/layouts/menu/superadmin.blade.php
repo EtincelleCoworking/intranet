@@ -74,9 +74,9 @@
             <li{{ Request::is('booking/list') ? ' class="active"' : '' }}>
                 <a href="{{ URL::route('booking_list') }}"><i class="fa fa-calendar-o"></i> Liste</a>
             </li>
-            <li{{ Request::is('booking/dailyPdf') ? ' class="active"' : '' }}>
-                <a href="{{ URL::route('booking_daily_pdf', array('location' => Auth::user()->location->slug, 'day' => date('Y-m-d'))) }}"
-                   target="_blank"><i class="fa fa-file-pdf-o"></i> PDF</a>
+            <li{{ Request::is('booking/dashboard') ? ' class="active"' : '' }}>
+                <a href="{{ URL::route('booking_dashboard') }}"
+                   target="_blank"><i class="fa fa-th-large"></i> Tableau de bord</a>
             </li>
         </ul>
     </li>

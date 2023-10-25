@@ -1296,6 +1296,7 @@ ORDER BY room ASC , booking_item.start_at ASC ', $day, $day, $location)));
     {
         $bookings = BookingItem::query()
             ->where('start_at', '>', date('Y-m-d'))
+            ->where('start_at', '<', date('Y-m-d', strtotime('+45 days')))
             ->with('booking')
             ->with('ressource')
             ->with('booking.user')
