@@ -89,7 +89,7 @@
                                                             <i class="fa fa-refresh"
                                                                title="Renouvellement automatique"></i>
                                                         @endif
-                                                        {{date('d/m/Y', strtotime($local_subscriptions[$organisations[$subscription->organisation_id]->id]->renew_at))}}
+                                                        {{date('d/m/Y', strtotime($subscription->renew_at))}}
                                                 @endif
                                             </td>
                                             <td>
