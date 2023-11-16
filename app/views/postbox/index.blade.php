@@ -23,19 +23,29 @@
                         @if(Auth::user()->isSuperAdmin())
                             @if(count($error_organisations)>0)
                                 <p>Les organisations suivantes n'ont pas d'abonnement :</p>
-                                <ul>
+                                <table class="table table-striped table-hover">
+                                    <thead>
+                                    <tr>
+                                        <th>Organisation</th>
+                                        <th>Actions</th>
+                                    </tr>
+                                    </thead>
+                                    <tbody>
                                     @foreach($error_organisations as $organisation)
-                                        <li>
-                                            <a href="{{URL::route('organisation_modify', $organisation->id)}}">{{$organisation->name}}</a>
-
-                                            <a href="{{ URL::route('postbox_details', $organisation->id) }}"
-                                               class="btn btn-default btn-xs">Historique</a>
-                                            <a href="{{ URL::route('postbox_notify', $organisation->id) }}"
-                                               class="btn btn-primary btn-xs">Notifier</a>
-
-                                        </li>
+                                        <tr>
+                                            <td>
+                                                <a href="{{URL::route('organisation_modify', $organisation->id)}}">{{$organisation->name}}</a>
+                                            </td>
+                                            <td>
+                                                <a href="{{ URL::route('postbox_details', $organisation->id) }}"
+                                                   class="btn btn-default btn-xs">Historique</a>
+                                                <a href="{{ URL::route('postbox_notify', $organisation->id) }}"
+                                                   class="btn btn-primary btn-xs">Notifier</a>
+                                            </td>
+                                        </tr>
                                     @endforeach
-                                </ul>
+                                    </tbody>
+                                </table>
                             @endif
 
                             @foreach($subscriptions as $kind => $local_subscriptions)
@@ -91,11 +101,11 @@
                                             <td>
                                                 @if($organisations[$subscription->organisation_id]->domiciliation_end_at && ($organisations[$subscription->organisation_id]->domiciliation_end_at < date('Y-m-d')))
                                                 @else
-                                                        @if($subscription->is_automatic_renew_enabled)
-                                                            <i class="fa fa-refresh"
-                                                               title="Renouvellement automatique"></i>
-                                                        @endif
-                                                        {{date('d/m/Y', strtotime($subscription->renew_at))}}
+                                                    @if($subscription->is_automatic_renew_enabled)
+                                                        <i class="fa fa-refresh"
+                                                           title="Renouvellement automatique"></i>
+                                                    @endif
+                                                    {{date('d/m/Y', strtotime($subscription->renew_at))}}
                                                 @endif
                                             </td>
                                             <td>
