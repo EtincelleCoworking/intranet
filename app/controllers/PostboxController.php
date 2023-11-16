@@ -22,7 +22,7 @@ class PostboxController extends BaseController
             $organisationsQuery->where('accountant_id', '=', Auth::id());
         }
         $organisations = array();
-        foreach($organisationsQuery->get() as $organisation){
+        foreach ($organisationsQuery->get() as $organisation) {
             $organisations[$organisation->id] = $organisation;
         }
 
@@ -44,15 +44,15 @@ class PostboxController extends BaseController
                 ->get();
             foreach ($subscription_datas as $subscription) {
                 $kind = $subscription->ressource_id;
-                if(!isset($subscriptions[$kind])){
+                if (!isset($subscriptions[$kind])) {
                     $subscriptions[$kind] = array();
                 }
                 $subscriptions[$kind][$subscription->organisation_id] = $subscription;
                 unset($organisations[$subscription->organisation_id]);
             }
         }
-
-        foreach(Ressource::whereIn('id', array_keys($subscriptions))->get() as $ressource){
+        $ressources = array();
+        foreach (Ressource::whereIn('id', array_keys($subscriptions))->get() as $ressource) {
             $ressources[$ressource->id] = $ressource->name;
         }
 
