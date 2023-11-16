@@ -49,7 +49,7 @@
                             @endif
 
                             @foreach($subscriptions as $kind => $local_subscriptions)
-                                <h2>{{$ressources[$kind]}}</h2>
+                                <h2>{{$ressources[$kind]}} ({{count($local_subscriptions)}})</h2>
                                 <table class="table table-striped table-hover">
                                     <thead>
                                     <tr>
