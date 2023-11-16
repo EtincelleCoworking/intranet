@@ -53,7 +53,7 @@ class PostboxController extends BaseController
                 if (!isset($subscriptions[$kind])) {
                     $subscriptions[$kind] = array();
                 }
-                $subscriptions[$kind][$subscription->organisation_id] = $subscription;
+                $subscriptions[$kind][] = $subscription;
                 unset($error_organisations[$subscription->organisation_id]);
             }
         }
