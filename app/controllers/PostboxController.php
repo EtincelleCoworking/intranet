@@ -21,7 +21,10 @@ class PostboxController extends BaseController
         if (!Auth::user()->isSuperAdmin()) {
             $organisationsQuery->where('accountant_id', '=', Auth::id());
         }
-        $organisations = $organisationsQuery->get();
+        $organisations = array();
+        foreach($organisationsQuery->get() as $organisation){
+            $organisations[$organisation->id] = $organisation;
+        }
 
         $subscriptions = [];
         if (Auth::user()->isSuperAdmin()) {
@@ -31,13 +34,22 @@ class PostboxController extends BaseController
             }
 
             $subscription_datas = Subscription::whereIn('subscription.organisation_id', $organisations_ids)
+                ->join('organisations', 'subscription.organisation_id', '=', 'organisations.id')
                 ->join('subscription_kind', 'subscription.subscription_kind_id', '=', 'subscription_kind.id')
                 ->join('ressources', 'ressources.id', '=', 'subscription_kind.ressource_id')
                 ->where('ressources.ressource_kind_id', 3)
                 ->select('subscription.*')
+                ->with('ressource')
+                ->orderBy('ressources.name', 'ASC')
+                ->orderBy('organisations.name', 'ASC')
                 ->get();
             foreach ($subscription_datas as $subscription) {
-                $subscriptions[$subscription->organisation_id] = $subscription;
+                $kind = $subscription->ressource->name();
+                if(!isset($subscriptions[$kind])){
+                    $subscriptions[$kind] = array();
+                }
+                $subscriptions[$kind][$subscription->organisation_id] = $subscription;
+                unset($organisations[$subscription->organisation_id]);
             }
         }
 
