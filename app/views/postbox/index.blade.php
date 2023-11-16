@@ -27,6 +27,12 @@
                                     @foreach($error_organisations as $organisation)
                                         <li>
                                             <a href="{{URL::route('organisation_modify', $organisation->id)}}">{{$organisation->name}}</a>
+
+                                            <a href="{{ URL::route('postbox_details', $organisation->id) }}"
+                                               class="btn btn-default btn-xs">Historique</a>
+                                            <a href="{{ URL::route('postbox_notify', $organisation->id) }}"
+                                               class="btn btn-primary btn-xs">Notifier</a>
+
                                         </li>
                                     @endforeach
                                 </ul>
