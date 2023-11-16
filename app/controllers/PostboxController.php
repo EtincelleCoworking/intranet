@@ -46,7 +46,7 @@ class PostboxController extends BaseController
                 ->where('ressources.ressource_kind_id', 3) // Domiciliation
                 ->where('locations.city_id', 1) // Toulouse
                 ->select('subscription.*', 'subscription_kind.ressource_id')
-                //->orderBy('organisations.name', 'ASC')
+                ->orderBy('organisations.name', 'ASC')
                 ->get();
             foreach ($subscription_datas as $subscription) {
                 $kind = $subscription->ressource_id;
