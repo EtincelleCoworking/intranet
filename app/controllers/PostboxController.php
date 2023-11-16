@@ -42,7 +42,9 @@ class PostboxController extends BaseController
                 ->join('organisations', 'subscription.organisation_id', '=', 'organisations.id')
                 ->join('subscription_kind', 'subscription.subscription_kind_id', '=', 'subscription_kind.id')
                 ->join('ressources', 'ressources.id', '=', 'subscription_kind.ressource_id')
-                ->where('ressources.ressource_kind_id', 3)
+                ->join('locations', 'locations.id', '=', 'ressources.location_id')
+                ->where('ressources.ressource_kind_id', 3) // Domiciliation
+                ->where('locations.city_id', 1) // Toulouse
                 ->select('subscription.*', 'subscription_kind.ressource_id')
                 //->orderBy('organisations.name', 'ASC')
                 ->get();
