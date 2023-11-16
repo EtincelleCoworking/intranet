@@ -51,10 +51,6 @@
                                         <tr
                                                 @if($organisations[$subscription->organisation_id]->domiciliation_end_at && ($organisations[$subscription->organisation_id]->domiciliation_end_at < date('Y-m-d')))
                                                 class="text-muted"
-                                                @else
-                                                @if(!isset($local_subscriptions[$organisations[$subscription->organisation_id]->id]) || !$local_subscriptions[$organisations[$subscription->organisation_id]->id]->is_automatic_renew_enabled)
-                                                class="bg-danger"
-                                                @endif
                                                 @endif
                                         >
                                             <td>
@@ -89,15 +85,11 @@
                                             <td>
                                                 @if($organisations[$subscription->organisation_id]->domiciliation_end_at && ($organisations[$subscription->organisation_id]->domiciliation_end_at < date('Y-m-d')))
                                                 @else
-                                                    @if(isset($local_subscriptions[$organisations[$subscription->organisation_id]->id]))
-                                                        @if($local_subscriptions[$organisations[$subscription->organisation_id]->id]->is_automatic_renew_enabled)
+                                                        @if($subscription->is_automatic_renew_enabled)
                                                             <i class="fa fa-refresh"
                                                                title="Renouvellement automatique"></i>
                                                         @endif
                                                         {{date('d/m/Y', strtotime($local_subscriptions[$organisations[$subscription->organisation_id]->id]->renew_at))}}
-                                                    @else
-                                                        <i class="fa fa-times text-danger"></i>
-                                                    @endif
                                                 @endif
                                             </td>
                                             <td>
