@@ -22,8 +22,10 @@ class PostboxController extends BaseController
             $organisationsQuery->where('accountant_id', '=', Auth::id());
         }
         $organisations = array();
+        $error_organisations = array();
         foreach ($organisationsQuery->get() as $organisation) {
             $organisations[$organisation->id] = $organisation;
+            $error_organisations[$organisation->id] = $organisation;
         }
 
         $subscriptions = [];
@@ -47,7 +49,7 @@ class PostboxController extends BaseController
                     $subscriptions[$kind] = array();
                 }
                 $subscriptions[$kind][$subscription->organisation_id] = $subscription;
-                unset($organisations[$subscription->organisation_id]);
+                unset($error_organisations[$subscription->organisation_id]);
             }
         }
         $ressources = array();
@@ -57,6 +59,7 @@ class PostboxController extends BaseController
 
         return View::make('postbox.index', array(
             'organisations' => $organisations,
+            'error_organisations' => $error_organisations,
             'subscriptions' => $subscriptions,
             'ressources' => $ressources
         ));

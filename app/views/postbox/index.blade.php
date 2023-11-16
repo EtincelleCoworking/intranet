@@ -21,10 +21,10 @@
                         <p>Aucune domiciliation n'est associée à votre compte.</p>
                     @else
                         @if(Auth::user()->isSuperAdmin())
-                            @if(count($organisations)>0)
+                            @if(count($error_organisations)>0)
                                 <p>Les organisations suivantes n'ont pas d'abonnement :</p>
                                 <ul>
-                                    @foreach($organisations as $organisation)
+                                    @foreach($error_organisations as $organisation)
                                         <li>
                                             <a href="{{URL::route('organisation_modify', $organisation->id)}}">{{$organisation->name}}</a>
                                         </li>
