@@ -38,9 +38,8 @@ class PostboxController extends BaseController
                 ->join('subscription_kind', 'subscription.subscription_kind_id', '=', 'subscription_kind.id')
                 ->join('ressources', 'ressources.id', '=', 'subscription_kind.ressource_id')
                 ->where('ressources.ressource_kind_id', 3)
-                ->select('subscription.*')
-                ->orderBy('ressources.name', 'ASC')
-                ->orderBy('organisations.name', 'ASC')
+                ->select('subscription.*', 'subscription_kind.ressource_id')
+                //->orderBy('organisations.name', 'ASC')
                 ->get();
             foreach ($subscription_datas as $subscription) {
                 $kind = $subscription->ressource_id;
