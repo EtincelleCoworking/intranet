@@ -26,7 +26,7 @@ class PostboxController extends BaseController
         $error_organisations = array();
         foreach ($organisationsQuery->get() as $organisation) {
             $organisations[$organisation->id] = $organisation;
-            if (($organisation->domiciliation_end_at === null) || ($organisation->domiciliation_end_at > $today)) {
+            if (($organisation->domiciliation_end_at === null) || ($organisation->domiciliation_end_at < $today)) {
                 $error_organisations[$organisation->id] = $organisation;
             }
         }
