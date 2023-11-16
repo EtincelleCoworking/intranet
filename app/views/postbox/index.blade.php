@@ -20,9 +20,18 @@
                     @if(count($organisations) == 0)
                         <p>Aucune domiciliation n'est associée à votre compte.</p>
                     @else
-
-
                         @if(Auth::user()->isSuperAdmin())
+                            @if(count($organisations)>0)
+                                <p>Les organisations suivantes n'ont pas d'abonnement :</p>
+                                <ul>
+                                    @foreach($organisations as $organisation)
+                                        <li>
+                                            <a href="{{URL::route('organisation_modify', $organisation->id)}}">{{$organisation->name}}</a>
+                                        </li>
+                                    @endforeach
+                                </ul>
+                            @endif
+
                             @foreach($subscriptions as $kind => $local_subscriptions)
                                 <h2>{{$ressources[$kind]}}</h2>
                                 <table class="table table-striped table-hover">
@@ -38,65 +47,63 @@
                                     </tr>
                                     </thead>
                                     <tbody>
-                                    @foreach($organisations as $organisation)
+                                    @foreach($local_subscriptions as $subscription)
                                         <tr
-                                                @if($organisation->domiciliation_end_at && ($organisation->domiciliation_end_at < date('Y-m-d')))
+                                                @if($organisations[$subscription->organisation_id]->domiciliation_end_at && ($organisations[$subscription->organisation_id]->domiciliation_end_at < date('Y-m-d')))
                                                 class="text-muted"
                                                 @else
-                                                @if(!isset($local_subscriptions[$organisation->id]) || !$local_subscriptions[$organisation->id]->is_automatic_renew_enabled)
+                                                @if(!isset($local_subscriptions[$organisations[$subscription->organisation_id]->id]) || !$local_subscriptions[$organisations[$subscription->organisation_id]->id]->is_automatic_renew_enabled)
                                                 class="bg-danger"
                                                 @endif
                                                 @endif
                                         >
                                             <td>
                                                 @if(Auth::user()->isSuperAdmin())
-                                                    <a href="{{URL::route('organisation_modify', $organisation->id)}}">{{$organisation->name}}</a>
+                                                    <a href="{{URL::route('organisation_modify', $organisations[$subscription->organisation_id]->id)}}">{{$organisations[$subscription->organisation_id]->name}}</a>
                                                 @else
-                                                    {{$organisation->name}}
+                                                    {{$organisations[$subscription->organisation_id]->name}}
                                                 @endif
                                             </td>
                                             <td>
-                                                @if($organisation->accountant_id)
-                                                    <a href="{{URL::route('user_modify', $organisation->accountant->id)}}">{{$organisation->accountant->fullname}}</a>
+                                                @if($organisations[$subscription->organisation_id]->accountant_id)
+                                                    <a href="{{URL::route('user_modify', $organisations[$subscription->organisation_id]->accountant->id)}}">{{$organisations[$subscription->organisation_id]->accountant->fullname}}</a>
+                                                @else
+                                                    -
+                                                @endif
+                                            </td>
+                                            <td>
+                                                {{$organisations[$subscription->organisation_id]->getDomiciliationFrequency()}}
+                                            </td>
+                                            <td>
+                                                @if($organisations[$subscription->organisation_id]->domiciliation_start_at)
+                                                    {{date('d/m/Y', strtotime($organisations[$subscription->organisation_id]->domiciliation_start_at))}}
+                                                @endif
+                                            </td>
+                                            <td>
+                                                @if($organisations[$subscription->organisation_id]->domiciliation_end_at)
+                                                    {{date('d/m/Y', strtotime($organisations[$subscription->organisation_id]->domiciliation_end_at))}}
                                                 @else
                                                     -
                                                 @endif
                                             </td>
                                             <td>
-                                                {{$organisation->getDomiciliationFrequency()}}
-                                            </td>
-                                            <td>
-                                                @if($organisation->domiciliation_start_at)
-                                                    {{date('d/m/Y', strtotime($organisation->domiciliation_start_at))}}
-                                                @endif
-                                            </td>
-                                            <td>
-                                                @if($organisation->domiciliation_end_at)
-                                                    {{date('d/m/Y', strtotime($organisation->domiciliation_end_at))}}
+                                                @if($organisations[$subscription->organisation_id]->domiciliation_end_at && ($organisations[$subscription->organisation_id]->domiciliation_end_at < date('Y-m-d')))
                                                 @else
-                                                    -
-                                                @endif
-                                            </td>
-                                            @if(Auth::user()->isSuperAdmin())
-                                                <td>
-                                                    @if($organisation->domiciliation_end_at && ($organisation->domiciliation_end_at < date('Y-m-d')))
-                                                    @else
-                                                        @if(isset($local_subscriptions[$organisation->id]))
-                                                            @if($local_subscriptions[$organisation->id]->is_automatic_renew_enabled)
-                                                                <i class="fa fa-refresh"
-                                                                   title="Renouvellement automatique"></i>
-                                                            @endif
-                                                            {{date('d/m/Y', strtotime($local_subscriptions[$organisation->id]->renew_at))}}
-                                                        @else
-                                                            <i class="fa fa-times text-danger"></i>
+                                                    @if(isset($local_subscriptions[$organisations[$subscription->organisation_id]->id]))
+                                                        @if($local_subscriptions[$organisations[$subscription->organisation_id]->id]->is_automatic_renew_enabled)
+                                                            <i class="fa fa-refresh"
+                                                               title="Renouvellement automatique"></i>
                                                         @endif
+                                                        {{date('d/m/Y', strtotime($local_subscriptions[$organisations[$subscription->organisation_id]->id]->renew_at))}}
+                                                    @else
+                                                        <i class="fa fa-times text-danger"></i>
                                                     @endif
-                                                </td>
-                                            @endif
+                                                @endif
+                                            </td>
                                             <td>
-                                                <a href="{{ URL::route('postbox_details', $organisation->id) }}"
+                                                <a href="{{ URL::route('postbox_details', $organisations[$subscription->organisation_id]->id) }}"
                                                    class="btn btn-default btn-xs">Historique</a>
-                                                <a href="{{ URL::route('postbox_notify', $organisation->id) }}"
+                                                <a href="{{ URL::route('postbox_notify', $organisations[$subscription->organisation_id]->id) }}"
                                                    class="btn btn-primary btn-xs">Notifier</a>
                                             </td>
                                         </tr>
