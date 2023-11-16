@@ -39,12 +39,11 @@ class PostboxController extends BaseController
                 ->join('ressources', 'ressources.id', '=', 'subscription_kind.ressource_id')
                 ->where('ressources.ressource_kind_id', 3)
                 ->select('subscription.*')
-                ->with('ressource')
                 ->orderBy('ressources.name', 'ASC')
                 ->orderBy('organisations.name', 'ASC')
                 ->get();
             foreach ($subscription_datas as $subscription) {
-                $kind = $subscription->ressource->name;
+                $kind = $subscription->ressource_id;
                 if(!isset($subscriptions[$kind])){
                     $subscriptions[$kind] = array();
                 }
@@ -53,9 +52,14 @@ class PostboxController extends BaseController
             }
         }
 
+        foreach(Ressource::whereIn('id', array_keys($subscriptions))->get() as $ressource){
+            $ressources[$ressource->id] = $ressource->name;
+        }
+
         return View::make('postbox.index', array(
             'organisations' => $organisations,
-            'subscriptions' => $subscriptions
+            'subscriptions' => $subscriptions,
+            'ressources' => $ressources
         ));
     }
 
