@@ -36,7 +36,7 @@ class PostboxController extends BaseController
             $subscription_datas = Subscription::whereIn('subscription.organisation_id', $organisations_ids)
                 ->join('organisations', 'subscription.organisation_id', '=', 'organisations.id')
                 ->join('subscription_kind', 'subscription.subscription_kind_id', '=', 'subscription_kind.id')
-                ->join('ressources', 'ressources.id', '=', 'subscription_kind.ressource_id')
+              //  ->join('ressources', 'ressources.id', '=', 'subscription_kind.ressource_id')
                 ->where('ressources.ressource_kind_id', 3)
                 ->select('subscription.*', 'subscription_kind.ressource_id')
                 //->orderBy('organisations.name', 'ASC')
@@ -51,7 +51,7 @@ class PostboxController extends BaseController
             }
         }
         $ressources = array();
-        foreach (Ressource::whereIn('id', array_keys($subscriptions))->get() as $ressource) {
+        foreach (Ressource::whereIn('id', array_keys($subscriptions))->orderBy('name', 'ASC')->get() as $ressource) {
             $ressources[$ressource->id] = $ressource->name;
         }
 
