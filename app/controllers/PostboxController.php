@@ -21,11 +21,14 @@ class PostboxController extends BaseController
         if (!Auth::user()->isSuperAdmin()) {
             $organisationsQuery->where('accountant_id', '=', Auth::id());
         }
+        $today = date('Y-m-d');
         $organisations = array();
         $error_organisations = array();
         foreach ($organisationsQuery->get() as $organisation) {
             $organisations[$organisation->id] = $organisation;
-            $error_organisations[$organisation->id] = $organisation;
+            if (($organisation->domiciliation_end_at === null) || ($organisation->domiciliation_end_at > $today)) {
+                $error_organisations[$organisation->id] = $organisation;
+            }
         }
 
         $subscriptions = [];
