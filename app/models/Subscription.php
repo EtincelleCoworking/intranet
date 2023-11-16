@@ -15,6 +15,11 @@ class Subscription extends Eloquent
         return $this->belongsTo('User');
     }
 
+    public function ressource()
+    {
+        return $this->belongsTo('Ressource');
+    }
+
     public function organisation()
     {
         return $this->belongsTo('Organisation');
