@@ -44,7 +44,7 @@ class PostboxController extends BaseController
                 ->orderBy('organisations.name', 'ASC')
                 ->get();
             foreach ($subscription_datas as $subscription) {
-                $kind = $subscription->ressource->name();
+                $kind = $subscription->ressource->name;
                 if(!isset($subscriptions[$kind])){
                     $subscriptions[$kind] = array();
                 }
