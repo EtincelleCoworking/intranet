@@ -111,6 +111,7 @@ class Location extends Eloquent
                 '2023-03' => 10000,
                 '2023-06' => 10640,
                 '2023-09' => 10880,
+                '2024-01' => 10780,
             ),
             'Victor Hugo' => array(
                 '2016-09' => 3415,
@@ -161,8 +162,7 @@ class Location extends Eloquent
                 '2023-06' => 28860 + 1300, // +Lucien
                 '2023-07' => 28860 - 1540, // -Jehanne
                 '2023-09' => 27320,
-                //'2023-04' => 24550,
-
+                '2024-01' => 28110,
             ),
             //'Toulouse > Espace W' => array(),
             'Alsace Lorraine' => array(
@@ -187,6 +187,7 @@ class Location extends Eloquent
                 '2022-12' => 10035+110, // PGE
                 '2023-01' => 10400+110,
                 '2023-06' => 11450,
+                '2024-01' => 11710,
             ),
             'Baour Lormian' => array(
                 '2019-11' => 3400,
@@ -339,7 +340,7 @@ class Location extends Eloquent
                 '2021-07' => -225,
                 '2021-08' => -225,
                 '2022-01' => -3 * 105, // Smart Diagnostics
-                '2022-02' => 3 * 105,// Smart Diagnostics
+                '2022-02' => 3 * 105,// Smart Diagnosticsmerci de
                 '2022-06' => -377,// Eclipse
                 '2022-07' => 377,// Eclipse
                 '2022-10' => -750 / 1.2 - (175 + 75 - 50),// Idēhô
