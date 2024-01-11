@@ -14,6 +14,7 @@ class AddCoffeeshop extends Migration
     public function up()
     {
         Schema::create('coffeeshop_orders', function (Blueprint $table) {
+            $table->increments('id');
             $table->dateTime('occurs_at');
             $table->integer('user_id')->unsigned();
             $table->foreign('user_id')
@@ -25,6 +26,7 @@ class AddCoffeeshop extends Migration
             $table->foreign('invoice_id')
                 ->references('id')->on('invoices')
                 ->onDelete('CASCADE');
+            $table->timestamps();
         });
 
     }
