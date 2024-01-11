@@ -41,7 +41,11 @@ class ApiCoffeeShopController extends BaseController
         $data = array();
         $items = DB::select(sprintf('SELECT * FROM coffeeshop_orders WHERE user_id = %d and invoice_id IS NULL', $user_id));
         foreach ($items as $item) {
-            $data[] = sprintf('%dx %s (%s)', $item->quantity, $item->product_slug, $item->occurs_at);
+            $data[] = [
+                'product' => $item->product_slug,
+                'quantity' => $item->quantity,
+                'occurs_at' => $item->occurs_at
+            ];
         }
 
         $result = array(
