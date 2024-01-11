@@ -22,7 +22,7 @@ class AddCoffeeshop extends Migration
                 ->onDelete('CASCADE');
             $table->string('product_slug');
             $table->integer('quantity')->unsigned();
-            $table->integer('invoice_id')->unsigned();
+            $table->integer('invoice_id')->unsigned()->nullable();
             $table->foreign('invoice_id')
                 ->references('id')->on('invoices')
                 ->onDelete('CASCADE');

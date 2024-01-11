@@ -23,15 +23,15 @@ class ApiCoffeeShopController extends BaseController
 
         $result = array(
             'status' => 'ok',
-            'message' => printf('La commande de %d produit(s) a été enregistrée', $count),
+            'message' => sprintf('La commande de %d produit(s) a été enregistrée', $count),
             //'data' => $json
         );
 
         $response = new \Illuminate\Http\Response();
         $response->headers->set('Content-Type', 'application/json');
-        $response->headers->set('Access-Control-Allow-Origin', '*');
-        $response->headers->set('Access-Control-Allow-Methods', 'POST');
-        $response->headers->set('Access-Control-Allow-Headers', 'Origin, Content-Type, X-Auth-Token');
+//        $response->headers->set('Access-Control-Allow-Origin', '*');
+        //      $response->headers->set('Access-Control-Allow-Methods', 'POST');
+        //$response->headers->set('Access-Control-Allow-Headers', 'Origin, Content-Type, X-Auth-Token');
         $response->setContent(json_encode($result));
         return $response;
     }
