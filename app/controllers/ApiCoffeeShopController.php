@@ -23,15 +23,11 @@ class ApiCoffeeShopController extends BaseController
 
         $result = array(
             'status' => 'ok',
-            'message' => sprintf('La commande de %d produit(s) a été enregistrée', $count),
-            //'data' => $json
+            'message' => sprintf('La commande de %d produit(s) a été enregistrée', $count)
         );
 
         $response = new \Illuminate\Http\Response();
         $response->headers->set('Content-Type', 'application/json');
-//        $response->headers->set('Access-Control-Allow-Origin', '*');
-        //      $response->headers->set('Access-Control-Allow-Methods', 'POST');
-        //$response->headers->set('Access-Control-Allow-Headers', 'Origin, Content-Type, X-Auth-Token');
         $response->setContent(json_encode($result));
         return $response;
     }
@@ -39,7 +35,7 @@ class ApiCoffeeShopController extends BaseController
     public function history($user_id)
     {
         $data = array();
-        $items = DB::select(sprintf('SELECT * FROM coffeeshop_orders WHERE user_id = %d and invoice_id IS NULL', $user_id));
+        $items = DB::select(sprintf('SELECT * FROM coffeeshop_orders WHERE user_id = %d and invoice_id IS NULL ORDER BY occurs_at DESC', $user_id));
         foreach ($items as $item) {
             $data[] = [
                 'product' => $item->product_slug,
