@@ -13,7 +13,7 @@ class AddCoffeeshop extends Migration
      */
     public function up()
     {
-        Schema::table('coffeeshop_orders', function (Blueprint $table) {
+        Schema::create('coffeeshop_orders', function (Blueprint $table) {
             $table->dateTime('occurs_at');
             $table->integer('user_id')->unsigned();
             $table->foreign('user_id')
