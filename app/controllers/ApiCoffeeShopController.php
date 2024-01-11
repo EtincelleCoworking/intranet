@@ -12,8 +12,8 @@ class ApiCoffeeShopController extends BaseController
         $count = 0;
         foreach ($json['content'] as $product_slug => $quantity) {
             $order = new CoffeeShopOrder();
-            $order->user_id = $json->user_id;
-            $order->occurs_at = $json->occurs_at;
+            $order->user_id = $json['user_id'];
+            $order->occurs_at = $json['occurs_at'];
             $order->product_slug = $product_slug;
             $order->quantity = $quantity;
             if ($order->save()) {
