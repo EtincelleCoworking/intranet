@@ -40,6 +40,9 @@ Route::get('/api/1.0/jobs', array('as' => 'api_jobs', 'uses' => 'ApiRocksControl
 Route::get('/api/1.0/user/{user_slug}', array('as' => 'api_users', 'uses' => 'ApiRocksController@user'));
 Route::get('/api/1.0/planning', array('as' => 'api_users', 'uses' => 'TeamPlanningController@api'));
 
+Route::post('/api/1.0/coffeeshop', array('as' => 'api_coffeeshop_store', 'uses' => 'ApiCoffeeShopController@store'));
+Route::get('/api/1.0/coffeeshop/{user_id}', array('as' => 'api_coffeeshop_history', 'uses' => 'ApiCoffeeShopController@history'));
+
 Route::get('/login', array('as' => 'user_login', 'uses' => 'UserController@login'));
 Route::post('/login_check', array('before' => 'csrf', 'as' => 'user_login_check', 'uses' => 'UserController@login_check'));
 Route::get('/logout', array('as' => 'user_logout', 'uses' => 'UserController@logout'));
