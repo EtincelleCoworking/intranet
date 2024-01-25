@@ -5,7 +5,7 @@ class InvoicingRuleProcessor_MeetingRoomDiscount10 extends InvoicingRuleProcesso
     public function execute($invoice_lines)
     {
         $result = array();
-        $discount = $this->getDiscountRate();
+        $discount = self::getDiscountRate();
         foreach ($invoice_lines as $line) {
             $result[] = $line;
             if ($line->ressource_id && ($line->ressource->ressource_kind_id == RessourceKind::TYPE_MEETING_ROOM)
@@ -20,13 +20,13 @@ class InvoicingRuleProcessor_MeetingRoomDiscount10 extends InvoicingRuleProcesso
         return $result;
     }
 
-    protected function getDiscountRate(){
+    protected static function getDiscountRate(){
         return 10;
     }
 
     public static function getCaption()
     {
-        return sprintf('%d%% de réduction sur les salles de réunion', $this->getDiscountRate());
+        return sprintf('%d%% de réduction sur les salles de réunion', self::getDiscountRate());
     }
 
 }
