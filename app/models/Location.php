@@ -269,6 +269,8 @@ class Location extends Eloquent
                 '2023-04' => 2188,
                 '2023-07' => -2000, // TTMO
                 '2023-08' => 2000,// TTMO
+                '2024-01' => -350,// Voyages Gallia
+                '2024-02' => 350,// Voyages Gallia
             ),
             'Victor Hugo' => array(
                 // Loyer 12/2016 A. T.
