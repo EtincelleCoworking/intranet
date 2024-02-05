@@ -41,6 +41,8 @@ Route::get('/api/1.0/user/{user_slug}', array('as' => 'api_users', 'uses' => 'Ap
 Route::get('/api/1.0/planning', array('as' => 'api_users', 'uses' => 'TeamPlanningController@api'));
 
 Route::post('/api/1.0/coffeeshop', array('as' => 'api_coffeeshop_store', 'uses' => 'ApiCoffeeShopController@store'));
+Route::get('/api/1.0/coffeeshop/pending', array('as' => 'api_coffeeshop_pending', 'uses' => 'ApiCoffeeShopController@pending'));
+Route::get('/api/1.0/coffeeshop/stats', array('as' => 'api_coffeeshop_stats', 'uses' => 'ApiCoffeeShopController@stats'));
 Route::get('/api/1.0/coffeeshop/{user_id}', array('as' => 'api_coffeeshop_history', 'uses' => 'ApiCoffeeShopController@history'));
 
 Route::get('/login', array('as' => 'user_login', 'uses' => 'UserController@login'));

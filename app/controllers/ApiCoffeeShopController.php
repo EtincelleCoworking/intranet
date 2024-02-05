@@ -32,6 +32,7 @@ class ApiCoffeeShopController extends BaseController
         return $response;
     }
 
+
     public function history($user_id)
     {
         $data = array();
@@ -42,6 +43,53 @@ class ApiCoffeeShopController extends BaseController
                 'quantity' => $item->quantity,
                 'occurs_at' => $item->occurs_at
             ];
+        }
+
+        $result = array(
+            'status' => 'ok',
+            'data' => $data
+        );
+
+        $response = new \Illuminate\Http\Response();
+        $response->headers->set('Content-Type', 'application/json');
+        $response->headers->set('Access-Control-Allow-Origin', '*');
+        $response->headers->set('Access-Control-Allow-Methods', 'GET');
+        $response->headers->set('Access-Control-Allow-Headers', 'Origin, Content-Type, X-Auth-Token');
+        $response->setContent(json_encode($result));
+        return $response;
+    }
+
+    public function pending()
+    {
+        $data = array();
+        $items = DB::select(sprintf('SELECT user_id, concat(users.firstname, " ", users.lastname) as username, SUM(quantity) as pending_item_count FROM coffeeshop_orders join users on users.id = coffeeshop_orders.user_id WHERE invoice_id IS NULL GROUP BY user_id'));
+        foreach ($items as $item) {
+            $data[$item->user_id] = [
+                'name' => $item->username,
+                'pending' => $item->pending_item_count
+            ];
+        }
+
+        $result = array(
+            'status' => 'ok',
+            'data' => $data
+        );
+
+        $response = new \Illuminate\Http\Response();
+        $response->headers->set('Content-Type', 'application/json');
+        $response->headers->set('Access-Control-Allow-Origin', '*');
+        $response->headers->set('Access-Control-Allow-Methods', 'GET');
+        $response->headers->set('Access-Control-Allow-Headers', 'Origin, Content-Type, X-Auth-Token');
+        $response->setContent(json_encode($result));
+        return $response;
+    }
+
+    public function stats()
+    {
+        $data = array();
+        $items = DB::select(sprintf('select product_slug, count(*) as nb from coffeeshop_orders group by product_slug order by product_slug asc'));
+        foreach ($items as $item) {
+            $data[$item->product_slug] = $item->nb;
         }
 
         $result = array(
