@@ -62,11 +62,12 @@ class ApiCoffeeShopController extends BaseController
     public function pending()
     {
         $data = array();
-        $items = DB::select(sprintf('SELECT user_id, concat(users.firstname, " ", users.lastname) as username, SUM(quantity) as pending_item_count FROM coffeeshop_orders join users on users.id = coffeeshop_orders.user_id WHERE invoice_id IS NULL GROUP BY user_id'));
+        $items = DB::select(sprintf('SELECT user_id, concat(users.firstname, " ", users.lastname) as username, users.slug as user_slug, SUM(quantity) as pending_item_count FROM coffeeshop_orders join users on users.id = coffeeshop_orders.user_id WHERE invoice_id IS NULL GROUP BY user_id'));
         foreach ($items as $item) {
             $data[$item->user_id] = [
                 'name' => $item->username,
-                'pending' => $item->pending_item_count
+                'pending' => $item->pending_item_count,
+                'user_slug' => $item->user_slug,
             ];
         }
 
