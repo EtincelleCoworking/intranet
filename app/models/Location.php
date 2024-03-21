@@ -357,8 +357,9 @@ class Location extends Eloquent
                 '2023-04' => 1050 + 350,
                 '2023-09' => -700,
                 '2023-10' => 700,
-                '2024-03' => -525-192.50-252, // EFAP, Yvon Huyng
+                '2024-03' => -525-192.50-252-500, // EFAP, Yvon Huyng, Miguelina Dominguez
                 '2024-04' => +525+192.50+252,
+                '2024-05' => +500,//Miguelina Dominguez
 
             ),
 
