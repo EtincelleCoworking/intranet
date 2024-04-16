@@ -17,13 +17,14 @@ class InvoicingRuleProcessor_MeetingRoomFlatPrice10 extends InvoicingRuleProcess
                     $result[] = $this->createDiscountLine($line,
                         sprintf('Réduction commerciale - %s', $line->ressource->name), -$duration * $hourly_discount);
                 }
+
             }
         }
 
         return $result;
     }
 
-    const PRICING = 10;
+    const PRICING = 15;
 
     public static function getCaption()
     {
