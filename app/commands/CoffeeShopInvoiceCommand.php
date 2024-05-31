@@ -2,8 +2,6 @@
 
 use Illuminate\Console\Command;
 use Illuminate\Support\Facades\DB;
-use Symfony\Component\Console\Input\InputArgument;
-use Symfony\Component\Console\Input\InputOption;
 
 class CoffeeShopInvoiceCommand extends Command
 {
@@ -21,8 +19,6 @@ class CoffeeShopInvoiceCommand extends Command
      * @var string
      */
     protected $description = '';
-
-    protected $wordpress_url = '';
 
     /**
      * Create a new command instance.
@@ -42,6 +38,8 @@ class CoffeeShopInvoiceCommand extends Command
     public function fire()
     {
         //region products
+
+        // Mettre à jour à partir de l'URL https://intranet2021.etincelle-coworking.com/backend/coffeeshop/code
         $products = array (
             'fruits.clementine' =>
                 array (
@@ -178,6 +176,11 @@ class CoffeeShopInvoiceCommand extends Command
                     'name' => 'Madeleine',
                     'price' => '1.50',
                 ),
+            'pastry.peche-mignon.brownie' =>
+                array (
+                    'name' => 'Brownie',
+                    'price' => '1.50',
+                ),
             'pastry.credo.carrot-cake' =>
                 array (
                     'name' => 'Carrot Cake',
@@ -208,20 +211,81 @@ class CoffeeShopInvoiceCommand extends Command
                     'name' => 'Sablé Breton',
                     'price' => '1.00',
                 ),
+            'pastry.hordeaux.small-tart-kiwi' =>
+                array (
+                    'name' => 'Tartelette Kiwi',
+                    'price' => '4.00',
+                ),
+            'drinks.pago.ace' =>
+                array (
+                    'name' => 'Boisson ACE',
+                    'price' => '1.50',
+                ),
+            'drinks.pago.mixed-fruits' =>
+                array (
+                    'name' => 'Jus Multifruits',
+                    'price' => '1.50',
+                ),
+            'drinks.pago.orange-nectar' =>
+                array (
+                    'name' => 'Nectar d\'Orange',
+                    'price' => '1.50',
+                ),
+            'drinks.fourgon.san-pellegrino' =>
+                array (
+                    'name' => 'San Pellegrino',
+                    'price' => '1.50',
+                ),
+            'drinks.coca-cola.classic' =>
+                array (
+                    'name' => 'Coca-Cola Classic',
+                    'price' => '1.50',
+                ),
+            'drinks.pampril.orange-juice' =>
+                array (
+                    'name' => 'Jus d\'Orange',
+                    'price' => '1.50',
+                ),
+            'drinks.lipton.peach' =>
+                array (
+                    'name' => 'Lipton Pêche',
+                    'price' => '1.50',
+                ),
+            'drinks.lipton.green' =>
+                array (
+                    'name' => 'Lipton Green',
+                    'price' => '1.50',
+                ),
+            'drinks.coca-cola.fuzetea-peche' =>
+                array (
+                    'name' => 'Fuzetea Pêche',
+                    'price' => '1.50',
+                ),
+            'drinks.pago.apple-juice' =>
+                array (
+                    'name' => 'Jus de Pomme',
+                    'price' => '1.50',
+                ),
+            'drinks.orangina.schweppes-indian-tonic' =>
+                array (
+                    'name' => 'Schweppes Indian Tonic',
+                    'price' => '1.50',
+                ),
         );
         //endregion
         $vat = VatType::where('value', 20)->first();
 
         $users = DB::select(sprintf('SELECT user_id, concat(users.firstname, " ", users.lastname) as username, users.slug as user_slug, SUM(quantity) as pending_item_count 
             FROM coffeeshop_orders join users on users.id = coffeeshop_orders.user_id 
-            WHERE invoice_id IS NULL AND coffeeshop_orders.occurs_at < "%s" GROUP BY user_id', date('Y-m-01')));
+            WHERE (invoice_id IS NULL) AND (coffeeshop_orders.occurs_at < "%s") GROUP BY user_id', date('Y-m-01')));
         foreach ($users as $user) {
             $this->info($user->username);
 
             $organisation = Organisation::where('name', '=', $user->username)->first();
-            if(null == $organisation){
+            if (null == $organisation) {
                 $organisation = new Organisation();
-                $organisation->name= $user->username;
+                $organisation->name = $user->username;
+                $organisation->country_id = Country::FRANCE;
                 $organisation->accountant_id = $user->user_id;
                 $organisation->save();
 
@@ -232,7 +296,7 @@ class CoffeeShopInvoiceCommand extends Command
             }
 
             $invoice = new Invoice();
-            $invoice->user_id = $organisation->accountant_id;
+            $invoice->user_id = $user->user_id;
             $invoice->created_at = new \DateTime();
             $invoice->organisation_id = $organisation->id;
             $invoice->type = 'F';
@@ -241,26 +305,44 @@ class CoffeeShopInvoiceCommand extends Command
             $invoice->address = $organisation->fulladdress;
             $invoice->date_invoice = new \DateTime();
             $invoice->deadline = new \DateTime(date('Y-m-d', strtotime('+1 month')));
-            $invoice->expected_payment_at = $invoice->deadline ;
+            $invoice->expected_payment_at = $invoice->deadline;
             $invoice->save();
 
             $orderIndex = 0;
             $items = DB::select(sprintf('SELECT * FROM coffeeshop_orders WHERE user_id = %d and invoice_id IS NULL ORDER BY occurs_at DESC', $user->user_id));
             $items_to_update = [];
-            foreach($items as $item){
+            $items_by_products = [];
+            foreach ($items as $item) {
                 $items_to_update[] = $item->id;
+                if (!isset($items_by_products[$item->product_slug])) {
+                    $items_by_products[$item->product_slug] = [];
+                }
+                $items_by_products[$item->product_slug][] = $item;
+            }
+            foreach ($items_by_products as $product_slug => $items) {
                 $invoice_line = new InvoiceItem();
                 $invoice_line->invoice_id = $invoice->id;
                 $invoice_line->order_index = $orderIndex++;
 
-                $invoice_line->text = $products[$item->slug]['name'];
-                $invoice_line->amount = (float)$products[$item->slug]['price']/1.2;
+                $invoice_line->text = sprintf('%s (%0.2f€): ', $products[$product_slug]['name'], $products[$product_slug]['price']);
+                $lines = [];
+                $sum = 0;
+                foreach ($items as $item) {
+                    $sum += $item->quantity;
+                    if (1 == $item->quantity) {
+                        $lines[] = date('d/m/Y H:i', strtotime($item->occurs_at));
+                    } else {
+                        $lines[] = sprintf('%s (%s)', date('d/m/Y H:i', strtotime($item->occurs_at)), $item->quantity);
+                    }
+                }
+                $invoice_line->text .= implode(', ', $lines);
+                $invoice_line->amount = $sum * (float)$products[$item->product_slug]['price'] / 1.2;
 
                 $invoice_line->vat_types_id = $vat->id;
                 $invoice_line->ressource_id = Ressource::TYPE_EXCEPTIONNAL;
                 $invoice_line->save();
             }
-            DB::statement(sprintf( 'UPDATE coffeeshop_orders SET invoice_id = %d WHERE id in [%s]', $invoice->id, implode(', ', $items_to_update)));
+            DB::statement(sprintf('UPDATE coffeeshop_orders SET invoice_id = %d WHERE id in (%s)', $invoice->id, implode(', ', $items_to_update)));
             $this->output->writeln(sprintf('La facture %s a été créée', $invoice->ident));
         }
     }
@@ -273,8 +355,7 @@ class CoffeeShopInvoiceCommand extends Command
      */
     protected function getArguments()
     {
-        return array(
-        );
+        return array();
     }
 
     /**
@@ -284,8 +365,7 @@ class CoffeeShopInvoiceCommand extends Command
      */
     protected function getOptions()
     {
-        return array(
-        );
+        return array();
     }
 
 }
