@@ -660,10 +660,10 @@ class BookingController extends Controller
         }
         $ressource_id = Input::get('ressource_id');
         if (!Auth::user()->isSuperAdmin()) {
-            $two_days_late = (new \DateTime())->add(\DateInterval::createFromDateString('2 days'))->format('Y-m-d H:i:s');
+            /*$two_days_late = (new \DateTime())->add(\DateInterval::createFromDateString('2 days'))->format('Y-m-d H:i:s');
             if ($booking_item->start_at < $two_days_late) {
                 $messages['start'] = 'Vous ne pouvez pas modifier une réservation sur un si court délais';
-            }
+            }*/
 
             $start = newDateTime(Input::get('date'), Input::get('start'));
             $end = newDateTime(Input::get('date'), Input::get('end'));
