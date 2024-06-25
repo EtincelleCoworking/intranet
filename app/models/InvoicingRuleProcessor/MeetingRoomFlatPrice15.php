@@ -1,6 +1,6 @@
 <?php
 
-class InvoicingRuleProcessor_MeetingRoomFlatPrice10 extends InvoicingRuleProcessor
+class InvoicingRuleProcessor_MeetingRoomFlatPrice15 extends InvoicingRuleProcessor
 {
     public function execute($invoice_lines, $invoice_lines_details)
     {
