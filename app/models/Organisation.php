@@ -193,12 +193,12 @@ WHERE (past_times.invoice_id = 0 OR past_times.invoice_id IS NULL)
         }
     }
 
-    public function applyInvoicingRulesAndSaveLines_Invoices($invoice_lines)
+    public function applyInvoicingRulesAndSaveLines_Invoices($invoice_lines, $invoice_lines_details)
     {
         foreach ($this->rules as $rule) {
             $processor = $rule->createProcessor();
             if ($processor && $processor->isValidForInvoices()) {
-                $invoice_lines = $processor->execute($invoice_lines);
+                $invoice_lines = $processor->execute($invoice_lines, $invoice_lines_details);
             }
         }
         $order_index = 1;

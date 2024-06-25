@@ -8,7 +8,7 @@ class InvoicingRuleProcessor
 
     }
 
-    public function execute($invoice_lines)
+    public function execute($invoice_lines, $invoice_lines_details)
     {
         return $invoice_lines;
     }

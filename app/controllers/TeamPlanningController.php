@@ -15,6 +15,8 @@ class TeamPlanningController extends BaseController
     const TEAM_PAULINE = 4495;
     const TEAM_ANAIS = 4506;
     const TEAM_RANIA = 5036;
+    const TEAM_AURELIE = 5707;
+    const TEAM_ELSA = 6818;
 
     public function index()
     {
@@ -96,7 +98,7 @@ class TeamPlanningController extends BaseController
 
 
         // DELETE from `team_planning_item` WHERE start_at >= "2019-12-01"
-        //TeamPlanningItem::truncate();
+        TeamPlanningItem::truncate();
 
         //region Marina
 
@@ -110,63 +112,55 @@ class TeamPlanningController extends BaseController
             $this->existing_holidays[$row->user_id][$row->occurs_at] = true;
         }
 
-        $start_at = '2021-09-06';
-        foreach ([self::TEAM_JEHANNE, self::TEAM_PAULINE, self::TEAM_ANAIS] as $member) {
+        $start_at = '2024-06-12';
+        foreach ([self::TEAM_ANAIS, self::TEAM_AURELIE,self::TEAM_ELSA] as $member) {
             \Illuminate\Support\Facades\DB::delete('DELETE FROM team_planning_item WHERE start_at >= ? AND user_id = ? AND is_holiday = false', [$start_at, $member]);
         }
 
-        $now = strtotime($start_at);
-        $ends = strtotime('2021-10-02');
+        $now = strtotime('2024-06-12');
+        $ends = strtotime('2024-12-31');
+
+
 
         $current = $now;
         while ($current <= $ends) {
             $day = date('Y-m-d', $current);
             $this->generateTimesheet($day, $day, array('08:00' => '11:00', '13:30' => '17:30'), self::TEAM_ANAIS, $location_alsace_lorraine);
-            $this->generateTimesheet($day, $day, array('08:00' => '12:00', '13:30' => '16:30'), self::TEAM_PAULINE, $location_wilson);
-            $this->generateTimesheet($day, $day, array('08:15' => '11:00', '13:00' => '15:30'), self::TEAM_JEHANNE, $location_wilson);
-            $current += 24 * 3600;
-           /*
-            // lundi
-            $day = date('Y-m-d', $current);
-            $this->generateTimesheet($day, $day, array('08:00' => '11:00', '13:30' => '17:30'), self::TEAM_LINE_ROSE, $location_alsace_lorraine);
-            $this->generateTimesheet($day, $day, array('10:45' => '13:45', '15:00' => '19:00'), self::TEAM_MARINA, $location_alsace_lorraine);
-            $this->generateTimesheet($day, $day, array('08:00' => '12:30', '13:30' => '16:00'), self::TEAM_ZOE, $location_wilson);
+            $day_of_week = date('w', strtotime($day));
+// -- Aurélie
+            switch ($day_of_week) {
+                case 0: //dimanche
+                case 6 : // samedi
+                    break;
+                case 1: // lundi
+                case 2: // mardi
+                case 3: // mercredi
+                case 4: // jeudi
+                    $this->generateTimesheet($day, $day, array('09:00' => '12:45', '13:45' => '18:00'), self::TEAM_AURELIE, $location_wilson);
+                    break;
+                case 5: // vendredi
+                    $this->generateTimesheet($day, $day, array('09:00' => '12:00'), self::TEAM_AURELIE, $location_wilson);
+                    break;
+            }
 
-            // mardi
-            $day = date('Y-m-d', strtotime($day) + 24 * 3600);
-            if ($day <= $ends) {
-                $this->generateTimesheet($day, $day, array('08:00' => '11:00', '13:30' => '17:30'), self::TEAM_LINE_ROSE, $location_alsace_lorraine);
-                $this->generateTimesheet($day, $day, array('10:45' => '13:45', '15:00' => '19:00'), self::TEAM_MARINA, $location_alsace_lorraine);
-                $this->generateTimesheet($day, $day, array('08:00' => '12:30', '13:30' => '16:00'), self::TEAM_ZOE, $location_wilson);
+            // -- Elsa
+            switch ($day_of_week) {
+                case 0: //dimanche
+                case 6 : // samedi
+                    break;
+                case 1: // lundi
+                case 2: // mardi
+                case 3: // mercredi
+                case 4: // jeudi
+                        $this->generateTimesheet($day, $day, array('07:45' => '11:00', '13:00' => '17:00'), self::TEAM_ELSA, $location_wilson);
+                    break;
+                case 5: // vendredi
+                        $this->generateTimesheet($day, $day, array('07:45' => '11:00', '13:00' => '15:45'), self::TEAM_ELSA, $location_wilson);
+                    break;
             }
-            // mercredi
-            $day = date('Y-m-d', strtotime($day) + 24 * 3600);
-            if ($day <= $ends) {
-                $this->generateTimesheet($day, $day, array('08:00' => '11:00', '13:30' => '17:30'), self::TEAM_MARINA, $location_alsace_lorraine);
-                $this->generateTimesheet($day, $day, array('10:45' => '13:45', '15:00' => '19:00'), self::TEAM_LINE_ROSE, $location_alsace_lorraine);
-                $this->generateTimesheet($day, $day, array('08:00' => '12:30', '13:30' => '16:00'), self::TEAM_ZOE, $location_wilson);
-            }
-            // jeudi
-            $day = date('Y-m-d', strtotime($day) + 24 * 3600);
-            if ($day <= $ends) {
-                $this->generateTimesheet($day, $day, array('08:00' => '11:00', '13:30' => '17:30'), self::TEAM_MARINA, $location_alsace_lorraine);
-                $this->generateTimesheet($day, $day, array('10:45' => '13:45', '15:00' => '19:00'), self::TEAM_LINE_ROSE, $location_alsace_lorraine);
-                $this->generateTimesheet($day, $day, array('08:00' => '12:30', '13:30' => '16:00'), self::TEAM_ZOE, $location_wilson);
-            }
-            // vendredi
-            $day = date('Y-m-d', strtotime($day) + 24 * 3600);
-            if ($day <= $ends) {
-                if (date('W', $current) % 2) {
-                    $this->generateTimesheet($day, $day, array('08:00' => '11:00', '13:30' => '17:30'), self::TEAM_LINE_ROSE, $location_alsace_lorraine);
-                    $this->generateTimesheet($day, $day, array('10:45' => '13:45', '15:00' => '19:00'), self::TEAM_MARINA, $location_alsace_lorraine);
-                } else {
-                    $this->generateTimesheet($day, $day, array('08:00' => '11:00', '13:30' => '17:30'), self::TEAM_MARINA, $location_alsace_lorraine);
-                    $this->generateTimesheet($day, $day, array('10:45' => '13:45', '15:00' => '19:00'), self::TEAM_LINE_ROSE, $location_alsace_lorraine);
-                }
-                $this->generateTimesheet($day, $day, array('08:00' => '12:30', '13:30' => '16:00'), self::TEAM_ZOE, $location_wilson);
-            }
-            $current += 7 * 24 * 3600;
-           */
+
+
+            $current = strtotime('tomorrow', $current);
         }
 
         return 'OK';
@@ -186,7 +180,7 @@ class TeamPlanningController extends BaseController
             'background' => '#00ABA9',
             'border' => adjustBrightness('#00ABA9', -32),
         );
-        $colors[self::TEAM_JEHANNE] = array(
+        $colors[self::TEAM_ELSA] = array(
             'text' => '#ffffff',
             'background' => '#AA00FF',
             'border' => adjustBrightness('#AA00FF', -32),
@@ -195,9 +189,10 @@ class TeamPlanningController extends BaseController
             'text' => '#ffffff',
             'background' => '#FA6800',
             'border' => adjustBrightness('#FA6800', -32),
-        ); $colors[self::TEAM_RANIA] = array(
-        'text' => '#000000',
-        'background' => '#E3C800',
+        );
+        $colors[self::TEAM_AURELIE] = array(
+            'text' => '#000000',
+            'background' => '#E3C800',
             'border' => adjustBrightness('#FA6800', -32),
         );
         /*

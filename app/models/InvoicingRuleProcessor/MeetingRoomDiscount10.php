@@ -2,7 +2,7 @@
 
 class InvoicingRuleProcessor_MeetingRoomDiscount10 extends InvoicingRuleProcessor
 {
-    public function execute($invoice_lines)
+    public function execute($invoice_lines, $invoice_lines_details)
     {
         $result = array();
         $discount = self::getDiscountRate();

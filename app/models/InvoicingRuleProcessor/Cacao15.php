@@ -4,7 +4,7 @@ class InvoicingRuleProcessor_Cacao15 extends InvoicingRuleProcessor
 {
     const ROOM_CACAO = 10;
 
-    public function execute($invoice_lines)
+    public function execute($invoice_lines, $invoice_lines_details)
     {
         $result = array();
         foreach ($invoice_lines as $line) {

@@ -2,7 +2,7 @@
 
 class InvoicingRuleProcessor_MeetingRoomAddDailyCatering extends InvoicingRuleProcessor
 {
-    public function execute($invoice_lines)
+    public function execute($invoice_lines, $invoice_lines_details)
     {
         $result = array();
         while (count($invoice_lines) > 0) {

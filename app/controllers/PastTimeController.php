@@ -307,12 +307,14 @@ class PastTimeController extends BaseController
 
         $orderIndex = 0;
         $invoice_lines = array();
+        $invoice_lines_details = array();
         foreach ($lines as $ressource_id => $line) {
             $ressource = $ressources[$ressource_id];
             $invoice_line = new InvoiceItem();
             $invoice_line->invoice_id = $invoice->id;
             $invoice_line->amount = 0;
             $invoice_line->order_index = $orderIndex++;
+            $invoice_line_detail = array();
             if ($ressource_id == Ressource::TYPE_COWORKING) {
                 $items_per_user = array();
                 foreach ($line as $item) {
@@ -380,9 +382,16 @@ class PastTimeController extends BaseController
                 }
             } else {
                 $invoice_line->text = sprintf('Location d\'espace de réunion - %s', $ressource->name);
+
                 foreach ($line as $item) {
+                    $line_amount = min(7, (strtotime($item->time_end) - strtotime($item->time_start)) / 3600) * $ressource->amount;
+                    $invoice_line_detail[] = array(
+                        'start_at' => $item->time_start,
+                        'ends_at' => $item->time_end,
+                        'amount' => $line_amount
+                    );
                     $invoice_line->text .= sprintf("<br />\n - %s de %s à %s", date('d/m/Y', strtotime($item->time_start)), date('H:i', strtotime($item->time_start)), date('H:i', strtotime($item->time_end)));
-                    $invoice_line->amount += min(7, (strtotime($item->time_end) - strtotime($item->time_start)) / 3600) * $ressource->amount;
+                    $invoice_line->amount += $line_amount;
 
                     $item->invoice_id = $invoice->id;
                     $item->save();
@@ -394,9 +403,10 @@ class PastTimeController extends BaseController
 
             $invoice_line->save();
             $invoice_lines[] = $invoice_line;
+            $invoice_lines_details[] = $invoice_line_detail;
         }
 
-        $organisation->applyInvoicingRulesAndSaveLines_Invoices($invoice_lines);
+        $organisation->applyInvoicingRulesAndSaveLines_Invoices($invoice_lines, $invoice_lines_details);
 
         return Redirect::route('invoice_modify', $invoice->id)->with('mSuccess',
             sprintf('La facture a bien été générée <a href="%s" class="btn btn-primary pull-right">Envoyer</a>', URL::route('invoice_send', $invoice->id)));
