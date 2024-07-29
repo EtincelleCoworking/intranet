@@ -183,7 +183,7 @@ WHERE (past_times.invoice_id = 0 OR past_times.invoice_id IS NULL)
         foreach ($this->rules as $rule) {
             $processor = $rule->createProcessor();
             if ($processor && $processor->isValidForQuotes()) {
-                $invoice_lines = $processor->execute($invoice_lines);
+                $invoice_lines = $processor->execute($invoice_lines, array());
             }
         }
         $order_index = 1;
