@@ -12,6 +12,7 @@ class BookingController extends Controller
     const ROOM_CACAO = 10;
     const ROOM_BAOBAB = 14;
     const ROOM_ESPACE5 = 45;
+    const ROOM_SALON_HYBRIDE = 37;
 
     public function index($now = false)
     {
@@ -682,6 +683,7 @@ class BookingController extends Controller
             switch ($ressource_id) {
                 case self::ROOM_BONSAI:
                 case self::ROOM_CACAO:
+                case self::ROOM_SALON_HYBRIDE:
                 case self::ROOM_BAOBAB:
                     if (!isset($messages['start'])) {
                         $messages['start'] = '';
