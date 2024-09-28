@@ -126,6 +126,7 @@ class TeamPlanningController extends BaseController
         while ($current <= $ends) {
             $day = date('Y-m-d', $current);
             $this->generateTimesheet($day, $day, array('08:00' => '11:00', '13:30' => '17:30'), self::TEAM_ANAIS, $location_alsace_lorraine);
+            $this->generateTimesheet($day, $day, array('08:45' => '12:30', '14:00' => '17:15'), self::TEAM_PAULINE, $location_carmes);
             $day_of_week = date('w', strtotime($day));
 // -- Aurélie
             switch ($day_of_week) {
