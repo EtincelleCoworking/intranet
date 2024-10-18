@@ -40,244 +40,245 @@ class CoffeeShopInvoiceCommand extends Command
         //region products
 
         // Mettre à jour à partir de l'URL https://intranet2021.etincelle-coworking.com/backend/coffeeshop/code
-        $products = array (
+        $products = array(
             'fruits.clementine' =>
-                array (
+                array(
                     'name' => 'Clémentine',
                     'price' => '0.50',
                 ),
             'fruits.other' =>
-                array (
+                array(
                     'name' => 'Pomme, Banane...',
                     'price' => '1.00',
                 ),
             'drink' =>
-                array (
+                array(
                     'name' => 'Boisson fraiche',
                     'price' => '1.50',
                 ),
             'snack' =>
-                array (
+                array(
                     'name' => 'Snack',
                     'price' => '1.00',
                 ),
             'snack.bounty' =>
-                array (
+                array(
                     'name' => 'Bounty',
                     'price' => '1.00',
                 ),
             'snack.twix' =>
-                array (
+                array(
                     'name' => 'Twix',
                     'price' => '1.00',
                 ),
             'snack.lion' =>
-                array (
+                array(
                     'name' => 'Lion',
                     'price' => '1.00',
                 ),
             'snack.kitkat' =>
-                array (
+                array(
                     'name' => 'KitKat',
                     'price' => '1.00',
                 ),
             'snack.snickers' =>
-                array (
+                array(
                     'name' => 'Snickers',
                     'price' => '1.00',
                 ),
             'snack.mars' =>
-                array (
+                array(
                     'name' => 'Mars',
                     'price' => '1.00',
                 ),
             'snack.kinder-bueno' =>
-                array (
+                array(
                     'name' => 'Kinder Bueno',
                     'price' => '1.00',
                 ),
             'snack.suchard.rocher' =>
-                array (
+                array(
                     'name' => 'Rocher Suchard (lait ou noir)',
                     'price' => '1.00',
                 ),
             'snack.kitkat.chunky' =>
-                array (
+                array(
                     'name' => 'kitkat Chunky',
                     'price' => '1.00',
                 ),
             'snack.oreo' =>
-                array (
+                array(
                     'name' => 'Milka Oreo',
                     'price' => '1.00',
                 ),
             'snack.granola' =>
-                array (
+                array(
                     'name' => 'Granola',
                     'price' => '1.00',
                 ),
             'snack.kitkat.white' =>
-                array (
+                array(
                     'name' => 'kitkat White',
                     'price' => '1.00',
                 ),
             'pastry.credo.finger' =>
-                array (
+                array(
                     'name' => 'Madeleine Finger',
                     'price' => '2.00',
                 ),
             'pastry.marina.browkie' =>
-                array (
+                array(
                     'name' => 'Browkie',
                     'price' => '2.00',
                 ),
             'pastry.marina.2024-01-15-muffin-myrtille' =>
-                array (
+                array(
                     'name' => 'Muffin Myrtille',
                     'price' => '2.00',
                 ),
             'pastry.marina.2024-01-29-lemon-cake' =>
-                array (
+                array(
                     'name' => 'Cake au citron',
                     'price' => '2.00',
                 ),
             'pastry.marina.2024-01-22-banana-bread' =>
-                array (
+                array(
                     'name' => 'Banana Bread',
                     'price' => '2.00',
                 ),
             'pastry.hordeaux.ugli-like-lemon-cake.small' =>
-                array (
+                array(
                     'name' => 'Ugli façon tarte au citron (petite)',
                     'price' => '2.00',
                 ),
             'pastry.hordeaux.ugli-like-lemon-cake.large' =>
-                array (
+                array(
                     'name' => 'Ugli façon tarte au citron (grande)',
                     'price' => '4.00',
                 ),
             'pastry.hordeaux.valentine-chocolate-manguo' =>
-                array (
+                array(
                     'name' => 'Tartelette chocolat, coeur mangue / orange',
                     'price' => '3.00',
                 ),
             'pastry.hordeaux.small-tart-raspberry' =>
-                array (
+                array(
                     'name' => 'Tartelette Framboise',
                     'price' => '4.00',
                 ),
             'pastry.hordeaux.raspberry-financier' =>
-                array (
+                array(
                     'name' => 'Financier Framboise',
                     'price' => '2.00',
                 ),
             'pastry.mr-madeleine.madeleine' =>
-                array (
+                array(
                     'name' => 'Madeleine',
                     'price' => '1.50',
                 ),
             'pastry.peche-mignon.brownie' =>
-                array (
+                array(
                     'name' => 'Brownie',
                     'price' => '1.50',
                 ),
             'pastry.credo.carrot-cake' =>
-                array (
+                array(
                     'name' => 'Carrot Cake',
                     'price' => '2.00',
                 ),
             'pastry.ohmycooks.cookie' =>
-                array (
+                array(
                     'name' => 'Cookie',
                     'price' => '4.00',
                 ),
             'pastry.hordeaux.sable-diamant' =>
-                array (
+                array(
                     'name' => 'Sablé Diamant',
                     'price' => '1.00',
                 ),
             'pastry.hordeaux.kiwi-lemon-tart' =>
-                array (
+                array(
                     'name' => 'Tartelette Kiwi Citron Vert',
                     'price' => '4.00',
                 ),
             'pastry.hordeaux.raspberry-rubber-tarn' =>
-                array (
+                array(
                     'name' => 'Tartelette Rubarbe / Framboise',
                     'price' => '4.00',
                 ),
             'pastry.hordeaux.sable-breton' =>
-                array (
+                array(
                     'name' => 'Sablé Breton',
                     'price' => '1.00',
                 ),
             'pastry.hordeaux.small-tart-kiwi' =>
-                array (
+                array(
                     'name' => 'Tartelette Kiwi',
                     'price' => '4.00',
                 ),
             'drinks.pago.ace' =>
-                array (
+                array(
                     'name' => 'Boisson ACE',
                     'price' => '1.50',
                 ),
             'drinks.pago.mixed-fruits' =>
-                array (
+                array(
                     'name' => 'Jus Multifruits',
                     'price' => '1.50',
                 ),
             'drinks.pago.orange-nectar' =>
-                array (
+                array(
                     'name' => 'Nectar d\'Orange',
                     'price' => '1.50',
                 ),
             'drinks.fourgon.san-pellegrino' =>
-                array (
+                array(
                     'name' => 'San Pellegrino',
                     'price' => '1.50',
                 ),
             'drinks.coca-cola.classic' =>
-                array (
+                array(
                     'name' => 'Coca-Cola Classic',
                     'price' => '1.50',
                 ),
             'drinks.pampril.orange-juice' =>
-                array (
+                array(
                     'name' => 'Jus d\'Orange',
                     'price' => '1.50',
                 ),
             'drinks.lipton.peach' =>
-                array (
+                array(
                     'name' => 'Lipton Pêche',
                     'price' => '1.50',
                 ),
             'drinks.lipton.green' =>
-                array (
+                array(
                     'name' => 'Lipton Green',
                     'price' => '1.50',
                 ),
             'drinks.coca-cola.fuzetea-peche' =>
-                array (
+                array(
                     'name' => 'Fuzetea Pêche',
                     'price' => '1.50',
                 ),
             'drinks.pago.apple-juice' =>
-                array (
+                array(
                     'name' => 'Jus de Pomme',
                     'price' => '1.50',
                 ),
             'drinks.orangina.schweppes-indian-tonic' =>
-                array (
+                array(
                     'name' => 'Schweppes Indian Tonic',
                     'price' => '1.50',
                 ),
         );
         //endregion
         $vat = VatType::where('value', 20)->first();
+        $deadline = date('Y-m-01');
 
         $users = DB::select(sprintf('SELECT user_id, concat(users.firstname, " ", users.lastname) as username, users.slug as user_slug, SUM(quantity) as pending_item_count 
             FROM coffeeshop_orders join users on users.id = coffeeshop_orders.user_id 
-            WHERE (invoice_id IS NULL) AND (coffeeshop_orders.occurs_at < "%s") GROUP BY user_id', date('Y-m-01')));
+            WHERE (invoice_id IS NULL) AND (coffeeshop_orders.occurs_at < "%s") GROUP BY user_id', $deadline));
         foreach ($users as $user) {
             $this->info($user->username);
 
@@ -309,7 +310,7 @@ class CoffeeShopInvoiceCommand extends Command
             $invoice->save();
 
             $orderIndex = 0;
-            $items = DB::select(sprintf('SELECT * FROM coffeeshop_orders WHERE user_id = %d and invoice_id IS NULL ORDER BY occurs_at DESC', $user->user_id));
+            $items = DB::select(sprintf('SELECT * FROM coffeeshop_orders WHERE user_id = %d and invoice_id IS NULL AND (coffeeshop_orders.occurs_at < "%s") ORDER BY occurs_at DESC', $user->user_id, $deadline));
             $items_to_update = [];
             $items_by_products = [];
             foreach ($items as $item) {
@@ -326,17 +327,21 @@ class CoffeeShopInvoiceCommand extends Command
 
                 $invoice_line->text = sprintf('%s (%0.2f€): ', $products[$product_slug]['name'], $products[$product_slug]['price']);
                 $lines = [];
-                $sum = 0;
+                $line_cost = 0;
                 foreach ($items as $item) {
-                    $sum += $item->quantity;
                     if (1 == $item->quantity) {
-                        $lines[] = date('d/m/Y H:i', strtotime($item->occurs_at));
+                        $caption = date('d/m/Y H:i', strtotime($item->occurs_at));
                     } else {
-                        $lines[] = sprintf('%s (%s)', date('d/m/Y H:i', strtotime($item->occurs_at)), $item->quantity);
+                        $caption = sprintf('%s (%s)', date('d/m/Y H:i', strtotime($item->occurs_at)), $item->quantity);
                     }
+                    if ($item->product_addon) {
+                        $caption .= sprintf('(%s : +%0.2f€)', $item->product_addon, $item->product_addon_cost);
+                    }
+                    $lines[] = $caption;
+                    $line_cost += $item->quantity * ((float)$products[$item->product_slug]['price'] + $item->product_addon_cost) / (1 + $vat->value / 100);
                 }
                 $invoice_line->text .= implode(', ', $lines);
-                $invoice_line->amount = $sum * (float)$products[$item->product_slug]['price'] / 1.2;
+                $invoice_line->amount += $line_cost;
 
                 $invoice_line->vat_types_id = $vat->id;
                 $invoice_line->ressource_id = Ressource::TYPE_EXCEPTIONNAL;

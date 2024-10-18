@@ -36,3 +36,4 @@ Artisan::add(new BookingSyncGoogleCommand);
 Artisan::add(new CatalyzSyncCommand);
 Artisan::add(new UserMergeCommand);
 Artisan::add(new CoffeeShopInvoiceCommand);
+Artisan::add(new CoffeeShopImportBaristaDrinksCommand());

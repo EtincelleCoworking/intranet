@@ -40,6 +40,9 @@ class ApiCoffeeShopController extends BaseController
         foreach ($items as $item) {
             $data[] = [
                 'product' => $item->product_slug,
+                'product_addon' => $item->product_addon,
+                'product_addon_cost' => $item->product_addon_cost,
+                'product_addon_comment' => $item->product_addon_comment,
                 'quantity' => $item->quantity,
                 'occurs_at' => $item->occurs_at
             ];
