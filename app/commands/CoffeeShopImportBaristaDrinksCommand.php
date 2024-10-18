@@ -79,8 +79,8 @@ class CoffeeShopImportBaristaDrinksCommand extends Command
                             } else {
                                 $this->output->writeln(sprintf("<error>case '%s': return null;</error>", $customer_name));
                                 $users[$customer_name] = false;
+                                return false;
                             }
-                            //  return false;
                         }
                     }
                     $quantity = $tokens[self::FIELD_QUANTITY];
@@ -91,6 +91,7 @@ class CoffeeShopImportBaristaDrinksCommand extends Command
                     if (false === $product_price) {
                         $product_price = 0;
                         $this->output->writeln(sprintf("<error>Produit inconnu : [%s]</error>", $product));
+                        return false;
                     }
                     $price = $tokens[5];
                     $price = preg_replace('/^([0-9]+)(:?,([0-9]+))? .*$/', '$1.$3', trim($price)) . '00';
@@ -107,10 +108,10 @@ class CoffeeShopImportBaristaDrinksCommand extends Command
                     if ($addon) {
                         if (!isset($addons[$addon])) {
                             $addons[$addon] = $addon_price;
-                        }else{
-                            if($addons[$addon] == $addon_price){
+                        } else {
+                            if ($addons[$addon] == $addon_price) {
                                 // ok
-                            }else{
+                            } else {
                                 $this->output->writeln(sprintf('<error>Différence de prix addon [%s] connu : %s, actuel : %s </error>', $addon, $addons[$addon], $addon_price));
                             }
                         }
@@ -124,17 +125,17 @@ class CoffeeShopImportBaristaDrinksCommand extends Command
                     $this->output->writeln(sprintf('addon_price : %s', $addon_price));
                     $this->output->writeln(sprintf('addon_comment : %s', $addon_comment));
                     $this->output->writeln(sprintf('price : %s', $product_price));
-/*
-                    $data[] = [
-                        'user_id' => $user_id,
-                        'quantity' => $quantity,
-                        'occurs_at' => $occurs_at,
-                        'product' => $product,
-                        'addon' => $addon,
-                        'addon_price' => $addon_price,
-                        'addon_comment' => $addon_comment,
-                        'price' => $product_price,
-                    ];*/
+                    /*
+                                        $data[] = [
+                                            'user_id' => $user_id,
+                                            'quantity' => $quantity,
+                                            'occurs_at' => $occurs_at,
+                                            'product' => $product,
+                                            'addon' => $addon,
+                                            'addon_price' => $addon_price,
+                                            'addon_comment' => $addon_comment,
+                                            'price' => $product_price,
+                                        ];*/
                     $order = new CoffeeShopOrder();
                     $order->user_id = $user_id;
                     $order->quantity = $quantity;
@@ -147,7 +148,7 @@ class CoffeeShopImportBaristaDrinksCommand extends Command
                 }
             }
         }
-         dump($addons);
+        dump($addons);
     }
 
 
@@ -432,9 +433,12 @@ class CoffeeShopImportBaristaDrinksCommand extends Command
             case 'JULIE CARTIGNI':
             case 'JULIE CARTIGNY':
                 return 7034;
-            case 'SARAH VIGUIE': return 7073;
-            case 'JULIEN CARVAJAL': return 7075;
-            case 'CAROLINE TERGEMINA': return 7074;
+            case 'SARAH VIGUIE':
+                return 7073;
+            case 'JULIEN CARVAJAL':
+                return 7075;
+            case 'CAROLINE TERGEMINA':
+                return 7074;
             //case 'SARAH VIGUIE': return null;
             //case 'ANNE-LISE H.': return null;
             //case 'CAMILLE C.': return null;
