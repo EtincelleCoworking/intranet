@@ -2,6 +2,7 @@
 
 use Illuminate\Console\Command;
 use Illuminate\Support\Facades\DB;
+use Symfony\Component\Console\Input\InputOption;
 
 class CoffeeShopInvoiceCommand extends Command
 {
@@ -46,9 +47,14 @@ class CoffeeShopInvoiceCommand extends Command
                     'name' => 'Clémentine',
                     'price' => '0.50',
                 ),
+            'fruits.apricot' =>
+                array(
+                    'name' => 'Abricot',
+                    'price' => '0.50',
+                ),
             'fruits.other' =>
                 array(
-                    'name' => 'Pomme, Banane...',
+                    'name' => 'Pomme, Banane, Portion de raisins...',
                     'price' => '1.00',
                 ),
             'drink' =>
@@ -96,6 +102,11 @@ class CoffeeShopInvoiceCommand extends Command
                     'name' => 'Kinder Bueno',
                     'price' => '1.00',
                 ),
+            'snack.biscuits-baiocchi' =>
+                array(
+                    'name' => 'Biscuits Baiocchi',
+                    'price' => '1.50',
+                ),
             'snack.suchard.rocher' =>
                 array(
                     'name' => 'Rocher Suchard (lait ou noir)',
@@ -120,6 +131,11 @@ class CoffeeShopInvoiceCommand extends Command
                 array(
                     'name' => 'kitkat White',
                     'price' => '1.00',
+                ),
+            'snack.elsa.chia-pudding' =>
+                array(
+                    'name' => 'Pudding de chia',
+                    'price' => '3.50',
                 ),
             'pastry.credo.finger' =>
                 array(
@@ -216,6 +232,11 @@ class CoffeeShopInvoiceCommand extends Command
                     'name' => 'Tartelette Kiwi',
                     'price' => '4.00',
                 ),
+            'pastry.hordeaux.lemon-tart' =>
+                array(
+                    'name' => 'Tartelette citron meringuée',
+                    'price' => '4.00',
+                ),
             'drinks.pago.ace' =>
                 array(
                     'name' => 'Boisson ACE',
@@ -271,14 +292,273 @@ class CoffeeShopInvoiceCommand extends Command
                     'name' => 'Schweppes Indian Tonic',
                     'price' => '1.50',
                 ),
+            'drinks.evian.water' =>
+                array(
+                    'name' => 'Evian Eau plate',
+                    'price' => '1.50',
+                ),
+            'drinks.pago.apricot-nectar' =>
+                array(
+                    'name' => 'Jus d\'abricot',
+                    'price' => '1.50',
+                ),
+            'hot-drinks.aerocano' =>
+                array(
+                    'name' => 'Aerocano',
+                    'price' => '1.50',
+                ),
+            'hot-drinks.americano-double-shot' =>
+                array(
+                    'name' => 'Americano double shot',
+                    'price' => '0.50',
+                ),
+            'hot-drinks.babyccino' =>
+                array(
+                    'name' => 'Babyccino',
+                    'price' => '0.50',
+                ),
+            'hot-drinks.cafe-frappe' =>
+                array(
+                    'name' => 'Café frappé',
+                    'price' => '1.50',
+                ),
+            'hot-drinks.cappuccino' =>
+                array(
+                    'name' => 'Cappuccino',
+                    'price' => '1.50',
+                ),
+            'hot-drinks.cappuccino-avoine' =>
+                array(
+                    'name' => 'Cappuccino avoine',
+                    'price' => '1.50',
+                ),
+            'hot-drinks.cappuccino-glace' =>
+                array(
+                    'name' => 'Cappuccino glacé',
+                    'price' => '2.00',
+                ),
+            'hot-drinks.chai-avoine' =>
+                array(
+                    'name' => 'Chaï avoine',
+                    'price' => '2.00',
+                ),
+            'hot-drinks.chai-glace' =>
+                array(
+                    'name' => 'Chaï glacé',
+                    'price' => '2.50',
+                ),
+            'hot-drinks.chai-latte' =>
+                array(
+                    'name' => 'Chaï latte',
+                    'price' => '2.00',
+                ),
+            'hot-drinks.chocolat-chaud' =>
+                array(
+                    'name' => 'Chocolat chaud',
+                    'price' => '0.00',
+                ),
+            'hot-drinks.chocolat-glace' =>
+                array(
+                    'name' => 'Chocolat glacé',
+                    'price' => '0.50',
+                ),
+            'hot-drinks.dirty-chai-latte' =>
+                array(
+                    'name' => 'Dirty chaï latte',
+                    'price' => '2.50',
+                ),
+            'hot-drinks.double-affogato' =>
+                array(
+                    'name' => 'Double affogato',
+                    'price' => '2.50',
+                ),
+            'hot-drinks.double-espresso' =>
+                array(
+                    'name' => 'Double espresso',
+                    'price' => '0.50',
+                ),
+            'hot-drinks.double-macchiatonoisette' =>
+                array(
+                    'name' => 'Double macchiato/noisette',
+                    'price' => '1.50',
+                ),
+            'hot-drinks.espresso-tonic' =>
+                array(
+                    'name' => 'Espresso tonic',
+                    'price' => '2.00',
+                ),
+            'hot-drinks.flat-white' =>
+                array(
+                    'name' => 'Flat white',
+                    'price' => '2.00',
+                ),
+            'hot-drinks.genmaicha' =>
+                array(
+                    'name' => 'Genmaïcha',
+                    'price' => '2.00',
+                ),
+            'hot-drinks.granola-bowl' =>
+                array(
+                    'name' => 'Granola bowl',
+                    'price' => '4.50',
+                ),
+            'hot-drinks.latte' =>
+                array(
+                    'name' => 'Latte',
+                    'price' => '2.00',
+                ),
+            'hot-drinks.latte-glace' =>
+                array(
+                    'name' => 'Latte glace',
+                    'price' => '2.50',
+                ),
+            'hot-drinks.latte-glace-caramel' =>
+                array(
+                    'name' => 'Latte glace (caramel)',
+                    'price' => '2.50',
+                ),
+            'hot-drinks.latte-glace-cookie' =>
+                array(
+                    'name' => 'Latte glacé (cookie)',
+                    'price' => '2.50',
+                ),
+            'hot-drinks.latte-glace-noisette' =>
+                array(
+                    'name' => 'Latte glacé (noisette)',
+                    'price' => '2.50',
+                ),
+            'hot-drinks.latte-glace-vanille' =>
+                array(
+                    'name' => 'Latte glacé (vanille)',
+                    'price' => '2.50',
+                ),
+            'hot-drinks.latte-glace-avoine' =>
+                array(
+                    'name' => 'Latte glacé avoine',
+                    'price' => '2.50',
+                ),
+            'hot-drinks.latte-glace-vietnamien' =>
+                array(
+                    'name' => 'Latte glacé vietnamien',
+                    'price' => '2.50',
+                ),
+            'hot-drinks.latte-macchiato' =>
+                array(
+                    'name' => 'Latte macchiato',
+                    'price' => '2.50',
+                ),
+            'hot-drinks.latte-macchiato-caramel' =>
+                array(
+                    'name' => 'Latte macchiato (caramel)',
+                    'price' => '2.50',
+                ),
+            'hot-drinks.latte-macchiato-cookies' =>
+                array(
+                    'name' => 'Latte macchiato (cookies)',
+                    'price' => '2.50',
+                ),
+            'hot-drinks.latte-macchiato-noisette' =>
+                array(
+                    'name' => 'Latte macchiato (noisette)',
+                    'price' => '2.50',
+                ),
+            'hot-drinks.latte-macchiato-vanille' =>
+                array(
+                    'name' => 'Latte macchiato (vanille)',
+                    'price' => '2.50',
+                ),
+            'hot-drinks.macchiatonoisette' =>
+                array(
+                    'name' => 'Macchiato/noisette',
+                    'price' => '1.00',
+                ),
+            'hot-drinks.macchiatonoisette-avoine' =>
+                array(
+                    'name' => 'Macchiato/noisette avoine',
+                    'price' => '1.00',
+                ),
+            'hot-drinks.matcha-latte' =>
+                array(
+                    'name' => 'Matcha latte',
+                    'price' => '2.00',
+                ),
+            'hot-drinks.matcha-latte-avoine' =>
+                array(
+                    'name' => 'Matcha latte avoine',
+                    'price' => '2.00',
+                ),
+            'hot-drinks.matcha-latte-glace' =>
+                array(
+                    'name' => 'Matcha latte glace',
+                    'price' => '2.50',
+                ),
+            'hot-drinks.matcha-soda' =>
+                array(
+                    'name' => 'Matcha soda',
+                    'price' => '2.50',
+                ),
+            'hot-drinks.moca' =>
+                array(
+                    'name' => 'Moca',
+                    'price' => '1.00',
+                ),
+            'hot-drinks.mocaccino' =>
+                array(
+                    'name' => 'Mocaccino',
+                    'price' => '2.00',
+                ),
+            'hot-drinks.mocaccino-caramel' =>
+                array(
+                    'name' => 'Mocaccino (caramel)',
+                    'price' => '2.00',
+                ),
+            'hot-drinks.mocaccino-avoine' =>
+                array(
+                    'name' => 'Mocaccino avoine',
+                    'price' => '2.00',
+                ),
+            'hot-drinks.mocaccino-glace' =>
+                array(
+                    'name' => 'Mocaccino glace',
+                    'price' => '2.50',
+                ),
+            'hot-drinks.moon-milk' =>
+                array(
+                    'name' => 'Moon milk',
+                    'price' => '2.00',
+                ),
+            'hot-drinks.the-matcha' =>
+                array(
+                    'name' => 'Thé matcha',
+                    'price' => '2.00',
+                ),
+            'hot-drinks.vanilla-cream-cold-brew' =>
+                array(
+                    'name' => 'Vanilla cream cold brew',
+                    'price' => '2.00',
+                ),
         );
         //endregion
         $vat = VatType::where('value', 20)->first();
         $deadline = date('Y-m-01');
 
-        $users = DB::select(sprintf('SELECT user_id, concat(users.firstname, " ", users.lastname) as username, users.slug as user_slug, SUM(quantity) as pending_item_count 
-            FROM coffeeshop_orders join users on users.id = coffeeshop_orders.user_id 
-            WHERE (invoice_id IS NULL) AND (coffeeshop_orders.occurs_at < "%s") GROUP BY user_id', $deadline));
+        if ($this->option('all')) {
+            $this->output->writeln('option --all');
+            $users = DB::select(sprintf('SELECT user_id, concat(users.firstname, " ", users.lastname) as username, users.slug as user_slug, SUM(quantity) as pending_item_count 
+                FROM coffeeshop_orders join users on users.id = coffeeshop_orders.user_id 
+                WHERE (invoice_id IS NULL) AND (coffeeshop_orders.occurs_at < "%s") GROUP BY user_id', $deadline));
+        } else {
+            if ($this->option('user')) {
+                $this->output->writeln('option --user=' . $this->option('user'));
+                $users = DB::select(sprintf('SELECT user_id, concat(users.firstname, " ", users.lastname) as username, users.slug as user_slug, SUM(quantity) as pending_item_count 
+                    FROM coffeeshop_orders join users on users.id = coffeeshop_orders.user_id 
+                    WHERE (invoice_id IS NULL) AND (coffeeshop_orders.occurs_at < "%s") AND users.id = %d GROUP BY user_id', $deadline, $this->option('user')));
+            } else {
+                $this->output->writeln('<error>Missing parameter --user=<error> or --all</error>');
+                return false;
+            }
+
+        }
         foreach ($users as $user) {
             $this->info($user->username);
 
@@ -288,12 +568,14 @@ class CoffeeShopInvoiceCommand extends Command
                 $organisation->name = $user->username;
                 $organisation->country_id = Country::FRANCE;
                 $organisation->accountant_id = $user->user_id;
-                $organisation->save();
+                if (!$this->option('dry-run')) {
+                    $organisation->save();
 
-                $organisation_user = new OrganisationUser();
-                $organisation_user->organisation_id = $organisation->id;
-                $organisation_user->user_id = $user->user_id;
-                $organisation_user->save();
+                    $organisation_user = new OrganisationUser();
+                    $organisation_user->organisation_id = $organisation->id;
+                    $organisation_user->user_id = $user->user_id;
+                    $organisation_user->save();
+                }
             }
 
             $invoice = new Invoice();
@@ -307,8 +589,9 @@ class CoffeeShopInvoiceCommand extends Command
             $invoice->date_invoice = new \DateTime();
             $invoice->deadline = new \DateTime(date('Y-m-d', strtotime('+1 month')));
             $invoice->expected_payment_at = $invoice->deadline;
-            $invoice->save();
-
+            if (!$this->option('dry-run')) {
+                $invoice->save();
+            }
             $orderIndex = 0;
             $items = DB::select(sprintf('SELECT * FROM coffeeshop_orders WHERE user_id = %d and invoice_id IS NULL AND (coffeeshop_orders.occurs_at < "%s") ORDER BY occurs_at DESC', $user->user_id, $deadline));
             $items_to_update = [];
@@ -325,18 +608,23 @@ class CoffeeShopInvoiceCommand extends Command
                 $invoice_line->invoice_id = $invoice->id;
                 $invoice_line->order_index = $orderIndex++;
 
-                $invoice_line->text = sprintf('%s (%0.2f€): ', $products[$product_slug]['name'], $products[$product_slug]['price']);
+                $invoice_line->text = sprintf('%s (%0.2f€): <br />', $products[$product_slug]['name'], $products[$product_slug]['price']);
                 $lines = [];
                 $line_cost = 0;
                 foreach ($items as $item) {
                     if (1 == $item->quantity) {
-                        $caption = date('d/m/Y H:i', strtotime($item->occurs_at));
+                        $caption = date('- d/m/Y H:i', strtotime($item->occurs_at));
+                        $caption = preg_replace('/ 00:00$/', '', $caption);
                     } else {
                         $caption = sprintf('%s (%s)', date('d/m/Y H:i', strtotime($item->occurs_at)), $item->quantity);
                     }
                     if ($item->product_addon) {
-                        $caption .= sprintf('(%s : +%0.2f€)', $item->product_addon, $item->product_addon_cost);
+                        $caption .= sprintf(' (%s : +%0.2f€)', $item->product_addon, $item->product_addon_cost);
                     }
+                    if ($item->product_addon_comment) {
+                        $caption .= sprintf(' %s', $item->product_addon_comment);
+                    }
+                    $caption .= '<br />';
                     $lines[] = $caption;
                     $line_cost += $item->quantity * ((float)$products[$item->product_slug]['price'] + $item->product_addon_cost) / (1 + $vat->value / 100);
                 }
@@ -345,10 +633,14 @@ class CoffeeShopInvoiceCommand extends Command
 
                 $invoice_line->vat_types_id = $vat->id;
                 $invoice_line->ressource_id = Ressource::TYPE_EXCEPTIONNAL;
-                $invoice_line->save();
+                if (!$this->option('dry-run')) {
+                    $invoice_line->save();
+                }
             }
-            DB::statement(sprintf('UPDATE coffeeshop_orders SET invoice_id = %d WHERE id in (%s)', $invoice->id, implode(', ', $items_to_update)));
-            $this->output->writeln(sprintf('La facture %s a été créée', $invoice->ident));
+            if (!$this->option('dry-run')) {
+                DB::statement(sprintf('UPDATE coffeeshop_orders SET invoice_id = %d WHERE id in (%s)', $invoice->id, implode(', ', $items_to_update)));
+                $this->output->writeln(sprintf('La facture %s a été créée', $invoice->ident));
+            }
         }
     }
 
@@ -370,7 +662,11 @@ class CoffeeShopInvoiceCommand extends Command
      */
     protected function getOptions()
     {
-        return array();
+        return array(
+            array('user', null, InputOption::VALUE_REQUIRED, '', null),
+            array('dry-run', null, InputOption::VALUE_NONE, '', null),
+            array('all', null, InputOption::VALUE_NONE, '', null),
+        );
     }
 
 }

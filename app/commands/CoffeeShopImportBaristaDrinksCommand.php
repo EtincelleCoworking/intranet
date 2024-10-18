@@ -141,9 +141,9 @@ class CoffeeShopImportBaristaDrinksCommand extends Command
                     $order->occurs_at = $occurs_at;
                     $order->product_slug = $product;
                     $order->product_addon = $addon;
-                    $order->product_addon_price = $addon_price;
+                    $order->product_addon_cost = $addon_price;
                     $order->product_addon_comment = $addon_comment;
-                    //$order->save();
+                    $order->save();
                 }
             }
         }
@@ -174,7 +174,7 @@ class CoffeeShopImportBaristaDrinksCommand extends Command
     private function getUserId($name)
     {
         switch ($name) {
-            case 'AMINE ELAZIZI':
+            case 'AMINE EL AZIZI':
             case 'AMINE ELAZIZI':
                 return 3941;
             case 'BENOIT COUX':
@@ -517,6 +517,7 @@ class CoffeeShopImportBaristaDrinksCommand extends Command
 
     private function getContent()
     {
+        return '';
         return 'AMINE EL AZIZI	17/06/2024		1	CAPPUCCINO	1,50 €	1,50 €			
 BENOIT COUX	17/06/2024		1	DOUBLE MACCHIATO/NOISETTE	1,50 €	1,50 €			
 CEDRIC BOUCHE	17/06/2024		1	DOUBLE MACCHIATO/NOISETTE	1,50 €	1,50 €			
