@@ -681,7 +681,7 @@ class BookingController extends Controller
                 $messages['start'] .= sprintf('La salle %s est déjà réservée sur ce créneau' . "\n", $conflict->ressource->name);
             }
             switch ($ressource_id) {
-                case self::ROOM_BONSAI:
+                //case self::ROOM_BONSAI:
                 case self::ROOM_CACAO:
                 case self::ROOM_SALON_HYBRIDE:
                 case self::ROOM_BAOBAB:
