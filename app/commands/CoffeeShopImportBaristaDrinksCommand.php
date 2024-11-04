@@ -441,6 +441,12 @@ class CoffeeShopImportBaristaDrinksCommand extends Command
                 return 7075;
             case 'CAROLINE TERGEMINA':
                 return 7074;
+            case 'MELANIE BESSAGNET': return 990;
+            case 'FABRICE RAKOTONARIVO': return 5277;
+            case 'CLARISSE LOU': return 7096;
+            case 'LOUIS JACQUES': return 7095;
+            //case 'LOUIS GOUEZE': return null;
+            case 'LESLIE ROUZIER': return 7078;
             //case 'SARAH VIGUIE': return null;
             //case 'ANNE-LISE H.': return null;
             //case 'CAMILLE C.': return null;
@@ -507,6 +513,7 @@ class CoffeeShopImportBaristaDrinksCommand extends Command
             'Moon milk' => 2,// pas de déclinaison taille
             'Thé matcha' => 2,// pas de déclinaison taille
             'Vanilla cream cold brew' => 2,// pas de déclinaison taille
+            'Infusion ginger lemon' => 0.5,// pas de déclinaison taille
 //pago*
 //bounty*
 //lion*
@@ -523,16 +530,7 @@ class CoffeeShopImportBaristaDrinksCommand extends Command
 
     private function getContent()
     {
-        return '';
-        return 'MAX LEVER	18/10/2024		1	GRANOLA BOWL	4,50 €	4,50 €			02/11/2024
-SOPHIE JAMAIN	22/10/2024		1	LATTE MACCHIATO (NOISETTE)	2,50 €	2,50 €			02/11/2024
-NATHALIE GRENET	22/10/2024		1	MACCHIATO/NOISETTE	1,00 €	1,00 €			02/11/2024
-BENOIT COUX	22/10/2024		1	LATTE MACCHIATO (NOISETTE)	2,50 €	2,50 €			02/11/2024
-BENOIT COUX	22/10/2024		1	DOUBLE MACCHIATO/NOISETTE	1,50 €	1,50 €			02/11/2024
-ELENA PERROUIN	22/10/2024		1	DOUBLE ESPRESSO	0,50 €	0,50 €			02/11/2024
-MARGAUX DEROSIER	22/10/2024		1	LATTE MACCHIATO (CARAMEL)	2,50 €	2,50 €			02/11/2024
-AGUSTINA WEBER	22/10/2024		1	LATTE MACCHIATO (CARAMEL)	2,50 €	2,50 €			02/11/2024
-LESLIE ROUZIER	22/10/2024		1	MACCHIATO/NOISETTE	1,00 €	1,00 €		STAGIAIRE A636	02/11/2024
+        return 'LESLIE ROUZIER	22/10/2024		1	MACCHIATO/NOISETTE	1,00 €	1,00 €		STAGIAIRE A636	02/11/2024
 PAULINE SPINAZZE	22/10/2024		1	CHAÏ AVOINE	2,00 €	2,00 €			02/11/2024
 MATTHEW WALKER	22/10/2024		1	CAPPUCCINO	1,50 €	1,50 €			02/11/2024
 ANASTASIA DE SANTIS	22/10/2024		1	DOUBLE ESPRESSO	0,50 €	0,50 €			02/11/2024
@@ -563,7 +561,6 @@ NATHALIE GRENET	30/10/2024		1	MACCHIATO/NOISETTE	1,00 €	1,00 €			02/11/2024
 VALERIE HAMEAU	30/10/2024		1	CAPPUCCINO AVOINE	1,50 €	1,50 €			02/11/2024
 CLARISSE LOU	30/10/2024	SAGE	1	MATCHA LATTE	2,00 €	2,00 €		clarisse.lou@sage.com	02/11/2024
 LOUIS JACQUES	30/10/2024	SAGE	1	DOUBLE ESPRESSO	0,50 €	0,50 €		louis.jacques@sage.com	02/11/2024
-LOUIS GOUEZE	30/10/2024	METAVONICS	1	CHOCOLAT VIENNOIS	2,00 €	2,00 €			02/11/2024
 ARIADNA MATAS	30/10/2024		1	GRANOLA BOWL	4,50 €	4,50 €			02/11/2024
 SOLENE ROSSARD	30/10/2024		1	LATTE	2,00 €	2,00 €			02/11/2024
 OUARDIA EL BONNOUHI	31/10/2024		1	CAPPUCCINO	1,50 €	1,50 €			02/11/2024
