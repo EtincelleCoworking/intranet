@@ -232,6 +232,11 @@ class CoffeeShopInvoiceCommand extends Command
                     'name' => 'Tartelette Kiwi',
                     'price' => '4.00',
                 ),
+            'pastry.elsa.swedish-pasty' =>
+                array (
+                    'name' => 'Viennoiserie suédoise',
+                    'price' => '3.00',
+                ),
             'pastry.hordeaux.lemon-tart' =>
                 array (
                     'name' => 'Tartelette citron meringuée',
@@ -536,6 +541,31 @@ class CoffeeShopInvoiceCommand extends Command
                 array (
                     'name' => 'Vanilla cream cold brew',
                     'price' => '2.00',
+                ),
+            'hot-drinks.infusion-ginger-lemon' =>
+                array (
+                    'name' => 'Infusion ginger lemon',
+                    'price' => '0.50',
+                ),
+            'hot-drinks.chicoryccino' =>
+                array (
+                    'name' => 'Chicoryccino',
+                    'price' => '1.50',
+                ),
+            'hot-drinks.immunity-shot' =>
+                array (
+                    'name' => 'Immunity Shot',
+                    'price' => '1.00',
+                ),
+            'hot-drinks.pumpkin-spice-latte' =>
+                array (
+                    'name' => 'Pumpkin Spice Latte',
+                    'price' => '3.00',
+                ),
+            'hot-drinks.chicoree' =>
+                array (
+                    'name' => 'Chicoree',
+                    'price' => '0.50',
                 ),
         );
         //endregion
