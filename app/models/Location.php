@@ -113,6 +113,7 @@ class Location extends Eloquent
                 '2023-09' => 10880,
                 '2024-01' => 10780,
                 '2024-09' => 13435,
+                '2025-01' => 13565,
             ),
             'Victor Hugo' => array(
                 '2016-09' => 3415,
@@ -165,6 +166,7 @@ class Location extends Eloquent
                 '2023-09' => 27320,
                 '2024-01' => 28110,
                 '2024-09' => 29630,
+                '2025-01' => 27420,
             ),
             //'Toulouse > Espace W' => array(),
             'Alsace Lorraine' => array(
@@ -191,6 +193,7 @@ class Location extends Eloquent
                 '2023-06' => 11450,
                 '2024-01' => 11710,
                 '2024-09' => 11785,
+                '2025-01' => 12000,
             ),
             'Baour Lormian' => array(
                 '2019-11' => 3400,
