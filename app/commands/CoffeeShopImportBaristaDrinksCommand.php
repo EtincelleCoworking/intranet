@@ -526,7 +526,11 @@ class CoffeeShopImportBaristaDrinksCommand extends Command
                 return 7160;
             case 'AUDE PIERRE':
                 return 4829;
-
+            case 'CHRISTIAN RAKOTONDRAINIBE': return 7247;
+            case 'MARIA CHOUPPARD': return 7211;
+            case 'CECILE BARTHES': return 7250;
+            case 'DOMITILLE GALLI': return 7159;
+            case 'SARA TISSENIER': return 7228;
             default :
                 return false;
         }
@@ -587,6 +591,7 @@ class CoffeeShopImportBaristaDrinksCommand extends Command
             'Immunity Shot' => 1.0,// ?
             'Pumpkin Spice Latte' => 3.0,// ?
             'Chicoree' => 0.5,// ?
+            'White matcha latte' => 2.5,// ?
 //pago*
 //bounty*
 //lion*
