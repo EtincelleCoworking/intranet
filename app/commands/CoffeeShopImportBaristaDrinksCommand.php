@@ -487,6 +487,10 @@ class CoffeeShopImportBaristaDrinksCommand extends Command
             case 'AMAURY RAVENEL':
             case 'AMAURY RAVANEL':
                 return 2555;
+            case 'NICOLAS SAUNIER': return 5930;
+            case 'CINDY HERAUD': return 7160;
+            case 'AUDE PIERRE': return 4829;
+
             default :
                 return false;
         }
@@ -624,7 +628,6 @@ SARAH VIGUIE	09/01/2025		1	CAPPUCCINO AVOINE	1,50 €	1,50 €
 ADRIANA ROA	10/01/2025		1	CAPPUCCINO	1,50 €	1,50 €																						
 ADRIANA ROA	10/01/2025		1	LATTE MACCHIATO	2,50 €	2,50 €																						
 ANGELIQUE FOUIX	10/01/2025		1	CAPPUCCINO AVOINE	1,50 €	1,50 €																						
-AUDE PIERRE	10/01/2025		2	FRUIT*	0,50 €	1,00 €		aude.pierre@acolad.com																				
 BAPTISTE MATHUS	10/01/2025		1	AMERICANO DOUBLE SHOT	0,50 €	0,50 €																						
 BAPTISTE MATHUS	10/01/2025		1	DOUBLE MACCHIATO/NOISETTE	1,50 €	1,50 €																						
 BARNABE LEVARD	10/01/2025		1	MACCHIATO/NOISETTE	1,00 €	1,00 €																						
