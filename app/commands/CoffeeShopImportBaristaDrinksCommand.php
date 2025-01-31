@@ -592,6 +592,7 @@ class CoffeeShopImportBaristaDrinksCommand extends Command
             'Pumpkin Spice Latte' => 3.0,// ?
             'Chicoree' => 0.5,// ?
             'White matcha latte' => 2.5,// ?
+            'Tiramisu latte' => 3,// ?
 //pago*
 //bounty*
 //lion*
