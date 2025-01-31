@@ -60,90 +60,92 @@ class CoffeeShopImportBaristaDrinksCommand extends Command
                     $this->output->writeln('Offert / ignoré facturation');
                 } else {
                     $customer_name = $tokens[self::FIELD_USER];
-                    if (isset($users[$tokens[0]])) {
-                        $user_id = $users[$customer_name];
-                    } else {
-                        $user_id = $this->getUserId($customer_name);
-                        if ($user_id) {
-                            $users[$tokens[0]] = $user_id;
+                    if ($customer_name !== 'SUIVI CONSO GRATUITE') {
+                        if (isset($users[$tokens[0]])) {
+                            $user_id = $users[$customer_name];
                         } else {
-                            //$this->output->writeln(sprintf('Utilisateur inconnu : [%s]', $tokens[0]));
-                            $user = User::where('slug', str_replace(' ', '.', strtolower($customer_name)))->first();
-                            if ($user) {
-                                //  $this->output->writeln('');
-                                $this->output->writeln(sprintf("<error>case '%s': return %d;</error>", $customer_name, $user->id));
-                                $users[$customer_name] = $user->id;
-                                //  $this->output->writeln('');
+                            $user_id = $this->getUserId($customer_name);
+                            if ($user_id) {
+                                $users[$tokens[0]] = $user_id;
                             } else {
-                                $this->output->writeln(sprintf("<error>case '%s': return null;</error>", $customer_name));
-                                $users[$customer_name] = false;
-                                return false;
+                                //$this->output->writeln(sprintf('Utilisateur inconnu : [%s]', $tokens[0]));
+                                $user = User::where('slug', str_replace(' ', '.', strtolower($customer_name)))->first();
+                                if ($user) {
+                                    //  $this->output->writeln('');
+                                    $this->output->writeln(sprintf("<error>case '%s': return %d;</error>", $customer_name, $user->id));
+                                    $users[$customer_name] = $user->id;
+                                    //  $this->output->writeln('');
+                                } else {
+                                    $this->output->writeln(sprintf("<error>case '%s': return null;</error>", $customer_name));
+                                    $users[$customer_name] = false;
+                                    return false;
+                                }
                             }
                         }
-                    }
-                    $quantity = $tokens[self::FIELD_QUANTITY];
-                    $occurs_at = preg_replace('|^([0-9]{2})/([0-9]{2})/([0-9]{4})$|', '$3-$2-$1', $tokens[self::FIELD_DATE]);
-                    $product = \Illuminate\Support\Str::slug($tokens[self::FIELD_PRODUCT]);
+                        $quantity = $tokens[self::FIELD_QUANTITY];
+                        $occurs_at = preg_replace('|^([0-9]{2})/([0-9]{2})/([0-9]{4})$|', '$3-$2-$1', $tokens[self::FIELD_DATE]);
+                        $product = \Illuminate\Support\Str::slug($tokens[self::FIELD_PRODUCT]);
 
-                    $product_price = $this->getProductPricing($product);
-                    if (false === $product_price) {
-                        $product_price = 0;
-                        $this->output->writeln(sprintf("<error>Produit inconnu : [%s]</error>", $product));
-                        return false;
-                    }
-                    $price = $tokens[5];
-                    $price = preg_replace('/^([0-9]+)(:?,([0-9]+))? .*$/', '$1.$3', trim($price)) . '00';
-                    $addon_price = 0;
-                    if ($price != $product_price) {
-                        $addon_price = (float)$price - (float)$product_price;
-                        $this->output->writeln(sprintf('<info>[%s] => %s (= %s ?) - addon : %s</info>', $tokens[self::FIELD_UNIT_PRICE], $price, $product_price, $addon_price));
-                        if ($addon_price < 0) {
-                            $this->output->writeln(sprintf('<error>Prix négatif [%s] </error>', $addon_price));
+                        $product_price = $this->getProductPricing($product);
+                        if (false === $product_price) {
+                            $product_price = 0;
+                            $this->output->writeln(sprintf("<error>Produit inconnu : [%s]</error>", $product));
+                            return false;
                         }
-                    }
-
-                    $addon = isset($tokens[self::FIELD_ADDON]) ? trim($tokens[self::FIELD_ADDON]) : null;
-                    if ($addon) {
-                        if (!isset($addons[$addon])) {
-                            $addons[$addon] = $addon_price;
-                        } else {
-                            if ($addons[$addon] == $addon_price) {
-                                // ok
-                            } else {
-                                $this->output->writeln(sprintf('<error>Différence de prix addon [%s] connu : %s, actuel : %s </error>', $addon, $addons[$addon], $addon_price));
+                        $price = $tokens[5];
+                        $price = preg_replace('/^([0-9]+)(:?,([0-9]+))? .*$/', '$1.$3', trim($price)) . '00';
+                        $addon_price = 0;
+                        if ($price != $product_price) {
+                            $addon_price = (float)$price - (float)$product_price;
+                            $this->output->writeln(sprintf('<info>[%s] => %s (= %s ?) - addon : %s</info>', $tokens[self::FIELD_UNIT_PRICE], $price, $product_price, $addon_price));
+                            if ($addon_price < 0) {
+                                $this->output->writeln(sprintf('<error>Prix négatif [%s] </error>', $addon_price));
                             }
                         }
-                    }
 
-                    $this->output->writeln(sprintf('User : %s', $user_id));
-                    $this->output->writeln(sprintf('Quantity : %s', $quantity));
-                    $this->output->writeln(sprintf('OccursAt : %s', $occurs_at));
-                    $this->output->writeln(sprintf('Product : %s', $product));
-                    $this->output->writeln(sprintf('Addon : %s', $addon));
-                    $this->output->writeln(sprintf('addon_price : %s', $addon_price));
-                    $this->output->writeln(sprintf('addon_comment : %s', $addon_comment));
-                    $this->output->writeln(sprintf('price : %s', $product_price));
-                    /*
-                                        $data[] = [
-                                            'user_id' => $user_id,
-                                            'quantity' => $quantity,
-                                            'occurs_at' => $occurs_at,
-                                            'product' => $product,
-                                            'addon' => $addon,
-                                            'addon_price' => $addon_price,
-                                            'addon_comment' => $addon_comment,
-                                            'price' => $product_price,
-                                        ];*/
-                    $order = new CoffeeShopOrder();
-                    $order->user_id = $user_id;
-                    $order->quantity = $quantity;
-                    $order->occurs_at = $occurs_at;
-                    $order->product_slug = $product;
-                    $order->product_addon = $addon;
-                    $order->product_addon_cost = $addon_price;
-                    $order->product_addon_comment = $addon_comment;
-                    if (!$this->option('dry-run')) {
-                        $order->save();
+                        $addon = isset($tokens[self::FIELD_ADDON]) ? trim($tokens[self::FIELD_ADDON]) : null;
+                        if ($addon) {
+                            if (!isset($addons[$addon])) {
+                                $addons[$addon] = $addon_price;
+                            } else {
+                                if ($addons[$addon] == $addon_price) {
+                                    // ok
+                                } else {
+                                    $this->output->writeln(sprintf('<error>Différence de prix addon [%s] connu : %s, actuel : %s </error>', $addon, $addons[$addon], $addon_price));
+                                }
+                            }
+                        }
+
+                        $this->output->writeln(sprintf('User : %s', $user_id));
+                        $this->output->writeln(sprintf('Quantity : %s', $quantity));
+                        $this->output->writeln(sprintf('OccursAt : %s', $occurs_at));
+                        $this->output->writeln(sprintf('Product : %s', $product));
+                        $this->output->writeln(sprintf('Addon : %s', $addon));
+                        $this->output->writeln(sprintf('addon_price : %s', $addon_price));
+                        $this->output->writeln(sprintf('addon_comment : %s', $addon_comment));
+                        $this->output->writeln(sprintf('price : %s', $product_price));
+                        /*
+                                            $data[] = [
+                                                'user_id' => $user_id,
+                                                'quantity' => $quantity,
+                                                'occurs_at' => $occurs_at,
+                                                'product' => $product,
+                                                'addon' => $addon,
+                                                'addon_price' => $addon_price,
+                                                'addon_comment' => $addon_comment,
+                                                'price' => $product_price,
+                                            ];*/
+                        $order = new CoffeeShopOrder();
+                        $order->user_id = $user_id;
+                        $order->quantity = $quantity;
+                        $order->occurs_at = $occurs_at;
+                        $order->product_slug = $product;
+                        $order->product_addon = $addon;
+                        $order->product_addon_cost = $addon_price;
+                        $order->product_addon_comment = $addon_comment;
+                        if (!$this->option('dry-run')) {
+                            $order->save();
+                        }
                     }
                 }
             }
@@ -441,12 +443,17 @@ class CoffeeShopImportBaristaDrinksCommand extends Command
                 return 7075;
             case 'CAROLINE TERGEMINA':
                 return 7074;
-            case 'MELANIE BESSAGNET': return 990;
-            case 'FABRICE RAKOTONARIVO': return 5277;
-            case 'CLARISSE LOU': return 7096;
-            case 'LOUIS JACQUES': return 7095;
+            case 'MELANIE BESSAGNET':
+                return 990;
+            case 'FABRICE RAKOTONARIVO':
+                return 5277;
+            case 'CLARISSE LOU':
+                return 7096;
+            case 'LOUIS JACQUES':
+                return 7095;
             //case 'LOUIS GOUEZE': return null;
-            case 'LESLIE ROUZIER': return 7078;
+            case 'LESLIE ROUZIER':
+                return 7078;
             //case 'SARAH VIGUIE': return null;
             //case 'ANNE-LISE H.': return null;
             //case 'CAMILLE C.': return null;
@@ -457,39 +464,68 @@ class CoffeeShopImportBaristaDrinksCommand extends Command
             //case '        ?': return null;
             // case 'IVANA SAILHAN': return null;
             // case 'JULIE CARTIGNI': return null;
-            case 'BENJAMIN GUILHEMJOUAN': return 5569;
-            case 'COLLEEN HANRIOT': return 6017;
-            case 'BENOIT EL AMRANI': return 4301;
-            case 'JEAN-PHILIPPE KHA': return 4314;
-            case 'MARION RATIER': return 7041;
-            case 'LEANE DOMERGUE': return 7099;
-            case 'HELENE BERRIER': return 7125;
-            case 'CATHERINE DORE': return 6575;
-            case 'GREGORY ESTRADE': return 145;
-            case 'CORALINE RASSET': return 5680;
-            case 'BAPTISTE VILLENEUVE': return 7202;
-            case 'ANAIS EL AOUD': return 6195;
-            case 'SAMANTHA HARRACA': return 5759;
+            case 'BENJAMIN GUILHEMJOUAN':
+                return 5569;
+            case 'COLLEEN HANRIOT':
+                return 6017;
+            case 'BENOIT EL AMRANI':
+                return 4301;
+            case 'JEAN-PHILIPPE KHA':
+                return 4314;
+            case 'MARION RATIER':
+                return 7041;
+            case 'LEANE DOMERGUE':
+                return 7099;
+            case 'HELENE BERRIER':
+                return 7125;
+            case 'CATHERINE DORE':
+                return 6575;
+            case 'GREGORY ESTRADE':
+                return 145;
+            case 'CORALINE RASSET':
+                return 5680;
+            case 'BAPTISTE VILLENEUVE':
+                return 7202;
+            case 'ANAIS EL AOUD':
+                return 6195;
+            case 'SAMANTHA HARRACA':
+                return 5759;
             //case 'EFIARETA EHAMELO': return null;
-            case 'ESTEVE PINYOL': return 2571;
-            case 'JEAN-MARC D\'ANDRIA': return 745;
-            case 'MORGAN URIEN': return 6697;
-            case 'LEO VINCENT': return 6077;
-            case 'GERALD GOUNOT': return 7134;
-            case 'AMELIE BIMONT': return 6826;
-            case 'CHERIF MILI': return 2993;
-            case 'ROBERTO PASQUA': return 6386;
-            case 'EDDINE SAIDI': return 7101;
-            case 'ALIA DOYEN': return 7180;
-            case 'LAETITIA MONTRICHARD': return 7126;
-            case 'ADRIEN CRUCIFIX': return 6155;
-            case 'MELODIE DOUGNAC': return 4568;
+            case 'ESTEVE PINYOL':
+                return 2571;
+            case 'JEAN-MARC D\'ANDRIA':
+                return 745;
+            case 'MORGAN URIEN':
+                return 6697;
+            case 'LEO VINCENT':
+                return 6077;
+            case 'GERALD GOUNOT':
+                return 7134;
+            case 'AMELIE BIMONT':
+                return 6826;
+            case 'CHERIF MILI':
+                return 2993;
+            case 'ROBERTO PASQUA':
+                return 6386;
+            case 'EDDINE SAIDI':
+                return 7101;
+            case 'ALIA DOYEN':
+                return 7180;
+            case 'LAETITIA MONTRICHARD':
+                return 7126;
+            case 'ADRIEN CRUCIFIX':
+                return 6155;
+            case 'MELODIE DOUGNAC':
+                return 4568;
             case 'AMAURY RAVENEL':
             case 'AMAURY RAVANEL':
                 return 2555;
-            case 'NICOLAS SAUNIER': return 5930;
-            case 'CINDY HERAUD': return 7160;
-            case 'AUDE PIERRE': return 4829;
+            case 'NICOLAS SAUNIER':
+                return 5930;
+            case 'CINDY HERAUD':
+                return 7160;
+            case 'AUDE PIERRE':
+                return 4829;
 
             default :
                 return false;
