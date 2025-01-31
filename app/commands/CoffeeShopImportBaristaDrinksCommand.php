@@ -481,6 +481,12 @@ class CoffeeShopImportBaristaDrinksCommand extends Command
             case 'ROBERTO PASQUA': return 6386;
             case 'EDDINE SAIDI': return 7101;
             case 'ALIA DOYEN': return 7180;
+            case 'LAETITIA MONTRICHARD': return 7126;
+            case 'ADRIEN CRUCIFIX': return 6155;
+            case 'MELODIE DOUGNAC': return 4568;
+            case 'AMAURY RAVENEL':
+            case 'AMAURY RAVANEL':
+                return 2555;
             default :
                 return false;
         }
