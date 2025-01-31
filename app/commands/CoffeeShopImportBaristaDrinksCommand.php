@@ -744,7 +744,6 @@ MAX LEVER	17/01/2025		1	CHOCOLAT CHAUD	0,50 €	0,50 €	PIMENT
 MELINE BOUYSSI	17/01/2025	METAVONICS	1	CHOCOLAT CHAUD	0,50 €	0,50 €																						
 PAULINE SARDA	17/01/2025		1	MOCACCINO	2,00 €	2,00 €																						
 PAULINE SARDA	17/01/2025		1	CHAÏ LATTE	2,00 €	2,00 €																						
-PIERRE HAMEL	17/01/2025		1	boisson de la semaine	0,50 €	0,50 €	1 SHOP SUP																					
 SUIVI CONSO GRATUITE	17/01/2025		7	allongé	0,00 €	0,00 €																						
 SUIVI CONSO GRATUITE	17/01/2025		6	espresso	0,00 €	0,00 €																						
 SUIVI CONSO GRATUITE	17/01/2025		10	boisson de la semaine	0,00 €	0,00 €																						
