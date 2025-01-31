@@ -515,6 +515,7 @@ order by older_invoice_at ASC';
 users.default_location_id as location_id,
 concat(cities.name, \' > \', IF(locations.name IS NULL, \'\', locations.name)) as location_name,
 concat(users.firstname, \' \', users.lastname) as user_name,
+users.email,
 date_format(date_past, \'%Y-%m-01\') as period, sum(GREATEST(0, (UNIX_TIMESTAMP(past_times.time_end) - UNIX_TIMESTAMP(past_times.time_start)) / 60 )) as duration FROM `past_times` 
 
 join users on users.id = past_times.user_id
@@ -534,6 +535,7 @@ ORDER BY cities.name ASC, locations.name ASC, date_past ASC';
             $periods[$item->period] = true;
             $users[$item->user_id] = array(
                 'name' => $item->user_name,
+                'email' => $item->email,
                 'location_id' => $item->location_id
             );
             $locations[$item->location_id] = rtrim($item->location_name, ' > ');

@@ -57,7 +57,7 @@
                                                     @foreach ($data[$location_id] as $user_id => $item)
                                                         <tr>
                                                             <td>
-                                                                <a href="{{ URL::route('user_modify', $user_id) }}">{{ $users[$user_id]['name'] }}</a>
+                                                                <a href="{{ URL::route('user_modify', $user_id) }}">{{ $users[$user_id]['name'] }}</a> <small>{{ $users[$user_id]['email'] }}</small>
                                                                 <a href="{{ URL::route('pasttime_list') }}?filtre_submitted=1&filtre_toinvoice=1&filtre_start={{date('d/m/Y', Config::get('etincelle.activity_started'))}}&filtre_user_id={{ $user_id }}"><i
                                                                             class="fa fa-filter"></i></a>
 
