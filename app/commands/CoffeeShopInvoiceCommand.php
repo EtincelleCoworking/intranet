@@ -52,6 +52,11 @@ class CoffeeShopInvoiceCommand extends Command
                     'name' => 'Abricot',
                     'price' => '0.50',
                 ),
+            'fruits.kiwi' =>
+                array (
+                    'name' => 'Kiwi',
+                    'price' => '0.50',
+                ),
             'fruits.other' =>
                 array (
                     'name' => 'Pomme, Banane, Portion de raisins...',
@@ -569,7 +574,7 @@ class CoffeeShopInvoiceCommand extends Command
                 ),
         );
         //endregion
-        $vat = VatType::where('value', 20)->first();
+        $vat = VatType::where('value', 10)->first();
         $deadline = date('Y-m-01');
 
         if ($this->option('all')) {
