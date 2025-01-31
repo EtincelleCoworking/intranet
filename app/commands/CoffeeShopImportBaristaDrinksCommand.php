@@ -531,6 +531,9 @@ class CoffeeShopImportBaristaDrinksCommand extends Command
             case 'CECILE BARTHES': return 7250;
             case 'DOMITILLE GALLI': return 7159;
             case 'SARA TISSENIER': return 7228;
+            case 'JULIEN COUTURIER': return 419;
+            case 'MOHAMED ELADL': return 5926;
+            case 'IMENE THAMRI': return 6176;case 'LOUIS ULMER': return 7240;
             default :
                 return false;
         }
@@ -593,6 +596,7 @@ class CoffeeShopImportBaristaDrinksCommand extends Command
             'Chicoree' => 0.5,// ?
             'White matcha latte' => 2.5,// ?
             'Tiramisu latte' => 3,// ?
+            'Café viennois' => 1.5,// ?
 //pago*
 //bounty*
 //lion*
