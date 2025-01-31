@@ -906,10 +906,6 @@ AURELIE PICHOT	31/01/2025		1	OURS BLANC	2,50 €	2,50 €
 HELENE FABRE	31/01/2025		1	DOUBLE MACCHIATO/NOISETTE	1,50 €	1,50 €																						
 OUARDIA EL BONNOUHI	31/01/2025		1	CAPPUCCINO AVOINE	1,50 €	1,50 €																						
 VALERIE ALASLUQUETAS	31/01/2025	YUKAN	1	CAPPUCCINO	1,50 €	1,50 €																						
-SUIVI CONSO GRATUITE	31/01/2025		5	CHOCOLAT CHAUD	0,00 €	0,00 €																						
-SUIVI CONSO GRATUITE	31/01/2025		12	allongé	0,00 €	0,00 €																						
-SUIVI CONSO GRATUITE	31/01/2025		12	espresso	0,00 €	0,00 €																						
-SUIVI CONSO GRATUITE	31/01/2025		1	boisson de la semaine	0,00 €	0,00 €																						
 MAELIA LEGRAND	31/01/2025		2	CHICORYCCINO	2,00 €	4,00 €	L																					
 MARYLENE LAURENT	31/01/2025		1	MOCACCINO	2,00 €	2,00 €																						
 MELINE BOUYSSI	31/01/2025		1	CHICORYCCINO	1,50 €	1,50 €																						
