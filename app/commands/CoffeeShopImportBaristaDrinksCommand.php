@@ -139,7 +139,7 @@ class CoffeeShopImportBaristaDrinksCommand extends Command
                         $order->user_id = $user_id;
                         $order->quantity = $quantity;
                         $order->occurs_at = $occurs_at;
-                        $order->product_slug = $product;
+                        $order->product_slug = 'hot-drinks.'.$product;
                         $order->product_addon = $addon;
                         $order->product_addon_cost = $addon_price;
                         $order->product_addon_comment = $addon_comment;
