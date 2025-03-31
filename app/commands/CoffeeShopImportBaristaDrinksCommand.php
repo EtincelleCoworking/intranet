@@ -631,30 +631,327 @@ class CoffeeShopImportBaristaDrinksCommand extends Command
 
     private function getContent()
     {
-        return 'LAURA ARLES	27/02/2025		1	DIRTY CHAÏ LATTE	2,50 €	2,50 €			
-ADRIANA ROA	28/02/2025		2	CAPPUCCINO	1,50 €	3,00 €			
-MATTHIEU CROUZET	28/02/2025		1	LATTE MACCHIATO (COOKIES)	2,50 €	2,50 €			
-PIERRE HAMEL	28/02/2025		1	INFUSION GINGER LEMON	0,50 €	0,50 €			
-VALENTIN RENAUD	28/02/2025		1	MOCACCINO	2,50 €	2,50 €	L		
-MELINE BOUYSSI	28/02/2025		1	CHICORYCCINO	1,50 €	1,50 €			
-OUARDIA EL BONNOUHI	28/02/2025		1	CAPPUCCINO AVOINE	1,50 €	1,50 €			
-BARNABE LEVARD	28/02/2025		1	MACCHIATO/NOISETTE	1,00 €	1,00 €			
-NATHALIE GRENET	28/02/2025		1	DOUBLE MACCHIATO/NOISETTE	1,50 €	1,50 €			
-BAPTISTE MATHUS	28/02/2025		1	AMERICANO DOUBLE SHOT	0,50 €	0,50 €			
-SUIVI CONSO GRATUITE	28/02/2025		1	boisson de la semaine	0,00 €	0,00 €			
-SUIVI CONSO GRATUITE	28/02/2025		12	allongé	0,00 €	0,00 €			
-SUIVI CONSO GRATUITE	28/02/2025		8	espresso	0,00 €	0,00 €			
-SUIVI CONSO GRATUITE	28/02/2025		4	CHOCOLAT CHAUD	0,00 €	0,00 €			
-VALERIE HAMEAU	03/03/2025		2	LATTE	2,00 €	4,00 €			
-GREGORY ESTRADE	03/03/2025		1	DOUBLE ESPRESSO	0,50 €	0,50 €			
-ANGELIQUE FOUIX	03/03/2025		1	FLAT WHITE	2,00 €	2,00 €			
-VALERIE ALASLUQUETAS	03/03/2025	YUKAN	1	CAPPUCCINO	1,50 €	1,50 €			
-MELODIE TYLER	03/03/2025		1	GRANOLA BOWL	4,50 €	4,50 €			
-SUIVI CONSO GRATUITE	03/03/2025		3	boisson de la semaine	0,00 €	0,00 €			
-SUIVI CONSO GRATUITE	03/03/2025		12	allongé	0,00 €	0,00 €			
-SUIVI CONSO GRATUITE	03/03/2025		12	espresso	0,00 €	0,00 €			
-SUIVI CONSO GRATUITE	03/03/2025		12	CHOCOLAT CHAUD	0,00 €	0,00 €			
-VALERIE HAMEAU	03/03/2025		1	CHICORYCCINO	1,50 €	1,50 €			';
+        return 'HELENE FABRE	04/03/2025		1	DOUBLE ESPRESSO	0,50 €	0,50 €																						
+BAPTISTE MATHUS	04/03/2025		1	AMERICANO DOUBLE SHOT	0,50 €	0,50 €																						
+SOPHIE JAMAIN	04/03/2025		1	LATTE MACCHIATO (NOISETTE)	2,50 €	2,50 €																						
+JEAN CIAPA	04/03/2025		1	LATTE	2,00 €	2,00 €																						
+VIRGINIE DEL RIEU	04/03/2025		1	CHAÏ AVOINE	3,50 €	3,50 €	XXL																					
+UGO DE LUCA	04/03/2025		1	CHICORYCCINO	2,00 €	2,00 €	L																					
+MATTHEW WALKER	04/03/2025		1	CAPPUCCINO	1,50 €	1,50 €																						
+VALERIE ALASLUQUETAS	04/03/2025	YUKAN	1	CAPPUCCINO	1,50 €	1,50 €																						
+MARIE-LAURE MOENS	04/03/2025		2	LATTE	2,00 €	4,00 €																						
+BAPTISTE MATHUS	04/03/2025		1	DOUBLE MACCHIATO/NOISETTE	1,50 €	1,50 €																						
+LAURE SARDELLA	04/03/2025	TECHNIA	1	ESPRESSO TONIC	2,00 €	2,00 €																						
+SUIVI CONSO GRATUITE	04/03/2025		2	boisson de la semaine	0,00 €	0,00 €																						
+SUIVI CONSO GRATUITE	04/03/2025		17	allongé	0,00 €	0,00 €																						
+SUIVI CONSO GRATUITE	04/03/2025		15	espresso	0,00 €	0,00 €																						
+SUIVI CONSO GRATUITE	04/03/2025		7	CHOCOLAT CHAUD	0,00 €	0,00 €																						
+VIRGINIE DEL RIEU	04/03/2025		1	OURS BLANC	2,50 €	2,50 €																						
+LAETITIA RUAULT DURAND	04/03/2025		1	MOCA	1,00 €	1,00 €																						
+JEAN REMI ROUX	04/03/2025		1	CAPPUCCINO	1,50 €	1,50 €																						
+CINDY HERAUD	04/03/2025		1	WHITE MATCHA LATTE	2,50 €	2,50 €																						
+LAURE SARDELLA	04/03/2025		1	CAPPUCCINO	1,50 €	1,50 €																						
+BAPTISTE MATHUS	04/03/2025		1	MOCACCINO	2,00 €	2,00 €																						
+CLARA MANHES	04/03/2025		1	CAPPUCCINO	1,50 €	1,50 €																						
+ELENA PERROUIN	05/03/2025		1	DOUBLE ESPRESSO	0,50 €	0,50 €																						
+MOHAMED ZAAROUR	05/03/2025	SAGE	1	MACCHIATO/NOISETTE	1,00 €	1,00 €																						
+LAETITIA MONTRICHARD	05/03/2025	METAVONICS	1	DOUBLE ESPRESSO	0,50 €	0,50 €																						
+MATTHIEU CROUZET	05/03/2025		1	MOCACCINO	2,00 €	2,00 €	L																					
+SOPHIE JAMAIN	05/03/2025		1	LATTE MACCHIATO (NOISETTE)	2,50 €	2,50 €																						
+JEAN CIAPA	05/03/2025		1	CAPPUCCINO	1,50 €	1,50 €																						
+CLARA MANHES	05/03/2025	YUKAN	1	LATTE	2,00 €	2,00 €																						
+SOPHIE JAMAIN	05/03/2025		1	LATTE	2,00 €	2,00 €																						
+BENOIT EL AMRANI	05/03/2025		1	CAPPUCCINO	1,50 €	1,50 €																						
+LAURE SARDELLA	05/03/2025		1	MOCACCINO	2,00 €	2,00 €																						
+MELODIE DOUGNAC	05/03/2025	SPARK	1	CHICORYCCINO	1,50 €	1,50 €																						
+SUIVI CONSO GRATUITE	05/03/2025		8	boisson de la semaine	0,00 €	0,00 €																						
+SUIVI CONSO GRATUITE	05/03/2025		10	allongé	0,00 €	0,00 €																						
+SUIVI CONSO GRATUITE	05/03/2025		7	espresso	0,00 €	0,00 €																						
+SUIVI CONSO GRATUITE	05/03/2025		4	CHOCOLAT CHAUD	0,00 €	0,00 €																						
+CHRISTOPHE BOUE	06/03/2025		2	LATTE MACCHIATO	2,50 €	5,00 €																						
+SOPHIE JAMAIN	06/03/2025		1	LATTE MACCHIATO (NOISETTE)	2,50 €	2,50 €																						
+ANTHONY FELIN	06/03/2025		1	CAPPUCCINO AVOINE	1,50 €	1,50 €																						
+MARGAUX DEROSIER	06/03/2025		1	LATTE MACCHIATO (CARAMEL)	2,50 €	2,50 €																						
+SARAH VIGUIE	06/03/2025		1	LATTE	2,00 €	2,00 €																						
+VIRGINIE DEL RIEU	06/03/2025		1	CHAÏ AVOINE	3,50 €	3,50 €	XXL																					
+UGO DE LUCA	06/03/2025		1	CHAÏ AVOINE	2,50 €	2,50 €	L																					
+CLARA MANHES	06/03/2025		1	LATTE	2,00 €	2,00 €																						
+BARNABE LEVARD	06/03/2025		1	MACCHIATO/NOISETTE	1,00 €	1,00 €																						
+ERIC GUIN	06/03/2025		1	AMERICANO DOUBLE SHOT	0,50 €	0,50 €																						
+NATHALIE GRENET	06/03/2025		1	DOUBLE MACCHIATO/NOISETTE	1,50 €	1,50 €																						
+SARA TISSENIER	06/03/2025		1	LATTE	2,00 €	2,00 €																						
+SUIVI CONSO GRATUITE	06/03/2025		4	boisson de la semaine	0,00 €	0,00 €																						
+SUIVI CONSO GRATUITE	06/03/2025		32	allongé	0,00 €	0,00 €																						
+SUIVI CONSO GRATUITE	06/03/2025		11	espresso	0,00 €	0,00 €																						
+SUIVI CONSO GRATUITE	06/03/2025		5	CHOCOLAT CHAUD	0,00 €	0,00 €																						
+ELODIE BAROT	06/03/2025		1	CAPPUCCINO AVOINE	0,00 €	0,00 €		RESERVATION SALLE 2 PERS																				
+VIRGINIE DEL RIEU	06/03/2025		1	CHAÏ AVOINE	2,00 €	2,00 €																						
+MATTHIAS BRIGAUD	06/03/2025	BLABLACAR	1	CHAÏ LATTE	2,00 €	2,00 €																						
+DORINE JUBERTIE	06/03/2025		1	LATTE	2,00 €	2,00 €		dorine.jubertie@gmail.com																				
+MELINE BOUYSSI	06/03/2025	METAVONICS	1	CHICOREE	0,50 €	0,50 €																						
+BAPTISTE MATHUS	07/03/2025		1	DOUBLE MACCHIATO/NOISETTE	1,50 €	1,50 €																						
+ELENA PERROUIN	07/03/2025		1	DOUBLE ESPRESSO	0,50 €	0,50 €																						
+CHANTAL PERDIGAU	07/03/2025		1	CAPPUCCINO	1,50 €	1,50 €																						
+CLARA MANHES	07/03/2025	YUKAN	1	CAPPUCCINO	1,50 €	1,50 €																						
+SOPHIE JAMAIN	07/03/2025		1	LATTE MACCHIATO (NOISETTE)	2,50 €	2,50 €																						
+VICTORIA PUYUELO	07/03/2025		1	CAPPUCCINO	1,50 €	1,50 €																						
+CINDY HERAUD	07/03/2025		1	LATTE	2,00 €	2,00 €																						
+MELINE BOUYSSI	07/03/2025	METAVONICS	1	CHICOREE	0,50 €	0,50 €																						
+BAPTISTE MATHUS	07/03/2025		1	MOCACCINO	2,00 €	2,00 €																						
+SUIVI CONSO GRATUITE	07/03/2025		5	boisson de la semaine	0,00 €	0,00 €																						
+SUIVI CONSO GRATUITE	07/03/2025		15	allongé	0,00 €	0,00 €																						
+SUIVI CONSO GRATUITE	07/03/2025		14	espresso	0,00 €	0,00 €																						
+SUIVI CONSO GRATUITE	07/03/2025		9	CHOCOLAT CHAUD	0,00 €	0,00 €																						
+ELSA CARDINAUD	10/03/2025		1	MATCHA LATTE AVOINE	2,00 €	2,00 €																						
+VALERIE HAMEAU	10/03/2025		1	CHICORYCCINO	2,00 €	2,00 €	L																					
+ANGELIQUE FOUIX	10/03/2025		1	FLAT WHITE	2,00 €	2,00 €																						
+SOPHIE JAMAIN	10/03/2025		1	LATTE MACCHIATO (NOISETTE)	2,50 €	2,50 €																						
+ERIC GUIN	10/03/2025		1	AMERICANO DOUBLE SHOT	0,50 €	0,50 €																						
+VALERIE ALASLUQUETAS	10/03/2025	YUKAN	1	CAPPUCCINO	1,50 €	1,50 €																						
+CLARA MANHES	10/03/2025	YUKAN	1	LATTE	2,00 €	2,00 €																						
+MELINE BOUYSSI	10/03/2025	METAVONICS	1	CHICORYCCINO	1,50 €	1,50 €																						
+ERIC GUIN	10/03/2025		1	CAPPUCCINO	1,50 €	1,50 €																						
+ANDRES GOMEZ	10/03/2025		1	CAPPUCCINO	1,50 €	1,50 €																						
+MELODIE TYLER	10/03/2025		1	MATCHA LATTE AVOINE	2,00 €	2,00 €																						
+MELINE BOUYSSI	10/03/2025	METAVONICS	1	CHICOREE	0,50 €	0,50 €																						
+ANAE LEFEVRE	10/03/2025		1	WHITE MATCHA LATTE	2,50 €	2,50 €																						
+SUIVI CONSO GRATUITE	10/03/2025		3	boisson de la semaine	0,00 €	0,00 €																						
+SUIVI CONSO GRATUITE	10/03/2025		21	allongé	0,00 €	0,00 €																						
+SUIVI CONSO GRATUITE	10/03/2025		5	espresso	0,00 €	0,00 €																						
+SUIVI CONSO GRATUITE	10/03/2025		5	CHOCOLAT CHAUD	0,00 €	0,00 €																						
+BENOIT COUX	11/03/2025		2	DOUBLE MACCHIATO/NOISETTE	1,50 €	3,00 €																						
+ANTHONY FELIN	11/03/2025		1	CAPPUCCINO AVOINE	1,50 €	1,50 €																						
+CHRISTELLE LAGAE	11/03/2025	1000CAFES	1	DOUBLE ESPRESSO	0,50 €	0,50 €																						
+OUARDIA EL BONNOUHI	11/03/2025		1	CAPPUCCINO AVOINE	1,50 €	1,50 €																						
+BAPTISTE MATHUS	11/03/2025		1	AMERICANO DOUBLE SHOT	0,50 €	0,50 €																						
+MORGAN URIEN	11/03/2025	BLABLACAR	1	CHICORYCCINO	1,50 €	1,50 €																						
+SOPHIE JAMAIN	11/03/2025		1	LATTE MACCHIATO (NOISETTE)	2,50 €	2,50 €																						
+FRANCOIS HELLOCO	11/03/2025		1	INFUSION GINGER LEMON	0,50 €	0,50 €																						
+MELINE BOUYSSI	11/03/2025	METAVONICS	1	MOCACCINO	2,50 €	2,50 €	L																					
+CLARA MANHES	11/03/2025		1	CAPPUCCINO	1,50 €	1,50 €																						
+SOLENE ROSSARD	11/03/2025	TECHNIA	1	LATTE	2,00 €	2,00 €																						
+VIRGINIE DEL RIEU	11/03/2025		1	CHAÏ AVOINE	2,50 €	2,50 €	L																					
+UGO DE LUCA	11/03/2025		1	CHICORYCCINO	2,00 €	2,00 €	L																					
+NATHALIE GRENET	11/03/2025		1	DOUBLE MACCHIATO/NOISETTE	1,50 €	1,50 €																						
+LAURE SARDELLA	11/03/2025	TECHNIA	1	ESPRESSO TONIC	2,00 €	2,00 €																						
+CINDY HERAUD	11/03/2025		1	LATTE	2,00 €	2,00 €																						
+CINDY HERAUD	11/03/2025		1	CHAÏ AVOINE	2,00 €	2,00 €																						
+MATTHEW WALKER	11/03/2025		1	CAPPUCCINO	1,50 €	1,50 €																						
+ANASTASIA DE SANTIS	11/03/2025		1	CAFE VIENNOIS	1,50 €	1,50 €																						
+SUIVI CONSO GRATUITE	11/03/2025		7	boisson de la semaine	0,00 €	0,00 €																						
+SUIVI CONSO GRATUITE	11/03/2025		21	allongé	0,00 €	0,00 €																						
+SUIVI CONSO GRATUITE	11/03/2025		15	espresso	0,00 €	0,00 €																						
+SUIVI CONSO GRATUITE	11/03/2025		5	CHOCOLAT CHAUD	0,00 €	0,00 €																						
+CHRISTELLE LAGAE	11/03/2025		1	LATTE	2,00 €	2,00 €		MARIE-LOU																				
+SOPHIE JAMAIN	12/03/2025		1	LATTE	2,00 €	2,00 €																						
+CHANTAL PERDIGAU	12/03/2025		1	CAPPUCCINO AVOINE	1,50 €	1,50 €																						
+BAPTISTE MATHUS	12/03/2025		1	LATTE MACCHIATO	2,50 €	2,50 €																						
+MELODIE TYLER	12/03/2025		1	GRANOLA BOWL	4,50 €	4,50 €																						
+PAULINE SARDA	12/03/2025		1	GRANOLA BOWL	4,50 €	4,50 €																						
+VLAD CERISIER	12/03/2025		1	GRANOLA BOWL	4,50 €	4,50 €																						
+VALERIE ALASLUQUETAS	12/03/2025	YUKAN	1	CAPPUCCINO	1,50 €	1,50 €																						
+MATTHEW WALKER	12/03/2025		1	CAPPUCCINO	1,50 €	1,50 €																						
+LAURE SARDELLA	12/03/2025	TECHNIA	1	ESPRESSO TONIC	2,00 €	2,00 €																						
+CHRISTELLE LAGAE	12/03/2025	1000CAFES	1	DOUBLE ESPRESSO	0,50 €	0,50 €																						
+SUIVI CONSO GRATUITE	12/03/2025		6	boisson de la semaine	0,00 €	0,00 €																						
+SUIVI CONSO GRATUITE	12/03/2025		20	allongé	0,00 €	0,00 €																						
+SUIVI CONSO GRATUITE	12/03/2025		7	espresso	0,00 €	0,00 €																						
+SUIVI CONSO GRATUITE	12/03/2025		8	CHOCOLAT CHAUD	0,00 €	0,00 €																						
+MARGAUX DEROSIER	13/03/2025		1	LATTE MACCHIATO (CARAMEL)	2,50 €	2,50 €																						
+BAPTISTE MATHUS	13/03/2025		1	AMERICANO DOUBLE SHOT	0,50 €	0,50 €																						
+OUARDIA EL BONNOUHI	13/03/2025		1	CAPPUCCINO AVOINE	1,50 €	1,50 €																						
+CHRISTOPHE BOUE	13/03/2025	BRYO	2	LATTE MACCHIATO	2,50 €	5,00 €																						
+SARAH VIGUIE	13/03/2025		1	LATTE	2,00 €	2,00 €																						
+CLARA MANHES	13/03/2025	YUKAN	1	LATTE	2,00 €	2,00 €																						
+NATHALIE GRENET	13/03/2025		1	MACCHIATO/NOISETTE	1,00 €	1,00 €																						
+MELODIE DOUGNAC	13/03/2025		1	WHITE MATCHA LATTE	2,50 €	2,50 €																						
+CHRISTOPHE BOUE	13/03/2025		1	LATTE MACCHIATO (CARAMEL)	2,50 €	2,50 €																						
+ERIC GUIN	13/03/2025		1	CAPPUCCINO	1,50 €	1,50 €																						
+SUIVI CONSO GRATUITE	13/03/2025		3	LATTE	0,00 €	0,00 €		(SALLE DE REUNION 2PERS)																				
+SUIVI CONSO GRATUITE	13/03/2025		2	CAPPUCCINO	0,00 €	0,00 €		(SALLE DE REUNION 2PERS)																				
+SUIVI CONSO GRATUITE	13/03/2025		1	MATCHA LATTE	0,00 €	0,00 €		(SALLE DE REUNION 2PERS)																				
+SUIVI CONSO GRATUITE	13/03/2025		8	boisson de la semaine	0,00 €	0,00 €																						
+SUIVI CONSO GRATUITE	13/03/2025		31	allongé	0,00 €	0,00 €																						
+SUIVI CONSO GRATUITE	13/03/2025		18	espresso	0,00 €	0,00 €																						
+SUIVI CONSO GRATUITE	13/03/2025		5	CHOCOLAT CHAUD	0,00 €	0,00 €																						
+BAPTISTE MATHUS	13/03/2025		1	DOUBLE MACCHIATO/NOISETTE	1,50 €	1,50 €																						
+BENOIT COUX	14/03/2025		1	DOUBLE MACCHIATO/NOISETTE	1,50 €	1,50 €																						
+ADRIEN MORQUE	14/03/2025		1	CAPPUCCINO AVOINE	1,50 €	1,50 €																						
+GREGORY ESTRADE	14/03/2025		1	CAPPUCCINO	1,50 €	1,50 €																						
+VALERIE ALASLUQUETAS	14/03/2025	YUKAN	1	CAPPUCCINO	1,50 €	1,50 €																						
+CLARA MANHES	14/03/2025	YUKAN	1	LATTE	2,00 €	2,00 €																						
+SOPHIE JAMAIN	14/03/2025		1	LATTE MACCHIATO (NOISETTE)	2,50 €	2,50 €																						
+ELODIE ALVES	14/03/2025		1	OURS BLANC	2,50 €	2,50 €																						
+SUIVI CONSO GRATUITE	14/03/2025		3	boisson de la semaine	0,00 €	0,00 €																						
+SUIVI CONSO GRATUITE	14/03/2025		10	allongé	0,00 €	0,00 €																						
+SUIVI CONSO GRATUITE	14/03/2025		11	espresso	0,00 €	0,00 €																						
+SUIVI CONSO GRATUITE	14/03/2025		6	CHOCOLAT CHAUD	0,00 €	0,00 €																						
+SUIVI CONSO GRATUITE	14/03/2025		2	LATTE	0,00 €	0,00 €		(SALLE DE REUNION 2PERS)																				
+BENOIT COUX	17/03/2025		1	DOUBLE MACCHIATO/NOISETTE	1,50 €	1,50 €																						
+CHRISTELLE LAGAE	17/03/2025		2	DOUBLE ESPRESSO	0,50 €	1,00 €																						
+MATTHEW WALKER	17/03/2025		1	CAPPUCCINO	1,50 €	1,50 €																						
+LEANE DOMERGUE	17/03/2025		2	LATTE	2,00 €	4,00 €																						
+VALERIE HAMEAU	17/03/2025		2	CHICORYCCINO	2,00 €	4,00 €	L																					
+SUIVI CONSO GRATUITE	17/03/2025		2	boisson de la semaine	0,00 €	0,00 €																						
+SUIVI CONSO GRATUITE	17/03/2025		10	allongé	0,00 €	0,00 €																						
+SUIVI CONSO GRATUITE	17/03/2025		8	espresso	0,00 €	0,00 €																						
+SUIVI CONSO GRATUITE	17/03/2025		7	CHOCOLAT CHAUD	0,00 €	0,00 €																						
+ANAEL MEGNA	17/03/2025		1	OURS BLANC	2,50 €	2,50 €																						
+VASCO COMPAIN	17/03/2025		1	OURS BLANC	2,50 €	2,50 €																						
+BENOIT COUX	18/03/2025		1	DOUBLE MACCHIATO/NOISETTE	1,50 €	1,50 €																						
+ELENA PERROUIN	18/03/2025		1	DOUBLE ESPRESSO	0,50 €	0,50 €																						
+BARNABE LEVARD	18/03/2025		1	MACCHIATO/NOISETTE	1,00 €	1,00 €																						
+SOPHIE DESBONNEZ	18/03/2025		1	LATTE	2,00 €	2,00 €																						
+MATTHEW WALKER	18/03/2025		1	CAPPUCCINO	1,50 €	1,50 €																						
+MANON OLIVIER	18/03/2025		1	OURS BLANC	2,50 €	2,50 €																						
+VIRGINIE DEL RIEU	18/03/2025		1	CHAÏ AVOINE	2,50 €	2,50 €	L																					
+ERIC GUIN	18/03/2025		1	AMERICANO DOUBLE SHOT	0,50 €	0,50 €																						
+LEANE DOMERGUE	18/03/2025		1	LATTE	2,00 €	2,00 €																						
+VALERIE ALASLUQUETAS	18/03/2025		1	CAPPUCCINO	1,50 €	1,50 €																						
+ERIC GUIN	18/03/2025		1	WHITE MATCHA LATTE	2,50 €	2,50 €																						
+JOCHEN GRUNBECK	18/03/2025		1	CAPPUCCINO AVOINE	1,50 €	1,50 €																						
+ERIC GUIN	18/03/2025		1	CAPPUCCINO AVOINE	1,50 €	1,50 €		CLIENTE																				
+SUIVI CONSO GRATUITE	18/03/2025		7	boisson de la semaine	0,00 €	0,00 €																						
+SUIVI CONSO GRATUITE	18/03/2025		15	allongé	0,00 €	0,00 €																						
+SUIVI CONSO GRATUITE	18/03/2025		12	espresso	0,00 €	0,00 €																						
+SUIVI CONSO GRATUITE	18/03/2025		3	CHOCOLAT GLACE	0,00 €	0,00 €																						
+AMELIE BIMONT	19/03/2025		1	OURS BLANC	2,50 €	2,50 €																						
+SOPHIE JAMAIN	19/03/2025		1	LATTE	2,00 €	2,00 €																						
+VALERIE ALASLUQUETAS	19/03/2025		1	CAPPUCCINO	1,50 €	1,50 €																						
+LAURE SARDELLA	19/03/2025		1	MOCACCINO	2,00 €	2,00 €																						
+THOMAS GONZALEZ	19/03/2025		1	LATTE	2,00 €	2,00 €																						
+SUIVI CONSO GRATUITE	19/03/2025		3	boisson de la semaine	0,00 €	0,00 €																						
+SUIVI CONSO GRATUITE	19/03/2025		27	allongé	0,00 €	0,00 €																						
+SUIVI CONSO GRATUITE	19/03/2025		5	espresso	0,00 €	0,00 €																						
+SUIVI CONSO GRATUITE	19/03/2025		3	CHOCOLAT CHAUD	0,00 €	0,00 €																						
+LEANE DOMERGUE	19/03/2025		2	LATTE	2,00 €	4,00 €																						
+LAURA ARLES	19/03/2025		1	DIRTY CHAÏ LATTE	2,50 €	2,50 €																						
+BAPTISTE MATHUS	20/03/2025		1	DOUBLE MACCHIATO/NOISETTE	1,50 €	1,50 €																						
+ELENA PERROUIN	20/03/2025		1	DOUBLE ESPRESSO	0,50 €	0,50 €																						
+CHRISTELLE LAGAE	20/03/2025		1	DOUBLE ESPRESSO	0,50 €	0,50 €																						
+NATHALIE GRENET	20/03/2025		1	DOUBLE MACCHIATO/NOISETTE	1,50 €	1,50 €																						
+UGO DE LUCA	20/03/2025		1	CHICORYCCINO	1,50 €	1,50 €																						
+PHILIPPE LANDES	20/03/2025		1	CHAÏ LATTE	2,00 €	2,00 €																						
+CLAIRE BELLOC	20/03/2025		1	MACCHIATO/NOISETTE	1,00 €	1,00 €																						
+GREGORY ESTRADE	20/03/2025		1	MOCACCINO	2,00 €	2,00 €																						
+SUIVI CONSO GRATUITE	20/03/2025		4	boisson de la semaine	0,00 €	0,00 €																						
+SUIVI CONSO GRATUITE	20/03/2025		18	allongé	0,00 €	0,00 €																						
+SUIVI CONSO GRATUITE	20/03/2025		17	espresso	0,00 €	0,00 €																						
+SUIVI CONSO GRATUITE	20/03/2025		1	CHOCOLAT CHAUD	0,00 €	0,00 €																						
+MANON OLIVIER	20/03/2025		1	OURS BLANC	2,50 €	2,50 €																						
+ELENA PERROUIN	21/03/2025		1	DOUBLE ESPRESSO	0,50 €	0,50 €																						
+CHRISTELLE LAGAE	21/03/2025	1000CAFES	1	DOUBLE ESPRESSO	0,50 €	0,50 €																						
+VICTORIA PUYUELO	21/03/2025		1	CAPPUCCINO	1,50 €	1,50 €																						
+MELINE BOUYSSI	21/03/2025	METAVONICS	1	CHICORYCCINO	1,50 €	1,50 €																						
+MELINE BOUYSSI	21/03/2025	METAVONICS	1	CAPPUCCINO	1,50 €	1,50 €																						
+VALERIE ALASLUQUETAS	21/03/2025	YUKAN	1	CAPPUCCINO	1,50 €	1,50 €																						
+CINDY HERAUD	21/03/2025		1	LATTE	2,00 €	2,00 €																						
+SUIVI CONSO GRATUITE	21/03/2025		1	boisson de la semaine	0,00 €	0,00 €																						
+SUIVI CONSO GRATUITE	21/03/2025		10	allongé	0,00 €	0,00 €																						
+SUIVI CONSO GRATUITE	21/03/2025		6	espresso	0,00 €	0,00 €																						
+SUIVI CONSO GRATUITE	21/03/2025		5	CHOCOLAT CHAUD	0,00 €	0,00 €																						
+VALERIE HAMEAU	24/03/2025		1	CHICORYCCINO	2,00 €	2,00 €	L																					
+SOPHIE JAMAIN	24/03/2025		1	LATTE MACCHIATO (NOISETTE)	2,50 €	2,50 €																						
+ANAIS EL AOUD	24/03/2025		1	LATTE MACCHIATO (VANILLE)	3,00 €	3,00 €	GLACE																					
+SOPHIE DESBONNEZ	24/03/2025		1	LATTE	2,00 €	2,00 €																						
+GLORIA FRADIN	24/03/2025		1	CAPPUCCINO	1,50 €	1,50 €																						
+NATHALIE GRENET	24/03/2025		1	DOUBLE MACCHIATO/NOISETTE	1,50 €	1,50 €																						
+MATTHEW WALKER	24/03/2025		1	CAPPUCCINO	1,50 €	1,50 €																						
+VALERIE HAMEAU	24/03/2025		1	CHICORYCCINO	3,00 €	3,00 €	XXL																					
+ANGELIQUE FOUIX	24/03/2025		1	CHICORYCCINO	3,00 €	3,00 €	XXL																					
+BENOIT COUX	24/03/2025		1	DOUBLE MACCHIATO/NOISETTE	1,50 €	1,50 €																						
+ERIC GUIN	24/03/2025		1	CAPPUCCINO	1,50 €	1,50 €																						
+CLARA MANHES	24/03/2025		1	CAPPUCCINO	1,50 €	1,50 €																						
+VALERIE ALASLUQUETAS	24/03/2025		1	CAPPUCCINO	1,50 €	1,50 €																						
+MELODIE DOUGNAC	24/03/2025		1	CHICORYCCINO	3,00 €	3,00 €	XL GLACE																					
+SUIVI CONSO GRATUITE	24/03/2025		3	boisson de la semaine	0,00 €	0,00 €																						
+SUIVI CONSO GRATUITE	24/03/2025		22	allongé	0,00 €	0,00 €																						
+SUIVI CONSO GRATUITE	24/03/2025		10	espresso	0,00 €	0,00 €																						
+SUIVI CONSO GRATUITE	24/03/2025		1	CHOCOLAT CHAUD	0,00 €	0,00 €																						
+ELENA PERROUIN	25/03/2025		1	DOUBLE ESPRESSO	0,50 €	0,50 €																						
+ALEXANDRE BRUN	25/03/2025		1	INFUSION GINGER LEMON	0,50 €	0,50 €																						
+BENOIT COUX	25/03/2025		1	DOUBLE MACCHIATO/NOISETTE	1,50 €	1,50 €																						
+VALERIE ALASLUQUETAS	25/03/2025	YUKAN	1	CAPPUCCINO	1,50 €	1,50 €																						
+CLARA MANHES	25/03/2025	YUKAN	1	CAPPUCCINO	1,50 €	1,50 €																						
+MANON OLIVIER	25/03/2025		1	OURS BLANC	2,50 €	2,50 €																						
+VIRGINIE DEL RIEU	25/03/2025		1	CHAÏ AVOINE	2,50 €	2,50 €	L																					
+UGO DE LUCA	25/03/2025		1	CHICORYCCINO	2,00 €	2,00 €	L																					
+MATTHEW WALKER	25/03/2025		1	CAPPUCCINO	1,50 €	1,50 €																						
+LAURE SARDELLA	25/03/2025	TECHNIA	1	GRANOLA BOWL	4,50 €	4,50 €																						
+LEANE DOMERGUE	25/03/2025	CONTAKT	2	LATTE	2,00 €	4,00 €																						
+VIRGINIE DEL RIEU	25/03/2025		1	DIRTY CHAÏ LATTE	3,50 €	3,50 €	XL																					
+LAETITIA RUAULT DURAND	25/03/2025		1	LATTE MACCHIATO (CARAMEL)	2,50 €	2,50 €																						
+GLORIA FRADIN	25/03/2025	SPARK	1	LATTE MACCHIATO (CARAMEL)	2,50 €	2,50 €																						
+ALEXANDRE BRUN	25/03/2025		2	GRANOLA BOWL	4,50 €	9,00 €																						
+SUIVI CONSO GRATUITE	25/03/2025		4	boisson de la semaine	0,00 €	0,00 €																						
+SUIVI CONSO GRATUITE	25/03/2025		31	allongé	0,00 €	0,00 €																						
+SUIVI CONSO GRATUITE	25/03/2025		13	espresso	0,00 €	0,00 €																						
+SUIVI CONSO GRATUITE	25/03/2025		3	CHOCOLAT CHAUD	0,00 €	0,00 €																						
+AMAURY RAVENEL	26/03/2025		1	AEROCANO	1,50 €	1,50 €																						
+ELENA PERROUIN	26/03/2025		1	DOUBLE ESPRESSO	0,50 €	0,50 €																						
+ERIC GUIN	26/03/2025		1	AMERICANO DOUBLE SHOT	0,50 €	0,50 €																						
+LAURE SARDELLA	26/03/2025		1	MOCACCINO	2,00 €	2,00 €																						
+CLARA MANHES	26/03/2025		1	CAPPUCCINO	1,50 €	1,50 €																						
+COLINE DACLIN	26/03/2025		1	CHAÏ AVOINE	2,00 €	2,00 €																						
+THOMAS NGOMA	26/03/2025		1	LATTE MACCHIATO (NOISETTE)	2,50 €	2,50 €																						
+ERIC GUIN	26/03/2025		1	MATCHA LATTE	2,00 €	2,00 €																						
+SARA TISSENIER	26/03/2025		1	LATTE	2,00 €	2,00 €																						
+LEANE DOMERGUE	26/03/2025		1	LATTE	2,00 €	2,00 €																						
+BARNABE LEVARD	26/03/2025		2	MACCHIATO/NOISETTE	1,00 €	2,00 €																						
+MAX LEVER	26/03/2025		1	CHICOREE	0,50 €	0,50 €																						
+ANASTASIA DE SANTIS	26/03/2025		1	DIRTY CHAÏ LATTE	2,50 €	2,50 €																						
+SARA TISSENIER	26/03/2025		1	GRANOLA BOWL	4,50 €	4,50 €																						
+SUIVI CONSO GRATUITE	26/03/2025		6	boisson de la semaine	0,00 €	0,00 €																						
+SUIVI CONSO GRATUITE	26/03/2025		20	allongé	0,00 €	0,00 €																						
+SUIVI CONSO GRATUITE	26/03/2025		11	espresso	0,00 €	0,00 €																						
+SUIVI CONSO GRATUITE	26/03/2025		1	CHOCOLAT CHAUD	0,00 €	0,00 €																						
+CHRISTOPHE BOUE	27/03/2025		2	LATTE MACCHIATO	2,50 €	5,00 €																						
+LEANE DOMERGUE	27/03/2025		2	LATTE	2,00 €	4,00 €																						
+ADRIEN MORQUE	27/03/2025		1	CAPPUCCINO AVOINE	1,50 €	1,50 €																						
+CLARA MANHES	27/03/2025		1	CAPPUCCINO	1,50 €	1,50 €																						
+VIRGINIE DEL RIEU	27/03/2025		1	DIRTY CHAÏ LATTE	3,00 €	3,00 €	L																					
+UGO DE LUCA	27/03/2025		1	CHICORYCCINO	2,00 €	2,00 €	L																					
+MANON OLIVIER	27/03/2025		1	OURS BLANC	2,50 €	2,50 €																						
+MATTHIEU CROUZET	27/03/2025		1	LATTE MACCHIATO (CARAMEL)	2,50 €	2,50 €																						
+GREGORY ESTRADE	27/03/2025		1	CAFE VIENNOIS	1,50 €	1,50 €																						
+ELODIE ALVES	27/03/2025		1	OURS BLANC	2,50 €	2,50 €																						
+ERIC GUIN	27/03/2025		1	CAPPUCCINO	1,50 €	1,50 €																						
+ESTEVE PINYOL	27/03/2025		1	CAPPUCCINO	1,50 €	1,50 €																						
+CEDRIC SIGNE MBE	27/03/2025		1	CAFE VIENNOIS	1,50 €	1,50 €		legnesi@gmail.com 0783693741 (collègue de Gregory)																				
+CINDY HERAUD	27/03/2025		1	LATTE	2,00 €	2,00 €																						
+SARA TISSENIER	27/03/2025		1	LATTE	2,00 €	2,00 €																						
+CHRISTOPHE BOUE	27/03/2025	BRYO	1	MACCHIATO/NOISETTE	1,00 €	1,00 €																						
+VIRGINIE DEL RIEU	27/03/2025		1	INFUSION GINGER LEMON	0,50 €	0,50 €																						
+UGO DE LUCA	27/03/2025		1	INFUSION GINGER LEMON	0,50 €	0,50 €																						
+SUIVI CONSO GRATUITE	27/03/2025		3	boisson de la semaine	0,00 €	0,00 €																						
+SUIVI CONSO GRATUITE	27/03/2025		16	allongé	0,00 €	0,00 €																						
+SUIVI CONSO GRATUITE	27/03/2025		16	espresso	0,00 €	0,00 €																						
+SUIVI CONSO GRATUITE	27/03/2025		2	CHOCOLAT CHAUD	0,00 €	0,00 €																						
+PAULINE SARDA	28/03/2025		1	CHAÏ LATTE	2,00 €	2,00 €																						
+CEDRIC BOUCHE	28/03/2025		1	CAPPUCCINO	1,50 €	1,50 €																						
+VICTORIA PUYUELO	28/03/2025		1	MATCHA LATTE	2,00 €	2,00 €																						
+ERIC GUIN	28/03/2025		1	CAPPUCCINO	1,50 €	1,50 €																						
+ERIC GUIN	28/03/2025		1	AMERICANO DOUBLE SHOT	0,50 €	0,50 €																						
+CEDRIC BOUCHE	28/03/2025		1	MACCHIATO/NOISETTE	1,00 €	1,00 €																						
+BARNABE LEVARD	28/03/2025		1	CAPPUCCINO	1,50 €	1,50 €																						
+CHANTAL PERDIGAU	28/03/2025		1	CAPPUCCINO	1,50 €	1,50 €																						
+BAPTISTE MATHUS	28/03/2025		1	DOUBLE MACCHIATO/NOISETTE	1,50 €	1,50 €																						
+CINDY HERAUD	28/03/2025		1	LATTE	2,00 €	2,00 €																						
+CEDRIC BOUCHE	28/03/2025		1	MACCHIATO/NOISETTE	1,00 €	1,00 €																						
+SUIVI CONSO GRATUITE	28/03/2025		3	boisson de la semaine	0,00 €	0,00 €																						
+SUIVI CONSO GRATUITE	28/03/2025		13	allongé	0,00 €	0,00 €																						
+SUIVI CONSO GRATUITE	28/03/2025		10	espresso	0,00 €	0,00 €																						
+SUIVI CONSO GRATUITE	28/03/2025		3	CHOCOLAT CHAUD	0,00 €	0,00 €																						
+CEDRIC BOUCHE	31/03/2025		1	CAPPUCCINO	1,50 €	1,50 €																						
+CHANTAL PERDIGAU	31/03/2025		1	CAPPUCCINO AVOINE	1,50 €	1,50 €																						
+CEDRIC BOUCHE	31/03/2025		1	MACCHIATO/NOISETTE	1,00 €	1,00 €																						
+NATHALIE GRENET	31/03/2025		1	CAPPUCCINO AVOINE	1,50 €	1,50 €																						
+ANGELIQUE FOUIX	31/03/2025		1	LATTE MACCHIATO (NOISETTE)	3,00 €	3,00 €	SHOT SUP																					
+CLARA MANHES	31/03/2025		1	CAPPUCCINO	1,50 €	1,50 €																						
+ESTEVE PINYOL	31/03/2025		1	CAPPUCCINO	1,50 €	1,50 €																						
+MATTHEW WALKER	31/03/2025		1	CAPPUCCINO	1,50 €	1,50 €																						
+ERIC GUIN	31/03/2025		1	CAPPUCCINO	1,50 €	1,50 €																						
+ANGELIQUE FOUIX	31/03/2025		1	MACCHIATO/NOISETTE	1,00 €	1,00 €																						';
     }
 
 }
