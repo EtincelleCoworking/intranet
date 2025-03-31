@@ -41,564 +41,574 @@ class CoffeeShopInvoiceCommand extends Command
         //region products
 
         // Mettre à jour à partir de l'URL https://intranet2021.etincelle-coworking.com/backend/coffeeshop/code
-        $products = array(
+        $products = array (
             'fruits.clementine' =>
-                array(
+                array (
                     'name' => 'Clémentine',
                     'price' => '0.50',
                 ),
             'fruits.apricot' =>
-                array(
+                array (
                     'name' => 'Abricot',
                     'price' => '0.50',
                 ),
             'fruits.kiwi' =>
-                array(
+                array (
                     'name' => 'Kiwi',
                     'price' => '0.50',
                 ),
             'fruits.other' =>
-                array(
+                array (
                     'name' => 'Pomme, Banane, Portion de raisins...',
                     'price' => '1.00',
                 ),
             'drink' =>
-                array(
+                array (
                     'name' => 'Boisson fraiche',
                     'price' => '1.50',
                 ),
             'snack' =>
-                array(
+                array (
                     'name' => 'Snack',
                     'price' => '1.00',
                 ),
             'snack.bounty' =>
-                array(
+                array (
                     'name' => 'Bounty',
                     'price' => '1.00',
                 ),
             'snack.twix' =>
-                array(
+                array (
                     'name' => 'Twix',
                     'price' => '1.00',
                 ),
             'snack.lion' =>
-                array(
+                array (
                     'name' => 'Lion',
                     'price' => '1.00',
                 ),
             'snack.kitkat' =>
-                array(
+                array (
                     'name' => 'KitKat',
                     'price' => '1.00',
                 ),
             'snack.snickers' =>
-                array(
+                array (
                     'name' => 'Snickers',
                     'price' => '1.00',
                 ),
             'snack.mars' =>
-                array(
+                array (
                     'name' => 'Mars',
                     'price' => '1.00',
                 ),
             'snack.kinder-bueno' =>
-                array(
+                array (
                     'name' => 'Kinder Bueno',
                     'price' => '1.00',
                 ),
             'snack.biscuits-baiocchi' =>
-                array(
+                array (
                     'name' => 'Biscuits Baiocchi',
                     'price' => '1.50',
                 ),
             'snack.suchard.rocher' =>
-                array(
+                array (
                     'name' => 'Rocher Suchard (lait ou noir)',
                     'price' => '1.00',
                 ),
             'snack.kitkat.chunky' =>
-                array(
+                array (
                     'name' => 'kitkat Chunky',
                     'price' => '1.00',
                 ),
             'snack.oreo' =>
-                array(
+                array (
                     'name' => 'Milka Oreo',
                     'price' => '1.00',
                 ),
             'snack.granola' =>
-                array(
+                array (
                     'name' => 'Granola',
                     'price' => '1.00',
                 ),
             'snack.kitkat.white' =>
-                array(
+                array (
                     'name' => 'kitkat White',
                     'price' => '1.00',
                 ),
             'snack.elsa.chia-pudding' =>
-                array(
+                array (
                     'name' => 'Pudding de chia',
                     'price' => '3.50',
                 ),
+            'snack.elsa.panacotta' =>
+                array (
+                    'name' => 'Panacotta',
+                    'price' => '3.50',
+                ),
+            'snack.elsa.fresh-fruits' =>
+                array (
+                    'name' => 'Fruits frais coupés',
+                    'price' => '3.50',
+                ),
             'pastry.credo.finger' =>
-                array(
+                array (
                     'name' => 'Madeleine Finger',
                     'price' => '2.00',
                 ),
             'pastry.marina.browkie' =>
-                array(
+                array (
                     'name' => 'Browkie',
                     'price' => '2.00',
                 ),
             'pastry.marina.2024-01-15-muffin-myrtille' =>
-                array(
+                array (
                     'name' => 'Muffin Myrtille',
                     'price' => '2.00',
                 ),
             'pastry.marina.2024-01-29-lemon-cake' =>
-                array(
+                array (
                     'name' => 'Cake au citron',
                     'price' => '2.00',
                 ),
             'pastry.marina.2024-01-22-banana-bread' =>
-                array(
+                array (
                     'name' => 'Banana Bread',
                     'price' => '2.00',
                 ),
             'pastry.hordeaux.ugli-like-lemon-cake.small' =>
-                array(
+                array (
                     'name' => 'Ugli façon tarte au citron (petite)',
                     'price' => '2.00',
                 ),
             'pastry.hordeaux.ugli-like-lemon-cake.large' =>
-                array(
+                array (
                     'name' => 'Ugli façon tarte au citron (grande)',
                     'price' => '4.00',
                 ),
             'pastry.hordeaux.valentine-chocolate-manguo' =>
-                array(
+                array (
                     'name' => 'Tartelette chocolat, coeur mangue / orange',
                     'price' => '3.00',
                 ),
             'pastry.hordeaux.small-tart-raspberry' =>
-                array(
+                array (
                     'name' => 'Tartelette Framboise',
                     'price' => '4.00',
                 ),
             'pastry.hordeaux.raspberry-financier' =>
-                array(
+                array (
                     'name' => 'Financier Framboise',
                     'price' => '2.00',
                 ),
             'pastry.mr-madeleine.madeleine' =>
-                array(
+                array (
                     'name' => 'Madeleine',
                     'price' => '1.50',
                 ),
             'pastry.peche-mignon.brownie' =>
-                array(
+                array (
                     'name' => 'Brownie',
                     'price' => '1.50',
                 ),
             'pastry.credo.carrot-cake' =>
-                array(
+                array (
                     'name' => 'Carrot Cake',
                     'price' => '2.00',
                 ),
             'pastry.ohmycooks.cookie' =>
-                array(
+                array (
                     'name' => 'Cookie',
                     'price' => '4.00',
                 ),
             'pastry.hordeaux.sable-diamant' =>
-                array(
+                array (
                     'name' => 'Sablé Diamant',
                     'price' => '1.00',
                 ),
             'pastry.hordeaux.kiwi-lemon-tart' =>
-                array(
+                array (
                     'name' => 'Tartelette Kiwi Citron Vert',
                     'price' => '4.00',
                 ),
             'pastry.hordeaux.raspberry-rubber-tarn' =>
-                array(
+                array (
                     'name' => 'Tartelette Rubarbe / Framboise',
                     'price' => '4.00',
                 ),
             'pastry.hordeaux.sable-breton' =>
-                array(
+                array (
                     'name' => 'Sablé Breton',
                     'price' => '1.00',
                 ),
             'pastry.hordeaux.small-tart-kiwi' =>
-                array(
+                array (
                     'name' => 'Tartelette Kiwi',
                     'price' => '4.00',
                 ),
             'pastry.elsa.swedish-pasty' =>
-                array(
+                array (
                     'name' => 'Viennoiserie suédoise',
                     'price' => '3.00',
                 ),
             'pastry.hordeaux.lemon-tart' =>
-                array(
+                array (
                     'name' => 'Tartelette citron meringuée',
                     'price' => '4.00',
                 ),
             'drinks.pago.ace' =>
-                array(
+                array (
                     'name' => 'Boisson ACE',
                     'price' => '1.50',
                 ),
             'drinks.pago.mixed-fruits' =>
-                array(
+                array (
                     'name' => 'Jus Multifruits',
                     'price' => '1.50',
                 ),
             'drinks.pago.orange-nectar' =>
-                array(
+                array (
                     'name' => 'Nectar d\'Orange',
                     'price' => '1.50',
                 ),
             'drinks.fourgon.san-pellegrino' =>
-                array(
+                array (
                     'name' => 'San Pellegrino',
                     'price' => '1.50',
                 ),
             'drinks.coca-cola.classic' =>
-                array(
+                array (
                     'name' => 'Coca-Cola Classic',
                     'price' => '1.50',
                 ),
             'drinks.pampril.orange-juice' =>
-                array(
+                array (
                     'name' => 'Jus d\'Orange',
                     'price' => '1.50',
                 ),
             'drinks.lipton.peach' =>
-                array(
+                array (
                     'name' => 'Lipton Pêche',
                     'price' => '1.50',
                 ),
             'drinks.lipton.green' =>
-                array(
+                array (
                     'name' => 'Lipton Green',
                     'price' => '1.50',
                 ),
             'drinks.coca-cola.fuzetea-peche' =>
-                array(
+                array (
                     'name' => 'Fuzetea Pêche',
                     'price' => '1.50',
                 ),
             'drinks.pago.apple-juice' =>
-                array(
+                array (
                     'name' => 'Jus de Pomme',
                     'price' => '1.50',
                 ),
             'drinks.orangina.schweppes-indian-tonic' =>
-                array(
+                array (
                     'name' => 'Schweppes Indian Tonic',
                     'price' => '1.50',
                 ),
             'drinks.evian.water' =>
-                array(
+                array (
                     'name' => 'Evian Eau plate',
                     'price' => '1.50',
                 ),
             'drinks.pago.apricot-nectar' =>
-                array(
+                array (
                     'name' => 'Jus d\'abricot',
                     'price' => '1.50',
                 ),
             'hot-drinks.aerocano' =>
-                array(
+                array (
                     'name' => 'Aerocano',
                     'price' => '1.50',
                 ),
             'hot-drinks.americano-double-shot' =>
-                array(
+                array (
                     'name' => 'Americano double shot',
                     'price' => '0.50',
                 ),
             'hot-drinks.babyccino' =>
-                array(
+                array (
                     'name' => 'Babyccino',
                     'price' => '0.50',
                 ),
             'hot-drinks.cafe-frappe' =>
-                array(
+                array (
                     'name' => 'Café frappé',
                     'price' => '1.50',
                 ),
             'hot-drinks.cappuccino' =>
-                array(
+                array (
                     'name' => 'Cappuccino',
                     'price' => '1.50',
                 ),
             'hot-drinks.cappuccino-avoine' =>
-                array(
+                array (
                     'name' => 'Cappuccino avoine',
                     'price' => '1.50',
                 ),
             'hot-drinks.cappuccino-glace' =>
-                array(
+                array (
                     'name' => 'Cappuccino glacé',
                     'price' => '2.00',
                 ),
             'hot-drinks.chai-avoine' =>
-                array(
+                array (
                     'name' => 'Chaï avoine',
                     'price' => '2.00',
                 ),
             'hot-drinks.chai-glace' =>
-                array(
+                array (
                     'name' => 'Chaï glacé',
                     'price' => '2.50',
                 ),
             'hot-drinks.chai-latte' =>
-                array(
+                array (
                     'name' => 'Chaï latte',
                     'price' => '2.00',
                 ),
             'hot-drinks.chocolat-chaud' =>
-                array(
+                array (
                     'name' => 'Chocolat chaud',
                     'price' => '0.00',
                 ),
             'hot-drinks.chocolat-glace' =>
-                array(
+                array (
                     'name' => 'Chocolat glacé',
                     'price' => '0.50',
                 ),
             'hot-drinks.dirty-chai-latte' =>
-                array(
+                array (
                     'name' => 'Dirty chaï latte',
                     'price' => '2.50',
                 ),
             'hot-drinks.double-affogato' =>
-                array(
+                array (
                     'name' => 'Double affogato',
                     'price' => '2.50',
                 ),
             'hot-drinks.double-espresso' =>
-                array(
+                array (
                     'name' => 'Double espresso',
                     'price' => '0.50',
                 ),
             'hot-drinks.double-macchiatonoisette' =>
-                array(
+                array (
                     'name' => 'Double macchiato/noisette',
                     'price' => '1.50',
                 ),
             'hot-drinks.espresso-tonic' =>
-                array(
+                array (
                     'name' => 'Espresso tonic',
                     'price' => '2.00',
                 ),
             'hot-drinks.flat-white' =>
-                array(
+                array (
                     'name' => 'Flat white',
                     'price' => '2.00',
                 ),
             'hot-drinks.genmaicha' =>
-                array(
+                array (
                     'name' => 'Genmaïcha',
                     'price' => '2.00',
                 ),
             'hot-drinks.granola-bowl' =>
-                array(
+                array (
                     'name' => 'Granola bowl',
                     'price' => '4.50',
                 ),
             'hot-drinks.latte' =>
-                array(
+                array (
                     'name' => 'Latte',
                     'price' => '2.00',
                 ),
             'hot-drinks.latte-glace' =>
-                array(
+                array (
                     'name' => 'Latte glace',
                     'price' => '2.50',
                 ),
             'hot-drinks.latte-glace-caramel' =>
-                array(
+                array (
                     'name' => 'Latte glace (caramel)',
                     'price' => '2.50',
                 ),
             'hot-drinks.latte-glace-cookie' =>
-                array(
+                array (
                     'name' => 'Latte glacé (cookie)',
                     'price' => '2.50',
                 ),
             'hot-drinks.latte-glace-noisette' =>
-                array(
+                array (
                     'name' => 'Latte glacé (noisette)',
                     'price' => '2.50',
                 ),
             'hot-drinks.latte-glace-vanille' =>
-                array(
+                array (
                     'name' => 'Latte glacé (vanille)',
                     'price' => '2.50',
                 ),
             'hot-drinks.latte-glace-avoine' =>
-                array(
+                array (
                     'name' => 'Latte glacé avoine',
                     'price' => '2.50',
                 ),
             'hot-drinks.latte-glace-vietnamien' =>
-                array(
+                array (
                     'name' => 'Latte glacé vietnamien',
                     'price' => '2.50',
                 ),
             'hot-drinks.latte-macchiato' =>
-                array(
+                array (
                     'name' => 'Latte macchiato',
                     'price' => '2.50',
                 ),
             'hot-drinks.latte-macchiato-caramel' =>
-                array(
+                array (
                     'name' => 'Latte macchiato (caramel)',
                     'price' => '2.50',
                 ),
             'hot-drinks.latte-macchiato-cookies' =>
-                array(
+                array (
                     'name' => 'Latte macchiato (cookies)',
                     'price' => '2.50',
                 ),
             'hot-drinks.latte-macchiato-noisette' =>
-                array(
+                array (
                     'name' => 'Latte macchiato (noisette)',
                     'price' => '2.50',
                 ),
             'hot-drinks.latte-macchiato-vanille' =>
-                array(
+                array (
                     'name' => 'Latte macchiato (vanille)',
                     'price' => '2.50',
                 ),
             'hot-drinks.macchiatonoisette' =>
-                array(
+                array (
                     'name' => 'Macchiato/noisette',
                     'price' => '1.00',
                 ),
             'hot-drinks.macchiatonoisette-avoine' =>
-                array(
+                array (
                     'name' => 'Macchiato/noisette avoine',
                     'price' => '1.00',
                 ),
             'hot-drinks.matcha-latte' =>
-                array(
+                array (
                     'name' => 'Matcha latte',
                     'price' => '2.00',
                 ),
             'hot-drinks.matcha-latte-avoine' =>
-                array(
+                array (
                     'name' => 'Matcha latte avoine',
                     'price' => '2.00',
                 ),
             'hot-drinks.matcha-latte-glace' =>
-                array(
+                array (
                     'name' => 'Matcha latte glace',
                     'price' => '2.50',
                 ),
             'hot-drinks.matcha-soda' =>
-                array(
+                array (
                     'name' => 'Matcha soda',
                     'price' => '2.50',
                 ),
             'hot-drinks.moca' =>
-                array(
+                array (
                     'name' => 'Moca',
                     'price' => '1.00',
                 ),
             'hot-drinks.mocaccino' =>
-                array(
+                array (
                     'name' => 'Mocaccino',
                     'price' => '2.00',
                 ),
             'hot-drinks.mocaccino-caramel' =>
-                array(
+                array (
                     'name' => 'Mocaccino (caramel)',
                     'price' => '2.00',
                 ),
             'hot-drinks.mocaccino-avoine' =>
-                array(
+                array (
                     'name' => 'Mocaccino avoine',
                     'price' => '2.00',
                 ),
             'hot-drinks.mocaccino-glace' =>
-                array(
+                array (
                     'name' => 'Mocaccino glace',
                     'price' => '2.50',
                 ),
             'hot-drinks.moon-milk' =>
-                array(
+                array (
                     'name' => 'Moon milk',
                     'price' => '2.00',
                 ),
             'hot-drinks.the-matcha' =>
-                array(
+                array (
                     'name' => 'Thé matcha',
                     'price' => '2.00',
                 ),
             'hot-drinks.vanilla-cream-cold-brew' =>
-                array(
+                array (
                     'name' => 'Vanilla cream cold brew',
                     'price' => '2.00',
                 ),
             'hot-drinks.infusion-ginger-lemon' =>
-                array(
+                array (
                     'name' => 'Infusion ginger lemon',
                     'price' => '0.50',
                 ),
             'hot-drinks.chicoryccino' =>
-                array(
+                array (
                     'name' => 'Chicoryccino',
                     'price' => '1.50',
                 ),
             'hot-drinks.immunity-shot' =>
-                array(
+                array (
                     'name' => 'Immunity Shot',
                     'price' => '1.00',
                 ),
             'hot-drinks.pumpkin-spice-latte' =>
-                array(
+                array (
                     'name' => 'Pumpkin Spice Latte',
                     'price' => '3.00',
                 ),
             'hot-drinks.chicoree' =>
-                array(
+                array (
                     'name' => 'Chicoree',
                     'price' => '0.50',
                 ),
             'hot-drinks.white-matcha-latte' =>
-                array(
+                array (
                     'name' => 'White matcha latte',
                     'price' => '2.50',
                 ),
             'hot-drinks.tiramisu-latte' =>
-                array(
+                array (
                     'name' => 'Tiramisu latte',
                     'price' => '3.00',
                 ),
             'hot-drinks.cafe-viennois' =>
-                array(
+                array (
                     'name' => 'Café viennois',
                     'price' => '1.50',
                 ),
             'hot-drinks.ours-blanc' =>
-                array(
+                array (
                     'name' => 'Ours blanc',
                     'price' => '2.50',
                 ),
             'hot-drinks.boisson-de-la-semaine' =>
-                array(
+                array (
                     'name' => 'Boisson de la semaine',
                     'price' => '0.00',
                 ),
             'hot-drinks.scone-vegan' =>
-                array(
+                array (
                     'name' => 'Scone vegan',
                     'price' => '3.50',
                 ),

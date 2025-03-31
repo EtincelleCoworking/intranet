@@ -549,6 +549,20 @@ class CoffeeShopImportBaristaDrinksCommand extends Command
             case 'LUCILE BAILLOU': return 7322;
             case 'MANON OLIVIER': return 7291;
             case 'LAURA ARLES': return 7304;
+            case 'JEAN REMI ROUX': return 6936;
+            case 'MOHAMED ZAAROUR': return 7108;
+            case 'ELODIE BAROT': return 3287;
+            case 'MATTHIAS BRIGAUD': return 6850;
+            case 'DORINE JUBERTIE': return 7364;
+            case 'ANDRES GOMEZ': return 4587;
+            case 'ANAE LEFEVRE': return 6018;
+            case 'VASCO COMPAIN': return 5901;
+            case 'SOPHIE DESBONNEZ': return 4093;
+            case 'THOMAS GONZALEZ': return 7200;
+            case 'COLINE DACLIN': return 7266;
+            case 'THOMAS NGOMA': return 7355;
+//            case 'CEDRIC SIGNE MBE': return null;
+
             default :
                 return false;
         }
@@ -917,7 +931,6 @@ GREGORY ESTRADE	27/03/2025		1	CAFE VIENNOIS	1,50 €	1,50 €
 ELODIE ALVES	27/03/2025		1	OURS BLANC	2,50 €	2,50 €																						
 ERIC GUIN	27/03/2025		1	CAPPUCCINO	1,50 €	1,50 €																						
 ESTEVE PINYOL	27/03/2025		1	CAPPUCCINO	1,50 €	1,50 €																						
-CEDRIC SIGNE MBE	27/03/2025		1	CAFE VIENNOIS	1,50 €	1,50 €		legnesi@gmail.com 0783693741 (collègue de Gregory)																				
 CINDY HERAUD	27/03/2025		1	LATTE	2,00 €	2,00 €																						
 SARA TISSENIER	27/03/2025		1	LATTE	2,00 €	2,00 €																						
 CHRISTOPHE BOUE	27/03/2025	BRYO	1	MACCHIATO/NOISETTE	1,00 €	1,00 €																						
