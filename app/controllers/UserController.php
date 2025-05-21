@@ -819,13 +819,14 @@ LIMIT 1';
         $user = User::find($user_id);
         switch ($user->location->city_id) {
             case 3: // Albi
+                $instagram = null;
                 $twitter = 'etincelle_albi';
                 $facebook = 'https://www.facebook.com/EtincelleAlbi';
                 $url = 'http://www.coworking-albi.com';
                 break;
             case 1: // Toulouse
             default:
-                $twitter = 'etincelle_tls';
+                $instagram = 'etincelle_tls';
                 $facebook = 'https://www.facebook.com/EtincelleCoworking';
                 $url = 'http://www.etincelle-coworking.com';
                 break;
@@ -836,7 +837,7 @@ LIMIT 1';
             'user' => $user,
             'picture_url' => $picture_url,
             'extension' => $this->extractExtension($picture_url),
-            'twitter' => $twitter,
+            'instagram' => $instagram,
             'facebook' => $facebook,
             'url' => $url,
         ));

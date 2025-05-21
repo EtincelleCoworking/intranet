@@ -54,10 +54,10 @@ T&eacute;l. : <span style="color:#4F2067;font-family:sans-serif">{{$_ENV['organi
                             <table border="0" cellpadding="0" cellspacing="0" width="100%">
                                 <tr>
                                     <td width="33%">
-                                        @if($twitter)
-                                            <a href="https://twitter.com/{{$twitter}}" target="_blank"><img
-                                                        style="border-radius:0px;border:0px" alt="Twitter"
-                                                        src="{{url('/img/twitter-logo-button-2.png')}}"></a>
+                                        @if($instagram)
+                                            <a href="https://instagram.com/{{$instagram}}" target="_blank"><img
+                                                        style="border-radius:0px;border:0px" alt="Instagram"
+                                                        src="{{url('/img/icon-instagram-24.png')}}"></a>
                                         @endif
                                     </td>
                                     <td width="33%">
