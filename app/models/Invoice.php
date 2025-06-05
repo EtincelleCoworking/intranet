@@ -245,6 +245,12 @@ class Invoice extends Eloquent
 
     public function getPdfHtml()
     {
+
+        $customer_vat = '';
+        if($this->organisation->tva_number){
+            $customer_vat = sprintf('<br /><br />TVA : %s', $this->organisation->tva_number);
+        }
+
         $html = '
         <html>
             <head>
@@ -283,7 +289,7 @@ class Invoice extends Eloquent
                                 <div style="border:1px solid #666; border-radius: 6px; -moz-border-radius: 6px; background-color: #ccc; vertical-align: middle; text-align: center; width: 205px; height: 20px; padding-top:4px; margin-left:130px;">' . (($this->type == 'F') ? 'Facture' : 'Devis') . ' en € n° ' . $this->ident . '</div>
                                 <div style="margin-top:5px; margin-left:130px; font-size:10px; text-align: right;">Le ' . date('d/m/Y', strtotime($this->date_invoice)) . '</div>
                                 <div style="margin-left:130px; margin-top:10px;">
-                                    ' . nl2br($this->address) . '
+                                    ' . nl2br($this->address) . $customer_vat . '
                                 </div>
                             </td>
                         </tr>
@@ -338,6 +344,8 @@ class Invoice extends Eloquent
             $total_ht += $amount;
             $total_taxes += $vat / 100 * $amount;
         }
+
+
         $html .= '
                                         </tbody>
                                     </table>
