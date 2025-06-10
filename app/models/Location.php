@@ -343,6 +343,8 @@ class Location extends Eloquent
                 '2021-08' => 1200, // Data Soluce
                 '2021-09' => -1200 - 1200, // Data Soluce+Amplexor
                 '2021-10' => 1200, // Amplexor
+                '2025-06' => 1720, // Numbr
+                '2025-07' => -1720 // Numbr
             ),
 
             'Alsace Lorraine' => array(
@@ -457,11 +459,9 @@ class Location extends Eloquent
                     + 162.50// F202505-0321
                     - 200 // Apidae
                 - 320 // SGS
-                +1720 // numbr
             ,
                 '2025-07' => 0
                     + 850 // F202505-0189
-                    -1720 // numbr
             ,
                 '2025-08' => 0,
                 '2025-09' => 0,
