@@ -27,7 +27,7 @@
         </tr>
         <tr>
             <td class="content-block aligncenter">
-                <a href="{{ route('invoice_list') }}" class="btn-primary">Régler cette facture par carte bancaire</a>
+                <a href="https://etincelle-coworking.catalyz.fr/payment-link/{{$invoice->ident}}" class="btn-primary">Régler cette facture par carte bancaire</a>
             </td>
         </tr>
         <tr>
