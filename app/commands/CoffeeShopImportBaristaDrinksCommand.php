@@ -638,6 +638,7 @@ class CoffeeShopImportBaristaDrinksCommand extends Command
             case 'SHUYAO ZHANG': return 7433;
             case 'SERGIO BELLON': return 7414;
             case 'OLIVIA SIGNOUREL': return 7542;
+            case 'LENA PAWELCZYK': return 7543;
 //            case 'CEDRIC SIGNE MBE': return null;
 
             default :
