@@ -639,6 +639,7 @@ class CoffeeShopImportBaristaDrinksCommand extends Command
             case 'SERGIO BELLON': return 7414;
             case 'OLIVIA SIGNOUREL': return 7542;
             case 'LENA PAWELCZYK': return 7543;
+//            case 'SOPHIE BRUNET': return null; FAH ?
 //            case 'CEDRIC SIGNE MBE': return null;
 
             default :
@@ -1087,7 +1088,6 @@ SUIVI CONSO GRATUITE	05/06/2025	23		10	boisson de la semaine	0,00 €	0,00 €
 SUIVI CONSO GRATUITE	05/06/2025	23		14	allongé	0,00 €	0,00 €																						
 SUIVI CONSO GRATUITE	05/06/2025	23		12	espresso	0,00 €	0,00 €																						
 SUIVI CONSO GRATUITE	05/06/2025	23		1	CHOCOLAT CHAUD	0,00 €	0,00 €																						
-SOPHIE BRUNET	06/06/2025	23		1	CHICORYCCINO	1,50 €	1,50 €																						
 VICTORIA PUYUELO	06/06/2025	23		1	CAPPUCCINO	1,50 €	1,50 €																						
 BARNABE LEVARD	06/06/2025	23		1	CAPPUCCINO	1,50 €	1,50 €																						
 SONIA BADENE	06/06/2025	23	FILIGRAN	1	DOUBLE ESPRESSO	0,50 €	0,50 €		sonia.badene@filigran.io																				
@@ -1188,7 +1188,6 @@ SHUYAO ZHANG	13/06/2025	24		1	LATTE MACCHIATO (VANILLE)	2,50 €	2,50 €
 AUDE PIERRE	13/06/2025	24		1	CHICOREE	0,50 €	0,50 €																						
 VALERIE ALASLUQUETAS	13/06/2025	24		1	CAPPUCCINO	1,50 €	1,50 €																						
 ESTEVE PINYOL	13/06/2025	24		1	CAPPUCCINO	1,50 €	1,50 €																						
-SOPHIE BRUNET	13/06/2025	24		1	CHICORYCCINO	1,50 €	1,50 €																						
 VICTORIA PUYUELO	13/06/2025	24		1	CAPPUCCINO	1,50 €	1,50 €																						
 SUIVI CONSO GRATUITE	13/06/2025	24		10	boisson de la semaine	0,00 €	0,00 €																						
 SUIVI CONSO GRATUITE	13/06/2025	24		10	allongé	0,00 €	0,00 €																						
