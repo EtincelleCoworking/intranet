@@ -655,6 +655,9 @@ class CoffeeShopImportBaristaDrinksCommand extends Command
             case 'CHARLOTTE PLAYOUST': return 7358;
             case 'ESTELLE LAVILLE': return 7435;
             case 'GUILLAUME GRANDPRE': return 6071;
+            case 'MELANIE ALAUX': return 7547;
+            case 'LOANE CARRASSUS': return 7532;
+            case 'KENZA BERRADA': return 7534;
 
             default :
                 return false;
