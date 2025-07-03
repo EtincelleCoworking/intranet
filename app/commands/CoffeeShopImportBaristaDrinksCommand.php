@@ -640,6 +640,11 @@ class CoffeeShopImportBaristaDrinksCommand extends Command
             case 'OLIVIA SIGNOUREL': return 7542;
             case 'LENA PAWELCZYK': return 7543;
 //            case 'SOPHIE BRUNET': return null; FAH ?
+            case 'CELINE PRATX': return 7343;
+            case 'VINCENT VENTALON': return 5151;
+            case 'BENOIT GUINET': return 6808;
+            case 'BENJAMIN THEYTAZ': return 7521;
+            case 'PAULINE PONTIS': return 7455;
 //            case 'CEDRIC SIGNE MBE': return null;
 
             default :
@@ -710,6 +715,7 @@ class CoffeeShopImportBaristaDrinksCommand extends Command
             'Scone vegan' => 3.5,// ?
             'Chocolat viennois' => 2.5,// ?
             'Fruits frais coupés' => 3.5,// ?
+            'Affogato' => 2.5,// ?
 //pago*
 //bounty*
 //lion*
