@@ -77,6 +77,11 @@ class CoffeeShopInvoiceCommand extends Command
                     'name' => 'Bounty',
                     'price' => '1.00',
                 ),
+            'snack.m-m-s' =>
+                array (
+                    'name' => 'M&M’s',
+                    'price' => '1.00',
+                ),
             'snack.twix' =>
                 array (
                     'name' => 'Twix',
@@ -277,6 +282,11 @@ class CoffeeShopInvoiceCommand extends Command
                     'name' => 'San Pellegrino',
                     'price' => '1.50',
                 ),
+            'drinks.fourgon.sparking-ogeu' =>
+                array (
+                    'name' => 'Eau pétillante Ogeu',
+                    'price' => '1.50',
+                ),
             'drinks.coca-cola.classic' =>
                 array (
                     'name' => 'Coca-Cola Classic',
@@ -320,6 +330,21 @@ class CoffeeShopInvoiceCommand extends Command
             'drinks.pago.apricot-nectar' =>
                 array (
                     'name' => 'Jus d\'abricot',
+                    'price' => '1.50',
+                ),
+            'drinks.orangina.schweppes-citrus' =>
+                array (
+                    'name' => 'Schweppes agrumes',
+                    'price' => '1.50',
+                ),
+            'drinks.orangina.orangina' =>
+                array (
+                    'name' => 'Orangina',
+                    'price' => '1.50',
+                ),
+            'drinks.le-fourgon.cola' =>
+                array (
+                    'name' => 'Le Bon Cola',
                     'price' => '1.50',
                 ),
             'hot-drinks.aerocano' =>
@@ -611,6 +636,11 @@ class CoffeeShopInvoiceCommand extends Command
                 array (
                     'name' => 'Scone vegan',
                     'price' => '3.50',
+                ),
+            'hot-drinks.chocolat-viennois' =>
+                array (
+                    'name' => 'Chocolat viennois',
+                    'price' => '2.50',
                 ),
         );
         //endregion
