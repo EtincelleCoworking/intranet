@@ -648,6 +648,7 @@ class CoffeeShopImportBaristaDrinksCommand extends Command
             case 'CLEYDYR BEZERRA': return 7544;
             case 'NOEMIE CALVET': return 7545;
 //            case 'CEDRIC SIGNE MBE': return null;
+            case 'QUENTIN LE GUILLERMIC': return 7546;
 
             default :
                 return false;
