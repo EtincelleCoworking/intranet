@@ -9,6 +9,7 @@ class CoffeeShopImportBaristaDrinksCommand extends Command
     const FIELD_QUANTITY = 4;
     const FIELD_PRODUCT = 5;
     const FIELD_UNIT_PRICE = 6;
+    const FIELD_TOTAL_PRICE = 7;
     const FIELD_ADDON = 8;
     const FIELD_COMMENT = 9;
 
@@ -92,7 +93,7 @@ class CoffeeShopImportBaristaDrinksCommand extends Command
                             $this->output->writeln(sprintf("<error>Produit inconnu : [%s]</error>", $product));
                             return false;
                         }
-                        $price = $tokens[5];
+                        $price = $tokens[self::FIELD_TOTAL_PRICE];
                         $price = preg_replace('/^([0-9]+)(:?,([0-9]+))? .*$/', '$1.$3', trim($price)) . '00';
                         $addon_price = 0;
                         if ($price != $product_price) {
@@ -574,6 +575,8 @@ class CoffeeShopImportBaristaDrinksCommand extends Command
             case 'MATHILDE DE VOS': return 7319;
             case 'ORANE TREHET': return 7416;
             case 'JEREMY BELHADJ': return 7384;
+            case 'BENOIT RIGOLLEAU': return 7382;
+            case 'BUREAU HYBRIDE': return null;
 
 
 //            case 'CEDRIC SIGNE MBE': return null;
@@ -662,8 +665,7 @@ class CoffeeShopImportBaristaDrinksCommand extends Command
 
     private function getContent()
     {
-        return 'LUCIE CHEVALLIER	11/04/2025	15		1	FRUIT*	1,00 €	1,00 €			-																			
-ELENA PERROUIN	05/05/2025	19		1	DOUBLE ESPRESSO	0,50 €	0,50 €																						
+        return 'ELENA PERROUIN	05/05/2025	19		1	DOUBLE ESPRESSO	0,50 €	0,50 €																						
 CHRISTELLE LAGAE	05/05/2025	19	1000CAFES	1	DOUBLE ESPRESSO	0,50 €	0,50 €																						
 CHANTAL PERDIGAU	05/05/2025	19		1	CAPPUCCINO AVOINE	1,50 €	1,50 €																						
 ANGELIQUE FOUIX	05/05/2025	19		1	LATTE MACCHIATO (NOISETTE)	2,50 €	2,50 €																						
