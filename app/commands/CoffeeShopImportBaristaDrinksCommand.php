@@ -631,8 +631,11 @@ class CoffeeShopImportBaristaDrinksCommand extends Command
                 return 7384;
             case 'BENOIT RIGOLLEAU':
                 return 7382;
-            case 'BUREAU HYBRIDE':
-                return null;
+            case 'XAVIER MEUNIER': return 7541;
+            case 'LOUIS JARDIN': return 7422;
+            case 'GAELLE PAPPO': return 7367;
+            case 'JOANNA CLOSA': return 7114;
+            case 'SHUYAO ZHANG': return 7433;
 
 
 //            case 'CEDRIC SIGNE MBE': return null;
