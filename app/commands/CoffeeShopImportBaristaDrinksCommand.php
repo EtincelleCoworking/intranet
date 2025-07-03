@@ -6,11 +6,11 @@ class CoffeeShopImportBaristaDrinksCommand extends Command
 {
     const FIELD_USER = 0;
     const FIELD_DATE = 1;
-    const FIELD_QUANTITY = 3;
-    const FIELD_PRODUCT = 4;
-    const FIELD_UNIT_PRICE = 5;
-    const FIELD_ADDON = 7;
-    const FIELD_COMMENT = 8;
+    const FIELD_QUANTITY = 4;
+    const FIELD_PRODUCT = 5;
+    const FIELD_UNIT_PRICE = 6;
+    const FIELD_ADDON = 8;
+    const FIELD_COMMENT = 9;
 
     /**
      * The console command name.
