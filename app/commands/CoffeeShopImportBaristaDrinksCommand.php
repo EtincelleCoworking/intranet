@@ -718,6 +718,7 @@ class CoffeeShopImportBaristaDrinksCommand extends Command
             'Fruits frais coupés' => 3.5,// ?
             'Affogato' => 2.5,// ?
             'Strawberry matcha latte' => 3.5,// ?
+            'Peach Ginger Fizz' => 2.5,// ?
 //pago*
 //bounty*
 //lion*
