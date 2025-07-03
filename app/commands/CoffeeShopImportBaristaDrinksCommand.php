@@ -649,6 +649,12 @@ class CoffeeShopImportBaristaDrinksCommand extends Command
             case 'NOEMIE CALVET': return 7545;
 //            case 'CEDRIC SIGNE MBE': return null;
             case 'QUENTIN LE GUILLERMIC': return 7546;
+            case 'FLORIAN DAVASSE': return 5738;
+            case 'JEROME ALVES': return 1399;
+            case 'REBECCA RAVOALA': return 7478;
+            case 'CHARLOTTE PLAYOUST': return 7358;
+            case 'ESTELLE LAVILLE': return 7435;
+            case 'GUILLAUME GRANDPRE': return 6071;
 
             default :
                 return false;
