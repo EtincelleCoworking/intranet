@@ -642,6 +642,26 @@ class CoffeeShopInvoiceCommand extends Command
                     'name' => 'Chocolat viennois',
                     'price' => '2.50',
                 ),
+            'hot-drinks.fruits-frais-coupes' =>
+                array (
+                    'name' => 'Fruits frais coupés',
+                    'price' => '3.50',
+                ),
+            'hot-drinks.affogato' =>
+                array (
+                    'name' => 'Affogato',
+                    'price' => '2.50',
+                ),
+            'hot-drinks.strawberry-matcha-latte' =>
+                array (
+                    'name' => 'Strawberry matcha latte',
+                    'price' => '3.50',
+                ),
+            'hot-drinks.peach-ginger-fizz' =>
+                array (
+                    'name' => 'Peach Ginger Fizz',
+                    'price' => '2.50',
+                ),
         );
         //endregion
         $vat = VatType::where('value', 10)->first();
