@@ -658,7 +658,7 @@ class CoffeeShopImportBaristaDrinksCommand extends Command
             case 'MELANIE ALAUX': return 7547;
             case 'LOANE CARRASSUS': return 7532;
             case 'KENZA BERRADA': return 7534;
-
+            case 'NICOLAS TEROL': return 7493;
             default :
                 return false;
         }
