@@ -57,10 +57,12 @@ class CoffeeShopImportBaristaDrinksCommand extends Command
 
                 $addon_comment = isset($tokens[self::FIELD_COMMENT]) ? trim($tokens[self::FIELD_COMMENT]) : null;
 
+                $quantity = $tokens[self::FIELD_QUANTITY];
+
                 if (in_array($addon_comment, array('Offert SH', '(offert) JOURNEE D\'ESSAI', '(OFFERT)PRIVAT. OUGANDA'))) {
                     $this->output->writeln('Offert / ignoré facturation');
                 } else {
-                    $price = $tokens[self::FIELD_TOTAL_PRICE];
+                    $price = $tokens[self::FIELD_TOTAL_PRICE] / $quantity;
                     if (0 == $price) {
                         $this->output->writeln('Offert / ignoré facturation');
                     } else {
@@ -88,7 +90,7 @@ class CoffeeShopImportBaristaDrinksCommand extends Command
                                     }
                                 }
                             }
-                            $quantity = $tokens[self::FIELD_QUANTITY];
+
                             $occurs_at = preg_replace('|^([0-9]{2})/([0-9]{2})/([0-9]{4})$|', '$3-$2-$1', $tokens[self::FIELD_DATE]);
                             $product = \Illuminate\Support\Str::slug($tokens[self::FIELD_PRODUCT]);
 

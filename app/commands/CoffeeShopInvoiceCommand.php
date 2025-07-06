@@ -740,7 +740,9 @@ class CoffeeShopInvoiceCommand extends Command
                         $caption = date('- d/m/Y H:i', strtotime($item->occurs_at));
                         $caption = preg_replace('/ 00:00$/', '', $caption);
                     } else {
-                        $caption = sprintf('%s (%s)', date('d/m/Y H:i', strtotime($item->occurs_at)), $item->quantity);
+                        $when = date('d/m/Y H:i', strtotime($item->occurs_at));
+                        $when = preg_replace('/ 00:00$/', '', $when);
+                        $caption = sprintf('%s (%s)', $when, $item->quantity);
                     }
                     if ($item->product_addon) {
                         $caption .= sprintf(' (%s : +%0.2f€)', $item->product_addon, $item->product_addon_cost);
@@ -753,7 +755,7 @@ class CoffeeShopInvoiceCommand extends Command
                     $line_cost += $item->quantity * ((float)$products[$item->product_slug]['price'] + $item->product_addon_cost) / (1 + $vat->value / 100);
                 }
                 $invoice_line->text .= implode(', ', $lines);
-                $invoice_line->amount += $line_cost;
+                $invoice_line->amount = $line_cost;
 
                 $invoice_line->vat_types_id = $vat->id;
                 $invoice_line->ressource_id = Ressource::TYPE_EXCEPTIONNAL;
