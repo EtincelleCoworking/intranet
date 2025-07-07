@@ -349,6 +349,9 @@ class Location extends Eloquent
             ,
                 '2025-07' => -1720 // Numbr
                     + 850  // F202505-0189
+                    - 250 // étudiants droit
+            ,
+                '2025-08' => +250 // étudiants droit
             ),
 
             'Alsace Lorraine' => array(
