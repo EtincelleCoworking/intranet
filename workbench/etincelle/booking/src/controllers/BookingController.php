@@ -815,7 +815,7 @@ class BookingController extends Controller
         return Redirect::route('invoice_modify', $invoice->id)->with('mSuccess', 'Le devis a été créé');
     }
 
-    static public function createQuoteFromBookingItems($booking_items)
+    static public function createQuoteFromBookingItems($booking_items, $user = null, $organisation = null)
     {
         $booking_item = $booking_items[0];
 
@@ -846,9 +846,12 @@ class BookingController extends Controller
         if (count($users_ids) > 1) {
             throw new \Exception('Toutes les réservations doivent être associées au même utilisateur pour faire un devis.');
         }
-
-        $organisation = $booking_item->booking->organisation;
-        $user = $booking_item->booking->user;
+        if (null == $organisation) {
+            $organisation = $booking_item->booking->organisation;
+        }
+        if (null == $user) {
+            $user = $booking_item->booking->user;
+        }
 
         $invoice = new Invoice();
         $invoice->type = 'D';
@@ -1303,6 +1306,7 @@ ORDER BY room ASC , booking_item.start_at ASC ', $day, $day, $location)));
 
         return Response::json($result);
     }
+
     public function dashboard()
     {
         $bookings = BookingItem::query()

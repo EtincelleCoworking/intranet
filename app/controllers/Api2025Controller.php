@@ -363,7 +363,7 @@ class Api2025Controller extends BaseController
         foreach ($json->bookings as $booking) {
             $booking_items[] = $booking->id;
         }
-        $invoice = BookingController::createQuoteFromBookingItems(BookingItem::whereIn('id', $booking_items)->get());
+        $invoice = BookingController::createQuoteFromBookingItems(BookingItem::whereIn('id', $booking_items)->get(), $user, $organisation);
         $result = [
             'user' => [
                 'id' => $user->id,
