@@ -248,7 +248,7 @@ class Api2025Controller extends BaseController
             $item_data = [
                 'id' => $item->booking_id,
                 'title' => $item->booking_title,
-                'created_at' => $item->created_at,
+                'created_at' => $item->booking_created_at,
                 'start_at' => $item->booking_start,
                 'ends_at' => $item->booking_end,
                 'confirmed' => null,
