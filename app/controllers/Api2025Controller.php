@@ -10,19 +10,24 @@ class Api2025Controller extends BaseController
     {
         $lookup_email = Request::get('email');
 
-        $query = User::limit(10);
+        $query = User::with('organisations')->limit(10);
         if ($lookup_email) {
             $lookup_email = strtoupper($lookup_email);
             $query->where('email', '=', $lookup_email);
         }
         $result = [];
         foreach ($query->get() as $user) {
+            $organisations = [];
+            foreach ($user->organisations as $organisation) {
+                $organisations[] = $this->organisationToJsonFormat($organisation);
+            }
             $result[] = [
                 'id' => $user->id,
                 'firstname' => $user->firstname,
                 'lastname' => $user->lastname,
                 'email' => $user->email,
                 'avatar' => $user->avatar_url,
+                'organisations' => $organisations
             ];
         }
         return new \Illuminate\Http\JsonResponse(['data' => $result]);
@@ -146,13 +151,7 @@ class Api2025Controller extends BaseController
         foreach ($query->get() as $user) {
             $organisations = [];
             foreach ($user->organisations as $organisation) {
-                $organisations[] = [
-                    'id' => $organisation->id,
-                    'name' => $organisation->name,
-                    'address' => $organisation->address,
-                    'zipcode' => $organisation->zipcode,
-                    'city' => $organisation->city,
-                ];
+                $organisations[] = $this->organisationToJsonFormat($organisation);
             }
             $result[] = [
                 'id' => $user->id,
@@ -364,7 +363,7 @@ class Api2025Controller extends BaseController
         foreach ($json->bookings as $booking) {
             $booking_items[] = $booking->id;
         }
-        $invoice = BookingController::createQuoteFromBookingItems($booking_items);
+        $invoice = BookingController::createQuoteFromBookingItems(BookingItem::whereIn('id', $booking_items)->get());
         $result = [
             'user' => [
                 'id' => $user->id,
@@ -376,12 +375,10 @@ class Api2025Controller extends BaseController
 
             ],
             'organisation' => $this->organisationToJsonFormat($organisation),
-            'quotes' => [
-                [
-                    'id' => $invoice->id,
-                    'reference' => $invoice->ident,
-                    'url' => route('invoice_print_pdf', ['id' => $invoice->id], true)
-                ]
+            'quote' => [
+                'id' => $invoice->id,
+                'reference' => $invoice->ident,
+                'url' => route('invoice_print_pdf', ['id' => $invoice->id], true)
             ],
         ];
         foreach ($user->organisations as $organisation) {
