@@ -10,7 +10,7 @@ class Api2025Controller extends BaseController
     public function user_list($request)
     {
         $query = User::query();
-        if ($lookup_email = $request->get('email')) {
+        if ($lookup_email = Request::get('email')) {
             $lookup_email = strtoupper($lookup_email);
             $query->where('email', '=', $lookup_email);
         }
@@ -29,7 +29,7 @@ class Api2025Controller extends BaseController
     }
 
     public function user_add($request){
-        $json = json_decode($request->getContent());
+        $json = json_decode(Request::getContent());
 
         $user = User::where('email', '=', $json->email)->get()->first();
         if ($user) {
@@ -53,7 +53,7 @@ class Api2025Controller extends BaseController
     }
 
     public function user_search($request){
-        $lookup = trim($request->get('q'));
+        $lookup = trim(Request::get('q'));
         if (strlen($lookup) < 3) {
             return JsonResponse([
                 'status' => 'failure',
