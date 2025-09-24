@@ -231,6 +231,7 @@ class Api2025Controller extends BaseController
             ->where('booking_item.start_at', '<', $ends_at)
             ->select('booking_item.id as booking_id',
                 'booking.title as booking_title',
+                'booking_item.created_at as booking_created_at',
                 'booking_item.start_at as booking_start',
                 'booking_item.confirmed_at as booking_confirmed_at',
                 'booking_item.confirmed_by_user_id as booking_confirmed_by_user_id',
@@ -247,6 +248,7 @@ class Api2025Controller extends BaseController
             $item_data = [
                 'id' => $item->booking_id,
                 'title' => $item->booking_title,
+                'created_at' => $item->created_at,
                 'start_at' => $item->booking_start,
                 'ends_at' => $item->booking_end,
                 'confirmed' => null,
@@ -332,6 +334,7 @@ class Api2025Controller extends BaseController
             $result['bookings'][$index] = [
                 'id' => $booking_item->id,
                 'resource' => ['id' => $booking_item->ressource_id],
+                'created_at' => Carbon::parse($booking_item->created_at)->format('Y-m-d H:i:s'),
                 'occurs_at' => Carbon::parse($booking_item->start_at)->format('Y-m-d'),
                 'start_at' => Carbon::parse($booking_item->start_at)->format('H:i'),
                 'ends_at' => Carbon::parse($booking_item->start_at)->addMinutes($booking_item->duration)->format('H:i'),
