@@ -14,6 +14,9 @@
 Route::get('/api/2025/users', array('uses' => 'Api2025Controller@user_list'));
 Route::post('/api/2025/users', array('uses' => 'Api2025Controller@user_add'));
 Route::get('/api/2025/users/search', array('uses' => 'Api2025Controller@user_search'));
+Route::get('/api/2025/organisations', array('uses' => 'Api2025Controller@organisation_list'));
+Route::post('/api/2025/organisations', array('uses' => 'Api2025Controller@organisation_add'));
+Route::get('/api/2025/organisations/search', array('uses' => 'Api2025Controller@organisation_search'));
 
 
 Route::get('/', array('as' => 'dashboard', 'uses' => 'UserController@dashboard'));
