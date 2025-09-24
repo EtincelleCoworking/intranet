@@ -10,6 +10,12 @@
 | and give it the Closure to execute when that URI is requested.
 |
 */
+
+Route::get('/api/2025/users', array('uses' => 'Api2025Controller@user_list'));
+Route::post('/api/2025/users', array('uses' => 'Api2025Controller@user_add'));
+Route::get('/api/2025/users/search', array('uses' => 'Api2025Controller@user_search'));
+
+
 Route::get('/', array('as' => 'dashboard', 'uses' => 'UserController@dashboard'));
 
 Route::get('/api/test', array('as' => 'api_test', 'uses' => 'ApiController@test'));
