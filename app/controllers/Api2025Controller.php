@@ -26,9 +26,10 @@ class Api2025Controller extends BaseController
         }
         return new \Illuminate\Http\JsonResponse(['data' => $result]);
     }
+
     public function organisation_list()
     {
-        $lookup= Request::get('name');
+        $lookup = Request::get('name');
 
         $query = Organisation::limit(10);
         if ($lookup) {
@@ -78,6 +79,7 @@ class Api2025Controller extends BaseController
             ]
         ]);
     }
+
     public function organisation_add()
     {
         $json = json_decode(Request::getContent());
@@ -165,6 +167,7 @@ class Api2025Controller extends BaseController
             'data' => $result
         ]);
     }
+
     public function organisation_search()
     {
         $lookup = trim(Request::get('q'));
@@ -194,20 +197,21 @@ class Api2025Controller extends BaseController
         ]);
     }
 
-    public function booking_availability(){
+    public function booking_availability()
+    {
         $start_at = Request::get('start_at');
         $ends_at = Request::get('ends_at');
 
-        $query = Ressource::join('locations', 'locations.id', 'resources.location_id')
+        $query = Ressource::join('locations', 'locations.id', '=', 'ressources.location_id')
             ->where('locations.city_id', '=', 1)
-            ->where('resources.is_bookable', '=', true)
-            ->select('resources.id as resource_id',
-                'resources.name as resource_name',
+            ->where('ressources.is_bookable', '=', true)
+            ->select('ressources.id as resource_id',
+                'ressources.name as resource_name',
                 'locations.id as location_id',
                 'locations.name as location_name'
             )
             ->orderBy('locations.name', 'ASC')
-            ->orderBy('resources.name', 'ASC');
+            ->orderBy('ressources.name', 'ASC');
         $result = [];
         $has_confirmed = [];
         foreach ($query->get() as $item) {
@@ -222,7 +226,7 @@ class Api2025Controller extends BaseController
             ];
             $has_confirmed[$item->resource_id] = false;
         }
-        $query = Booking::join('booking_item', 'booking_item.id', '=', 'booking_item.booking_id')
+        $query = Booking::join('booking_item', 'booking.id', '=', 'booking_item.booking_id')
             ->where(DB::raw('DATE_ADD(booking_item.start_at, INTERVAL booking_item.duration MINUTE)'), '>', $start_at)
             ->where('booking_item.start_at', '<', $ends_at)
             ->select('booking_item.id as booking_id',
@@ -248,7 +252,7 @@ class Api2025Controller extends BaseController
                 'confirmed' => null,
             ];
 
-            if ($item->booking_confirmed_at) {
+            if ($item->booking_confirmed_at && isset($users[$item->booking_confirmed_by_user_id])) {
                 $item_data['confirmed'] = [
                     'at' => $item->booking_confirmed_at,
                     'by' => $users[$item->booking_confirmed_by_user_id]
@@ -270,5 +274,147 @@ class Api2025Controller extends BaseController
         }
         return new \Illuminate\Http\JsonResponse(array_values($result));
 
+    }
+
+    public function booking_create_batch()
+    {
+        $json = json_decode(Request::getContent());
+        try {
+            $user = User::with('organisations')->findOrFail($json->user->id);
+        } catch (\Exception $e) {
+            return new \Illuminate\Http\JsonResponse([
+                'status' => 'failure',
+                'message' => sprintf('Unknown User #%d.', $json->user->id)
+            ]);
+        }
+        try {
+            $organisation = Organisation::findOrFail($json->organisation->id);
+        } catch (\Exception $e) {
+            return new \Illuminate\Http\JsonResponse([
+                'status' => 'failure',
+                'message' => sprintf('Unknown Organisation #%d.', $json->organisation->id)
+            ]);
+        }
+        $result = [
+            'user' => [
+                'id' => $user->id,
+                'firstname' => $user->firstname,
+                'lastname' => $user->lastname,
+                'email' => $user->email,
+                'avatar' => $this->avatarUrl($user->id, $user->email, $user->avatar),
+                'organisations' => []
+
+            ],
+            'organisation' => $this->organisationToJsonFormat($organisation),
+            'bookings' => [
+
+            ],
+        ];
+        foreach ($user->organisations as $organisation) {
+            $result['user']['organisations'][] = $this->organisationToJsonFormat($organisation);
+        }
+        foreach ($json->bookings as $index => $json_booking) {
+            $start_at = sprintf('%s %s', $json_booking->occurs_at, $json_booking->start_at);
+            $ends_at = sprintf('%s %s', $json_booking->occurs_at, $json_booking->ends_at);
+            $instance = new Booking();
+            $instance->user_id = $user->id;
+            $instance->organisation_id = $organisation->id;
+            $instance->title = $json_booking->title;
+            $instance->save();
+
+            $booking_item = new BookingItem();
+            $booking_item->booking_id = $instance->id;
+            $booking_item->start_at = $start_at;
+            //$instance->ends_at = $json_booking->ends_at;
+            $booking_item->duration = $this->getDuration($start_at, $ends_at);
+            $booking_item->resource_id = $json_booking->resource->id;
+            $booking_item->save();
+            $result['bookings'][$index] = [
+                'id' => $booking_item->id,
+                'resource' => ['id' => $booking_item->resource_id],
+                'occurs_at' => Carbon::parse($booking_item->start_at)->format('Y-m-d'),
+                'start_at' => Carbon::parse($booking_item->start_at)->format('H:i'),
+                'ends_at' => Carbon::parse($booking_item->start_at)->addMinutes($booking_item->duration)->format('H:i'),
+            ];
+        }
+        return new \Illuminate\Http\JsonResponse(['status' => 'success', 'data' => $result]);
+    }
+
+    protected function getDuration($start_at, $ends_at)
+    {
+        $start = explode(':', Carbon::parse($start_at)->format('H:i'));
+        $end = explode(':', Carbon::parse($ends_at)->format('H:i'));
+        return 60 * $end[0] + $end[1] - 60 * $start[0] - $start[1];
+    }
+
+    protected function organisationToJsonFormat($organisation)
+    {
+        return [
+            'id' => $organisation->id,
+            'name' => $organisation->name,
+            'address' => $organisation->address,
+            'zipcode' => $organisation->zipcode,
+            'city' => $organisation->city,
+        ];
+    }
+
+    protected function loadUsers($user_ids)
+    {
+        $result = [];
+        if (count($user_ids) > 0) {
+            $query = DB::select(DB::raw('SELECT users.id as user_id,
+                users.firstname,
+                users.lastname,
+                users.email,
+                users.avatar,
+                organisations.id as organisation_id,
+organisations.name as organisation_name,
+organisations.address as organisation_address,
+organisations.zipcode as organisation_zipcode,
+organisations.city as organisation_city
+FROM users LEFT OUTER JOIN organisation_user ON users.id = organisation_user.user_id
+JOIN organisations ON organisation_user.organisation_id = organisations.id'));
+
+            $organisations = [];
+            foreach ($query as $item) {
+                //dump($item);
+                if ($item->organisation_id) {
+                    $organisations[$item->organisation_id] = [
+                        'id' => $item->organisation_id,
+                        'name' => $item->organisation_name,
+                        'address' => $item->organisation_address,
+                        'zipcode' => $item->organisation_zipcode,
+                        'city' => $item->organisation_city,
+                    ];
+                }
+                if (!isset($result[$item->user_id])) {
+                    $result[$item->user_id] = [
+                        'id' => $item->user_id,
+                        'firstname' => $item->firstname,
+                        'lastname' => $item->lastname,
+                        'email' => $item->email,
+                        'avatar' => $this->avatarUrl($item->user_id, $item->email, $item->avatar),
+                        'organisations' => $item->organisation_id ? [$organisations[$item->organisation_id]] : []
+                    ];
+                } else {
+                    $result[$item->user_id]['organisations'][] = $organisations[$item->organisation_id];
+                }
+            }
+        }
+        return $result;
+    }
+
+    function avatarUrl($user_id, $user_email, $avatar_filename)
+    {
+        $size = 80;
+        if (!empty($avatar_filename)) {
+            $src_filename = sprintf('/uploads/users/%d/%s', $user_id, $avatar_filename);
+            if (is_file(public_path() . $src_filename)) {
+                $result = Croppa::url($src_filename, $size, $size, array('resize', 'pad'));
+                //$result = preg_replace('!^(.+)\?.+$!', '$1', $result);
+                return asset($result);
+            }
+        }
+        return "https://www.gravatar.com/avatar/" . md5(strtolower(trim($user_email))) . "?d=mm&s=" . $size;
     }
 }

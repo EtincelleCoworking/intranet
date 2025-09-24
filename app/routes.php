@@ -17,7 +17,8 @@ Route::get('/api/2025/users/search', array('uses' => 'Api2025Controller@user_sea
 Route::get('/api/2025/organisations', array('uses' => 'Api2025Controller@organisation_list'));
 Route::post('/api/2025/organisations', array('uses' => 'Api2025Controller@organisation_add'));
 Route::get('/api/2025/organisations/search', array('uses' => 'Api2025Controller@organisation_search'));
-Route::get('/api/2025/booking//availability', array('uses' => 'Api2025Controller@booking_availability'));
+Route::get('/api/2025/booking/availability', array('uses' => 'Api2025Controller@booking_availability'));
+Route::post('/api/2025/bookings', array('uses' => 'Api2025Controller@booking_create_batch'));
 
 
 Route::get('/', array('as' => 'dashboard', 'uses' => 'UserController@dashboard'));
