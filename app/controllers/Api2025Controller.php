@@ -1,6 +1,7 @@
 <?php
 
 use Illuminate\Support\Facades\Hash;
+use Carbon\Carbon;
 
 
 class Api2025Controller extends BaseController
@@ -327,16 +328,66 @@ class Api2025Controller extends BaseController
             $booking_item->start_at = $start_at;
             //$instance->ends_at = $json_booking->ends_at;
             $booking_item->duration = $this->getDuration($start_at, $ends_at);
-            $booking_item->resource_id = $json_booking->resource->id;
+            $booking_item->ressource_id = $json_booking->resource->id;
             $booking_item->save();
             $result['bookings'][$index] = [
                 'id' => $booking_item->id,
-                'resource' => ['id' => $booking_item->resource_id],
+                'resource' => ['id' => $booking_item->ressource_id],
                 'occurs_at' => Carbon::parse($booking_item->start_at)->format('Y-m-d'),
                 'start_at' => Carbon::parse($booking_item->start_at)->format('H:i'),
                 'ends_at' => Carbon::parse($booking_item->start_at)->addMinutes($booking_item->duration)->format('H:i'),
             ];
         }
+        return new \Illuminate\Http\JsonResponse(['status' => 'success', 'data' => $result]);
+    }
+
+    public function quote_create()
+    {
+        $json = json_decode(Request::getContent());
+        try {
+            $user = User::with('organisations')->findOrFail($json->user->id);
+        } catch (\Exception $e) {
+            return new \Illuminate\Http\JsonResponse([
+                'status' => 'failure',
+                'message' => sprintf('Unknown User #%d.', $json->user->id)
+            ]);
+        }
+        try {
+            $organisation = Organisation::findOrFail($json->organisation->id);
+        } catch (\Exception $e) {
+            return new \Illuminate\Http\JsonResponse([
+                'status' => 'failure',
+                'message' => sprintf('Unknown Organisation #%d.', $json->organisation->id)
+            ]);
+        }
+        $booking_items = [];
+        foreach ($json->bookings as $booking) {
+            $booking_items[] = $booking->id;
+        }
+        $invoice = BookingController::createQuoteFromBookingItems($booking_items);
+        $result = [
+            'user' => [
+                'id' => $user->id,
+                'firstname' => $user->firstname,
+                'lastname' => $user->lastname,
+                'email' => $user->email,
+                'avatar' => $this->avatarUrl($user->id, $user->email, $user->avatar),
+                'organisations' => []
+
+            ],
+            'organisation' => $this->organisationToJsonFormat($organisation),
+            'quotes' => [
+                [
+                    'id' => $invoice->id,
+                    'reference' => $invoice->ident,
+                    'url' => route('invoice_print_pdf', ['id' => $invoice->id], true)
+                ]
+            ],
+        ];
+        foreach ($user->organisations as $organisation) {
+            $result['user']['organisations'][] = $this->organisationToJsonFormat($organisation);
+        }
+
         return new \Illuminate\Http\JsonResponse(['status' => 'success', 'data' => $result]);
     }
 
