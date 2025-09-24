@@ -18,7 +18,7 @@ class Api2025Controller extends BaseController
             'users.firstname',
             'users.lastname',
             'users.email',
-            'users.avatar',
+            'users.avatar'
         );
         $query->limit(10);
         $result = [];
