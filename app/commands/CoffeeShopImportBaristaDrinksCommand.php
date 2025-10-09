@@ -62,97 +62,99 @@ class CoffeeShopImportBaristaDrinksCommand extends Command
                 if (in_array($addon_comment, array('Offert SH', '(offert) JOURNEE D\'ESSAI', '(OFFERT)PRIVAT. OUGANDA'))) {
                     $this->output->writeln('Offert / ignoré facturation');
                 } else {
-                    $price = $tokens[self::FIELD_TOTAL_PRICE] / $quantity;
-                    if (0 == $price) {
-                        $this->output->writeln('Offert / ignoré facturation');
-                    } else {
+                    if ($quantity > 0) {
+                        $price = $tokens[self::FIELD_TOTAL_PRICE] / $quantity;
+                        if (0 == $price) {
+                            $this->output->writeln('Offert / ignoré facturation');
+                        } else {
 
-                        $customer_name = $tokens[self::FIELD_USER];
-                        if ($customer_name !== 'SUIVI CONSO GRATUITE') {
-                            if (isset($users[$tokens[0]])) {
-                                $user_id = $users[$customer_name];
-                            } else {
-                                $user_id = $this->getUserId($customer_name);
-                                if ($user_id) {
-                                    $users[$tokens[0]] = $user_id;
+                            $customer_name = $tokens[self::FIELD_USER];
+                            if ($customer_name !== 'SUIVI CONSO GRATUITE') {
+                                if (isset($users[$tokens[0]])) {
+                                    $user_id = $users[$customer_name];
                                 } else {
-                                    //$this->output->writeln(sprintf('Utilisateur inconnu : [%s]', $tokens[0]));
-                                    $user = User::where('slug', str_replace(' ', '.', strtolower($customer_name)))->first();
-                                    if ($user) {
-                                        //  $this->output->writeln('');
-                                        $this->output->writeln(sprintf("<error>case '%s': return %d;</error>", $customer_name, $user->id));
-                                        $users[$customer_name] = $user->id;
-                                        //  $this->output->writeln('');
+                                    $user_id = $this->getUserId($customer_name);
+                                    if ($user_id) {
+                                        $users[$tokens[0]] = $user_id;
                                     } else {
-                                        $this->output->writeln(sprintf("<error>case '%s': return null;</error>", $customer_name));
-                                        $users[$customer_name] = false;
-                                        return false;
+                                        //$this->output->writeln(sprintf('Utilisateur inconnu : [%s]', $tokens[0]));
+                                        $user = User::where('slug', str_replace(' ', '.', strtolower($customer_name)))->first();
+                                        if ($user) {
+                                            //  $this->output->writeln('');
+                                            $this->output->writeln(sprintf("<error>case '%s': return %d;</error>", $customer_name, $user->id));
+                                            $users[$customer_name] = $user->id;
+                                            //  $this->output->writeln('');
+                                        } else {
+                                            $this->output->writeln(sprintf("<error>case '%s': return null;</error>", $customer_name));
+                                            $users[$customer_name] = false;
+                                            return false;
+                                        }
                                     }
                                 }
-                            }
 
-                            $occurs_at = preg_replace('|^([0-9]{2})/([0-9]{2})/([0-9]{4})$|', '$3-$2-$1', $tokens[self::FIELD_DATE]);
-                            $product = \Illuminate\Support\Str::slug($tokens[self::FIELD_PRODUCT]);
+                                $occurs_at = preg_replace('|^([0-9]{2})/([0-9]{2})/([0-9]{4})$|', '$3-$2-$1', $tokens[self::FIELD_DATE]);
+                                $product = \Illuminate\Support\Str::slug($tokens[self::FIELD_PRODUCT]);
 
-                            $product_price = $this->getProductPricing($product);
-                            if (false === $product_price) {
-                                $product_price = 0;
-                                $this->output->writeln(sprintf("<error>Produit inconnu : [%s]</error>", $product));
-                                return false;
-                            }
-
-                            $price = preg_replace('/^([0-9]+)(:?,([0-9]+))? .*$/', '$1.$3', trim($price)) . '00';
-                            $addon_price = 0;
-                            if ($price != $product_price) {
-                                $addon_price = (float)$price - (float)$product_price;
-                                $this->output->writeln(sprintf('<info>[%s] => %s (= %s ?) - addon : %s</info>', $tokens[self::FIELD_UNIT_PRICE], $price, $product_price, $addon_price));
-                                if ($addon_price < 0) {
-                                    $this->output->writeln(sprintf('<error>Prix négatif [%s] </error>', $addon_price));
+                                $product_price = $this->getProductPricing($product);
+                                if (false === $product_price) {
+                                    $product_price = 0;
+                                    $this->output->writeln(sprintf("<error>Produit inconnu : [%s]</error>", $product));
+                                    return false;
                                 }
-                            }
 
-                            $addon = isset($tokens[self::FIELD_ADDON]) ? trim($tokens[self::FIELD_ADDON]) : null;
-                            if ($addon) {
-                                if (!isset($addons[$addon])) {
-                                    $addons[$addon] = $addon_price;
-                                } else {
-                                    if ($addons[$addon] == $addon_price) {
-                                        // ok
-                                    } else {
-                                        $this->output->writeln(sprintf('<error>Différence de prix addon [%s] connu : %s, actuel : %s </error>', $addon, $addons[$addon], $addon_price));
+                                $price = preg_replace('/^([0-9]+)(:?,([0-9]+))? .*$/', '$1.$3', trim($price)) . '00';
+                                $addon_price = 0;
+                                if ($price != $product_price) {
+                                    $addon_price = (float)$price - (float)$product_price;
+                                    $this->output->writeln(sprintf('<info>[%s] => %s (= %s ?) - addon : %s</info>', $tokens[self::FIELD_UNIT_PRICE], $price, $product_price, $addon_price));
+                                    if ($addon_price < 0) {
+                                        $this->output->writeln(sprintf('<error>Prix négatif [%s] </error>', $addon_price));
                                     }
                                 }
-                            }
 
-                            $this->output->writeln(sprintf('User : %s', $user_id));
-                            $this->output->writeln(sprintf('Quantity : %s', $quantity));
-                            $this->output->writeln(sprintf('OccursAt : %s', $occurs_at));
-                            $this->output->writeln(sprintf('Product : %s', $product));
-                            $this->output->writeln(sprintf('Addon : %s', $addon));
-                            $this->output->writeln(sprintf('addon_price : %s', $addon_price));
-                            $this->output->writeln(sprintf('addon_comment : %s', $addon_comment));
-                            $this->output->writeln(sprintf('price : %s', $product_price));
-                            /*
-                                                $data[] = [
-                                                    'user_id' => $user_id,
-                                                    'quantity' => $quantity,
-                                                    'occurs_at' => $occurs_at,
-                                                    'product' => $product,
-                                                    'addon' => $addon,
-                                                    'addon_price' => $addon_price,
-                                                    'addon_comment' => $addon_comment,
-                                                    'price' => $product_price,
-                                                ];*/
-                            $order = new CoffeeShopOrder();
-                            $order->user_id = $user_id;
-                            $order->quantity = $quantity;
-                            $order->occurs_at = $occurs_at;
-                            $order->product_slug = 'hot-drinks.' . $product;
-                            $order->product_addon = $addon;
-                            $order->product_addon_cost = $addon_price;
-                            $order->product_addon_comment = $addon_comment;
-                            if (!$this->option('dry-run')) {
-                                $order->save();
+                                $addon = isset($tokens[self::FIELD_ADDON]) ? trim($tokens[self::FIELD_ADDON]) : null;
+                                if ($addon) {
+                                    if (!isset($addons[$addon])) {
+                                        $addons[$addon] = $addon_price;
+                                    } else {
+                                        if ($addons[$addon] == $addon_price) {
+                                            // ok
+                                        } else {
+                                            $this->output->writeln(sprintf('<error>Différence de prix addon [%s] connu : %s, actuel : %s </error>', $addon, $addons[$addon], $addon_price));
+                                        }
+                                    }
+                                }
+
+                                $this->output->writeln(sprintf('User : %s', $user_id));
+                                $this->output->writeln(sprintf('Quantity : %s', $quantity));
+                                $this->output->writeln(sprintf('OccursAt : %s', $occurs_at));
+                                $this->output->writeln(sprintf('Product : %s', $product));
+                                $this->output->writeln(sprintf('Addon : %s', $addon));
+                                $this->output->writeln(sprintf('addon_price : %s', $addon_price));
+                                $this->output->writeln(sprintf('addon_comment : %s', $addon_comment));
+                                $this->output->writeln(sprintf('price : %s', $product_price));
+                                /*
+                                                    $data[] = [
+                                                        'user_id' => $user_id,
+                                                        'quantity' => $quantity,
+                                                        'occurs_at' => $occurs_at,
+                                                        'product' => $product,
+                                                        'addon' => $addon,
+                                                        'addon_price' => $addon_price,
+                                                        'addon_comment' => $addon_comment,
+                                                        'price' => $product_price,
+                                                    ];*/
+                                $order = new CoffeeShopOrder();
+                                $order->user_id = $user_id;
+                                $order->quantity = $quantity;
+                                $order->occurs_at = $occurs_at;
+                                $order->product_slug = 'hot-drinks.' . $product;
+                                $order->product_addon = $addon;
+                                $order->product_addon_cost = $addon_price;
+                                $order->product_addon_comment = $addon_comment;
+                                if (!$this->option('dry-run')) {
+                                    $order->save();
+                                }
                             }
                         }
                     }
@@ -633,34 +635,66 @@ class CoffeeShopImportBaristaDrinksCommand extends Command
                 return 7384;
             case 'BENOIT RIGOLLEAU':
                 return 7382;
-            case 'XAVIER MEUNIER': return 7541;
-            case 'LOUIS JARDIN': return 7422;
-            case 'GAELLE PAPPO': return 7367;
-            case 'JOANNA CLOSA': return 7114;
-            case 'SHUYAO ZHANG': return 7433;
-            case 'SERGIO BELLON': return 7414;
-            case 'OLIVIA SIGNOUREL': return 7542;
-            case 'LENA PAWELCZYK': return 7543;
+            case 'XAVIER MEUNIER':
+                return 7541;
+            case 'LOUIS JARDIN':
+                return 7422;
+            case 'GAELLE PAPPO':
+                return 7367;
+            case 'JOANNA CLOSA':
+                return 7114;
+            case 'SHUYAO ZHANG':
+                return 7433;
+            case 'SERGIO BELLON':
+                return 7414;
+            case 'OLIVIA SIGNOUREL':
+                return 7542;
+            case 'LENA PAWELCZYK':
+                return 7543;
 //            case 'SOPHIE BRUNET': return null; FAH ?
-            case 'CELINE PRATX': return 7343;
-            case 'VINCENT VENTALON': return 5151;
-            case 'BENOIT GUINET': return 6808;
-            case 'BENJAMIN THEYTAZ': return 7521;
-            case 'PAULINE PONTIS': return 7455;
-            case 'CLEYDYR BEZERRA': return 7544;
-            case 'NOEMIE CALVET': return 7545;
+            case 'CELINE PRATX':
+                return 7343;
+            case 'VINCENT VENTALON':
+                return 5151;
+            case 'BENOIT GUINET':
+                return 6808;
+            case 'BENJAMIN THEYTAZ':
+                return 7521;
+            case 'PAULINE PONTIS':
+                return 7455;
+            case 'CLEYDYR BEZERRA':
+                return 7544;
+            case 'NOEMIE CALVET':
+                return 7545;
 //            case 'CEDRIC SIGNE MBE': return null;
-            case 'QUENTIN LE GUILLERMIC': return 7546;
-            case 'FLORIAN DAVASSE': return 5738;
-            case 'JEROME ALVES': return 1399;
-            case 'REBECCA RAVOALA': return 7478;
-            case 'CHARLOTTE PLAYOUST': return 7358;
-            case 'ESTELLE LAVILLE': return 7435;
-            case 'GUILLAUME GRANDPRE': return 6071;
-            case 'MELANIE ALAUX': return 7547;
-            case 'LOANE CARRASSUS': return 7532;
-            case 'KENZA BERRADA': return 7534;
-            case 'NICOLAS TEROL': return 7493;
+            case 'QUENTIN LE GUILLERMIC':
+                return 7546;
+            case 'FLORIAN DAVASSE':
+                return 5738;
+            case 'JEROME ALVES':
+                return 1399;
+            case 'REBECCA RAVOALA':
+                return 7478;
+            case 'CHARLOTTE PLAYOUST':
+                return 7358;
+            case 'ESTELLE LAVILLE':
+                return 7435;
+            case 'GUILLAUME GRANDPRE':
+                return 6071;
+            case 'MELANIE ALAUX':
+                return 7547;
+            case 'LOANE CARRASSUS':
+                return 7532;
+            case 'KENZA BERRADA':
+                return 7534;
+            case 'NICOLAS TEROL':
+                return 7493;
+            case 'EMMA TEYSSANDIER':
+                return 5994;
+            case 'ELLA ROGER':
+                return 7551;
+            case 'THOMAS VERRIER':
+                return 7454;
             default :
                 return false;
         }
