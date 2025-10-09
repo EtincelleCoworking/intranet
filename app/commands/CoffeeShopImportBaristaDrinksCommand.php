@@ -728,6 +728,7 @@ class CoffeeShopImportBaristaDrinksCommand extends Command
             case 'GUILLAUME BARILLET': return 6072;
             case 'MARIELLE SCHNEIDER': return 7636;
             case 'MARINE SEPET': return 5408;
+            case 'RACHEL AMALVY': return 7659;
 
             default :
                 return false;
