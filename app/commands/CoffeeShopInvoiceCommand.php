@@ -41,7 +41,7 @@ class CoffeeShopInvoiceCommand extends Command
         //region products
 
         // Mettre à jour à partir de l'URL https://intranet2021.etincelle-coworking.com/backend/coffeeshop/code
-        $products = array (
+        $products =array (
             'fruits.clementine' =>
                 array (
                     'name' => 'Clémentine',
@@ -152,10 +152,20 @@ class CoffeeShopInvoiceCommand extends Command
                     'name' => 'Panacotta',
                     'price' => '3.50',
                 ),
+            'snack.elsa.dessert-elsa' =>
+                array (
+                    'name' => 'Dessert Elsa',
+                    'price' => '3.50',
+                ),
             'snack.elsa.fresh-fruits' =>
                 array (
                     'name' => 'Fruits frais coupés',
                     'price' => '3.50',
+                ),
+            'snack.elsa.salted-snack' =>
+                array (
+                    'name' => 'Snack salé',
+                    'price' => '2.00',
                 ),
             'pastry.credo.finger' =>
                 array (
@@ -346,6 +356,11 @@ class CoffeeShopInvoiceCommand extends Command
                 array (
                     'name' => 'Le Bon Cola',
                     'price' => '1.50',
+                ),
+            'drinks.elsa.immunity-shot' =>
+                array (
+                    'name' => 'Immunity shot',
+                    'price' => '2.50',
                 ),
             'hot-drinks.aerocano' =>
                 array (
@@ -661,6 +676,21 @@ class CoffeeShopInvoiceCommand extends Command
                 array (
                     'name' => 'Peach Ginger Fizz',
                     'price' => '2.50',
+                ),
+            'hot-drinks.latte-sirop-erable' =>
+                array (
+                    'name' => 'Latte sirop érable',
+                    'price' => '2.50',
+                ),
+            'hot-drinks.latte-pistache' =>
+                array (
+                    'name' => 'Latte pistache',
+                    'price' => '2.50',
+                ),
+            'hot-drinks.matcha-latte-jasmin' =>
+                array (
+                    'name' => 'Matcha latte jasmin',
+                    'price' => '3.00',
                 ),
         );
         //endregion
