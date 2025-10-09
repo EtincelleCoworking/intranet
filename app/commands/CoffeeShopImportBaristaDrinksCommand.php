@@ -54,6 +54,7 @@ class CoffeeShopImportBaristaDrinksCommand extends Command
                 $this->output->writeln('<info>' . $line . '</info>');
 
                 $tokens = explode("\t", $line);
+               // $this->output->writeln(sprintf('<debug>Tokens = [%s]</debug>', print_r($tokens, true)));
 
                 $addon_comment = isset($tokens[self::FIELD_COMMENT]) ? trim($tokens[self::FIELD_COMMENT]) : null;
 
@@ -63,7 +64,12 @@ class CoffeeShopImportBaristaDrinksCommand extends Command
                     $this->output->writeln('Offert / ignoré facturation');
                 } else {
                     if ($quantity > 0) {
-                        $price = $tokens[self::FIELD_TOTAL_PRICE] / $quantity;
+                        $price = $tokens[self::FIELD_TOTAL_PRICE];
+                        //$this->output->writeln(sprintf('<debug>Price before = [%s]</debug>', $price));
+                        $price = preg_replace('/^([0-9]+)(:?,([0-9]+))? .*$/', '$1.$3', trim($price)) . '00';
+                        //$this->output->writeln(sprintf('<debug>Price after = [%s]</debug>', $price));
+
+                        $price = $price / $quantity;
                         if (0 == $price) {
                             $this->output->writeln('Offert / ignoré facturation');
                         } else {
@@ -102,7 +108,6 @@ class CoffeeShopImportBaristaDrinksCommand extends Command
                                     return false;
                                 }
 
-                                $price = preg_replace('/^([0-9]+)(:?,([0-9]+))? .*$/', '$1.$3', trim($price)) . '00';
                                 $addon_price = 0;
                                 if ($price != $product_price) {
                                     $addon_price = (float)$price - (float)$product_price;
@@ -695,6 +700,35 @@ class CoffeeShopImportBaristaDrinksCommand extends Command
                 return 7551;
             case 'THOMAS VERRIER':
                 return 7454;
+            case 'SACHA SYENCHUK': return 7186;
+            case 'JEAN VERRONS': return 7585;
+            case 'AURORE VIE': return 7109;
+            case 'KATY LOMBA': return 5762;
+            case 'RAFAEL PANETTA': return 7696;
+            case 'BALKIS EL OUAFI': return 5102;
+            case 'AMANDINE HEYERE': return 6048;
+            case 'KARIN ORTIZ': return 4964;
+            case 'JEAN-MICHEL MATHIEU': return 4269;
+            case 'BAPTISTE LANSAC': return 7697;
+            case 'YANN SCHLOSSER': return 7610;
+            case 'GUILLAUME RAVERAT': return 715;
+            case 'VALENTINE DEMANGE': return 7568;
+            case 'NICOLAS MENGIN': return 1369;
+            case 'CASSY BERNARD': return 7612;
+            case 'FLORIAN CORGNOU': return 5875;
+            case 'GIORGIO MAZZA': return 7145;
+            case 'YANNICK BOURENANE': return 7469;
+            case 'ANNICK MIQUEL': return 7567;
+            case 'GIULIA BARINA': return 3430;
+            case 'YANN LASTAPIS': return 7631;
+            case 'ARNAUD LE BIHAN': return 246;
+            case 'VALERIE ALONSO': return 7616;
+            case 'LAETITIA GOMEZ': return 7396;
+            case 'SERVANE RIANT': return 7561;
+            case 'GUILLAUME BARILLET': return 6072;
+            case 'MARIELLE SCHNEIDER': return 7636;
+            case 'MARINE SEPET': return 5408;
+
             default :
                 return false;
         }
@@ -766,6 +800,9 @@ class CoffeeShopImportBaristaDrinksCommand extends Command
             'Affogato' => 2.5,// ?
             'Strawberry matcha latte' => 3.5,// ?
             'Peach Ginger Fizz' => 2.5,// ?
+            'Latte sirop érable' => 2.5,// ?
+            'Latte pistache' => 2.5,// ?
+            'Matcha latte jasmin' => 3.0,// ?
 //pago*
 //bounty*
 //lion*
@@ -936,7 +973,6 @@ AGUSTINA WEBER	06/08/2025	32		1	LATTE MACCHIATO (CARAMEL)	2,50 €	2,50 €
 ANAE LEFEVRE	06/08/2025	32		1	WHITE MATCHA LATTE	2,50 €	2,50 €																						
 OUARDIA EL BONNOUHI	06/08/2025	32		1	CAPPUCCINO AVOINE	1,50 €	1,50 €																						
 BARNABE LEVARD	06/08/2025	32		1	CAPPUCCINO AVOINE	1,50 €	1,50 €																						
-RAFAEL PANETTA	06/08/2025	32		1	AEROCANO	1,50 €	1,50 €		rafael.panetta@numbr.co																				
 KEAN DEQUEANT	06/08/2025	32		1	AEROCANO	1,50 €	1,50 €																						
 ANGELIQUE FOUIX	06/08/2025	32		1	MOCACCINO GLACE	3,50 €	3,50 €	XL																					
 JULIE COUSSE	06/08/2025	32		1	MATCHA LATTE GLACE	4,00 €	4,00 €	XXL																					
@@ -993,7 +1029,7 @@ SUIVI CONSO GRATUITE	12/08/2025	33		9	allongé	0,00 €	0,00 €
 SUIVI CONSO GRATUITE	12/08/2025	33		5	espresso	0,00 €	0,00 €																						
 SUIVI CONSO GRATUITE	12/08/2025	33		0	CHOCOLAT CHAUD	0,00 €	0,00 €																						
 SACHA SYENCHUK	13/08/2025	33		1	CAPPUCCINO AVOINE	1,50 €	1,50 €																						
-LAURE SARDELLA	13/08/2025	33		1	STRAWBERRY MATCHA LATTE	2,50 €	2,50 €																						
+LAURE SARDELLA	13/08/2025	33		1	STRAWBERRY MATCHA LATTE	3,50 €	3,50 €																						
 ALEXANDRE GORSKI	13/08/2025	33		1	CHOCOLAT GLACE	0,00 €	0,00 €		JOURNEE D\'ESSAI																				
 MAX LEVER	13/08/2025	33		1	CHICOREE	1,00 €	1,00 €	L																					
 LAURE SARDELLA	13/08/2025	33		1	LATTE	2,00 €	2,00 €																						
@@ -1139,7 +1175,7 @@ ANGELIQUE FOUIX	29/08/2025	35		1	LATTE MACCHIATO (NOISETTE)	3,50 €	3,50 €	XX
 KARIN ORTIZ	29/08/2025	35		1	MOCA	1,00 €	1,00 €																						
 YANN SCHLOSSER	29/08/2025	35		1	LATTE MACCHIATO (VANILLE)	2,50 €	2,50 €		yann.schlosser@gmail.com																				
 ADRIEN MORQUE	29/08/2025	35		1	CAPPUCCINO	1,50 €	1,50 €																						
-VALERIE HAMEAU	29/08/2025	35		1	LATTE MACCHIATO	2,50 €	2,50 €	XXL+SHOT SUP																					
+VALERIE HAMEAU	29/08/2025	35		1	LATTE MACCHIATO	3,50 €	3,50 €	XXL+SHOT SUP																					
 ESTEVE PINYOL	29/08/2025	35		1	CAPPUCCINO	1,50 €	1,50 €																						
 NATHALIE GRENET	29/08/2025	35		1	CAPPUCCINO AVOINE	1,50 €	1,50 €																						
 CEDRIC BOUCHE	29/08/2025	35		1	MACCHIATO/NOISETTE	1,00 €	1,00 €																						
