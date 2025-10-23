@@ -1,5 +1,6 @@
 <?php
 
+use App\Models\OrganisationUser;
 use Illuminate\Support\Facades\Hash;
 use Carbon\Carbon;
 
@@ -467,5 +468,25 @@ JOIN organisations ON organisation_user.organisation_id = organisations.id'));
             }
         }
         return "https://www.gravatar.com/avatar/" . md5(strtolower(trim($user_email))) . "?d=mm&s=" . $size;
+    }
+
+    public function ensureUserIsPartOfOrganisation($organisation_id, $user_id){
+        $organisation_user = OrganisationUser::where('user_id', '=', $user_id)->where('organisation_id', '=', $organisation_id)->first();
+        if($organisation_user){
+            return new \Illuminate\Http\JsonResponse([
+                'status' => 'success',
+                'message' => 'User is already part of this organisation'
+            ]);
+        }
+
+        $organisation_user = new OrganisationUser();
+        $organisation_user->organisation_id = $organisation_id;
+        $organisation_user->user_id = $user_id;
+        $organisation_user->save();
+
+        return new \Illuminate\Http\JsonResponse([
+            'status' => 'success',
+            'message' => 'User has been added to this organisation'
+        ]);
     }
 }
