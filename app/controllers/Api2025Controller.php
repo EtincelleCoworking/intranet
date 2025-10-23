@@ -1,6 +1,5 @@
 <?php
 
-use App\Models\OrganisationUser;
 use Illuminate\Support\Facades\Hash;
 use Carbon\Carbon;
 
