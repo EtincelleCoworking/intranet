@@ -41,6 +41,7 @@ class CatalyzSyncCommand extends Command
         // https://etincelle-coworking.catalyz.fr/api/invoices
         $json = [];
         $uri = sprintf('%s?count=100000&paid_at[lte]=%s&paid_at[gte]=%s', $this->argument('api_uri'), date('Y-m-d'), date('Y-m-d', strtotime('-1 month')));
+        $this->output->writeln(sprintf('API : %s', $uri));
 
         foreach (json_decode(file_get_contents($uri)) as $invoice) {
             $json[$invoice->reference] = $invoice;
