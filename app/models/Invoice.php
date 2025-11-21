@@ -247,7 +247,7 @@ class Invoice extends Eloquent
     {
 
         $customer_vat = '';
-        if($this->organisation->tva_number){
+        if ($this->organisation->tva_number) {
             $customer_vat = sprintf('<br /><br />TVA : %s', $this->organisation->tva_number);
         }
 
@@ -262,7 +262,7 @@ class Invoice extends Eloquent
                     <tbody>
                         <tr>
                             <td style="width:50%">
-                                <strong>' . $_ENV['organisation_name'] . ' ' . $_ENV['organisation_status'] . '</strong><br />
+                                <strong>' . $_ENV['organisation_status'] . ' ' . $_ENV['organisation_name'] . '</strong><br />
                                 ' . $_ENV['organisation_address'] . '<br />
                                 ' . $_ENV['organisation_zipcode'] . ' ' . $_ENV['organisation_city'] . '<br />
                                 ' . $_ENV['organisation_country'] . '<br />';
@@ -422,7 +422,7 @@ class Invoice extends Eloquent
                     <table cellpading="0" cellspacing="0" style="width:100%">
                         <tr>
                             <td style="width:45%" valign="top">
-                                <table cellpading="0" cellspacing="0" style="wwidth:98%; font-size:11px; border-radius: 6px; -moz-border-radius: 6px; border: 1px solid #666; padding:5px;">
+                                <table cellpading="0" cellspacing="0" style="width:98%; font-size:11px; border-radius: 6px; -moz-border-radius: 6px; border: 1px solid #666; padding:5px;">
                                     <thead>
                                         <tr>
                                             <th colspan="4" style="text-transform:uppercase">Relevé d\'Identité Bancaire</th>
